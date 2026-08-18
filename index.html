@@ -1,617 +1,1071 @@
-<!DOCTYPE html><html lang="de" class="t-tb" style="--tabx-scrollbar-inline-size:
- 0px;" data-tabcid="178707151890168"><head>
-<title>Online-Kredit mit schneller Auszahlung | sohabank</title>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sohabank – Online-Banking, Kredite, Sparprodukte</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ---------- RESET & VARIABLES ---------- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f8fc;
+            color: #1e2a3a;
+            line-height: 1.6;
+        }
+        :root {
+            --primary: #0f2b4b;
+            --primary-light: #1a3f64;
+            --accent: #00a3e0;
+            --accent-hover: #0088c0;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 50px -10px rgba(0, 0, 0, 0.12);
+            --radius: 12px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-<meta name="description" content="Ihr Online-Kredit mit schneller Auszahlung 
-direkt vom Anbieter ✓ Günstige Zinsen ✓ Der Wie für mich gemacht Kredit. ➤ Jetzt
- berechnen!">
+        /* ---------- HEADER ---------- */
+        .navbar {
+            background: var(--primary);
+            padding: 0 2rem;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .nav-logo i { color: var(--accent); font-size: 1.9rem; }
+        .nav-logo span { color: white; }
+        .nav-logo small { font-size: 0.7rem; font-weight: 400; opacity: 0.8; margin-left: 4px; letter-spacing: 0.3px; }
 
-<meta name="format-detection" content="telephone=no">
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: white;
+            border-bottom-color: var(--accent);
+        }
 
+        /* ---------- LOGIN DROPDOWN ---------- */
+        .login-wrapper { position: relative; }
+        .login-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.55rem 1.3rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .login-btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,163,224,0.3);
+        }
 
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+        .login-dropdown {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            width: 400px;
+            max-width: 92vw;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 1.8rem 1.8rem 2rem;
+            display: none;
+            animation: fadeSlide 0.25s ease-out;
+            border: 1px solid var(--gray-200);
+            z-index: 999;
+        }
+        .login-dropdown.open { display: block; }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(-8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
 
-  <link rel="icon" href="/de/images/favicon/favicon.png">
-  <style data-polyfill-anchor-position="">
-    @layer core, third-party, components, utility;@layer core.reset, 
-core.tokens, core.base;@layer third-party.imports, third-party.overrides;@layer 
-components.base, components.variations;#site-header,.site-
-header{position:relative;z-index:1001;background-color:var(--tabx-color-
-neutral-000)}.site-header__container{width:var(--tabx-grid-inline-size);margin-
-inline:auto;padding-block-start:var(--tabx-size-010);display:flex;flex-
-direction:column}.site-header__homelink{display:inline-block;align-
-self:start}.site-header__homelink:only-child{margin-inline:auto}.site-
-header__content{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;anchor-
-name:--site-header}.site-header__actions{display:grid;grid-auto-
-flow:column;grid-template-columns:repeat(3,var(--tabx-size-060));margin-inline-
-start:auto;gap:var(--tabx-size-005)}.site-
-logo{display:block;height:1.5rem;width:auto;max-width:none}.btn-login svg,.btn-
-logout svg{display:none}#section-nav{display:none;--font-size:var(--tabx-font-
-size-subtext);--font-weight:var(--tabx-font-weight-bold);--line-
-height:var(--tabx-font-line-height-subtext);--color:var(--tabx-color-
-primary-080);--bg-hover:var(--tabx-color-secondary-030);--hover-inline-padding-
-size:var(--tabx-size-010)}#section-nav>ul{display:flex;gap:var(--tabx-
-size-020);list-style-type:none;margin-block:0;margin-inline:calc(var(--hover-
-inline-padding-size)*-1);padding:0}.popup-nav{--bg-hover:var(--tabx-color-
-secondary-030);--font-size:var(--tabx-font-size-subtext);--font-
-weight:var(--tabx-font-weight-bold);--line-height:var(--tabx-font-line-height-
-subtext);--color:var(--tabx-color-
-primary-080);position:absolute;top:anchor(bottom);z-index:1;position-
-anchor:--site-header;margin:0;width:100%;border:none;padding-top:var(--tabx-
-size-030);padding-bottom:var(--tabx-size-040);padding-inline:0}.popup-
-nav__trigger{cursor:pointer;position:relative;display:inline-
-flex;gap:var(--tabx-size-005);color:var(--tabx-color-primary-080);font-
-size:var(--tabx-font-size-label);line-height:calc(var(--tabx-size-030) - 
-var(--tabx-border-width-thick));font-weight:var(--tabx-font-weight-bold);align-
-items:center;background:none;border:none;padding:0}.popup-nav__trigger 
-span{border-bottom:var(--tabx-border-width-thick) solid var(--tabx-color-
-primary-080)}.popup-nav__popup{display:flex;flex-
-direction:column;margin:0;gap:var(--tabx-size-020);width:var(--tabx-grid-inline-
-size);margin-inline:auto}.popup-nav__popup>li{margin:0;padding:0}.popup-
-nav__popup>li>a{margin-inline:calc(var(--_padding-inline)*-1)}.site-
-navigation{--mobile-group-width:30.25rem;--hover-inline-padding-size:var(--tabx-
-size-010);--level1-padding-block:var(--tabx-size-030);--mobile-navigation-right-
-position:0;color:var(--tabx-color-primary-090)}.site-navigation,.site-
-navigation__group{background-color:var(--tabx-color-neutral-000)}.site-
-navigation__group{border:none;color:inherit;pointer-events:all}.site-
-navigation__group>:not(:first-child){margin-block-start:var(--tabx-
-size-010);margin-block-end:var(--tabx-size-010)}.site-
-navigation__group__close,.site-navigation__group__title-
-container{display:none}.site-navigation__group__title-
-container__title{display:block;color:var(--tabx-color-text-
-primary);padding:0;margin:0;font-size:var(--tabx-font-headline-size-m);font-
-weight:var(--tabx-font-weight-bold)}.site-navigation__group__header{align-
-items:center;margin-inline:var(--tabx-size-030);padding-block-start:var(--tabx-
-size-010);border-bottom:var(--tabx-border-width-base) solid var(--tabx-border-
-color-light)}.site-navigation__actions,.site-
-navigation__group__header{display:flex;-moz-column-gap:var(--tabx-
-size-010);column-gap:var(--tabx-size-010)}.site-navigation__actions .btn{--btn-
-icon-height:var(--tabx-size-030);--btn-padding-inline:var(--tabx-
-size-015);--btn-padding-block:var(--tabx-size-015)}.site-
-navigation__actions:is(:first-child) .btn:is(:first-child){margin-
-inline:calc(var(--_btn-padding-inline)*-1)}.site-navigation__actions:is(:last-
-child){margin-inline-start:auto}.site-navigation__actions:is(:last-child) 
-.btn:is(:last-child){margin-inline:calc(var(--_btn-padding-inline)*-1)}.site-
-navigation__label{font-size:var(--tabx-font-size-body);line-height:var(--tabx-
-font-line-height-body);font-weight:var(--tabx-font-weight-
-bold);z-index:1000}.site-navigation__group-
-title{display:none;padding:var(--tabx-size-010) 12px;line-height:inherit;font-
-size:inherit}.site-navigation__group-title.always-show{display:block}.site-
-navigation__group-title{font-weight:var(--tabx-font-weight-
-bold);color:var(--tabx-color-text-primary)}.site-navigation__list{--list-
-padding-inline-start:var(--tabx-size-015);--list-padding-inline-end:var(--tabx-
-size-015);display:grid;gap:var(--tabx-size-010);margin:0}.site-
-navigation__list:is(.l2)>li:is(:first-child):has(>.nav-item)>a{font-
-weight:var(--_font-weight)}.site-navigation__list:is(.l2) .group-wrapper 
-.btn{margin-left:36px;margin-top:var(--tabx-size-010)}.site-
-navigation__list:is(.l2)>li.site-navigation__group--is-
-contact:has([role=group]){padding-block-start:var(--tabx-size-040)}.site-
-navigation__list:is(.l2)>li:has([role=group]){padding-block:0}.site-
-navigation__list:is(.l2)>li>a{font-weight:var(--tabx-font-weight-bold)}.site-
-navigation__list:is(.l3){--list-padding-inline-start:var(--tabx-
-size-030);--list-padding-inline-end:0;gap:0}.site-
-navigation__list:is(.l3)[hidden]{display:none}.site-
-navigation__list:is(.l3)>li{display:flex}.site-navigation__list>li{padding-
-block:var(--tabx-size-005);padding-inline-start:var(--list-padding-inline-
-start);padding-inline-end:var(--list-padding-inline-end)}.site-
-navigation__list>li:is(.is-tbol-homelink){margin-inline-start:auto;margin-
-block:var(--tabx-size-0025)}.site-navigation__list>li:is(.is-tbol-homelink) 
-a.nav-item{--font-weight:var(--tabx-font-weight-normal);--font-size:var(--tabx-
-font-size-subtext);--line-height:var(--tabx-font-line-height-subtext)}.site-
-navigation__list>li:is(.is-tbol-homelink) a.nav-item svg,.site-
-navigation__list>li:is(.is-tbol-homelink) a.nav-item tab-icon{margin-
-block:auto;display:block}.site-navigation__list>li a>tab-icon{font-
-size:var(--tabx-size-030)}.site-navigation__list>li a>span{flex:1}.site-
-navigation__list>li a>span>span{display:block}.site-navigation__flyout-
-wrapper{gap:var(--tabx-size-010);display:grid;padding-block-end:var(--tabx-
-size-120)}.site-navigation__item{--padding-inline:var(--tabx-
-size-015);--padding-block:var(--tabx-size-010);--color:var(--tabx-color-
-primary-080);--bg-hover:var(--tabx-color-secondary-030);--font-
-weight:var(--tabx-font-weight-normal);width:100%;justify-content:space-
-between}.site-navigation__item:is(a){display:flex;justify-content:flex-
-start;gap:var(--tabx-size-010)}.site-navigation__item:is(.submenu-toggle){font-
-weight:var(--tabx-font-weight-bold);margin-block:var(--tabx-size-005)}.site-
-navigation__item:is(.submenu-toggle)>span{pointer-events:none}.site-
-navigation__item:is(.submenu-toggle) svg{pointer-events:none}.site-
-navigation__item:is(.submenu-toggle)[aria-expanded=true] 
-svg{transform:scaleY(-1)}.site-navigation__item:is(.submenu-
-toggle):empty{display:none}.site-navigation__item:is(.summary){margin-inline-
-start:var(--tabx-size-030);width:calc(100% - var(--tabx-size-030));margin-
-block:var(--tabx-size-005)}.site-navigation__item:is(.summary)>tab-
-icon{display:none;font-size:var(--tabx-size-020)}.nav-item{--_font-
-size:var(--font-size,inherit);--_font-weight:var(--font-weight,inherit);--_line-
-height:var(--line-height,inherit);--_color:var(--color,#000);--_padding-
-block:var(--padding-block,0.25rem);--_padding-inline:var(--padding-
-inline,0.5rem);--_bg-hover:var(--bg-hover,#d3d3d3);--_animation-
-duration:var(--animation-duration,200ms);--_animation-padding-
-inline:100%;--_animation-padding-
-opacity:0;position:relative;color:var(--_color);display:inline-flex;padding-
-block:var(--_padding-block);padding-inline:var(--_padding-inline);text-
-decoration:none;border-radius:var(--tabx-border-radius-
-base);border:none;background-color:#0000;font-size:var(--_font-size);font-
-weight:var(--_font-weight);line-height:var(--_line-height);cursor:pointer}.nav-
-item:after{content:"";inset-inline-end:var(--_animation-padding-
-inline);transition-property:opacity,inset-inline-end;transition-
-duration:var(--_animation-duration);transition-timing-function:ease-
-out;position:absolute;height:var(--tabx-border-width-thick);inset-block-
-end:0;background-color:currentColor;z-index:1;inset-inline-start:var(--_padding-
-inline);opacity:var(--_animation-padding-opacity)}.nav-item[aria-
-current]:after,.nav-item[aria-selected=true]:after{--_animation-padding-
-inline:var(--_padding-inline);--_animation-padding-opacity:1}.skip-
-links{position:absolute;z-index:1002;width:min(31.25rem,100% - 3rem);margin-
-inline:auto;inset:0 0 auto;background-color:var(--tabx-border-color-
-light);border-radius:0 0 var(--tabx-border-radius-base) var(--tabx-border-
-radius-base);display:flex;flex-direction:column;gap:var(--tabx-border-width-
-base);overflow:clip;transform:translateY(-100%)}.skip-links>div{background-
-color:var(--tabx-color-secondary-030);padding-block:var(--tabx-
-size-015);padding-inline:var(--tabx-size-015);text-align:center}.skip-
-links:focus-within{transform:translateY(0)}@media(width < 80em){#site-
-header:after{content:"";position:fixed;z-index:1000;background-
-color:#0006;inset:0;display:none}#site-header:has(:popover-
-open):after{display:block}.site-header__actions>.btn{padding-inline:0}.btn.btn-
-login,.btn.btn-logout,.btn.btn-menu-toggle,.btn.btn.btn-search-toggle{--btn-
-border-width:0rem;--font-size:1rem;--btn-padding-block:0.75rem;--btn-padding-
-inline:0.75rem;--btn-color-surface:#0000;--btn-border-color:#0000;--btn-color-
-text:var(--tabx-color-primary-080);--btn-border-width:var(--tabx-border-width-
-thick);--btn-border-radius:var(--tabx-border-radius-full);--_btn-color-surface-
-hover:var(--tabx-color-secondary-030);--_btn-color-text-hover:var(--btn-color-
-text)}.btn.btn-search-toggle>span:not(.u-sr-only){clip:rect(0 0 0 0);clip-
-path:inset(100%);height:1px;overflow:hidden;position:absolute;white-
-space:nowrap;width:1px}.site-
-navigation{border:none;padding:0;width:100vw;height:100vh;pointer-
-events:none;background:#0000}.site-navigation::backdrop{background-
-color:#0006}.site-navigation__group{position:fixed;inset:0 0 0 
-auto;right:var(--mobile-navigation-right-position);width:min(var(--mobile-group-
-width),100%);height:auto;margin:0;padding:0;overflow:auto}.site-
-navigation__list:is(.l2) .group-wrapper.hidden{display:none}.site-
-navigation__list>li:is(.is-tbol-homelink){margin-block:var(--tabx-
-size-020);margin-inline-start:0;padding-block-start:var(--tabx-size-020);border-
-top:var(--tabx-border-width-base) solid var(--tabx-border-color-light)}.site-
-navigation__item:after{content:none}}@media(80em <= width){.site-
-header__container{align-items:center;flex-
-direction:row;position:relative;padding-block:var(--tabx-size-025)}.site-
-header__container:after{content:"";position:absolute;height:var(--tabx-border-
-width-base);width:100%;inset:auto auto 0;background:var(--tabx-border-color-
-light)}.site-header__homelink{padding-block:var(--tabx-size-010)}.site-
-header__content{width:100%}.site-header__actions{display:flex;margin-inline-
-start:auto;gap:0;align-items:center;gap:var(--tabx-size-020)}.site-header 
-.popup-nav,.site-header .popup-nav__trigger{display:none}.site-
-logo{height:2rem}.btn-login{--color:#fff;--background:#002f5f;--focus-outline-
-color:#002f5f}.btn-login svg{display:block}.btn-
-logout{--color:#fff;--background:#bb133e;--focus-outline-color:#bb133e;--border-
-width:0rem}.btn-logout svg{display:block}.btn.btn-menu-
-toggle{display:none}#section-nav{display:flex;align-items:center;margin-inline-
-start:var(--tabx-size-060)}.site-navigation{display:block;position:relative;z-
-index:1000;width:auto;height:auto;border:none;padding:0}.site-
-navigation:after{content:"";position:fixed;z-index:1000;background-
-color:#0006;inset:0;display:none;position-anchor:--nav-
-lvl1;top:anchor(bottom);width:100%;height:100%}.site-navigation:has(:popover-
-open):after{display:block}.site-
-navigation__group:has(>.l1){position:relative;z-index:1001}.site-
-navigation__group:has(>.site-navigation__flyout-wrapper .l2){background-
-color:var(--tabx-color-neutral-000);z-
-index:1000;position:absolute;top:anchor(bottom);margin:0;padding:0;width:100%;pa
-dding:var(--tabx-size-040) var(--tabx-size-055);padding-bottom:var(--tabx-
-size-080)}.site-navigation__group__close{display:inline-
-block;top:calc(var(--tabx-size-010)*-1);right:calc(var(--tabx-
-size-015)*-1);position:absolute}.site-navigation__group__title-
-container{display:flex;gap:var(--tabx-size-020);align-
-items:center;margin:0;margin-block-end:var(--tabx-size-050)}.site-
-navigation__group__title-container:empty{margin-block-end:var(--tabx-
-size-020)}.site-navigation__group__header{display:none}.site-navigation__group-
-title{display:block;padding:0;line-height:var(--tabx-font-line-height-
-highlight);font-size:var(--tabx-font-size-highlight)}.site-
-navigation__list:is(.l1){display:flex;gap:var(--tabx-size-010) var(--tabx-
-size-030);width:calc(var(--tabx-grid-inline-size) + 2*var(--hover-inline-
-padding-size));margin-inline:auto;margin-block:0;padding-
-block:var(--level1-padding-block);flex-wrap:wrap}.site-
-navigation__list:is(.l1):has(:popover-open) .nav-item[aria-
-current=location]:after{--_animation-padding-inline:100%;--_animation-padding-
-opacity:0}.site-navigation__list:is(.l1)>li{padding:0}.site-
-navigation__list:is(.l1)>li>.nav-item{--font-size:var(--tabx-font-size-
-body);--font-weight:var(--tabx-font-weight-bold);--line-height:var(--tabx-font-
-line-height);--color:var(--tabx-color-primary-080);--bg-hover:var(--tabx-color-
-secondary-030);--padding-inline:var(--tabx-size-010);--padding-block:var(--tabx-
-size-005)}.site-navigation__list:is(.l1)>li>.nav-item:has(+.\:popover-
-open):after,.site-navigation__list:is(.l1)>li>.nav-item:has(+.site-
-navigation__group:popover-open):after{--_animation-padding-
-inline:var(--_padding-inline);--_animation-padding-opacity:1}.site-
-navigation__list:is(.l1)>li>.nav-item>svg{display:none}.site-
-navigation__list:is(.l2)>li:is(:first-child):has(>.nav-item){display:none}.site-
-navigation__list:is(.l2)>li.site-navigation__group--is-
-contact:has([role=group]){padding-block-start:0;grid-column:span 6}.site-
-navigation__list:is(.l2)>li.site-navigation__group--is-contact:has([role=group])
- .group-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:var(--tabx-grid-
-gutter);align-items:start}.site-navigation__list:is(.l2){grid-template-
-columns:repeat(12,1fr);gap:var(--tabx-grid-gutter);width:100%;margin-
-inline:auto}.site-navigation__list:is(.l2) 
-div[role=group]{display:grid;gap:var(--tabx-size-020)}.site-
-navigation__list:is(.l2) div[role=group]:has(.site-navigation__group-
-title:empty){margin-block-start:var(--tabx-size-030)}.site-
-navigation__list:is(.l2) div[role=group] .group-wrapper:has(>.btn) .l3,.site-
-navigation__list:is(.l2) div[role=group] .group-wrapper:has(>.summary) 
-.l3{border-bottom:var(--tabx-border-width-base) solid var(--tabx-border-color-
-light)}.site-navigation__list:is(.l2) div[role=group] .group-
-wrapper>.btn{margin:0;margin-block-start:var(--tabx-size-030)}.site-
-navigation__list:is(.l2)>li{grid-column:span 3;padding:0}.site-
-navigation__list:is(.l2)>li.site-navigation__group--multi-column,.site-
-navigation__list:is(.l2)>li:has(:nth-child(6)){grid-column:span 6}.site-
-navigation__list:is(.l2)>li.site-navigation__group--multi-column .group-wrapper 
-.l3,.site-navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper 
-.l3{display:grid;grid-template-columns:calc(3*var(--tabx-grid-column-inline-
-size) + 2*var(--tabx-grid-gutter)) auto;-moz-column-gap:var(--tabx-grid-
-gutter);column-gap:var(--tabx-grid-gutter);width:-moz-fit-content;width:fit-
-content;grid-auto-flow:column}.site-navigation__list:is(.l2)>li.site-
-navigation__group--multi-column .group-wrapper .l3:has(:nth-child(2):last-
-child),.site-navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper 
-.l3:has(:nth-child(2):last-child){grid-template-rows:repeat(1,1fr)}.site-
-navigation__list:is(.l2)>li.site-navigation__group--multi-column .group-wrapper 
-.l3:has(:nth-child(3):last-child),.site-navigation__list:is(.l2)>li:has(:nth-
-child(6)) .group-wrapper .l3:has(:nth-child(3):last-child){grid-template-
-rows:repeat(2,1fr)}.site-navigation__list:is(.l2)>li.site-navigation__group--
-multi-column .group-wrapper .l3:has(:nth-child(4):last-child),.site-
-navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper .l3:has(:nth-
-child(4):last-child){grid-template-rows:repeat(2,1fr)}.site-
-navigation__list:is(.l2)>li.site-navigation__group--multi-column .group-wrapper 
-.l3:has(:nth-child(5):last-child),.site-navigation__list:is(.l2)>li:has(:nth-
-child(6)) .group-wrapper .l3:has(:nth-child(5):last-child){grid-template-
-rows:repeat(3,1fr)}.site-navigation__list:is(.l2)>li.site-navigation__group--
-multi-column .group-wrapper .l3:has(:nth-child(6):last-child),.site-
-navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper .l3:has(:nth-
-child(6):last-child){grid-template-rows:repeat(3,1fr)}.site-
-navigation__list:is(.l2)>li.site-navigation__group--multi-column .group-wrapper 
-.l3:has(:nth-child(7):last-child),.site-navigation__list:is(.l2)>li:has(:nth-
-child(6)) .group-wrapper .l3:has(:nth-child(7):last-child){grid-template-
-rows:repeat(4,1fr)}.site-navigation__list:is(.l2)>li.site-navigation__group--
-multi-column .group-wrapper .l3:has(:nth-child(8):last-child),.site-
-navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper .l3:has(:nth-
-child(8):last-child){grid-template-rows:repeat(4,1fr)}.site-
-navigation__list:is(.l2)>li.site-navigation__group--multi-column .group-wrapper 
-.l3:has(:nth-child(9):last-child),.site-navigation__list:is(.l2)>li:has(:nth-
-child(6)) .group-wrapper .l3:has(:nth-child(9):last-child){grid-template-
-rows:repeat(5,1fr)}.site-navigation__list:is(.l2)>li.site-navigation__group--
-multi-column .group-wrapper .l3:has(:nth-child(10):last-child),.site-
-navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper .l3:has(:nth-
-child(10):last-child){grid-template-rows:repeat(5,1fr)}.site-
-navigation__list:is(.l2)>li .group-wrapper{display:block}.site-
-navigation__list:is(.l2)>li .submenu-toggle{display:none}.site-
-navigation__list:is(.l3){gap:var(--tabx-size-010);padding-block-end:var(--tabx-
-size-020)}.site-navigation__list:is(.l3)>li{padding:0}.site-
-navigation__list:is(.l3)>li>a{width:-moz-fit-content;width:fit-
-content;--padding-block:var(--tabx-size-005);--padding-inline:var(--tabx-
-size-010);margin-inline:calc(-1*var(--padding-inline));margin-
-block:calc(-1*var(--padding-block));gap:var(--tabx-size-015)}.site-
-navigation__flyout-wrapper{width:var(--tabx-grid-inline-size);margin-
-inline:auto;display:block;position:relative;padding-block-end:var(--tabx-
-size-000)}.site-navigation__item{--padding-block:var(--tabx-size-005);--padding-
-inline:var(--tabx-size-010)}.site-navigation__item:is(.summary){font-
-size:var(--tabx-font-size-subtext);line-height:var(--tabx-line-height-
-subtext);margin:0;margin-inline:calc(-1*var(--padding-inline));margin-block-
-start:var(--tabx-size-020);width:-moz-fit-content;width:fit-
-content;display:flex;align-items:center;gap:var(--tabx-size-005)}.site-
-navigation__item:is(.summary)>tab-icon{display:block}}@media(width < 
-48em){.site-navigation__flyout-wrapper{padding-block-end:var(--tabx-
-size-100)}}@media(hover:hover){.nav-item:hover{background-color:var(--_bg-
-hover)}}@media(prefers-reduced-motion:no-preference){.skip-links{transition-
-property:transform,box-shadow;transition-duration:.2s;transition-timing-
-function:ease-out}}@media(forced-colors:none){.btn--skip-link{--btn-color-
-text:var(--tabx-color-primary-080);--btn-color-surface:#0000;--btn-padding-
-block:var(--tabx-size-005);--btn-padding-inline:var(--tabx-size-010);--btn-
-border-radius:var(--tabx-border-radius-base);--btn-border-width:0px;--btn-color-
-text-hover:var(--btn-color-text);--btn-color-surface-hover:var(--tabx-color-
-neutral-000)}}
-  </style>
+        .dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-header h3 { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+        .dropdown-header .close-drop {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--gray-400);
+            transition: var(--transition);
+        }
+        .dropdown-header .close-drop:hover { color: var(--gray-900); transform: rotate(90deg); }
 
+        .tab-toggle {
+            display: flex;
+            background: var(--gray-100);
+            border-radius: 50px;
+            padding: 4px;
+            margin-bottom: 1.8rem;
+        }
+        .tab-toggle button {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 0.5rem 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray-500);
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-toggle button.active-tab {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
 
-<script async="" src="https://www.googletagmanager.com/gtag/js?id=AW-
-972481571&amp;l=adDataLayer"></script><script>
-  window.tabCallbacks = window.tabCallbacks || []
-  tabCallbacks.push('__initAppCalculatorOK')
-</script>
+        .auth-form { display: none; flex-direction: column; gap: 1rem; }
+        .auth-form.active-form { display: flex; }
+        .auth-form .social-login {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.8rem;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 50px;
+            padding: 0.65rem;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray-700);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .auth-form .social-login:hover {
+            background: white;
+            border-color: var(--gray-300);
+        }
+        .auth-form .social-login i { font-size: 1.2rem; color: #db4437; }
+        .auth-form .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--gray-400);
+            font-size: 0.8rem;
+        }
+        .auth-form .divider hr { flex: 1; border: none; border-top: 1px solid var(--gray-200); }
 
+        .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+        .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--gray-700); }
+        .form-group input {
+            padding: 0.7rem 1rem;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-50);
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0,163,224,0.12);
+        }
+        .password-requirements {
+            font-size: 0.7rem;
+            color: var(--gray-500);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 0.8rem;
+            margin-top: 4px;
+        }
+        .password-requirements span { display: flex; align-items: center; gap: 4px; }
+        .password-requirements .valid { color: #16a34a; }
+        .password-requirements .invalid { color: #dc2626; }
 
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.2rem 0;
+        }
+        .form-options a {
+            color: var(--accent);
+            font-size: 0.85rem;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .form-options a:hover { text-decoration: underline; }
 
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            margin-top: 0.3rem;
+        }
+        .btn-submit:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(15,43,75,0.2);
+        }
 
-    
-    
-    
-    <link rel="preload" as="image" fetchpriority="high" href="https://cdnwmii.e-
-i.com/SITW/wm/global/1.0.0/targobank/assets/images/Kredit_Pause_2386_SF/hero_448
-x280.webp" media="(max-width: 27.9375em)">
-    <link rel="preload" as="image" fetchpriority="high" href="https://cdnwmii.e-
-i.com/SITW/wm/global/1.0.0/targobank/assets/images/Kredit_Pause_2386_SF/hero_768
-x280.webp" media="(min-width: 28em) and (max-width: 47.9375em)">
-    <link rel="preload" as="image" fetchpriority="high" href="https://cdnwmii.e-
-i.com/SITW/wm/global/1.0.0/targobank/assets/images/Kredit_Pause_2386_SF/hero_102
-4x280.webp" media="(min-width: 48em) and (max-width: 63.9375em)">
-  <link rel="preload" as="image" fetchpriority="high" href="https://cdnwmii.e-
-i.com/SITW/wm/global/1.0.0/targobank/assets/images/Kredit_Pause_2386_SF/hero_128
-0x600.webp" media="(min-width: 64em) and (max-width: 79.9375em)">
+        .reset-section { display: none; flex-direction: column; gap: 1rem; }
+        .reset-section.active-reset { display: flex; }
+        .back-to-login {
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 500;
+            background: none;
+            border: none;
+            align-self: flex-start;
+            font-family: 'Inter', sans-serif;
+        }
 
+        .message-box {
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .message-box.success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; display: block; }
+        .message-box.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; display: block; }
 
+        /* ---------- HERO ---------- */
+        .hero {
+            max-width: 1200px;
+            margin: 2rem auto 2.5rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        .hero-content h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .hero-content h1 .highlight { color: var(--accent); }
+        .hero-content p {
+            font-size: 1.05rem;
+            color: var(--gray-500);
+            margin-bottom: 1.8rem;
+        }
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .hero-cta .btn-primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.85rem 2.2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-cta .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+        }
+        .hero-cta .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--gray-300);
+            padding: 0.85rem 2.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-cta .btn-outline:hover {
+            border-color: var(--primary);
+            background: var(--gray-50);
+        }
 
+        /* ---------- CALCULATOR ---------- */
+        .calc-card {
+            background: white;
+            padding: 1.8rem 2rem 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+        }
+        .calc-card h2 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .calc-card h2 i { color: var(--accent); }
 
+        .calc-field {
+            margin-bottom: 1.2rem;
+        }
+        .calc-field label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--gray-700);
+            margin-bottom: 4px;
+        }
+        .calc-field label span {
+            color: var(--primary);
+            background: var(--gray-100);
+            padding: 0.1rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .calc-field input[type="range"] {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--gray-200);
+            border-radius: 10px;
+            outline: none;
+            transition: background 0.2s;
+        }
+        .calc-field input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .calc-field input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+        }
+        .calc-field .value-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .calc-field .value-input input[type="number"] {
+            flex: 1;
+            padding: 0.4rem 0.8rem;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-50);
+            width: 100%;
+        }
+        .calc-field .value-input input[type="number"]:focus {
+            border-color: var(--accent);
+            background: white;
+            outline: none;
+        }
+        .calc-field .value-input .unit {
+            font-weight: 600;
+            color: var(--gray-500);
+            min-width: 30px;
+        }
 
+        .result-box {
+            background: var(--primary);
+            color: white;
+            border-radius: var(--radius);
+            padding: 1rem 1.5rem;
+            margin-top: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .result-box .label { font-size: 0.85rem; opacity: 0.8; font-weight: 500; }
+        .result-box .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .result-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.6rem;
+            padding: 0 0.2rem;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+        .result-details strong { color: var(--gray-900); }
 
+        /* ---------- TOP THEMES / FEATURES ---------- */
+        .section-title {
+            max-width: 1200px;
+            margin: 2.5rem auto 0.5rem;
+            padding: 0 2rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .section-title i { color: var(--accent); margin-right: 8px; }
 
+        .top-themes {
+            max-width: 1200px;
+            margin: 1.5rem auto 2.5rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .theme-card {
+            background: white;
+            padding: 1.8rem 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+            text-align: center;
+        }
+        .theme-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+        .theme-card i {
+            font-size: 2.2rem;
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+        }
+        .theme-card h3 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+        }
+        .theme-card p {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+        }
+        .theme-card .highlight-rate {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .theme-card .highlight-rate small {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--gray-500);
+        }
+        .theme-card .btn-theme {
+            margin-top: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .theme-card .btn-theme:hover {
+            background: var(--primary-light);
+        }
 
+        /* ---------- PRODUKTE (Konten, Karten, Kredite) ---------- */
+        .produkte-grid {
+            max-width: 1200px;
+            margin: 1.5rem auto 2.5rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+        .produkt-card {
+            background: white;
+            padding: 1.5rem 1.2rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+            text-align: center;
+        }
+        .produkt-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+        .produkt-card i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 0.6rem;
+        }
+        .produkt-card h4 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .produkt-card p {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+        .produkt-card .badge {
+            display: inline-block;
+            background: #ecfdf5;
+            color: #065f46;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.6rem;
+            border-radius: 20px;
+            margin-top: 0.4rem;
+        }
 
-<link rel="preconnect" href="https://cdnwmii.e-i.com">
-<link rel="dns-prefetch" href="https://cdnwmii.e-i.com">
+        /* ---------- SERVICE (ohne App) ---------- */
+        .service-section {
+            max-width: 800px;
+            margin: 2rem auto 3rem;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        .service-content h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+        }
+        .service-content ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem 1.5rem;
+            margin: 1.2rem 0 0;
+            text-align: left;
+            justify-items: center;
+        }
+        .service-content ul li {
+            font-size: 0.95rem;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .service-content ul li i {
+            color: var(--accent);
+            font-size: 1rem;
+            width: 20px;
+        }
 
-<link rel="preload" href="https://cdnwmii.e-
-i.com/SITW/wm/global/1.0.0/targobank/3.41.0/fonts/lineto-circular-pro-
-book.woff2" as="font" crossorigin="">
-<link rel="preload" href="https://cdnwmii.e-
-i.com/SITW/wm/global/1.0.0/targobank/3.41.0/fonts/lineto-circular-pro-
-medium.woff2" as="font" crossorigin="">
-<link rel="preload" href="https://cdnwmii.e-
-i.com/SITW/wm/global/1.0.0/targobank/3.41.0/fonts/lineto-circular-pro-
-black.woff2" as="font" crossorigin="">
-<link rel="preload" href="https://cdnwmii.e-
-i.com/SITW/wm/global/1.0.0/targobank/3.41.0/fonts/lineto-circular-pro-
-bold.woff2" as="font" crossorigin="">
+        /* ---------- KONTAKT ---------- */
+        .kontakt-section {
+            max-width: 1200px;
+            margin: 2rem auto 2.5rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .kontakt-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            text-align: center;
+        }
+        .kontakt-card i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 0.6rem;
+        }
+        .kontakt-card h4 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .kontakt-card p {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+        }
 
+        /* ---------- FOOTER ---------- */
+        .footer {
+            background: var(--primary);
+            color: rgba(255,255,255,0.7);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            border-top: 4px solid var(--accent);
+        }
+        .footer span { color: white; font-weight: 600; }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .footer-links a:hover { color: white; }
 
-<link rel="stylesheet" href="https://cdnwmii.e-
-i.com/SITW/wm/global/1.0.0/targobank/3.41.0/css/tab.core.css">
-
-<script>
-    dataLayer = [{
-        "pagePool": "desktop",
-        "pageBusiness": "",
-        "pageArea": "",
-        "pageLanguage": "",
-        "pageName": "",
-        "pageScope": "",
-        "pageProductCat1": "01",
-        "pageProductCat2": "01/01",
-        "pageProductCat3": "",
-        "pageTargetGroup": "0",
-        "pageTest": "",
-        "visitorRandomId": "",
-        "visitorLoginState": "false",
-        "internal": ""
-    }];
-</script>
-<script>
-    if (typeof tc_vars == "undefined") var tc_vars = {};
-    tc_vars["tabPageTargetGroup"] = "0";
-    tc_vars["page_cat1"] = "1";
-    tc_vars["page_cat2"] = "01";
-    tc_vars["page_cat3"] = "01";
-    
-    tc_vars["user_client_identifie"] = "false";
-</script>
-
-<script src="/de/javascript/shared/trk_func.js?v=20251212" 
-type="text/javascript" async=""></script>
-
-<script nomodule="">
-  var protocol = document.location.protocol,
-    host = document.location.host,
-    hostname = document.location.hostname;
-  var path = "/de/navigateur_obsolete.html";
-  var href =
-    hostname.indexOf("investments.") > -1
-      ? "".concat(protocol, "//www.targobank.de").concat(path)
-      : "".concat(protocol, "//").concat(host).concat(path);
-  document.location.href = href;
-</script>
-
-<script src="https://cdnwmii.e-
-i.com/SITW/wm/global/1.0.0/targobank/3.41.0/js/tab.runtime.js" 
-defer=""></script>
-<script src="https://cdnwmii.e-
-i.com/SITW/wm/global/1.0.0/targobank/3.41.0/js/tab.core.js" defer=""></script>
-<script>document.documentElement.classList.add('t-tb')</script>
-
-
-
-  <link rel="canonical" href="https://www.targobank.de/de/kredit/online-
-kredit.html">
-
-
-
-
-
-  <style>
-  .site-footer .btn--revoke {
-    --btn-color-surface: transparent;
-    --btn-border-color: var(--tabx-color-primary-080);
-    --btn-color-text: var(--tabx-color-primary-080);
-    --btn-border-width: var(--tabx-border-width-base);
-    --btn-color-surface-hover: var(--tabx-color-secondary-030);
-    --btn-color-text-hover: var(--btn-color-text);
-    --btn-color-text-disabled: var(--tabx-color-primary-020);
-    --btn-color-surface-disabled: transparent;
-    --btn-border-color-disabled: var(--tabx-color-primary-020);
-    --btn-font-weight: var(--tabx-font-weight-normal);
-    --btn-padding-inline: var(--tabx-size-015);;
-    --btn-padding-block: var(--tabx-size-005);
-    margin-block-start: var(--tabx-size-005);
-
-    &:hover {
-      text-decoration: none;
-    }
-  }
-</style>
-
-  <style>
-  .btt-wrapper {
-    position: sticky;
-    inset-block-end: 0;
-  }
-  .btt {
-    --btn-color-surface: white;
-    --btn-border-color: var(--tabx-color-primary-080);
-    --btn-color-text: var(--tabx-color-primary-080);
-    --btn-border-width: var(--tabx-border-width-thick);
-    --btn-color-surface-hover: var(--tabx-color-secondary-030);
-    --btn-color-text-hover: var(--btn-color-text);
-    --focus-outline-color: var(--tabx-color-secondary-070);
-
-    position: absolute;
-    inset-inline-end: 1.5rem;
-    inset-block-end: 1.5rem;
-    opacity: 0;
-    transition:
-      200ms display allow-discrete,
-      200ms opacity cubic-bezier(0, 0, 0.58, 1);
-
-    &:not([hidden]) {
-      opacity: 1;
-
-      @starting-style {
-        opacity: 0;
-      }
-    }
-  }
-  </style>
-<script id="script_tc" 
-src="https://cdn.tagcommander.com/6910/tc_targobankde_20.js" 
-defer=""></script><link rel="stylesheet" type="text/css" href="https://cdnwmii.e
--i.com/SITW/wm/global/1.0.0/targobank/3.41.0/js/../css/tab.carousel.css"><script
- id="script_cm" 
-src="https://cdnwmii.e-i.com/SITW/wm/global/1.0.0/targobank/consent-
-manager/3.1.1/tab-consent-manager.js" type="module"></script><script 
-id="tc_script_113_1" type="module" 
-src="https://cdnwmii.e-i.com/SITW/wm/global/1.0.0/targobank/tracking-
-extension/3.5.1/trx.js"></script></head>
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 1024px) {
+            .produkte-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+            .hero-cta { justify-content: center; }
+            .top-themes { grid-template-columns: 1fr 1fr; }
+            .kontakt-section { grid-template-columns: 1fr; }
+            .navbar { padding: 0 1rem; }
+            .nav-links { gap: 1rem; }
+            .service-content ul { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .top-themes { grid-template-columns: 1fr; }
+            .produkte-grid { grid-template-columns: 1fr; }
+            .nav-links a { font-size: 0.75rem; }
+            .login-btn { padding: 0.4rem 1rem; font-size: 0.8rem; }
+            .hero-content h1 { font-size: 2rem; }
+            .login-dropdown { right: -10px; width: 92vw; }
+            .result-box .value { font-size: 1.4rem; }
+        }
+    </style>
+</head>
 <body>
-        
-    <nav class="skip-links" aria-label="Skiplink">
-      <div>
-        <a class="btn btn--skip-link" href="#site-main">Zum Hauptinhalt 
-springen</a>
-      </div>
-    </nav>
-  
-        
-    <header id="site-header">
-         <div class="site-header">
-         <div class="site-header__container">
-      <a href="/de/index.html" class="site-header__homelink" aria-label="Zur 
-Startseite">
-        <img width="300" height="43" class="site-logo" src="data:image/svg+xml,%
-3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22
-http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20viewBox%3D%220%200%20283.462%2040.44
-%22%3E%20%3Cstyle%3E%20%20.c1%20%7B%20fill%3A%20%23002C57%3B%20%7D%20%20.c2%20%7
-B%20fill%3A%20%23C20831%3B%20%7D%20%20.c3%20%7B%20fill%3A%20%237599BD%3B%20%7D%2
-0%20%3C%2Fstyle%3E%20%3Cg%3E%20%3Cpath%20class%3D%22c1%22%20d%3D%22M8.544%2C16.0
-69H0v-4.604h22.873v4.604h-
-8.581v21.803H8.544V16.069z%22%20%2F%3E%20%3Cpath%20class%3D%22c1%22%20d%3D%22M29
-.463%2C11.429h5.893l11.271%2C26.444h-6.189l-2.431-6.297h-11.49l-2.359%2C6.297h-
-5.893L29.463%2C11.429z%20M32.19%2C16.696l-
-3.87%2C10.165h7.883L32.19%2C16.696z%22%20%2F%3E%20%3Cpath%20class%3D%22c1%22%20d
-%3D%22M48.465%2C11.429h13.702c3.167%2C0%2C5.523%2C0.626%2C6.998%2C1.917c1.473%2C
-1.287%2C2.211%2C3.276%2C2.246%2C6.039%20c0%2C2.025-0.44%2C3.684-1.4%2C4.973c-
-0.883%2C1.252-2.209%2C2.1-3.939%2C2.469l6.591%2C11.047h-6.262l-5.817-10.385h-
-6.558v10.385h-5.562V11.429%20z%20M60.84%2C16.144h-
-6.813v6.667h6.813c1.842%2C0%2C3.131-0.26%2C3.87-0.775c0.699-0.477%2C1.066-
-1.361%2C1.066-2.578%20c0-1.213-0.332-2.061-1.066-
-2.539C64.045%2C16.402%2C62.756%2C16.144%2C60.84%2C16.144z%22%20%2F%3E%20%3Cpath%
-20class%3D%22c1%22%20d%3D%22M85.7%2C26.861v-4.678h13.148v15.689H86.877c-
-2.172%2C0-3.867-0.185-5.082-0.551%20c-1.177-0.332-2.285-0.957-3.316-1.77c-1.324-
-1.066-2.355-2.469-3.056-4.197c-0.662-1.73-0.995-3.793-0.995-6.225%20c0-
-4.678%2C0.995-8.103%2C3.021-10.349c2.062-2.247%2C5.155-3.353%2C9.428-
-3.353h11.971v4.567H86.877c-2.172%2C0-3.755%2C0.7-4.787%2C2.1%20c-0.996%2C1.399-
-1.473%2C3.646-
-1.473%2C6.774c0%2C2.875%2C0.477%2C4.974%2C1.473%2C6.263c0.994%2C1.325%2C2.578%2C
-1.95%2C4.787%2C1.95h6.262v-
-6.223H85.7z%22%20%2F%3E%20%3Cpath%20class%3D%22c1%22%20d%3D%22M101.717%2C24.394c
-0-4.531%2C1.069-7.919%2C3.244-10.166c2.172-2.212%2C5.487-3.277%2C9.944-
-3.314%20c4.494%2C0%2C7.807%2C1.102%2C9.944%2C3.351c2.173%2C2.246%2C3.241%2C5.708
-%2C3.241%2C10.385c0%2C4.679-1.068%2C8.141-3.241%2C10.387%20c-2.137%2C2.25-
-5.45%2C3.391-9.944%2C3.391c-4.531%2C0-7.847-1.141-9.982-
-3.391C102.786%2C32.753%2C101.717%2C29.218%2C101.717%2C24.394z%20M114.905%2C15.44
-1c-2.356%2C0-4.163%2C0.74-5.341%2C2.247c-1.178%2C1.475-1.767%2C3.722-
-1.767%2C6.742c0%2C3.239%2C0.551%2C5.636%2C1.695%2C7.183%20c1.177%2C1.51%2C2.945%
-2C2.246%2C5.413%2C2.246c2.431%2C0%2C4.198-0.736%2C5.376-2.246c1.178-
-1.51%2C1.767-3.83%2C1.767-6.963%20c0-3.129-0.588-5.451-1.767-
-6.962C119.141%2C16.218%2C117.372%2C15.479%2C114.905%2C15.441z%22%20%2F%3E%20%3C%
-2Fg%3E%20%3Cg%3E%20%3Cpath%20class%3D%22c2%22%20d%3D%22M192.205%2C37.873h-
-14.551V11.429h13.594c1.691%2C0%2C3.094%2C0.112%2C4.162%2C0.295s1.951%2C0.479%2C2
-.611%2C0.919%20c0.961%2C0.627%2C1.695%2C1.399%2C2.211%2C2.358c0.516%2C0.994%2C0.
-773%2C2.099%2C0.773%2C3.314c0%2C1.474-0.293%2C2.727-0.959%2C3.758%20c-
-0.623%2C1.031-1.617%2C1.877-
-2.979%2C2.576c1.361%2C0.59%2C2.391%2C1.365%2C3.016%2C2.358c0.664%2C0.958%2C0.961
-%2C2.173%2C0.998%2C3.646%20c0%2C2.469-0.74%2C4.273-
-2.174%2C5.488C197.47%2C37.287%2C195.259%2C37.873%2C192.205%2C37.873z%20M183.216%
-2C16.181v6.113h8.139%20c1.252%2C0%2C2.174-0.221%2C2.764-0.736s0.846-
-1.289%2C0.883-2.321c0-1.031-0.293-1.803-0.883-2.319c-0.59-0.479-1.512-0.7-2.764-
-0.737%20H183.216z%20M191.431%2C33.197c1.252%2C0%2C2.172-0.223%2C2.762-
-0.738s0.883-1.287%2C0.883-2.355c0-1.066-0.293-1.879-0.883-2.357%20c-0.59-0.516-
-1.51-0.773-2.762-0.773h-
-8.215v6.225H191.431z%22%20%2F%3E%20%3Cpath%20class%3D%22c2%22%20d%3D%22M213.048%
-2C11.429h5.895l11.268%2C26.444h-6.189l-2.43-6.297h-11.492l-2.355%2C6.297h-
-5.895L213.048%2C11.429z%20M215.775%2C16.696l-
-3.869%2C10.165h7.881L215.775%2C16.696z%22%20%2F%3E%20%3Cpath%20class%3D%22c2%22%
-20d%3D%22M232.05%2C11.429h7.035l10.826%2C19.004l-0.258-19.004h5.672v26.444h-
-6.443L237.5%2C17.874l0.26%2C19.999h-
-5.709%20V11.429z%22%20%2F%3E%20%3Cpath%20class%3D%22c2%22%20d%3D%22M260.701%2C11
-.429h5.562v12.708l10.422-12.708h6.67l-10.609%2C12.928l10.717%2C13.516h-7.105l-
-10.094-13.148%20v13.148h-
-5.562V11.429z%22%20%2F%3E%20%3C%2Fg%3E%20%3Cg%3E%20%3Cpath%20class%3D%22c2%22%20
-d%3D%22M145.927%2C5.252c-0.094-2.809%2C2.105-5.156%2C4.91-5.25c2.809-
-0.092%2C5.158%2C2.109%2C5.252%2C4.914%20c0.094%2C2.809-2.109%2C5.158-
-4.912%2C5.249C148.369%2C10.258%2C146.021%2C8.057%2C145.927%2C5.252z%22%20%2F%3E%
-20%3Cpath%20class%3D%22c3%22%20d%3D%22M148.611%2C21.633c-1.254%2C1.259-
-3.094%2C1.315-4.248%2C0.161l-8.66-8.66c-1.131-1.153-1.081-3.012%2C0.158-
-4.251%20c1.239-1.24%2C3.122-1.308%2C4.251-
-0.158l8.66%2C8.66C149.925%2C18.537%2C149.853%2C20.388%2C148.611%2C21.633z%22%20%
-2F%3E%20%3Cpath%20class%3D%22c3%22%20d%3D%22M153.408%2C21.626c1.254%2C1.259%2C3.
-094%2C1.314%2C4.248%2C0.162l8.66-8.66c1.131-1.153%2C1.08-3.013-0.158-4.252%20c-
-1.24-1.239-3.123-1.308-4.252-0.158l-
-8.66%2C8.66C152.093%2C18.531%2C152.166%2C20.381%2C153.408%2C21.626z%22%20%2F%3E%
-20%3Cpath%20class%3D%22c1%22%20d%3D%22M135.575%2C39.466c1.254%2C1.259%2C3.114%2C
-1.296%2C4.292%2C0.117l8.849-8.85c1.156-1.177%2C1.127-3.057-0.113-4.296%20c-
-1.238-1.239-3.141-1.288-4.295-0.112l-
-8.85%2C8.848C134.281%2C36.351%2C134.333%2C38.221%2C135.575%2C39.466z%22%20%2F%3E
-%20%3Cpath%20class%3D%22c1%22%20d%3D%22M166.449%2C39.466c-1.254%2C1.259-
-3.115%2C1.296-4.293%2C0.117l-8.85-8.85c-1.156-1.177-1.127-3.057%2C0.113-
-4.296%20s3.143-1.288%2C4.297-
-0.112l8.848%2C8.848C167.742%2C36.351%2C167.689%2C38.221%2C166.449%2C39.466z%22%2
-0%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="sohabank Online Kredit">
-      </a>
-      <div class="site-header__content">
-        <button type="button" class="popup-nav__trigger" popovertarget="popup-
-nav">
-                  <span>
-            <span class="u-sr-only">Geschäftsbereichnavigation. Aktuelle 
-Auswahl: </span>
-            Privatkunden
-          </span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" 
-xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M16.5996 8.42499C16.8829 8.42499 17.1165 8.51705 17.2998 
-8.70038C17.4829 8.8836 17.5751 9.11654 17.5752 9.3996C17.5752 9.68288 17.4831 
-9.91647 17.2998 10.0998L12.7002 14.7004C12.6003 14.8003 12.4916 14.8706 12.375 
-14.9123C12.2584 14.9539 12.1333 14.9748 12 14.9748C11.8667 14.9748 11.7416 
-14.9539 11.625 14.9123C11.5084 14.8707 11.3998 14.8003 11.2998 14.7004L6.7002 
-10.0998C6.5169 9.91647 6.4248 9.68288 6.4248 9.3996C6.4248 9.11654 6.5171 
-8.8836 6.7002 8.70038C6.8835 8.51705 7.1171 8.42499 7.4004 8.42499C7.6835 
-8.42499 7.9171 8.51705 8.1004 8.70038L12 12.6L15.8996 8.70038C16.0829 8.51705 
-16.3165 8.42499 16.5996 8.42499Z"/>
-          </svg>
+
+<!-- ========== HEADER ========== -->
+<header class="navbar">
+    <a href="#" class="nav-logo">
+        <i class="fas fa-building-columns"></i>
+        soha<span>bank</span> <small>· Finanzen</small>
+    </a>
+    <ul class="nav-links">
+        <li><a href="#" class="active">Startseite</a></li>
+        <li><a href="#konten">Konten &amp; Karten</a></li>
+        <li><a href="#kredite">Kredite</a></li>
+        <li><a href="#sparen">Sparen &amp; Anlegen</a></li>
+        <li><a href="#service">Service</a></li>
+    </ul>
+    <div class="login-wrapper">
+        <button class="login-btn" id="loginToggleBtn">
+            <i class="fas fa-user-circle"></i> Anmelden
         </button>
-        <!-- Le reste du contenu de l'en-tête (navigation, etc.) est chargé dynamiquement -->
-      </div>
+        <div class="login-dropdown" id="loginDropdown">
+            <div class="dropdown-header">
+                <h3><i class="fas fa-lock" style="color: var(--accent); margin-right: 6px;"></i> Sicherer Bereich</h3>
+                <button class="close-drop" id="closeDropdownBtn">&times;</button>
+            </div>
+            <div class="tab-toggle">
+                <button class="active-tab" data-tab="login">Anmelden</button>
+                <button data-tab="register">Registrieren</button>
+            </div>
+            <!-- LOGIN -->
+            <div class="auth-form active-form" id="loginForm">
+                <div class="social-login" id="googleLoginBtn">
+                    <i class="fab fa-google"></i> Mit Google anmelden
+                </div>
+                <div class="divider"><hr> oder <hr></div>
+                <div class="form-group">
+                    <label for="loginEmail">E-Mail</label>
+                    <input type="email" id="loginEmail" placeholder="name@beispiel.de">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Passwort</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+                <div class="form-options">
+                    <label style="font-size:0.85rem; display:flex; align-items:center; gap:6px; color:var(--gray-700);">
+                        <input type="checkbox"> Angemeldet bleiben
+                    </label>
+                    <a id="forgotPasswordLink">Passwort vergessen?</a>
+                </div>
+                <button class="btn-submit" id="loginSubmit">Anmelden</button>
+                <div id="loginMessage" class="message-box"></div>
+            </div>
+            <!-- REGISTER -->
+            <div class="auth-form" id="registerForm">
+                <div class="social-login" id="googleRegisterBtn">
+                    <i class="fab fa-google"></i> Mit Google registrieren
+                </div>
+                <div class="divider"><hr> oder <hr></div>
+                <div class="form-group">
+                    <label for="regName">Vollständiger Name</label>
+                    <input type="text" id="regName" placeholder="Max Mustermann">
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">E-Mail</label>
+                    <input type="email" id="regEmail" placeholder="name@beispiel.de">
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Passwort</label>
+                    <input type="password" id="regPassword" placeholder="••••••••">
+                    <div class="password-requirements" id="passwordReqs">
+                        <span id="reqLength"><i class="fa-regular fa-circle"></i> 8 Zeichen</span>
+                        <span id="reqUpper"><i class="fa-regular fa-circle"></i> Großbuchstabe</span>
+                        <span id="reqLower"><i class="fa-regular fa-circle"></i> Kleinbuchstabe</span>
+                        <span id="reqDigit"><i class="fa-regular fa-circle"></i> Ziffer</span>
+                        <span id="reqSpecial"><i class="fa-regular fa-circle"></i> Sonderzeichen (@$!%*?&)</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="regConfirm">Passwort bestätigen</label>
+                    <input type="password" id="regConfirm" placeholder="••••••••">
+                </div>
+                <button class="btn-submit" id="registerSubmit">Konto erstellen</button>
+                <div id="registerMessage" class="message-box"></div>
+            </div>
+            <!-- RESET -->
+            <div class="reset-section" id="resetSection">
+                <button class="back-to-login" id="backToLoginFromReset"><i class="fas fa-arrow-left"></i> Zurück</button>
+                <h4 style="margin:0.5rem 0 0.2rem; color:var(--primary);">Passwort zurücksetzen</h4>
+                <p style="font-size:0.85rem; color:var(--gray-500);">Geben Sie Ihre E-Mail ein, um einen Link zu erhalten.</p>
+                <div class="form-group">
+                    <label for="resetEmail">E-Mail-Adresse</label>
+                    <input type="email" id="resetEmail" placeholder="name@beispiel.de">
+                </div>
+                <button class="btn-submit" id="resetSubmit" style="background: var(--gray-700);">Link senden</button>
+                <div id="resetMessage" class="message-box"></div>
+            </div>
+        </div>
     </div>
+</header>
+
+<!-- ========== MAIN ========== -->
+<main>
+
+    <!-- ===== HERO + CALCULATOR ===== -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Planen Sie mit uns <br><span class="highlight">Ihre finanzielle Zukunft</span></h1>
+            <p>Ob Girokonto, flexible Finanzierung oder Vorsorge – wir unterstützen Sie mit maßgeschneiderten Lösungen.</p>
+            <div class="hero-cta">
+                <button class="btn-primary">Konto eröffnen</button>
+                <button class="btn-outline">Beratung vereinbaren</button>
+            </div>
+        </div>
+        <div class="calc-card">
+            <h2><i class="fas fa-calculator"></i> Kreditrechner</h2>
+            <div class="calc-field">
+                <label><span>Kreditbetrag</span><span id="amountDisplay">25.000 €</span></label>
+                <input type="range" id="amountSlider" min="1500" max="80000" step="100" value="25000">
+                <div class="value-input">
+                    <input type="number" id="amountInput" min="1500" max="80000" step="100" value="25000">
+                    <span class="unit">€</span>
+                </div>
+            </div>
+            <div class="calc-field">
+                <label><span>Laufzeit</span><span id="durationDisplay">48 Monate</span></label>
+                <input type="range" id="durationSlider" min="12" max="96" step="1" value="48">
+                <div class="value-input">
+                    <input type="number" id="durationInput" min="12" max="96" step="1" value="48">
+                    <span class="unit">Monate</span>
+                </div>
+            </div>
+            <div class="calc-field">
+                <label><span>Sollzinssatz (p.a.)</span><span id="rateDisplay">3,49 %</span></label>
+                <input type="range" id="rateSlider" min="0.5" max="12" step="0.01" value="3.49">
+                <div class="value-input">
+                    <input type="number" id="rateInput" min="0.5" max="12" step="0.01" value="3.49">
+                    <span class="unit">%</span>
+                </div>
+            </div>
+            <div class="result-box">
+                <div>
+                    <div class="label">Monatliche Rate</div>
+                    <div class="value" id="monthlyRate">455,12 €</div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="label">Eff. Jahreszins</div>
+                    <div style="font-weight: 700; font-size: 1.1rem;" id="aprDisplay">3,49 %</div>
+                </div>
+            </div>
+            <div class="result-details">
+                <span>Gesamtbetrag: <strong id="totalAmount">21.845,76 €</strong></span>
+                <span>Zinsen: <strong id="totalInterest">1.845,76 €</strong></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TOP-THEMEN ===== -->
+    <h2 class="section-title"><i class="fas fa-star"></i> Top-Themen</h2>
+    <section class="top-themes">
+        <div class="theme-card">
+            <i class="fas fa-piggy-bank"></i>
+            <h3>Tages- und Festgeld</h3>
+            <p>Top-Zinsen bei kurzer Laufzeit:</p>
+            <div class="highlight-rate">3,25 % <small>p.a.</small></div>
+            <p style="font-size:0.8rem; color:var(--gray-400);">auf Tagesgeld</p>
+            <button class="btn-theme">Mehr erfahren</button>
+        </div>
+        <div class="theme-card">
+            <i class="fas fa-hand-holding-usd"></i>
+            <h3>Online-Kredit</h3>
+            <p>Der Kredit, der sich Ihrem Leben anpasst.</p>
+            <div class="highlight-rate" style="font-size:1.2rem;">ab 3,49 % <small>eff. Jahreszins</small></div>
+            <button class="btn-theme">Jetzt berechnen</button>
+        </div>
+        <div class="theme-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Depotmodelle</h3>
+            <p>Selbst aktiv handeln oder beraten lassen.</p>
+            <p style="font-size:0.85rem; color:var(--gray-500);">Attraktive Modelle für jeden Anlegertyp.</p>
+            <button class="btn-theme">Depot entdecken</button>
+        </div>
+    </section>
+
+    <!-- ===== KONTEN & KARTEN ===== -->
+    <h2 class="section-title" id="konten"><i class="fas fa-credit-card"></i> Konten &amp; Karten</h2>
+    <section class="produkte-grid">
+        <div class="produkt-card">
+            <i class="fas fa-university"></i>
+            <h4>Online-Konto</h4>
+            <p>Kostenlose Kontoführung bei Geldeingang ab 600 €.</p>
+            <span class="badge">kostenlos</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-crown"></i>
+            <h4>Premium-Konto</h4>
+            <p>Weltweit kostenlos Geld abheben &amp; Concierge-Service.</p>
+            <span class="badge">Premium</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-credit-card"></i>
+            <h4>Kreditkarten</h4>
+            <p>Online-Classic-Karte mit Gratis-Cash-Funktion.</p>
+            <span class="badge">Visa</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-exchange-alt"></i>
+            <h4>Kontowechsel-Service</h4>
+            <p>Wir erledigen den Umzug Ihrer Finanzen für Sie.</p>
+            <span class="badge">Service</span>
+        </div>
+    </section>
+
+    <!-- ===== KREDITE ===== -->
+    <h2 class="section-title" id="kredite"><i class="fas fa-hand-holding-usd"></i> Unsere Kredite</h2>
+    <section class="produkte-grid">
+        <div class="produkt-card">
+            <i class="fas fa-laptop"></i>
+            <h4>Online-Kredit</h4>
+            <p>1.500 € – 80.000 €, Laufzeit 12–96 Monate.</p>
+            <span class="badge">ab 3,49 %</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-car"></i>
+            <h4>Autokredit</h4>
+            <p>Schnelle Finanzierung für Ihren Traumwagen.</p>
+            <span class="badge">flexibel</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-home"></i>
+            <h4>Wohnkredit</h4>
+            <p>Finanzierung für Bau, Kauf oder Modernisierung.</p>
+            <span class="badge">attraktive Zinsen</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-user-tie"></i>
+            <h4>Selbstständigenkredit</h4>
+            <p>1.500 € – 50.000 € für Freiberufler &amp; Gründer.</p>
+            <span class="badge">spezial</span>
+        </div>
+    </section>
+
+    <!-- ===== SPAREN & ANLEGEN ===== -->
+    <h2 class="section-title" id="sparen"><i class="fas fa-coins"></i> Sparen &amp; Anlegen</h2>
+    <section class="produkte-grid">
+        <div class="produkt-card">
+            <i class="fas fa-clock"></i>
+            <h4>Festgeld</h4>
+            <p>Garantierte Zinsen ab 7 Tagen Laufzeit.</p>
+            <span class="badge">bis 2,60 %</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-chart-pie"></i>
+            <h4>Doppelzins-Sparen</h4>
+            <p>Rentable Alternative zum Sparbuch.</p>
+            <span class="badge">flexibel</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-leaf"></i>
+            <h4>Nachhaltiges Investment</h4>
+            <p>Nachhaltige Fonds &amp; ETFs entdecken.</p>
+            <span class="badge">ESG</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-building"></i>
+            <h4>Vermögensaufbau</h4>
+            <p>Individuelle Strategien für Ihre Zukunft.</p>
+            <span class="badge">Beratung</span>
+        </div>
+    </section>
+
+    <!-- ===== SERVICE (ohne App) ===== -->
+    <h2 class="section-title" id="service"><i class="fas fa-headset"></i> Service &amp; Funktionen</h2>
+    <section class="service-section">
+        <div class="service-content">
+            <p style="color:var(--gray-500); margin-bottom:1rem;">Unsere Finanzexperten beraten Sie so, wie Sie es möchten: vor Ort, am Telefon oder online.</p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Kontoübersicht &amp; Umsatzanzeige</li>
+                <li><i class="fas fa-check-circle"></i> Überweisungen &amp; Daueraufträge</li>
+                <li><i class="fas fa-check-circle"></i> Push-Benachrichtigungen</li>
+                <li><i class="fas fa-check-circle"></i> Bargeld-Service &amp; Cash ohne Karte</li>
+                <li><i class="fas fa-check-circle"></i> Digitales Haushaltsbuch</li>
+                <li><i class="fas fa-check-circle"></i> Konto-SMS-Service</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ===== KONTAKT ===== -->
+    <h2 class="section-title"><i class="fas fa-phone"></i> Kontakt</h2>
+    <section class="kontakt-section">
+        <div class="kontakt-card">
+            <i class="fas fa-map-marker-alt"></i>
+            <h4>Filiale finden</h4>
+            <p>340 Filialen in Ihrer Nähe – persönliche Beratung vor Ort.</p>
+        </div>
+        <div class="kontakt-card">
+            <i class="fas fa-phone"></i>
+            <h4>Telefon-Banking</h4>
+            <p>Mo. – Sa. von 8:00 – 20:00 Uhr<br><strong style="color:var(--primary);">0800 123 4567</strong></p>
+        </div>
+        <div class="kontakt-card">
+            <i class="fas fa-envelope"></i>
+            <h4>Nachricht senden</h4>
+            <p>KI-bearbeitete Anfragen – wir antworten schnell.</p>
+        </div>
+    </section>
+
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+    <div class="footer-links">
+        <a href="#">Impressum</a>
+        <a href="#">Datenschutz</a>
+        <a href="#">AGB</a>
+        <a href="#">Karriere</a>
+        <a href="#">Presse</a>
     </div>
-    </header>
+    <p>&copy; 2026 <span>sohabank</span> – Alle Rechte vorbehalten. <br style="display:none;" class="sm-break"> Wir geben Rückenwind.</p>
+</footer>
 
-    <!-- Le contenu principal de la page (crédit en ligne) est chargé dynamiquement -->
-    <main id="site-main">
-      <!-- Le contenu est généré par JavaScript -->
-    </main>
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+    (function() {
+        'use strict';
 
-    <!-- Pied de page -->
-    <footer class="site-footer">
-      <!-- Contenu du pied de page -->
-    </footer>
+        // ===== AUTH LOGIC =====
+        const dropdown = document.getElementById('loginDropdown');
+        const toggleBtn = document.getElementById('loginToggleBtn');
+        const closeBtn = document.getElementById('closeDropdownBtn');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const resetSection = document.getElementById('resetSection');
+        const tabBtns = document.querySelectorAll('.tab-toggle button');
+        const forgotLink = document.getElementById('forgotPasswordLink');
+        const backToLogin = document.getElementById('backToLoginFromReset');
+        const loginMsg = document.getElementById('loginMessage');
+        const registerMsg = document.getElementById('registerMessage');
+        const resetMsg = document.getElementById('resetMessage');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginSubmit = document.getElementById('loginSubmit');
+        const regName = document.getElementById('regName');
+        const regEmail = document.getElementById('regEmail');
+        const regPassword = document.getElementById('regPassword');
+        const regConfirm = document.getElementById('regConfirm');
+        const registerSubmit = document.getElementById('registerSubmit');
+        const resetEmail = document.getElementById('resetEmail');
+        const resetSubmit = document.getElementById('resetSubmit');
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const googleRegisterBtn = document.getElementById('googleRegisterBtn');
+        const reqLength = document.getElementById('reqLength');
+        const reqUpper = document.getElementById('reqUpper');
+        const reqLower = document.getElementById('reqLower');
+        const reqDigit = document.getElementById('reqDigit');
+        const reqSpecial = document.getElementById('reqSpecial');
 
-</body>
-</html>
+        function toggleDropdown(open) {
+            if (open === undefined) dropdown.classList.toggle('open');
+            else if (open) dropdown.classList.add('open');
+            else dropdown.classList.remove('open');
+        }
+        function showTab(tabId) {
+            loginForm.classList.remove('active-form');
+            registerForm.classList.remove('active-form');
+            resetSection.classList.remove('active-reset');
+            loginMsg.className = 'message-box';
+            registerMsg.className = 'message-box';
+            resetMsg.className = 'message-box';
+            tabBtns.forEach(b => b.classList.remove('active-tab'));
+            document.querySelector(`.tab-toggle button[data-tab="${tabId}"]`).classList.add('active-tab');
+            if (tabId === 'login') loginForm.classList.add('active-form');
+            else if (tabId === 'register
