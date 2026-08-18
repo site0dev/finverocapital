@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sohabank – Online-Banking, Kredite, Sparprodukte</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* ---------- RESET & VARIABLES ---------- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f4f8fc;
+            color: #1e2a3a;
+            line-height: 1.6;
+        }
+        :root {
+            --primary: #0f2b4b;
+            --primary-light: #1a3f64;
+            --accent: #00a3e0;
+            --accent-hover: #0088c0;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 50px -10px rgba(0, 0, 0, 0.12);
+            --radius: 12px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ---------- HEADER ---------- */
+        .navbar {
+            background: var(--primary);
+            padding: 0 2rem;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: white;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .nav-logo i { color: var(--accent); font-size: 1.9rem; }
+        .nav-logo span { color: white; }
+        .nav-logo small { font-size: 0.7rem; font-weight: 400; opacity: 0.8; margin-left: 4px; letter-spacing: 0.3px; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+        .nav-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: white;
+            border-bottom-color: var(--accent);
+        }
+
+        /* ---------- LOGIN DROPDOWN ---------- */
+        .login-wrapper { position: relative; }
+        .login-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.55rem 1.3rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .login-btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,163,224,0.3);
+        }
+
+        .login-dropdown {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            width: 400px;
+            max-width: 92vw;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 1.8rem 1.8rem 2rem;
+            display: none;
+            animation: fadeSlide 0.25s ease-out;
+            border: 1px solid var(--gray-200);
+            z-index: 999;
+        }
+        .login-dropdown.open { display: block; }
+        @keyframes fadeSlide {
+            0% { opacity: 0; transform: translateY(-8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .dropdown-header h3 { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+        .dropdown-header .close-drop {
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--gray-400);
+            transition: var(--transition);
+        }
+        .dropdown-header .close-drop:hover { color: var(--gray-900); transform: rotate(90deg); }
+
+        .tab-toggle {
+            display: flex;
+            background: var(--gray-100);
+            border-radius: 50px;
+            padding: 4px;
+            margin-bottom: 1.8rem;
+        }
+        .tab-toggle button {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 0.5rem 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray-500);
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-toggle button.active-tab {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .auth-form { display: none; flex-direction: column; gap: 1rem; }
+        .auth-form.active-form { display: flex; }
+        .auth-form .social-login {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.8rem;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 50px;
+            padding: 0.65rem;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--gray-700);
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .auth-form .social-login:hover {
+            background: white;
+            border-color: var(--gray-300);
+        }
+        .auth-form .social-login i { font-size: 1.2rem; color: #db4437; }
+        .auth-form .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--gray-400);
+            font-size: 0.8rem;
+        }
+        .auth-form .divider hr { flex: 1; border: none; border-top: 1px solid var(--gray-200); }
+
+        .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+        .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--gray-700); }
+        .form-group input {
+            padding: 0.7rem 1rem;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-50);
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0,163,224,0.12);
+        }
+        .password-requirements {
+            font-size: 0.7rem;
+            color: var(--gray-500);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem 0.8rem;
+            margin-top: 4px;
+        }
+        .password-requirements span { display: flex; align-items: center; gap: 4px; }
+        .password-requirements .valid { color: #16a34a; }
+        .password-requirements .invalid { color: #dc2626; }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0.2rem 0;
+        }
+        .form-options a {
+            color: var(--accent);
+            font-size: 0.85rem;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .form-options a:hover { text-decoration: underline; }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+            margin-top: 0.3rem;
+        }
+        .btn-submit:hover {
+            background: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(15,43,75,0.2);
+        }
+
+        .reset-section { display: none; flex-direction: column; gap: 1rem; }
+        .reset-section.active-reset { display: flex; }
+        .back-to-login {
+            color: var(--accent);
+            cursor: pointer;
+            font-weight: 500;
+            background: none;
+            border: none;
+            align-self: flex-start;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .message-box {
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .message-box.success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; display: block; }
+        .message-box.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; display: block; }
+
+        /* ---------- HERO ---------- */
+        .hero {
+            max-width: 1200px;
+            margin: 2rem auto 2.5rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        .hero-content h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        .hero-content h1 .highlight { color: var(--accent); }
+        .hero-content p {
+            font-size: 1.05rem;
+            color: var(--gray-500);
+            margin-bottom: 1.8rem;
+        }
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .hero-cta .btn-primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.85rem 2.2rem;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-cta .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: scale(1.02);
+        }
+        .hero-cta .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--gray-300);
+            padding: 0.85rem 2.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .hero-cta .btn-outline:hover {
+            border-color: var(--primary);
+            background: var(--gray-50);
+        }
+
+        /* ---------- CALCULATOR ---------- */
+        .calc-card {
+            background: white;
+            padding: 1.8rem 2rem 2rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+        }
+        .calc-card h2 {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .calc-card h2 i { color: var(--accent); }
+
+        .calc-field {
+            margin-bottom: 1.2rem;
+        }
+        .calc-field label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--gray-700);
+            margin-bottom: 4px;
+        }
+        .calc-field label span {
+            color: var(--primary);
+            background: var(--gray-100);
+            padding: 0.1rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .calc-field input[type="range"] {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--gray-200);
+            border-radius: 10px;
+            outline: none;
+            transition: background 0.2s;
+        }
+        .calc-field input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        .calc-field input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+        }
+        .calc-field .value-input {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .calc-field .value-input input[type="number"] {
+            flex: 1;
+            padding: 0.4rem 0.8rem;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            background: var(--gray-50);
+            width: 100%;
+        }
+        .calc-field .value-input input[type="number"]:focus {
+            border-color: var(--accent);
+            background: white;
+            outline: none;
+        }
+        .calc-field .value-input .unit {
+            font-weight: 600;
+            color: var(--gray-500);
+            min-width: 30px;
+        }
+
+        .result-box {
+            background: var(--primary);
+            color: white;
+            border-radius: var(--radius);
+            padding: 1rem 1.5rem;
+            margin-top: 1.2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .result-box .label { font-size: 0.85rem; opacity: 0.8; font-weight: 500; }
+        .result-box .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .result-details {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.6rem;
+            padding: 0 0.2rem;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+        .result-details strong { color: var(--gray-900); }
+
+        /* ---------- TOP THEMES / FEATURES ---------- */
+        .section-title {
+            max-width: 1200px;
+            margin: 2.5rem auto 0.5rem;
+            padding: 0 2rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .section-title i { color: var(--accent); margin-right: 8px; }
+
+        .top-themes {
+            max-width: 1200px;
+            margin: 1.5rem auto 2.5rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .theme-card {
+            background: white;
+            padding: 1.8rem 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+            text-align: center;
+        }
+        .theme-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+        .theme-card i {
+            font-size: 2.2rem;
+            color: var(--accent);
+            margin-bottom: 0.8rem;
+        }
+        .theme-card h3 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+        }
+        .theme-card p {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+        }
+        .theme-card .highlight-rate {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .theme-card .highlight-rate small {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--gray-500);
+        }
+        .theme-card .btn-theme {
+            margin-top: 1rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .theme-card .btn-theme:hover {
+            background: var(--primary-light);
+        }
+
+        /* ---------- PRODUKTE (Konten, Karten, Kredite) ---------- */
+        .produkte-grid {
+            max-width: 1200px;
+            margin: 1.5rem auto 2.5rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+        }
+        .produkt-card {
+            background: white;
+            padding: 1.5rem 1.2rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            transition: var(--transition);
+            text-align: center;
+        }
+        .produkt-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow);
+        }
+        .produkt-card i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 0.6rem;
+        }
+        .produkt-card h4 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .produkt-card p {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+        .produkt-card .badge {
+            display: inline-block;
+            background: #ecfdf5;
+            color: #065f46;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.6rem;
+            border-radius: 20px;
+            margin-top: 0.4rem;
+        }
+
+        /* ---------- SERVICE (ohne App) ---------- */
+        .service-section {
+            max-width: 800px;
+            margin: 2rem auto 3rem;
+            padding: 0 2rem;
+            text-align: center;
+        }
+        .service-content h2 {
+            font-size: 1.6rem;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+        }
+        .service-content ul {
+            list-style: none;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem 1.5rem;
+            margin: 1.2rem 0 0;
+            text-align: left;
+            justify-items: center;
+        }
+        .service-content ul li {
+            font-size: 0.95rem;
+            color: var(--gray-700);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .service-content ul li i {
+            color: var(--accent);
+            font-size: 1rem;
+            width: 20px;
+        }
+
+        /* ---------- KONTAKT ---------- */
+        .kontakt-section {
+            max-width: 1200px;
+            margin: 2rem auto 2.5rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .kontakt-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-200);
+            text-align: center;
+        }
+        .kontakt-card i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 0.6rem;
+        }
+        .kontakt-card h4 {
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+        }
+        .kontakt-card p {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+        }
+
+        /* ---------- FOOTER ---------- */
+        .footer {
+            background: var(--primary);
+            color: rgba(255,255,255,0.7);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            border-top: 4px solid var(--accent);
+        }
+        .footer span { color: white; font-weight: 600; }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+        .footer-links a:hover { color: white; }
+
+        /* ---------- RESPONSIVE ---------- */
+        @media (max-width: 1024px) {
+            .produkte-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+            .hero-cta { justify-content: center; }
+            .top-themes { grid-template-columns: 1fr 1fr; }
+            .kontakt-section { grid-template-columns: 1fr; }
+            .navbar { padding: 0 1rem; }
+            .nav-links { gap: 1rem; }
+            .service-content ul { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .top-themes { grid-template-columns: 1fr; }
+            .produkte-grid { grid-template-columns: 1fr; }
+            .nav-links a { font-size: 0.75rem; }
+            .login-btn { padding: 0.4rem 1rem; font-size: 0.8rem; }
+            .hero-content h1 { font-size: 2rem; }
+            .login-dropdown { right: -10px; width: 92vw; }
+            .result-box .value { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== HEADER ========== -->
+<header class="navbar">
+    <a href="#" class="nav-logo">
+        <i class="fas fa-building-columns"></i>
+        soha<span>bank</span> <small>· Finanzen</small>
+    </a>
+    <ul class="nav-links">
+        <li><a href="#" class="active">Startseite</a></li>
+        <li><a href="#konten">Konten &amp; Karten</a></li>
+        <li><a href="#kredite">Kredite</a></li>
+        <li><a href="#sparen">Sparen &amp; Anlegen</a></li>
+        <li><a href="#service">Service</a></li>
+    </ul>
+    <div class="login-wrapper">
+        <button class="login-btn" id="loginToggleBtn">
+            <i class="fas fa-user-circle"></i> Anmelden
+        </button>
+        <div class="login-dropdown" id="loginDropdown">
+            <div class="dropdown-header">
+                <h3><i class="fas fa-lock" style="color: var(--accent); margin-right: 6px;"></i> Sicherer Bereich</h3>
+                <button class="close-drop" id="closeDropdownBtn">&times;</button>
+            </div>
+            <div class="tab-toggle">
+                <button class="active-tab" data-tab="login">Anmelden</button>
+                <button data-tab="register">Registrieren</button>
+            </div>
+            <!-- LOGIN -->
+            <div class="auth-form active-form" id="loginForm">
+                <div class="social-login" id="googleLoginBtn">
+                    <i class="fab fa-google"></i> Mit Google anmelden
+                </div>
+                <div class="divider"><hr> oder <hr></div>
+                <div class="form-group">
+                    <label for="loginEmail">E-Mail</label>
+                    <input type="email" id="loginEmail" placeholder="name@beispiel.de">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Passwort</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••">
+                </div>
+                <div class="form-options">
+                    <label style="font-size:0.85rem; display:flex; align-items:center; gap:6px; color:var(--gray-700);">
+                        <input type="checkbox"> Angemeldet bleiben
+                    </label>
+                    <a id="forgotPasswordLink">Passwort vergessen?</a>
+                </div>
+                <button class="btn-submit" id="loginSubmit">Anmelden</button>
+                <div id="loginMessage" class="message-box"></div>
+            </div>
+            <!-- REGISTER -->
+            <div class="auth-form" id="registerForm">
+                <div class="social-login" id="googleRegisterBtn">
+                    <i class="fab fa-google"></i> Mit Google registrieren
+                </div>
+                <div class="divider"><hr> oder <hr></div>
+                <div class="form-group">
+                    <label for="regName">Vollständiger Name</label>
+                    <input type="text" id="regName" placeholder="Max Mustermann">
+                </div>
+                <div class="form-group">
+                    <label for="regEmail">E-Mail</label>
+                    <input type="email" id="regEmail" placeholder="name@beispiel.de">
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Passwort</label>
+                    <input type="password" id="regPassword" placeholder="••••••••">
+                    <div class="password-requirements" id="passwordReqs">
+                        <span id="reqLength"><i class="fa-regular fa-circle"></i> 8 Zeichen</span>
+                        <span id="reqUpper"><i class="fa-regular fa-circle"></i> Großbuchstabe</span>
+                        <span id="reqLower"><i class="fa-regular fa-circle"></i> Kleinbuchstabe</span>
+                        <span id="reqDigit"><i class="fa-regular fa-circle"></i> Ziffer</span>
+                        <span id="reqSpecial"><i class="fa-regular fa-circle"></i> Sonderzeichen (@$!%*?&)</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="regConfirm">Passwort bestätigen</label>
+                    <input type="password" id="regConfirm" placeholder="••••••••">
+                </div>
+                <button class="btn-submit" id="registerSubmit">Konto erstellen</button>
+                <div id="registerMessage" class="message-box"></div>
+            </div>
+            <!-- RESET -->
+            <div class="reset-section" id="resetSection">
+                <button class="back-to-login" id="backToLoginFromReset"><i class="fas fa-arrow-left"></i> Zurück</button>
+                <h4 style="margin:0.5rem 0 0.2rem; color:var(--primary);">Passwort zurücksetzen</h4>
+                <p style="font-size:0.85rem; color:var(--gray-500);">Geben Sie Ihre E-Mail ein, um einen Link zu erhalten.</p>
+                <div class="form-group">
+                    <label for="resetEmail">E-Mail-Adresse</label>
+                    <input type="email" id="resetEmail" placeholder="name@beispiel.de">
+                </div>
+                <button class="btn-submit" id="resetSubmit" style="background: var(--gray-700);">Link senden</button>
+                <div id="resetMessage" class="message-box"></div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ========== MAIN ========== -->
+<main>
+
+    <!-- ===== HERO + CALCULATOR ===== -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Planen Sie mit uns <br><span class="highlight">Ihre finanzielle Zukunft</span></h1>
+            <p>Ob Girokonto, flexible Finanzierung oder Vorsorge – wir unterstützen Sie mit maßgeschneiderten Lösungen.</p>
+            <div class="hero-cta">
+                <button class="btn-primary">Konto eröffnen</button>
+                <button class="btn-outline">Beratung vereinbaren</button>
+            </div>
+        </div>
+        <div class="calc-card">
+            <h2><i class="fas fa-calculator"></i> Kreditrechner</h2>
+            <div class="calc-field">
+                <label><span>Kreditbetrag</span><span id="amountDisplay">25.000 €</span></label>
+                <input type="range" id="amountSlider" min="1500" max="80000" step="100" value="25000">
+                <div class="value-input">
+                    <input type="number" id="amountInput" min="1500" max="80000" step="100" value="25000">
+                    <span class="unit">€</span>
+                </div>
+            </div>
+            <div class="calc-field">
+                <label><span>Laufzeit</span><span id="durationDisplay">48 Monate</span></label>
+                <input type="range" id="durationSlider" min="12" max="96" step="1" value="48">
+                <div class="value-input">
+                    <input type="number" id="durationInput" min="12" max="96" step="1" value="48">
+                    <span class="unit">Monate</span>
+                </div>
+            </div>
+            <div class="calc-field">
+                <label><span>Sollzinssatz (p.a.)</span><span id="rateDisplay">3,49 %</span></label>
+                <input type="range" id="rateSlider" min="0.5" max="12" step="0.01" value="3.49">
+                <div class="value-input">
+                    <input type="number" id="rateInput" min="0.5" max="12" step="0.01" value="3.49">
+                    <span class="unit">%</span>
+                </div>
+            </div>
+            <div class="result-box">
+                <div>
+                    <div class="label">Monatliche Rate</div>
+                    <div class="value" id="monthlyRate">455,12 €</div>
+                </div>
+                <div style="text-align: right;">
+                    <div class="label">Eff. Jahreszins</div>
+                    <div style="font-weight: 700; font-size: 1.1rem;" id="aprDisplay">3,49 %</div>
+                </div>
+            </div>
+            <div class="result-details">
+                <span>Gesamtbetrag: <strong id="totalAmount">21.845,76 €</strong></span>
+                <span>Zinsen: <strong id="totalInterest">1.845,76 €</strong></span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TOP-THEMEN ===== -->
+    <h2 class="section-title"><i class="fas fa-star"></i> Top-Themen</h2>
+    <section class="top-themes">
+        <div class="theme-card">
+            <i class="fas fa-piggy-bank"></i>
+            <h3>Tages- und Festgeld</h3>
+            <p>Top-Zinsen bei kurzer Laufzeit:</p>
+            <div class="highlight-rate">3,25 % <small>p.a.</small></div>
+            <p style="font-size:0.8rem; color:var(--gray-400);">auf Tagesgeld</p>
+            <button class="btn-theme">Mehr erfahren</button>
+        </div>
+        <div class="theme-card">
+            <i class="fas fa-hand-holding-usd"></i>
+            <h3>Online-Kredit</h3>
+            <p>Der Kredit, der sich Ihrem Leben anpasst.</p>
+            <div class="highlight-rate" style="font-size:1.2rem;">ab 3,49 % <small>eff. Jahreszins</small></div>
+            <button class="btn-theme">Jetzt berechnen</button>
+        </div>
+        <div class="theme-card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Depotmodelle</h3>
+            <p>Selbst aktiv handeln oder beraten lassen.</p>
+            <p style="font-size:0.85rem; color:var(--gray-500);">Attraktive Modelle für jeden Anlegertyp.</p>
+            <button class="btn-theme">Depot entdecken</button>
+        </div>
+    </section>
+
+    <!-- ===== KONTEN & KARTEN ===== -->
+    <h2 class="section-title" id="konten"><i class="fas fa-credit-card"></i> Konten &amp; Karten</h2>
+    <section class="produkte-grid">
+        <div class="produkt-card">
+            <i class="fas fa-university"></i>
+            <h4>Online-Konto</h4>
+            <p>Kostenlose Kontoführung bei Geldeingang ab 600 €.</p>
+            <span class="badge">kostenlos</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-crown"></i>
+            <h4>Premium-Konto</h4>
+            <p>Weltweit kostenlos Geld abheben &amp; Concierge-Service.</p>
+            <span class="badge">Premium</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-credit-card"></i>
+            <h4>Kreditkarten</h4>
+            <p>Online-Classic-Karte mit Gratis-Cash-Funktion.</p>
+            <span class="badge">Visa</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-exchange-alt"></i>
+            <h4>Kontowechsel-Service</h4>
+            <p>Wir erledigen den Umzug Ihrer Finanzen für Sie.</p>
+            <span class="badge">Service</span>
+        </div>
+    </section>
+
+    <!-- ===== KREDITE ===== -->
+    <h2 class="section-title" id="kredite"><i class="fas fa-hand-holding-usd"></i> Unsere Kredite</h2>
+    <section class="produkte-grid">
+        <div class="produkt-card">
+            <i class="fas fa-laptop"></i>
+            <h4>Online-Kredit</h4>
+            <p>1.500 € – 80.000 €, Laufzeit 12–96 Monate.</p>
+            <span class="badge">ab 3,49 %</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-car"></i>
+            <h4>Autokredit</h4>
+            <p>Schnelle Finanzierung für Ihren Traumwagen.</p>
+            <span class="badge">flexibel</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-home"></i>
+            <h4>Wohnkredit</h4>
+            <p>Finanzierung für Bau, Kauf oder Modernisierung.</p>
+            <span class="badge">attraktive Zinsen</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-user-tie"></i>
+            <h4>Selbstständigenkredit</h4>
+            <p>1.500 € – 50.000 € für Freiberufler &amp; Gründer.</p>
+            <span class="badge">spezial</span>
+        </div>
+    </section>
+
+    <!-- ===== SPAREN & ANLEGEN ===== -->
+    <h2 class="section-title" id="sparen"><i class="fas fa-coins"></i> Sparen &amp; Anlegen</h2>
+    <section class="produkte-grid">
+        <div class="produkt-card">
+            <i class="fas fa-clock"></i>
+            <h4>Festgeld</h4>
+            <p>Garantierte Zinsen ab 7 Tagen Laufzeit.</p>
+            <span class="badge">bis 2,60 %</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-chart-pie"></i>
+            <h4>Doppelzins-Sparen</h4>
+            <p>Rentable Alternative zum Sparbuch.</p>
+            <span class="badge">flexibel</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-leaf"></i>
+            <h4>Nachhaltiges Investment</h4>
+            <p>Nachhaltige Fonds &amp; ETFs entdecken.</p>
+            <span class="badge">ESG</span>
+        </div>
+        <div class="produkt-card">
+            <i class="fas fa-building"></i>
+            <h4>Vermögensaufbau</h4>
+            <p>Individuelle Strategien für Ihre Zukunft.</p>
+            <span class="badge">Beratung</span>
+        </div>
+    </section>
+
+    <!-- ===== SERVICE (ohne App) ===== -->
+    <h2 class="section-title" id="service"><i class="fas fa-headset"></i> Service &amp; Funktionen</h2>
+    <section class="service-section">
+        <div class="service-content">
+            <p style="color:var(--gray-500); margin-bottom:1rem;">Unsere Finanzexperten beraten Sie so, wie Sie es möchten: vor Ort, am Telefon oder online.</p>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Kontoübersicht &amp; Umsatzanzeige</li>
+                <li><i class="fas fa-check-circle"></i> Überweisungen &amp; Daueraufträge</li>
+                <li><i class="fas fa-check-circle"></i> Push-Benachrichtigungen</li>
+                <li><i class="fas fa-check-circle"></i> Bargeld-Service &amp; Cash ohne Karte</li>
+                <li><i class="fas fa-check-circle"></i> Digitales Haushaltsbuch</li>
+                <li><i class="fas fa-check-circle"></i> Konto-SMS-Service</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- ===== KONTAKT ===== -->
+    <h2 class="section-title"><i class="fas fa-phone"></i> Kontakt</h2>
+    <section class="kontakt-section">
+        <div class="kontakt-card">
+            <i class="fas fa-map-marker-alt"></i>
+            <h4>Filiale finden</h4>
+            <p>340 Filialen in Ihrer Nähe – persönliche Beratung vor Ort.</p>
+        </div>
+        <div class="kontakt-card">
+            <i class="fas fa-phone"></i>
+            <h4>Telefon-Banking</h4>
+            <p>Mo. – Sa. von 8:00 – 20:00 Uhr<br><strong style="color:var(--primary);">0800 123 4567</strong></p>
+        </div>
+        <div class="kontakt-card">
+            <i class="fas fa-envelope"></i>
+            <h4>Nachricht senden</h4>
+            <p>KI-bearbeitete Anfragen – wir antworten schnell.</p>
+        </div>
+    </section>
+
+</main>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+    <div class="footer-links">
+        <a href="#">Impressum</a>
+        <a href="#">Datenschutz</a>
+        <a href="#">AGB</a>
+        <a href="#">Karriere</a>
+        <a href="#">Presse</a>
+    </div>
+    <p>&copy; 2026 <span>sohabank</span> – Alle Rechte vorbehalten. <br style="display:none;" class="sm-break"> Wir geben Rückenwind.</p>
+</footer>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+    (function() {
+        'use strict';
+
+        // ===== AUTH LOGIC =====
+        const dropdown = document.getElementById('loginDropdown');
+        const toggleBtn = document.getElementById('loginToggleBtn');
+        const closeBtn = document.getElementById('closeDropdownBtn');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const resetSection = document.getElementById('resetSection');
+        const tabBtns = document.querySelectorAll('.tab-toggle button');
+        const forgotLink = document.getElementById('forgotPasswordLink');
+        const backToLogin = document.getElementById('backToLoginFromReset');
+        const loginMsg = document.getElementById('loginMessage');
+        const registerMsg = document.getElementById('registerMessage');
+        const resetMsg = document.getElementById('resetMessage');
+        const loginEmail = document.getElementById('loginEmail');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginSubmit = document.getElementById('loginSubmit');
+        const regName = document.getElementById('regName');
+        const regEmail = document.getElementById('regEmail');
+        const regPassword = document.getElementById('regPassword');
+        const regConfirm = document.getElementById('regConfirm');
+        const registerSubmit = document.getElementById('registerSubmit');
+        const resetEmail = document.getElementById('resetEmail');
+        const resetSubmit = document.getElementById('resetSubmit');
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        const googleRegisterBtn = document.getElementById('googleRegisterBtn');
+        const reqLength = document.getElementById('reqLength');
+        const reqUpper = document.getElementById('reqUpper');
+        const reqLower = document.getElementById('reqLower');
+        const reqDigit = document.getElementById('reqDigit');
+        const reqSpecial = document.getElementById('reqSpecial');
+
+        function toggleDropdown(open) {
+            if (open === undefined) dropdown.classList.toggle('open');
+            else if (open) dropdown.classList.add('open');
+            else dropdown.classList.remove('open');
+        }
+        function showTab(tabId) {
+            loginForm.classList.remove('active-form');
+            registerForm.classList.remove('active-form');
+            resetSection.classList.remove('active-reset');
+            loginMsg.className = 'message-box';
+            registerMsg.className = 'message-box';
+            resetMsg.className = 'message-box';
+            tabBtns.forEach(b => b.classList.remove('active-tab'));
+            document.querySelector(`.tab-toggle button[data-tab="${tabId}"]`).classList.add('active-tab');
+            if (tabId === 'login') loginForm.classList.add('active-form');
+            else if (tabId === 'register
