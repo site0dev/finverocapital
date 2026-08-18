@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sohabank – Online-Banking, Kredite, Sparprodukte</title>
+    <title>Kundenbank – Online-Banking, Kredite, Sparprodukte</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
@@ -83,7 +83,7 @@
             border-bottom-color: var(--accent);
         }
 
-        /* ---------- LOGIN DROPDOWN ---------- */
+        /* ---------- LOGIN DROPDOWN (avec navigation intégrée) ---------- */
         .login-wrapper { position: relative; }
         .login-btn {
             background: var(--accent);
@@ -110,12 +110,12 @@
             position: absolute;
             top: calc(100% + 12px);
             right: 0;
-            width: 400px;
+            width: 420px;
             max-width: 92vw;
             background: white;
             border-radius: var(--radius);
             box-shadow: var(--shadow-lg);
-            padding: 1.8rem 1.8rem 2rem;
+            padding: 1.8rem 1.8rem 1.5rem;
             display: none;
             animation: fadeSlide 0.25s ease-out;
             border: 1px solid var(--gray-200);
@@ -131,7 +131,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
         }
         .dropdown-header h3 { font-size: 1.2rem; font-weight: 700; color: var(--primary); }
         .dropdown-header .close-drop {
@@ -144,12 +144,13 @@
         }
         .dropdown-header .close-drop:hover { color: var(--gray-900); transform: rotate(90deg); }
 
+        /* --- Authentification tabs --- */
         .tab-toggle {
             display: flex;
             background: var(--gray-100);
             border-radius: 50px;
             padding: 4px;
-            margin-bottom: 1.8rem;
+            margin-bottom: 1.2rem;
         }
         .tab-toggle button {
             flex: 1;
@@ -284,6 +285,48 @@
         }
         .message-box.success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; display: block; }
         .message-box.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; display: block; }
+
+        /* --- Navigation intégrée dans le dropdown --- */
+        .dropdown-nav {
+            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid var(--gray-200);
+        }
+        .dropdown-nav p {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-400);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .dropdown-nav ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        .dropdown-nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            color: var(--gray-700);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        .dropdown-nav ul li a:hover {
+            background: var(--gray-50);
+            color: var(--primary);
+        }
+        .dropdown-nav ul li a i {
+            width: 1.4rem;
+            color: var(--accent);
+            font-size: 1rem;
+        }
 
         /* ---------- HERO ---------- */
         .hero {
@@ -466,7 +509,7 @@
         }
         .result-details strong { color: var(--gray-900); }
 
-        /* ---------- TOP THEMES / FEATURES ---------- */
+        /* ---------- TOP THEMES ---------- */
         .section-title {
             max-width: 1200px;
             margin: 2.5rem auto 0.5rem;
@@ -538,7 +581,7 @@
             background: var(--primary-light);
         }
 
-        /* ---------- PRODUKTE (Konten, Karten, Kredite) ---------- */
+        /* ---------- PRODUKTE ---------- */
         .produkte-grid {
             max-width: 1200px;
             margin: 1.5rem auto 2.5rem;
@@ -584,17 +627,12 @@
             margin-top: 0.4rem;
         }
 
-        /* ---------- SERVICE (ohne App) ---------- */
+        /* ---------- SERVICE ---------- */
         .service-section {
             max-width: 800px;
             margin: 2rem auto 3rem;
             padding: 0 2rem;
             text-align: center;
-        }
-        .service-content h2 {
-            font-size: 1.6rem;
-            color: var(--primary);
-            margin-bottom: 0.8rem;
         }
         .service-content ul {
             list-style: none;
@@ -704,7 +742,7 @@
 <header class="navbar">
     <a href="#" class="nav-logo">
         <i class="fas fa-building-columns"></i>
-        soha<span>bank</span> <small>· Finanzen</small>
+        <span>Kundenbank</span> <small>· Finanzen</small>
     </a>
     <ul class="nav-links">
         <li><a href="#" class="active">Startseite</a></li>
@@ -792,6 +830,16 @@
                 </div>
                 <button class="btn-submit" id="resetSubmit" style="background: var(--gray-700);">Link senden</button>
                 <div id="resetMessage" class="message-box"></div>
+            </div>
+
+            <!-- ===== NAVIGATION INTÉGRÉE (Startseite, Finanzen, Konten & Karten) ===== -->
+            <div class="dropdown-nav">
+                <p>Navigation</p>
+                <ul>
+                    <li><a href="#"><i class="fas fa-home"></i> Startseite</a></li>
+                    <li><a href="#"><i class="fas fa-chart-pie"></i> Finanzen</a></li>
+                    <li><a href="#konten"><i class="fas fa-credit-card"></i> Konten &amp; Karten</a></li>
+                </ul>
             </div>
         </div>
     </div>
@@ -967,7 +1015,7 @@
         </div>
     </section>
 
-    <!-- ===== SERVICE (ohne App) ===== -->
+    <!-- ===== SERVICE ===== -->
     <h2 class="section-title" id="service"><i class="fas fa-headset"></i> Service &amp; Funktionen</h2>
     <section class="service-section">
         <div class="service-content">
@@ -1014,7 +1062,7 @@
         <a href="#">Karriere</a>
         <a href="#">Presse</a>
     </div>
-    <p>&copy; 2026 <span>sohabank</span> – Alle Rechte vorbehalten. <br style="display:none;" class="sm-break"> Wir geben Rückenwind.</p>
+    <p>&copy; 2026 <span>Kundenbank</span> – Alle Rechte vorbehalten. <br style="display:none;" class="sm-break"> Wir geben Rückenwind.</p>
 </footer>
 
 <!-- ========== JAVASCRIPT ========== -->
@@ -1068,4 +1116,190 @@
             tabBtns.forEach(b => b.classList.remove('active-tab'));
             document.querySelector(`.tab-toggle button[data-tab="${tabId}"]`).classList.add('active-tab');
             if (tabId === 'login') loginForm.classList.add('active-form');
-            else if (tabId === 'register
+            else if (tabId === 'register') registerForm.classList.add('active-form');
+        }
+
+        function validatePassword(password) {
+            return {
+                length: password.length >= 8,
+                upper: /[A-Z]/.test(password),
+                lower: /[a-z]/.test(password),
+                digit: /\d/.test(password),
+                special: /[@$!%*?&]/.test(password)
+            };
+        }
+        function updatePasswordUI(password) {
+            const checks = validatePassword(password);
+            const map = { length: reqLength, upper: reqUpper, lower: reqLower, digit: reqDigit, special: reqSpecial };
+            for (const [key, el] of Object.entries(map)) {
+                const icon = el.querySelector('i');
+                if (checks[key]) {
+                    el.className = 'valid';
+                    icon.className = 'fa-solid fa-circle-check';
+                } else {
+                    el.className = 'invalid';
+                    icon.className = 'fa-regular fa-circle';
+                }
+            }
+            return checks;
+        }
+
+        function handleRegister() {
+            const name = regName.value.trim(), email = regEmail.value.trim(), password = regPassword.value, confirm = regConfirm.value;
+            registerMsg.className = 'message-box';
+            if (!name || !email || !password || !confirm) { registerMsg.className = 'message-box error'; registerMsg.textContent = 'Bitte füllen Sie alle Felder aus.'; return; }
+            const checks = validatePassword(password);
+            if (!Object.values(checks).every(v => v === true)) { registerMsg.className = 'message-box error'; registerMsg.textContent = 'Das Passwort entspricht nicht den Sicherheitskriterien.'; return; }
+            if (password !== confirm) { registerMsg.className = 'message-box error'; registerMsg.textContent = 'Passwörter stimmen nicht überein.'; return; }
+            const users = JSON.parse(localStorage.getItem('sohabank_users') || '[]');
+            if (users.find(u => u.email === email)) { registerMsg.className = 'message-box error'; registerMsg.textContent = 'Diese E-Mail wird bereits verwendet.'; return; }
+            users.push({ name, email, password });
+            localStorage.setItem('sohabank_users', JSON.stringify(users));
+            registerMsg.className = 'message-box success';
+            registerMsg.textContent = 'Konto erfolgreich erstellt! Sie können sich jetzt anmelden.';
+            regName.value = ''; regEmail.value = ''; regPassword.value = ''; regConfirm.value = ''; updatePasswordUI('');
+            setTimeout(() => { showTab('login'); registerMsg.className = 'message-box'; }, 1500);
+        }
+
+        function handleLogin() {
+            const email = loginEmail.value.trim(), password = loginPassword.value.trim();
+            loginMsg.className = 'message-box';
+            if (!email || !password) { loginMsg.className = 'message-box error'; loginMsg.textContent = 'Bitte E-Mail und Passwort eingeben.'; return; }
+            const users = JSON.parse(localStorage.getItem('sohabank_users') || '[]');
+            const user = users.find(u => u.email === email && u.password === password);
+            if (user) {
+                loginMsg.className = 'message-box success';
+                loginMsg.textContent = `Willkommen ${user.name}! Anmeldung erfolgreich.`;
+                toggleBtn.innerHTML = `<i class="fas fa-user-check"></i> ${user.name}`;
+                toggleBtn.style.background = '#16a34a';
+                setTimeout(() => toggleDropdown(false), 1200);
+            } else {
+                loginMsg.className = 'message-box error';
+                loginMsg.textContent = 'E-Mail oder Passwort falsch.';
+            }
+        }
+
+        function handleReset() {
+            const email = resetEmail.value.trim();
+            resetMsg.className = 'message-box';
+            if (!email) { resetMsg.className = 'message-box error'; resetMsg.textContent = 'Bitte E-Mail eingeben.'; return; }
+            const users = JSON.parse(localStorage.getItem('sohabank_users') || '[]');
+            if (!users.find(u => u.email === email)) { resetMsg.className = 'message-box error'; resetMsg.textContent = 'Kein Konto mit dieser E-Mail gefunden.'; return; }
+            resetMsg.className = 'message-box success';
+            resetMsg.textContent = 'Ein Link zum Zurücksetzen wurde gesendet (simuliert).';
+            resetEmail.value = '';
+            setTimeout(() => { resetSection.classList.remove('active-reset'); showTab('login'); resetMsg.className = 'message-box'; }, 2000);
+        }
+
+        function mockGoogle() { alert('🔐 Google-Anmeldung (Simulation) – In Produktion verfügbar.'); }
+
+        toggleBtn.addEventListener('click', (e) => { e.stopPropagation(); const isOpen = dropdown.classList.contains('open'); if (!isOpen) { showTab('login'); resetSection.classList.remove('active-reset'); loginMsg.className = 'message-box'; registerMsg.className = 'message-box'; } toggleDropdown(!isOpen); });
+        closeBtn.addEventListener('click', () => toggleDropdown(false));
+        document.addEventListener('click', (e) => { if (dropdown.classList.contains('open') && !document.querySelector('.login-wrapper').contains(e.target)) toggleDropdown(false); });
+        tabBtns.forEach(btn => btn.addEventListener('click', function() { if (resetSection.classList.contains('active-reset')) resetSection.classList.remove('active-reset'); showTab(this.dataset.tab); }));
+        forgotLink.addEventListener('click', (e) => { e.preventDefault(); loginForm.classList.remove('active-form'); registerForm.classList.remove('active-form'); resetSection.classList.add('active-reset'); resetMsg.className = 'message-box'; });
+        backToLogin.addEventListener('click', () => { resetSection.classList.remove('active-reset'); showTab('login'); });
+        registerSubmit.addEventListener('click', handleRegister);
+        loginSubmit.addEventListener('click', handleLogin);
+        resetSubmit.addEventListener('click', handleReset);
+        loginPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+        loginEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+        regConfirm.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleRegister(); });
+        resetEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleReset(); });
+        regPassword.addEventListener('input', function() { updatePasswordUI(this.value); });
+        googleLoginBtn.addEventListener('click', mockGoogle);
+        googleRegisterBtn.addEventListener('click', mockGoogle);
+        updatePasswordUI('');
+        const demoUsers = JSON.parse(localStorage.getItem('sohabank_users') || '[]');
+        if (demoUsers.length === 0) { demoUsers.push({ name: 'Admin Kundenbank', email: 'demo@kundenbank.de', password: 'Admin@123' }); localStorage.setItem('sohabank_users', JSON.stringify(demoUsers)); console.log('🔑 Demo: demo@kundenbank.de / Admin@123'); }
+
+        // ===== LOAN CALCULATOR =====
+        const amountSlider = document.getElementById('amountSlider');
+        const amountInput = document.getElementById('amountInput');
+        const amountDisplay = document.getElementById('amountDisplay');
+        const durationSlider = document.getElementById('durationSlider');
+        const durationInput = document.getElementById('durationInput');
+        const durationDisplay = document.getElementById('durationDisplay');
+        const rateSlider = document.getElementById('rateSlider');
+        const rateInput = document.getElementById('rateInput');
+        const rateDisplay = document.getElementById('rateDisplay');
+        const aprDisplay = document.getElementById('aprDisplay');
+        const monthlyRateEl = document.getElementById('monthlyRate');
+        const totalAmountEl = document.getElementById('totalAmount');
+        const totalInterestEl = document.getElementById('totalInterest');
+
+        function formatEuro(value) {
+            return value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ' €';
+        }
+
+        function calculateLoan() {
+            let amount = parseFloat(amountInput.value) || 0;
+            let months = parseInt(durationInput.value) || 1;
+            let annualRate = parseFloat(rateInput.value) || 0;
+            if (amount < 1500) amount = 1500;
+            if (amount > 80000) amount = 80000;
+            if (months < 12) months = 12;
+            if (months > 96) months = 96;
+            if (annualRate < 0.5) annualRate = 0.5;
+            if (annualRate > 12) annualRate = 12;
+
+            amountSlider.value = amount;
+            amountInput.value = amount;
+            amountDisplay.textContent = formatEuro(amount);
+            durationSlider.value = months;
+            durationInput.value = months;
+            durationDisplay.textContent = months + ' Monate';
+            rateSlider.value = annualRate;
+            rateInput.value = annualRate.toFixed(2);
+            const rateFormatted = annualRate.toFixed(2).replace('.', ',') + ' %';
+            rateDisplay.textContent = rateFormatted;
+            aprDisplay.textContent = annualRate.toFixed(2).replace('.', ',') + ' %';
+
+            let monthlyRate = 0, totalPayment = 0, totalInterest = 0;
+            if (months > 0 && amount > 0) {
+                const monthlyInterest = annualRate / 100 / 12;
+                if (annualRate === 0) {
+                    monthlyRate = amount / months;
+                } else {
+                    const factor = Math.pow(1 + monthlyInterest, months);
+                    monthlyRate = amount * (monthlyInterest * factor) / (factor - 1);
+                }
+                totalPayment = monthlyRate * months;
+                totalInterest = totalPayment - amount;
+            }
+            monthlyRateEl.textContent = formatEuro(monthlyRate);
+            totalAmountEl.textContent = formatEuro(totalPayment);
+            totalInterestEl.textContent = formatEuro(totalInterest);
+        }
+
+        function syncSliderToInput(slider, input) {
+            input.value = slider.value;
+            calculateLoan();
+        }
+        function syncInputToSlider(input, slider, min, max) {
+            let val = parseFloat(input.value);
+            if (isNaN(val)) val = min;
+            if (val < min) val = min;
+            if (val > max) val = max;
+            input.value = val;
+            slider.value = val;
+            calculateLoan();
+        }
+
+        amountSlider.addEventListener('input', function() { syncSliderToInput(this, amountInput); });
+        amountInput.addEventListener('input', function() { syncInputToSlider(this, amountSlider, 1500, 80000); });
+        amountInput.addEventListener('blur', function() { syncInputToSlider(this, amountSlider, 1500, 80000); });
+        durationSlider.addEventListener('input', function() { syncSliderToInput(this, durationInput); });
+        durationInput.addEventListener('input', function() { syncInputToSlider(this, durationSlider, 12, 96); });
+        durationInput.addEventListener('blur', function() { syncInputToSlider(this, durationSlider, 12, 96); });
+        rateSlider.addEventListener('input', function() { syncSliderToInput(this, rateInput); });
+        rateInput.addEventListener('input', function() { syncInputToSlider(this, rateSlider, 0.5, 12); });
+        rateInput.addEventListener('blur', function() { syncInputToSlider(this, rateSlider, 0.5, 12); });
+
+        calculateLoan();
+
+    })();
+</script>
+
+</body>
+</html>
