@@ -1,884 +1,617 @@
-<!DOCTYPE html>
-<html lang="de">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>soha Bank – Kredit & Investieren</title>
-    <!-- Font Awesome (kostenlos) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <!-- Google Fonts für Eleganz -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
-    <style>
-        /* ===== RESET & BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            background: #f6f9fc;
-            color: #1a2639;
-            line-height: 1.6;
-            scroll-behavior: smooth;
-        }
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
+<!DOCTYPE html><html lang="de" class="t-tb" style="--tabx-scrollbar-inline-size:
+ 0px;" data-tabcid="178707151890168"><head>
+<title>Online-Kredit mit schneller Auszahlung | sohabank</title>
 
-        /* ===== HEADER (fixe avec hamburger) ===== */
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(255,255,255,0.92);
-            backdrop-filter: blur(8px);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
-            z-index: 1000;
-            padding: 12px 0;
-            transition: 0.3s;
-        }
-        header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 1.9rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: #0b1e33;
-        }
-        .logo i {
-            color: #b31b1b;
-            margin-right: 6px;
-            font-size: 1.8rem;
-        }
-        .logo span {
-            color: #b31b1b;
-        }
+<meta name="description" content="Ihr Online-Kredit mit schneller Auszahlung 
+direkt vom Anbieter ✓ Günstige Zinsen ✓ Der Wie für mich gemacht Kredit. ➤ Jetzt
+ berechnen!">
 
-        /* Hamburger Button */
-        .hamburger {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 8px;
-            transition: 0.3s;
-        }
-        .hamburger:hover {
-            background: rgba(179,27,27,0.05);
-        }
-        .hamburger span {
-            display: block;
-            width: 28px;
-            height: 3px;
-            background: #1a2639;
-            border-radius: 6px;
-            transition: 0.3s;
-            transform-origin: center;
-        }
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-        }
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-        }
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(5px, -5px);
-        }
+<meta name="format-detection" content="telephone=no">
 
-        /* Navigation (mobile-first, masqué par défaut) */
-        .nav-links {
-            display: none;
-            flex-direction: column;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            background: #ffffff;
-            padding: 20px 24px;
-            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
-            border-top: 1px solid #eef2f6;
-            gap: 6px;
-            transition: 0.3s;
-        }
-        .nav-links.open {
-            display: flex;
-        }
-        .nav-links a {
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-weight: 500;
-            color: #1a2639;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1rem;
-        }
-        .nav-links a i {
-            width: 24px;
-            text-align: center;
-            color: #b31b1b;
-        }
-        .nav-links a:hover {
-            background: #f1f5f9;
-            color: #b31b1b;
-        }
-        .nav-links .login-link {
-            background: #b31b1b;
-            color: #fff;
-            border-radius: 40px;
-            justify-content: center;
-            margin-top: 8px;
-            padding: 14px;
-            font-weight: 600;
-        }
-        .nav-links .login-link i {
-            color: #fff;
-        }
-        .nav-links .login-link:hover {
-            background: #8f1515;
-            color: #fff;
-        }
 
-        /* Desktop: afficher le menu horizontal si on veut, mais on garde hamburger pour l'exercice */
-        @media (min-width: 992px) {
-            .hamburger {
-                display: none;
-            }
-            .nav-links {
-                display: flex !important;
-                flex-direction: row;
-                position: static;
-                background: transparent;
-                box-shadow: none;
-                padding: 0;
-                border: none;
-                gap: 8px;
-                width: auto;
-                align-items: center;
-            }
-            .nav-links a {
-                padding: 8px 14px;
-                border-radius: 40px;
-                font-size: 0.9rem;
-                font-weight: 500;
-                color: #1a2639;
-            }
-            .nav-links a i {
-                color: #b31b1b;
-                font-size: 0.9rem;
-            }
-            .nav-links a:hover {
-                background: #f1f5f9;
-            }
-            .nav-links .login-link {
-                background: #b31b1b;
-                color: #fff;
-                padding: 8px 24px;
-            }
-            .nav-links .login-link i {
-                color: #fff;
-            }
-            .nav-links .login-link:hover {
-                background: #8f1515;
-                color: #fff;
-            }
-        }
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        /* ===== HERO ===== */
-        .hero {
-            background: linear-gradient(135deg, #f8fafc 0%, #eef2f6 100%);
-            padding: 120px 0 60px;
-            border-bottom: 1px solid #e2e8f0;
-            margin-top: 0;
-        }
-        .hero .container {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 40px;
-        }
-        .hero-text {
-            flex: 1 1 400px;
-        }
-        .hero-text h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            color: #0b1e33;
-            line-height: 1.2;
-        }
-        .hero-text h1 i {
-            color: #b31b1b;
-        }
-        .hero-text p {
-            font-size: 1.2rem;
-            color: #475569;
-            margin: 20px 0 28px;
-        }
-        .btn-primary {
-            display: inline-block;
-            background: #b31b1b;
-            color: #fff;
-            padding: 16px 44px;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1rem;
-            transition: 0.3s;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 14px rgba(179,27,27,0.25);
-        }
-        .btn-primary:hover {
-            background: #8f1515;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(179,27,27,0.35);
-        }
-        .hero-form {
-            flex: 1 1 400px;
-            background: #fff;
-            border-radius: 28px;
-            padding: 36px 32px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.06);
-            border: 1px solid #e9edf2;
-        }
-        .hero-form h3 {
-            font-size: 1.4rem;
-            margin-bottom: 20px;
-            color: #0b1e33;
-            font-weight: 600;
-        }
-        .hero-form label {
-            display: block;
-            font-weight: 600;
-            margin-top: 16px;
-            margin-bottom: 6px;
-            font-size: 0.95rem;
-            color: #1a2639;
-        }
-        .hero-form input, .hero-form select {
-            width: 100%;
-            padding: 14px 18px;
-            border-radius: 14px;
-            border: 1px solid #d4dce8;
-            background: #fafcff;
-            font-size: 1rem;
-            transition: 0.3s;
-        }
-        .hero-form input:focus, .hero-form select:focus {
-            border-color: #b31b1b;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(179,27,27,0.08);
-        }
-        .hero-form .btn {
-            width: 100%;
-            margin-top: 24px;
-            padding: 16px;
-            font-size: 1.1rem;
-            background: #b31b1b;
-            color: #fff;
-            border: none;
-            border-radius: 60px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .hero-form .btn:hover {
-            background: #8f1515;
-        }
-        .hinweis {
-            margin-top: 14px;
-            font-size: 0.8rem;
-            color: #64748b;
-            text-align: center;
-        }
-        .hinweis i {
-            color: #b31b1b;
-        }
+  <link rel="icon" href="/de/images/favicon/favicon.png">
+  <style data-polyfill-anchor-position="">
+    @layer core, third-party, components, utility;@layer core.reset, 
+core.tokens, core.base;@layer third-party.imports, third-party.overrides;@layer 
+components.base, components.variations;#site-header,.site-
+header{position:relative;z-index:1001;background-color:var(--tabx-color-
+neutral-000)}.site-header__container{width:var(--tabx-grid-inline-size);margin-
+inline:auto;padding-block-start:var(--tabx-size-010);display:flex;flex-
+direction:column}.site-header__homelink{display:inline-block;align-
+self:start}.site-header__homelink:only-child{margin-inline:auto}.site-
+header__content{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;anchor-
+name:--site-header}.site-header__actions{display:grid;grid-auto-
+flow:column;grid-template-columns:repeat(3,var(--tabx-size-060));margin-inline-
+start:auto;gap:var(--tabx-size-005)}.site-
+logo{display:block;height:1.5rem;width:auto;max-width:none}.btn-login svg,.btn-
+logout svg{display:none}#section-nav{display:none;--font-size:var(--tabx-font-
+size-subtext);--font-weight:var(--tabx-font-weight-bold);--line-
+height:var(--tabx-font-line-height-subtext);--color:var(--tabx-color-
+primary-080);--bg-hover:var(--tabx-color-secondary-030);--hover-inline-padding-
+size:var(--tabx-size-010)}#section-nav>ul{display:flex;gap:var(--tabx-
+size-020);list-style-type:none;margin-block:0;margin-inline:calc(var(--hover-
+inline-padding-size)*-1);padding:0}.popup-nav{--bg-hover:var(--tabx-color-
+secondary-030);--font-size:var(--tabx-font-size-subtext);--font-
+weight:var(--tabx-font-weight-bold);--line-height:var(--tabx-font-line-height-
+subtext);--color:var(--tabx-color-
+primary-080);position:absolute;top:anchor(bottom);z-index:1;position-
+anchor:--site-header;margin:0;width:100%;border:none;padding-top:var(--tabx-
+size-030);padding-bottom:var(--tabx-size-040);padding-inline:0}.popup-
+nav__trigger{cursor:pointer;position:relative;display:inline-
+flex;gap:var(--tabx-size-005);color:var(--tabx-color-primary-080);font-
+size:var(--tabx-font-size-label);line-height:calc(var(--tabx-size-030) - 
+var(--tabx-border-width-thick));font-weight:var(--tabx-font-weight-bold);align-
+items:center;background:none;border:none;padding:0}.popup-nav__trigger 
+span{border-bottom:var(--tabx-border-width-thick) solid var(--tabx-color-
+primary-080)}.popup-nav__popup{display:flex;flex-
+direction:column;margin:0;gap:var(--tabx-size-020);width:var(--tabx-grid-inline-
+size);margin-inline:auto}.popup-nav__popup>li{margin:0;padding:0}.popup-
+nav__popup>li>a{margin-inline:calc(var(--_padding-inline)*-1)}.site-
+navigation{--mobile-group-width:30.25rem;--hover-inline-padding-size:var(--tabx-
+size-010);--level1-padding-block:var(--tabx-size-030);--mobile-navigation-right-
+position:0;color:var(--tabx-color-primary-090)}.site-navigation,.site-
+navigation__group{background-color:var(--tabx-color-neutral-000)}.site-
+navigation__group{border:none;color:inherit;pointer-events:all}.site-
+navigation__group>:not(:first-child){margin-block-start:var(--tabx-
+size-010);margin-block-end:var(--tabx-size-010)}.site-
+navigation__group__close,.site-navigation__group__title-
+container{display:none}.site-navigation__group__title-
+container__title{display:block;color:var(--tabx-color-text-
+primary);padding:0;margin:0;font-size:var(--tabx-font-headline-size-m);font-
+weight:var(--tabx-font-weight-bold)}.site-navigation__group__header{align-
+items:center;margin-inline:var(--tabx-size-030);padding-block-start:var(--tabx-
+size-010);border-bottom:var(--tabx-border-width-base) solid var(--tabx-border-
+color-light)}.site-navigation__actions,.site-
+navigation__group__header{display:flex;-moz-column-gap:var(--tabx-
+size-010);column-gap:var(--tabx-size-010)}.site-navigation__actions .btn{--btn-
+icon-height:var(--tabx-size-030);--btn-padding-inline:var(--tabx-
+size-015);--btn-padding-block:var(--tabx-size-015)}.site-
+navigation__actions:is(:first-child) .btn:is(:first-child){margin-
+inline:calc(var(--_btn-padding-inline)*-1)}.site-navigation__actions:is(:last-
+child){margin-inline-start:auto}.site-navigation__actions:is(:last-child) 
+.btn:is(:last-child){margin-inline:calc(var(--_btn-padding-inline)*-1)}.site-
+navigation__label{font-size:var(--tabx-font-size-body);line-height:var(--tabx-
+font-line-height-body);font-weight:var(--tabx-font-weight-
+bold);z-index:1000}.site-navigation__group-
+title{display:none;padding:var(--tabx-size-010) 12px;line-height:inherit;font-
+size:inherit}.site-navigation__group-title.always-show{display:block}.site-
+navigation__group-title{font-weight:var(--tabx-font-weight-
+bold);color:var(--tabx-color-text-primary)}.site-navigation__list{--list-
+padding-inline-start:var(--tabx-size-015);--list-padding-inline-end:var(--tabx-
+size-015);display:grid;gap:var(--tabx-size-010);margin:0}.site-
+navigation__list:is(.l2)>li:is(:first-child):has(>.nav-item)>a{font-
+weight:var(--_font-weight)}.site-navigation__list:is(.l2) .group-wrapper 
+.btn{margin-left:36px;margin-top:var(--tabx-size-010)}.site-
+navigation__list:is(.l2)>li.site-navigation__group--is-
+contact:has([role=group]){padding-block-start:var(--tabx-size-040)}.site-
+navigation__list:is(.l2)>li:has([role=group]){padding-block:0}.site-
+navigation__list:is(.l2)>li>a{font-weight:var(--tabx-font-weight-bold)}.site-
+navigation__list:is(.l3){--list-padding-inline-start:var(--tabx-
+size-030);--list-padding-inline-end:0;gap:0}.site-
+navigation__list:is(.l3)[hidden]{display:none}.site-
+navigation__list:is(.l3)>li{display:flex}.site-navigation__list>li{padding-
+block:var(--tabx-size-005);padding-inline-start:var(--list-padding-inline-
+start);padding-inline-end:var(--list-padding-inline-end)}.site-
+navigation__list>li:is(.is-tbol-homelink){margin-inline-start:auto;margin-
+block:var(--tabx-size-0025)}.site-navigation__list>li:is(.is-tbol-homelink) 
+a.nav-item{--font-weight:var(--tabx-font-weight-normal);--font-size:var(--tabx-
+font-size-subtext);--line-height:var(--tabx-font-line-height-subtext)}.site-
+navigation__list>li:is(.is-tbol-homelink) a.nav-item svg,.site-
+navigation__list>li:is(.is-tbol-homelink) a.nav-item tab-icon{margin-
+block:auto;display:block}.site-navigation__list>li a>tab-icon{font-
+size:var(--tabx-size-030)}.site-navigation__list>li a>span{flex:1}.site-
+navigation__list>li a>span>span{display:block}.site-navigation__flyout-
+wrapper{gap:var(--tabx-size-010);display:grid;padding-block-end:var(--tabx-
+size-120)}.site-navigation__item{--padding-inline:var(--tabx-
+size-015);--padding-block:var(--tabx-size-010);--color:var(--tabx-color-
+primary-080);--bg-hover:var(--tabx-color-secondary-030);--font-
+weight:var(--tabx-font-weight-normal);width:100%;justify-content:space-
+between}.site-navigation__item:is(a){display:flex;justify-content:flex-
+start;gap:var(--tabx-size-010)}.site-navigation__item:is(.submenu-toggle){font-
+weight:var(--tabx-font-weight-bold);margin-block:var(--tabx-size-005)}.site-
+navigation__item:is(.submenu-toggle)>span{pointer-events:none}.site-
+navigation__item:is(.submenu-toggle) svg{pointer-events:none}.site-
+navigation__item:is(.submenu-toggle)[aria-expanded=true] 
+svg{transform:scaleY(-1)}.site-navigation__item:is(.submenu-
+toggle):empty{display:none}.site-navigation__item:is(.summary){margin-inline-
+start:var(--tabx-size-030);width:calc(100% - var(--tabx-size-030));margin-
+block:var(--tabx-size-005)}.site-navigation__item:is(.summary)>tab-
+icon{display:none;font-size:var(--tabx-size-020)}.nav-item{--_font-
+size:var(--font-size,inherit);--_font-weight:var(--font-weight,inherit);--_line-
+height:var(--line-height,inherit);--_color:var(--color,#000);--_padding-
+block:var(--padding-block,0.25rem);--_padding-inline:var(--padding-
+inline,0.5rem);--_bg-hover:var(--bg-hover,#d3d3d3);--_animation-
+duration:var(--animation-duration,200ms);--_animation-padding-
+inline:100%;--_animation-padding-
+opacity:0;position:relative;color:var(--_color);display:inline-flex;padding-
+block:var(--_padding-block);padding-inline:var(--_padding-inline);text-
+decoration:none;border-radius:var(--tabx-border-radius-
+base);border:none;background-color:#0000;font-size:var(--_font-size);font-
+weight:var(--_font-weight);line-height:var(--_line-height);cursor:pointer}.nav-
+item:after{content:"";inset-inline-end:var(--_animation-padding-
+inline);transition-property:opacity,inset-inline-end;transition-
+duration:var(--_animation-duration);transition-timing-function:ease-
+out;position:absolute;height:var(--tabx-border-width-thick);inset-block-
+end:0;background-color:currentColor;z-index:1;inset-inline-start:var(--_padding-
+inline);opacity:var(--_animation-padding-opacity)}.nav-item[aria-
+current]:after,.nav-item[aria-selected=true]:after{--_animation-padding-
+inline:var(--_padding-inline);--_animation-padding-opacity:1}.skip-
+links{position:absolute;z-index:1002;width:min(31.25rem,100% - 3rem);margin-
+inline:auto;inset:0 0 auto;background-color:var(--tabx-border-color-
+light);border-radius:0 0 var(--tabx-border-radius-base) var(--tabx-border-
+radius-base);display:flex;flex-direction:column;gap:var(--tabx-border-width-
+base);overflow:clip;transform:translateY(-100%)}.skip-links>div{background-
+color:var(--tabx-color-secondary-030);padding-block:var(--tabx-
+size-015);padding-inline:var(--tabx-size-015);text-align:center}.skip-
+links:focus-within{transform:translateY(0)}@media(width < 80em){#site-
+header:after{content:"";position:fixed;z-index:1000;background-
+color:#0006;inset:0;display:none}#site-header:has(:popover-
+open):after{display:block}.site-header__actions>.btn{padding-inline:0}.btn.btn-
+login,.btn.btn-logout,.btn.btn-menu-toggle,.btn.btn.btn-search-toggle{--btn-
+border-width:0rem;--font-size:1rem;--btn-padding-block:0.75rem;--btn-padding-
+inline:0.75rem;--btn-color-surface:#0000;--btn-border-color:#0000;--btn-color-
+text:var(--tabx-color-primary-080);--btn-border-width:var(--tabx-border-width-
+thick);--btn-border-radius:var(--tabx-border-radius-full);--_btn-color-surface-
+hover:var(--tabx-color-secondary-030);--_btn-color-text-hover:var(--btn-color-
+text)}.btn.btn-search-toggle>span:not(.u-sr-only){clip:rect(0 0 0 0);clip-
+path:inset(100%);height:1px;overflow:hidden;position:absolute;white-
+space:nowrap;width:1px}.site-
+navigation{border:none;padding:0;width:100vw;height:100vh;pointer-
+events:none;background:#0000}.site-navigation::backdrop{background-
+color:#0006}.site-navigation__group{position:fixed;inset:0 0 0 
+auto;right:var(--mobile-navigation-right-position);width:min(var(--mobile-group-
+width),100%);height:auto;margin:0;padding:0;overflow:auto}.site-
+navigation__list:is(.l2) .group-wrapper.hidden{display:none}.site-
+navigation__list>li:is(.is-tbol-homelink){margin-block:var(--tabx-
+size-020);margin-inline-start:0;padding-block-start:var(--tabx-size-020);border-
+top:var(--tabx-border-width-base) solid var(--tabx-border-color-light)}.site-
+navigation__item:after{content:none}}@media(80em <= width){.site-
+header__container{align-items:center;flex-
+direction:row;position:relative;padding-block:var(--tabx-size-025)}.site-
+header__container:after{content:"";position:absolute;height:var(--tabx-border-
+width-base);width:100%;inset:auto auto 0;background:var(--tabx-border-color-
+light)}.site-header__homelink{padding-block:var(--tabx-size-010)}.site-
+header__content{width:100%}.site-header__actions{display:flex;margin-inline-
+start:auto;gap:0;align-items:center;gap:var(--tabx-size-020)}.site-header 
+.popup-nav,.site-header .popup-nav__trigger{display:none}.site-
+logo{height:2rem}.btn-login{--color:#fff;--background:#002f5f;--focus-outline-
+color:#002f5f}.btn-login svg{display:block}.btn-
+logout{--color:#fff;--background:#bb133e;--focus-outline-color:#bb133e;--border-
+width:0rem}.btn-logout svg{display:block}.btn.btn-menu-
+toggle{display:none}#section-nav{display:flex;align-items:center;margin-inline-
+start:var(--tabx-size-060)}.site-navigation{display:block;position:relative;z-
+index:1000;width:auto;height:auto;border:none;padding:0}.site-
+navigation:after{content:"";position:fixed;z-index:1000;background-
+color:#0006;inset:0;display:none;position-anchor:--nav-
+lvl1;top:anchor(bottom);width:100%;height:100%}.site-navigation:has(:popover-
+open):after{display:block}.site-
+navigation__group:has(>.l1){position:relative;z-index:1001}.site-
+navigation__group:has(>.site-navigation__flyout-wrapper .l2){background-
+color:var(--tabx-color-neutral-000);z-
+index:1000;position:absolute;top:anchor(bottom);margin:0;padding:0;width:100%;pa
+dding:var(--tabx-size-040) var(--tabx-size-055);padding-bottom:var(--tabx-
+size-080)}.site-navigation__group__close{display:inline-
+block;top:calc(var(--tabx-size-010)*-1);right:calc(var(--tabx-
+size-015)*-1);position:absolute}.site-navigation__group__title-
+container{display:flex;gap:var(--tabx-size-020);align-
+items:center;margin:0;margin-block-end:var(--tabx-size-050)}.site-
+navigation__group__title-container:empty{margin-block-end:var(--tabx-
+size-020)}.site-navigation__group__header{display:none}.site-navigation__group-
+title{display:block;padding:0;line-height:var(--tabx-font-line-height-
+highlight);font-size:var(--tabx-font-size-highlight)}.site-
+navigation__list:is(.l1){display:flex;gap:var(--tabx-size-010) var(--tabx-
+size-030);width:calc(var(--tabx-grid-inline-size) + 2*var(--hover-inline-
+padding-size));margin-inline:auto;margin-block:0;padding-
+block:var(--level1-padding-block);flex-wrap:wrap}.site-
+navigation__list:is(.l1):has(:popover-open) .nav-item[aria-
+current=location]:after{--_animation-padding-inline:100%;--_animation-padding-
+opacity:0}.site-navigation__list:is(.l1)>li{padding:0}.site-
+navigation__list:is(.l1)>li>.nav-item{--font-size:var(--tabx-font-size-
+body);--font-weight:var(--tabx-font-weight-bold);--line-height:var(--tabx-font-
+line-height);--color:var(--tabx-color-primary-080);--bg-hover:var(--tabx-color-
+secondary-030);--padding-inline:var(--tabx-size-010);--padding-block:var(--tabx-
+size-005)}.site-navigation__list:is(.l1)>li>.nav-item:has(+.\:popover-
+open):after,.site-navigation__list:is(.l1)>li>.nav-item:has(+.site-
+navigation__group:popover-open):after{--_animation-padding-
+inline:var(--_padding-inline);--_animation-padding-opacity:1}.site-
+navigation__list:is(.l1)>li>.nav-item>svg{display:none}.site-
+navigation__list:is(.l2)>li:is(:first-child):has(>.nav-item){display:none}.site-
+navigation__list:is(.l2)>li.site-navigation__group--is-
+contact:has([role=group]){padding-block-start:0;grid-column:span 6}.site-
+navigation__list:is(.l2)>li.site-navigation__group--is-contact:has([role=group])
+ .group-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:var(--tabx-grid-
+gutter);align-items:start}.site-navigation__list:is(.l2){grid-template-
+columns:repeat(12,1fr);gap:var(--tabx-grid-gutter);width:100%;margin-
+inline:auto}.site-navigation__list:is(.l2) 
+div[role=group]{display:grid;gap:var(--tabx-size-020)}.site-
+navigation__list:is(.l2) div[role=group]:has(.site-navigation__group-
+title:empty){margin-block-start:var(--tabx-size-030)}.site-
+navigation__list:is(.l2) div[role=group] .group-wrapper:has(>.btn) .l3,.site-
+navigation__list:is(.l2) div[role=group] .group-wrapper:has(>.summary) 
+.l3{border-bottom:var(--tabx-border-width-base) solid var(--tabx-border-color-
+light)}.site-navigation__list:is(.l2) div[role=group] .group-
+wrapper>.btn{margin:0;margin-block-start:var(--tabx-size-030)}.site-
+navigation__list:is(.l2)>li{grid-column:span 3;padding:0}.site-
+navigation__list:is(.l2)>li.site-navigation__group--multi-column,.site-
+navigation__list:is(.l2)>li:has(:nth-child(6)){grid-column:span 6}.site-
+navigation__list:is(.l2)>li.site-navigation__group--multi-column .group-wrapper 
+.l3,.site-navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper 
+.l3{display:grid;grid-template-columns:calc(3*var(--tabx-grid-column-inline-
+size) + 2*var(--tabx-grid-gutter)) auto;-moz-column-gap:var(--tabx-grid-
+gutter);column-gap:var(--tabx-grid-gutter);width:-moz-fit-content;width:fit-
+content;grid-auto-flow:column}.site-navigation__list:is(.l2)>li.site-
+navigation__group--multi-column .group-wrapper .l3:has(:nth-child(2):last-
+child),.site-navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper 
+.l3:has(:nth-child(2):last-child){grid-template-rows:repeat(1,1fr)}.site-
+navigation__list:is(.l2)>li.site-navigation__group--multi-column .group-wrapper 
+.l3:has(:nth-child(3):last-child),.site-navigation__list:is(.l2)>li:has(:nth-
+child(6)) .group-wrapper .l3:has(:nth-child(3):last-child){grid-template-
+rows:repeat(2,1fr)}.site-navigation__list:is(.l2)>li.site-navigation__group--
+multi-column .group-wrapper .l3:has(:nth-child(4):last-child),.site-
+navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper .l3:has(:nth-
+child(4):last-child){grid-template-rows:repeat(2,1fr)}.site-
+navigation__list:is(.l2)>li.site-navigation__group--multi-column .group-wrapper 
+.l3:has(:nth-child(5):last-child),.site-navigation__list:is(.l2)>li:has(:nth-
+child(6)) .group-wrapper .l3:has(:nth-child(5):last-child){grid-template-
+rows:repeat(3,1fr)}.site-navigation__list:is(.l2)>li.site-navigation__group--
+multi-column .group-wrapper .l3:has(:nth-child(6):last-child),.site-
+navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper .l3:has(:nth-
+child(6):last-child){grid-template-rows:repeat(3,1fr)}.site-
+navigation__list:is(.l2)>li.site-navigation__group--multi-column .group-wrapper 
+.l3:has(:nth-child(7):last-child),.site-navigation__list:is(.l2)>li:has(:nth-
+child(6)) .group-wrapper .l3:has(:nth-child(7):last-child){grid-template-
+rows:repeat(4,1fr)}.site-navigation__list:is(.l2)>li.site-navigation__group--
+multi-column .group-wrapper .l3:has(:nth-child(8):last-child),.site-
+navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper .l3:has(:nth-
+child(8):last-child){grid-template-rows:repeat(4,1fr)}.site-
+navigation__list:is(.l2)>li.site-navigation__group--multi-column .group-wrapper 
+.l3:has(:nth-child(9):last-child),.site-navigation__list:is(.l2)>li:has(:nth-
+child(6)) .group-wrapper .l3:has(:nth-child(9):last-child){grid-template-
+rows:repeat(5,1fr)}.site-navigation__list:is(.l2)>li.site-navigation__group--
+multi-column .group-wrapper .l3:has(:nth-child(10):last-child),.site-
+navigation__list:is(.l2)>li:has(:nth-child(6)) .group-wrapper .l3:has(:nth-
+child(10):last-child){grid-template-rows:repeat(5,1fr)}.site-
+navigation__list:is(.l2)>li .group-wrapper{display:block}.site-
+navigation__list:is(.l2)>li .submenu-toggle{display:none}.site-
+navigation__list:is(.l3){gap:var(--tabx-size-010);padding-block-end:var(--tabx-
+size-020)}.site-navigation__list:is(.l3)>li{padding:0}.site-
+navigation__list:is(.l3)>li>a{width:-moz-fit-content;width:fit-
+content;--padding-block:var(--tabx-size-005);--padding-inline:var(--tabx-
+size-010);margin-inline:calc(-1*var(--padding-inline));margin-
+block:calc(-1*var(--padding-block));gap:var(--tabx-size-015)}.site-
+navigation__flyout-wrapper{width:var(--tabx-grid-inline-size);margin-
+inline:auto;display:block;position:relative;padding-block-end:var(--tabx-
+size-000)}.site-navigation__item{--padding-block:var(--tabx-size-005);--padding-
+inline:var(--tabx-size-010)}.site-navigation__item:is(.summary){font-
+size:var(--tabx-font-size-subtext);line-height:var(--tabx-line-height-
+subtext);margin:0;margin-inline:calc(-1*var(--padding-inline));margin-block-
+start:var(--tabx-size-020);width:-moz-fit-content;width:fit-
+content;display:flex;align-items:center;gap:var(--tabx-size-005)}.site-
+navigation__item:is(.summary)>tab-icon{display:block}}@media(width < 
+48em){.site-navigation__flyout-wrapper{padding-block-end:var(--tabx-
+size-100)}}@media(hover:hover){.nav-item:hover{background-color:var(--_bg-
+hover)}}@media(prefers-reduced-motion:no-preference){.skip-links{transition-
+property:transform,box-shadow;transition-duration:.2s;transition-timing-
+function:ease-out}}@media(forced-colors:none){.btn--skip-link{--btn-color-
+text:var(--tabx-color-primary-080);--btn-color-surface:#0000;--btn-padding-
+block:var(--tabx-size-005);--btn-padding-inline:var(--tabx-size-010);--btn-
+border-radius:var(--tabx-border-radius-base);--btn-border-width:0px;--btn-color-
+text-hover:var(--btn-color-text);--btn-color-surface-hover:var(--tabx-color-
+neutral-000)}}
+  </style>
 
-        /* ===== SECTIONS ===== */
-        section {
-            padding: 70px 0;
-        }
-        .section-title {
-            text-align: center;
-            font-size: 2.4rem;
-            margin-bottom: 14px;
-            color: #0b1e33;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-        .section-sub {
-            text-align: center;
-            color: #475569;
-            margin-bottom: 48px;
-            font-size: 1.15rem;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
 
-        /* ===== KARTEN ===== */
-        .grid-3 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-        .card {
-            background: #fff;
-            border-radius: 24px;
-            padding: 30px 26px;
-            box-shadow: 0 8px 28px rgba(0,0,0,0.04);
-            border: 1px solid #e9edf2;
-            transition: 0.3s;
-            display: flex;
-            flex-direction: column;
-        }
-        .card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 16px 44px rgba(0,0,0,0.07);
-        }
-        .card i {
-            font-size: 2.6rem;
-            color: #b31b1b;
-            margin-bottom: 14px;
-        }
-        .card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 4px;
-        }
-        .card .rate {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #0b1e33;
-            margin: 8px 0 4px;
-        }
-        .card .rate small {
-            font-size: 0.9rem;
-            font-weight: 400;
-            color: #64748b;
-        }
-        .card ul {
-            list-style: none;
-            margin: 16px 0 22px;
-        }
-        .card ul li {
-            padding: 6px 0;
-            border-bottom: 1px solid #f1f5f9;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .card ul li i {
-            font-size: 1rem;
-            color: #22c55e;
-            width: 20px;
-        }
-        .card .btn {
-            margin-top: auto;
-            background: #0b1e33;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 60px;
-            text-align: center;
-            font-weight: 600;
-            transition: 0.3s;
-            border: none;
-            cursor: pointer;
-        }
-        .card .btn:hover {
-            background: #1f4a6e;
-        }
-        .card .btn i {
-            color: #b31b1b;
-            margin-right: 6px;
-        }
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=AW-
+972481571&amp;l=adDataLayer"></script><script>
+  window.tabCallbacks = window.tabCallbacks || []
+  tabCallbacks.push('__initAppCalculatorOK')
+</script>
 
-        /* ===== TABELLE ===== */
-        .table-wrap {
-            background: #fff;
-            border-radius: 24px;
-            padding: 16px 0;
-            box-shadow: 0 8px 28px rgba(0,0,0,0.04);
-            border: 1px solid #e9edf2;
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-        }
-        th {
-            background: #0b1e33;
-            color: #fff;
-            padding: 16px 20px;
-            text-align: left;
-            font-weight: 600;
-        }
-        td {
-            padding: 14px 20px;
-            border-bottom: 1px solid #eef2f6;
-        }
-        tr:last-child td {
-            border-bottom: none;
-        }
-        tr:hover td {
-            background: #f8fafc;
-        }
 
-        /* ===== INVESTIEREN ===== */
-        .invest-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 24px;
-        }
-        .invest-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 28px 20px;
-            text-align: center;
-            border: 1px solid #e9edf2;
-            transition: 0.3s;
-        }
-        .invest-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-        }
-        .invest-card i {
-            font-size: 2.6rem;
-            color: #b31b1b;
-        }
-        .invest-card h4 {
-            font-size: 1.2rem;
-            margin: 14px 0 6px;
-        }
-        .invest-card .return {
-            font-weight: 700;
-            color: #0b1e33;
-            font-size: 1.4rem;
-        }
 
-        /* ===== KONTAKT ===== */
-        .contact-box {
-            background: #fff;
-            border-radius: 28px;
-            padding: 40px;
-            max-width: 700px;
-            margin: 0 auto;
-            border: 1px solid #e9edf2;
-            box-shadow: 0 8px 28px rgba(0,0,0,0.04);
-        }
-        .contact-box label {
-            display: block;
-            font-weight: 600;
-            margin-top: 18px;
-            margin-bottom: 6px;
-            color: #1a2639;
-        }
-        .contact-box input, .contact-box textarea, .contact-box select {
-            width: 100%;
-            padding: 14px 18px;
-            border-radius: 14px;
-            border: 1px solid #d4dce8;
-            background: #fafcff;
-            font-size: 1rem;
-            transition: 0.3s;
-        }
-        .contact-box input:focus, .contact-box textarea:focus, .contact-box select:focus {
-            border-color: #b31b1b;
-            outline: none;
-            box-shadow: 0 0 0 4px rgba(179,27,27,0.08);
-        }
-        .contact-box textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-        .contact-box .btn {
-            width: 100%;
-            margin-top: 26px;
-            padding: 16px;
-            background: #b31b1b;
-            color: #fff;
-            border: none;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .contact-box .btn:hover {
-            background: #8f1515;
-        }
 
-        .whatsapp-email {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 40px;
-        }
-        .whatsapp-email .btn {
-            background: #25D366;
-            color: #fff;
-            padding: 14px 36px;
-            border-radius: 60px;
-            font-weight: 700;
-            transition: 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        .whatsapp-email .btn:hover {
-            background: #1ebe5c;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(37,211,102,0.2);
-        }
-        .whatsapp-email .btn-email {
-            background: #0b1e33;
-        }
-        .whatsapp-email .btn-email:hover {
-            background: #1f4a6e;
-        }
+    
+    
+    
+    <link rel="preload" as="image" fetchpriority="high" href="https://cdnwmii.e-
+i.com/SITW/wm/global/1.0.0/targobank/assets/images/Kredit_Pause_2386_SF/hero_448
+x280.webp" media="(max-width: 27.9375em)">
+    <link rel="preload" as="image" fetchpriority="high" href="https://cdnwmii.e-
+i.com/SITW/wm/global/1.0.0/targobank/assets/images/Kredit_Pause_2386_SF/hero_768
+x280.webp" media="(min-width: 28em) and (max-width: 47.9375em)">
+    <link rel="preload" as="image" fetchpriority="high" href="https://cdnwmii.e-
+i.com/SITW/wm/global/1.0.0/targobank/assets/images/Kredit_Pause_2386_SF/hero_102
+4x280.webp" media="(min-width: 48em) and (max-width: 63.9375em)">
+  <link rel="preload" as="image" fetchpriority="high" href="https://cdnwmii.e-
+i.com/SITW/wm/global/1.0.0/targobank/assets/images/Kredit_Pause_2386_SF/hero_128
+0x600.webp" media="(min-width: 64em) and (max-width: 79.9375em)">
 
-        /* ===== FOOTER ===== */
-        footer {
-            background: #0b1e33;
-            color: #cbd5e1;
-            padding: 32px 0;
-            text-align: center;
-            margin-top: 20px;
-        }
-        footer .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-bottom: 18px;
-        }
-        footer .footer-links a {
-            color: #d4e0ec;
-            transition: 0.3s;
-            font-weight: 500;
-        }
-        footer .footer-links a:hover {
-            color: #b31b1b;
-        }
-        footer p {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        footer a {
-            color: #b31b1b;
-        }
 
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 991px) {
-            .hero-text h1 {
-                font-size: 2.2rem;
-            }
-            .hero {
-                padding-top: 100px;
-            }
-        }
-        @media (max-width: 768px) {
-            .hero .container {
-                flex-direction: column;
-            }
-            .hero-form {
-                padding: 24px;
-            }
-            .grid-3 {
-                grid-template-columns: 1fr;
-            }
-            .contact-box {
-                padding: 24px;
-            }
-            .section-title {
-                font-size: 2rem;
-            }
-            .nav-links a {
-                font-size: 1rem;
-                padding: 14px 16px;
-            }
-        }
-        @media (max-width: 480px) {
-            .hero-text h1 {
-                font-size: 1.8rem;
-            }
-            .btn-primary {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
-</head>
+
+
+
+
+
+
+
+<link rel="preconnect" href="https://cdnwmii.e-i.com">
+<link rel="dns-prefetch" href="https://cdnwmii.e-i.com">
+
+<link rel="preload" href="https://cdnwmii.e-
+i.com/SITW/wm/global/1.0.0/targobank/3.41.0/fonts/lineto-circular-pro-
+book.woff2" as="font" crossorigin="">
+<link rel="preload" href="https://cdnwmii.e-
+i.com/SITW/wm/global/1.0.0/targobank/3.41.0/fonts/lineto-circular-pro-
+medium.woff2" as="font" crossorigin="">
+<link rel="preload" href="https://cdnwmii.e-
+i.com/SITW/wm/global/1.0.0/targobank/3.41.0/fonts/lineto-circular-pro-
+black.woff2" as="font" crossorigin="">
+<link rel="preload" href="https://cdnwmii.e-
+i.com/SITW/wm/global/1.0.0/targobank/3.41.0/fonts/lineto-circular-pro-
+bold.woff2" as="font" crossorigin="">
+
+
+<link rel="stylesheet" href="https://cdnwmii.e-
+i.com/SITW/wm/global/1.0.0/targobank/3.41.0/css/tab.core.css">
+
+<script>
+    dataLayer = [{
+        "pagePool": "desktop",
+        "pageBusiness": "",
+        "pageArea": "",
+        "pageLanguage": "",
+        "pageName": "",
+        "pageScope": "",
+        "pageProductCat1": "01",
+        "pageProductCat2": "01/01",
+        "pageProductCat3": "",
+        "pageTargetGroup": "0",
+        "pageTest": "",
+        "visitorRandomId": "",
+        "visitorLoginState": "false",
+        "internal": ""
+    }];
+</script>
+<script>
+    if (typeof tc_vars == "undefined") var tc_vars = {};
+    tc_vars["tabPageTargetGroup"] = "0";
+    tc_vars["page_cat1"] = "1";
+    tc_vars["page_cat2"] = "01";
+    tc_vars["page_cat3"] = "01";
+    
+    tc_vars["user_client_identifie"] = "false";
+</script>
+
+<script src="/de/javascript/shared/trk_func.js?v=20251212" 
+type="text/javascript" async=""></script>
+
+<script nomodule="">
+  var protocol = document.location.protocol,
+    host = document.location.host,
+    hostname = document.location.hostname;
+  var path = "/de/navigateur_obsolete.html";
+  var href =
+    hostname.indexOf("investments.") > -1
+      ? "".concat(protocol, "//www.targobank.de").concat(path)
+      : "".concat(protocol, "//").concat(host).concat(path);
+  document.location.href = href;
+</script>
+
+<script src="https://cdnwmii.e-
+i.com/SITW/wm/global/1.0.0/targobank/3.41.0/js/tab.runtime.js" 
+defer=""></script>
+<script src="https://cdnwmii.e-
+i.com/SITW/wm/global/1.0.0/targobank/3.41.0/js/tab.core.js" defer=""></script>
+<script>document.documentElement.classList.add('t-tb')</script>
+
+
+
+  <link rel="canonical" href="https://www.targobank.de/de/kredit/online-
+kredit.html">
+
+
+
+
+
+  <style>
+  .site-footer .btn--revoke {
+    --btn-color-surface: transparent;
+    --btn-border-color: var(--tabx-color-primary-080);
+    --btn-color-text: var(--tabx-color-primary-080);
+    --btn-border-width: var(--tabx-border-width-base);
+    --btn-color-surface-hover: var(--tabx-color-secondary-030);
+    --btn-color-text-hover: var(--btn-color-text);
+    --btn-color-text-disabled: var(--tabx-color-primary-020);
+    --btn-color-surface-disabled: transparent;
+    --btn-border-color-disabled: var(--tabx-color-primary-020);
+    --btn-font-weight: var(--tabx-font-weight-normal);
+    --btn-padding-inline: var(--tabx-size-015);;
+    --btn-padding-block: var(--tabx-size-005);
+    margin-block-start: var(--tabx-size-005);
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+</style>
+
+  <style>
+  .btt-wrapper {
+    position: sticky;
+    inset-block-end: 0;
+  }
+  .btt {
+    --btn-color-surface: white;
+    --btn-border-color: var(--tabx-color-primary-080);
+    --btn-color-text: var(--tabx-color-primary-080);
+    --btn-border-width: var(--tabx-border-width-thick);
+    --btn-color-surface-hover: var(--tabx-color-secondary-030);
+    --btn-color-text-hover: var(--btn-color-text);
+    --focus-outline-color: var(--tabx-color-secondary-070);
+
+    position: absolute;
+    inset-inline-end: 1.5rem;
+    inset-block-end: 1.5rem;
+    opacity: 0;
+    transition:
+      200ms display allow-discrete,
+      200ms opacity cubic-bezier(0, 0, 0.58, 1);
+
+    &:not([hidden]) {
+      opacity: 1;
+
+      @starting-style {
+        opacity: 0;
+      }
+    }
+  }
+  </style>
+<script id="script_tc" 
+src="https://cdn.tagcommander.com/6910/tc_targobankde_20.js" 
+defer=""></script><link rel="stylesheet" type="text/css" href="https://cdnwmii.e
+-i.com/SITW/wm/global/1.0.0/targobank/3.41.0/js/../css/tab.carousel.css"><script
+ id="script_cm" 
+src="https://cdnwmii.e-i.com/SITW/wm/global/1.0.0/targobank/consent-
+manager/3.1.1/tab-consent-manager.js" type="module"></script><script 
+id="tc_script_113_1" type="module" 
+src="https://cdnwmii.e-i.com/SITW/wm/global/1.0.0/targobank/tracking-
+extension/3.5.1/trx.js"></script></head>
 <body>
-    <!-- HEADER FIXE AVEC HAMBURGER -->
-    <header>
-        <div class="container">
-            <div class="logo">
-                <i class="fas fa-university"></i>soha <span>Bank</span>
-            </div>
-            <button class="hamburger" id="hamburger" aria-label="Menü öffnen">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-            <nav class="nav-links" id="navLinks">
-                <a href="#kredit"><i class="fas fa-hand-holding-usd"></i> Kredit</a>
-                <a href="#baufinanzierung"><i class="fas fa-home"></i> Baufinanzierung</a>
-                <a href="#sparen"><i class="fas fa-chart-line"></i> Sparen & Investieren</a>
-                <a href="#kontakt"><i class="fas fa-envelope"></i> Kontakt</a>
-                <a href="#" class="login-link"><i class="fas fa-user"></i> Login</a>
-            </nav>
-        </div>
+        
+    <nav class="skip-links" aria-label="Skiplink">
+      <div>
+        <a class="btn btn--skip-link" href="#site-main">Zum Hauptinhalt 
+springen</a>
+      </div>
+    </nav>
+  
+        
+    <header id="site-header">
+         <div class="site-header">
+         <div class="site-header__container">
+      <a href="/de/index.html" class="site-header__homelink" aria-label="Zur 
+Startseite">
+        <img width="300" height="43" class="site-logo" src="data:image/svg+xml,%
+3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22
+http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20viewBox%3D%220%200%20283.462%2040.44
+%22%3E%20%3Cstyle%3E%20%20.c1%20%7B%20fill%3A%20%23002C57%3B%20%7D%20%20.c2%20%7
+B%20fill%3A%20%23C20831%3B%20%7D%20%20.c3%20%7B%20fill%3A%20%237599BD%3B%20%7D%2
+0%20%3C%2Fstyle%3E%20%3Cg%3E%20%3Cpath%20class%3D%22c1%22%20d%3D%22M8.544%2C16.0
+69H0v-4.604h22.873v4.604h-
+8.581v21.803H8.544V16.069z%22%20%2F%3E%20%3Cpath%20class%3D%22c1%22%20d%3D%22M29
+.463%2C11.429h5.893l11.271%2C26.444h-6.189l-2.431-6.297h-11.49l-2.359%2C6.297h-
+5.893L29.463%2C11.429z%20M32.19%2C16.696l-
+3.87%2C10.165h7.883L32.19%2C16.696z%22%20%2F%3E%20%3Cpath%20class%3D%22c1%22%20d
+%3D%22M48.465%2C11.429h13.702c3.167%2C0%2C5.523%2C0.626%2C6.998%2C1.917c1.473%2C
+1.287%2C2.211%2C3.276%2C2.246%2C6.039%20c0%2C2.025-0.44%2C3.684-1.4%2C4.973c-
+0.883%2C1.252-2.209%2C2.1-3.939%2C2.469l6.591%2C11.047h-6.262l-5.817-10.385h-
+6.558v10.385h-5.562V11.429%20z%20M60.84%2C16.144h-
+6.813v6.667h6.813c1.842%2C0%2C3.131-0.26%2C3.87-0.775c0.699-0.477%2C1.066-
+1.361%2C1.066-2.578%20c0-1.213-0.332-2.061-1.066-
+2.539C64.045%2C16.402%2C62.756%2C16.144%2C60.84%2C16.144z%22%20%2F%3E%20%3Cpath%
+20class%3D%22c1%22%20d%3D%22M85.7%2C26.861v-4.678h13.148v15.689H86.877c-
+2.172%2C0-3.867-0.185-5.082-0.551%20c-1.177-0.332-2.285-0.957-3.316-1.77c-1.324-
+1.066-2.355-2.469-3.056-4.197c-0.662-1.73-0.995-3.793-0.995-6.225%20c0-
+4.678%2C0.995-8.103%2C3.021-10.349c2.062-2.247%2C5.155-3.353%2C9.428-
+3.353h11.971v4.567H86.877c-2.172%2C0-3.755%2C0.7-4.787%2C2.1%20c-0.996%2C1.399-
+1.473%2C3.646-
+1.473%2C6.774c0%2C2.875%2C0.477%2C4.974%2C1.473%2C6.263c0.994%2C1.325%2C2.578%2C
+1.95%2C4.787%2C1.95h6.262v-
+6.223H85.7z%22%20%2F%3E%20%3Cpath%20class%3D%22c1%22%20d%3D%22M101.717%2C24.394c
+0-4.531%2C1.069-7.919%2C3.244-10.166c2.172-2.212%2C5.487-3.277%2C9.944-
+3.314%20c4.494%2C0%2C7.807%2C1.102%2C9.944%2C3.351c2.173%2C2.246%2C3.241%2C5.708
+%2C3.241%2C10.385c0%2C4.679-1.068%2C8.141-3.241%2C10.387%20c-2.137%2C2.25-
+5.45%2C3.391-9.944%2C3.391c-4.531%2C0-7.847-1.141-9.982-
+3.391C102.786%2C32.753%2C101.717%2C29.218%2C101.717%2C24.394z%20M114.905%2C15.44
+1c-2.356%2C0-4.163%2C0.74-5.341%2C2.247c-1.178%2C1.475-1.767%2C3.722-
+1.767%2C6.742c0%2C3.239%2C0.551%2C5.636%2C1.695%2C7.183%20c1.177%2C1.51%2C2.945%
+2C2.246%2C5.413%2C2.246c2.431%2C0%2C4.198-0.736%2C5.376-2.246c1.178-
+1.51%2C1.767-3.83%2C1.767-6.963%20c0-3.129-0.588-5.451-1.767-
+6.962C119.141%2C16.218%2C117.372%2C15.479%2C114.905%2C15.441z%22%20%2F%3E%20%3C%
+2Fg%3E%20%3Cg%3E%20%3Cpath%20class%3D%22c2%22%20d%3D%22M192.205%2C37.873h-
+14.551V11.429h13.594c1.691%2C0%2C3.094%2C0.112%2C4.162%2C0.295s1.951%2C0.479%2C2
+.611%2C0.919%20c0.961%2C0.627%2C1.695%2C1.399%2C2.211%2C2.358c0.516%2C0.994%2C0.
+773%2C2.099%2C0.773%2C3.314c0%2C1.474-0.293%2C2.727-0.959%2C3.758%20c-
+0.623%2C1.031-1.617%2C1.877-
+2.979%2C2.576c1.361%2C0.59%2C2.391%2C1.365%2C3.016%2C2.358c0.664%2C0.958%2C0.961
+%2C2.173%2C0.998%2C3.646%20c0%2C2.469-0.74%2C4.273-
+2.174%2C5.488C197.47%2C37.287%2C195.259%2C37.873%2C192.205%2C37.873z%20M183.216%
+2C16.181v6.113h8.139%20c1.252%2C0%2C2.174-0.221%2C2.764-0.736s0.846-
+1.289%2C0.883-2.321c0-1.031-0.293-1.803-0.883-2.319c-0.59-0.479-1.512-0.7-2.764-
+0.737%20H183.216z%20M191.431%2C33.197c1.252%2C0%2C2.172-0.223%2C2.762-
+0.738s0.883-1.287%2C0.883-2.355c0-1.066-0.293-1.879-0.883-2.357%20c-0.59-0.516-
+1.51-0.773-2.762-0.773h-
+8.215v6.225H191.431z%22%20%2F%3E%20%3Cpath%20class%3D%22c2%22%20d%3D%22M213.048%
+2C11.429h5.895l11.268%2C26.444h-6.189l-2.43-6.297h-11.492l-2.355%2C6.297h-
+5.895L213.048%2C11.429z%20M215.775%2C16.696l-
+3.869%2C10.165h7.881L215.775%2C16.696z%22%20%2F%3E%20%3Cpath%20class%3D%22c2%22%
+20d%3D%22M232.05%2C11.429h7.035l10.826%2C19.004l-0.258-19.004h5.672v26.444h-
+6.443L237.5%2C17.874l0.26%2C19.999h-
+5.709%20V11.429z%22%20%2F%3E%20%3Cpath%20class%3D%22c2%22%20d%3D%22M260.701%2C11
+.429h5.562v12.708l10.422-12.708h6.67l-10.609%2C12.928l10.717%2C13.516h-7.105l-
+10.094-13.148%20v13.148h-
+5.562V11.429z%22%20%2F%3E%20%3C%2Fg%3E%20%3Cg%3E%20%3Cpath%20class%3D%22c2%22%20
+d%3D%22M145.927%2C5.252c-0.094-2.809%2C2.105-5.156%2C4.91-5.25c2.809-
+0.092%2C5.158%2C2.109%2C5.252%2C4.914%20c0.094%2C2.809-2.109%2C5.158-
+4.912%2C5.249C148.369%2C10.258%2C146.021%2C8.057%2C145.927%2C5.252z%22%20%2F%3E%
+20%3Cpath%20class%3D%22c3%22%20d%3D%22M148.611%2C21.633c-1.254%2C1.259-
+3.094%2C1.315-4.248%2C0.161l-8.66-8.66c-1.131-1.153-1.081-3.012%2C0.158-
+4.251%20c1.239-1.24%2C3.122-1.308%2C4.251-
+0.158l8.66%2C8.66C149.925%2C18.537%2C149.853%2C20.388%2C148.611%2C21.633z%22%20%
+2F%3E%20%3Cpath%20class%3D%22c3%22%20d%3D%22M153.408%2C21.626c1.254%2C1.259%2C3.
+094%2C1.314%2C4.248%2C0.162l8.66-8.66c1.131-1.153%2C1.08-3.013-0.158-4.252%20c-
+1.24-1.239-3.123-1.308-4.252-0.158l-
+8.66%2C8.66C152.093%2C18.531%2C152.166%2C20.381%2C153.408%2C21.626z%22%20%2F%3E%
+20%3Cpath%20class%3D%22c1%22%20d%3D%22M135.575%2C39.466c1.254%2C1.259%2C3.114%2C
+1.296%2C4.292%2C0.117l8.849-8.85c1.156-1.177%2C1.127-3.057-0.113-4.296%20c-
+1.238-1.239-3.141-1.288-4.295-0.112l-
+8.85%2C8.848C134.281%2C36.351%2C134.333%2C38.221%2C135.575%2C39.466z%22%20%2F%3E
+%20%3Cpath%20class%3D%22c1%22%20d%3D%22M166.449%2C39.466c-1.254%2C1.259-
+3.115%2C1.296-4.293%2C0.117l-8.85-8.85c-1.156-1.177-1.127-3.057%2C0.113-
+4.296%20s3.143-1.288%2C4.297-
+0.112l8.848%2C8.848C167.742%2C36.351%2C167.689%2C38.221%2C166.449%2C39.466z%22%2
+0%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="sohabank Online Kredit">
+      </a>
+      <div class="site-header__content">
+        <button type="button" class="popup-nav__trigger" popovertarget="popup-
+nav">
+                  <span>
+            <span class="u-sr-only">Geschäftsbereichnavigation. Aktuelle 
+Auswahl: </span>
+            Privatkunden
+          </span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" 
+xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M16.5996 8.42499C16.8829 8.42499 17.1165 8.51705 17.2998 
+8.70038C17.4829 8.8836 17.5751 9.11654 17.5752 9.3996C17.5752 9.68288 17.4831 
+9.91647 17.2998 10.0998L12.7002 14.7004C12.6003 14.8003 12.4916 14.8706 12.375 
+14.9123C12.2584 14.9539 12.1333 14.9748 12 14.9748C11.8667 14.9748 11.7416 
+14.9539 11.625 14.9123C11.5084 14.8707 11.3998 14.8003 11.2998 14.7004L6.7002 
+10.0998C6.5169 9.91647 6.4248 9.68288 6.4248 9.3996C6.4248 9.11654 6.5171 
+8.8836 6.7002 8.70038C6.8835 8.51705 7.1171 8.42499 7.4004 8.42499C7.6835 
+8.42499 7.9171 8.51705 8.1004 8.70038L12 12.6L15.8996 8.70038C16.0829 8.51705 
+16.3165 8.42499 16.5996 8.42499Z"/>
+          </svg>
+        </button>
+        <!-- Le reste du contenu de l'en-tête (navigation, etc.) est chargé dynamiquement -->
+      </div>
+    </div>
+    </div>
     </header>
 
-    <!-- HERO -->
-    <section class="hero" id="kredit">
-        <div class="container">
-            <div class="hero-text">
-                <h1><i class="fas fa-check-circle"></i> Der Online-Kredit, <br>der sich Ihrem Leben anpasst</h1>
-                <p>Realisieren Sie Ihre Pläne. Unser Kredit unterstützt Sie dabei – flexibel, transparent und schnell.</p>
-                <a href="#kontakt" class="btn-primary"><i class="fas fa-paper-plane"></i> Jetzt anfragen</a>
-                <p style="margin-top:24px; font-size:0.9rem; color:#64748b;">
-                    <i class="fas fa-info-circle"></i> Wichtig: Geld leihen kostet Geld.
-                </p>
-            </div>
-            <div class="hero-form">
-                <h3>Ihr Wunschkredit</h3>
-                <form action="mailto:contact@sohabank.de" method="post" enctype="text/plain">
-                    <label for="betrag">Nettodarlehensbetrag (€)</label>
-                    <input type="number" id="betrag" name="betrag" value="10000" min="1000" step="500" />
+    <!-- Le contenu principal de la page (crédit en ligne) est chargé dynamiquement -->
+    <main id="site-main">
+      <!-- Le contenu est généré par JavaScript -->
+    </main>
 
-                    <label for="laufzeit">Laufzeit (Monate)</label>
-                    <select id="laufzeit" name="laufzeit">
-                        <option value="12">12 Monate</option>
-                        <option value="24">24 Monate</option>
-                        <option value="36" selected>36 Monate</option>
-                        <option value="48">48 Monate</option>
-                        <option value="60">60 Monate</option>
-                        <option value="84">84 Monate</option>
-                        <option value="120">120 Monate</option>
-                    </select>
-
-                    <label for="verwendung">Verwendungszweck</label>
-                    <select id="verwendung" name="verwendung">
-                        <option value="auto">Auto</option>
-                        <option value="immobilie">Immobilie</option>
-                        <option value="persoenlich">Persönlich</option>
-                        <option value="umschuldung">Umschuldung</option>
-                    </select>
-
-                    <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Unverbindlich anfragen</button>
-                </form>
-                <div class="hinweis">
-                    <i class="fas fa-calculator"></i> Beispiel: 10.000 €, 36 Monate, 4,5 % p.a. → monatliche Rate ca. 298 €.
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- BAUFINANZIERUNG & KREDITPRODUKTE -->
-    <section style="background:#f8fafc;" id="baufinanzierung">
-        <div class="container">
-            <h2 class="section-title">Unsere Kreditangebote</h2>
-            <p class="section-sub">Von der Baufinanzierung bis zum flexiblen Konsumentenkredit – wir haben die passende Lösung.</p>
-
-            <div class="grid-3">
-                <div class="card">
-                    <i class="fas fa-home"></i>
-                    <h3>Baufinanzierung</h3>
-                    <div class="rate">3,25 % <small>p.a.</small></div>
-                    <ul>
-                        <li><i class="fas fa-check-circle"></i> bis 500.000 €</li>
-                        <li><i class="fas fa-check-circle"></i> Laufzeit 5–30 Jahre</li>
-                        <li><i class="fas fa-check-circle"></i> 10 % Eigenkapital</li>
-                    </ul>
-                    <a href="#kontakt" class="btn"><i class="fas fa-pencil-alt"></i> Angebot einholen</a>
-                </div>
-                <div class="card">
-                    <i class="fas fa-car"></i>
-                    <h3>Autokredit</h3>
-                    <div class="rate">4,10 % <small>p.a.</small></div>
-                    <ul>
-                        <li><i class="fas fa-check-circle"></i> bis 70.000 €</li>
-                        <li><i class="fas fa-check-circle"></i> Laufzeit 1–7 Jahre</li>
-                        <li><i class="fas fa-check-circle"></i> 100 % Finanzierung</li>
-                    </ul>
-                    <a href="#kontakt" class="btn"><i class="fas fa-pencil-alt"></i> Angebot einholen</a>
-                </div>
-                <div class="card">
-                    <i class="fas fa-user"></i>
-                    <h3>Persönlicher Kredit</h3>
-                    <div class="rate">5,50 % <small>p.a.</small></div>
-                    <ul>
-                        <li><i class="fas fa-check-circle"></i> 1.000 – 50.000 €</li>
-                        <li><i class="fas fa-check-circle"></i> Laufzeit 6–60 Monate</li>
-                        <li><i class="fas fa-check-circle"></i> schnelle Auszahlung</li>
-                    </ul>
-                    <a href="#kontakt" class="btn"><i class="fas fa-pencil-alt"></i> Angebot einholen</a>
-                </div>
-            </div>
-
-            <!-- Tabelle -->
-            <div style="margin-top:50px;">
-                <h3 style="text-align:center; margin-bottom:20px; color:#0b1e33;">Beispielrechnungen (monatliche Rate)</h3>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr><th>Kreditart</th><th>Betrag</th><th>Laufzeit</th><th>Zins p.a.</th><th>Monatsrate</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Baufinanzierung</td><td>200.000 €</td><td>20 Jahre</td><td>3,25 %</td><td>1.134 €</td></tr>
-                            <tr><td>Autokredit</td><td>25.000 €</td><td>4 Jahre</td><td>4,10 %</td><td>584 €</td></tr>
-                            <tr><td>Persönlicher Kredit</td><td>10.000 €</td><td>3 Jahre</td><td>5,50 %</td><td>302 €</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <p style="text-align:center; margin-top:16px; color:#64748b; font-size:0.85rem;">
-                    * Unverbindliche Beispiele, tatsächliche Konditionen je nach Bonität.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- SPAREN & INVESTIEREN -->
-    <section id="sparen">
-        <div class="container">
-            <h2 class="section-title">Sparen & Investieren</h2>
-            <p class="section-sub">Legen Sie Ihr Geld gewinnbringend an – mit unseren durchdachten Produkten.</p>
-
-            <div class="invest-grid">
-                <div class="invest-card">
-                    <i class="fas fa-piggy-bank"></i>
-                    <h4>Tagesgeld Konto</h4>
-                    <div class="return">2,80 % p.a.</div>
-                    <p style="color:#475569; font-size:0.9rem;">Flexibel verfügbar, täglich Zinsen.</p>
-                </div>
-                <div class="invest-card">
-                    <i class="fas fa-chart-bar"></i>
-                    <h4>ETF-Sparplan</h4>
-                    <div class="return">Ø 7,2 % p.a.</div>
-                    <p style="color:#475569; font-size:0.9rem;">Breit gestreut, ab 25 € monatlich.</p>
-                </div>
-                <div class="invest-card">
-                    <i class="fas fa-shield-alt"></i>
-                    <h4>Fondsgebundene LV</h4>
-                    <div class="return">4,5 % p.a.</div>
-                    <p style="color:#475569; font-size:0.9rem;">Chance & Sicherheit kombinieren.</p>
-                </div>
-                <div class="invest-card">
-                    <i class="fas fa-building"></i>
-                    <h4>Immobilienfonds</h4>
-                    <div class="return">4,8 % p.a.</div>
-                    <p style="color:#475569; font-size:0.9rem;">Beteiligung an Gewerbe-immobilien.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- KONTAKT -->
-    <section id="kontakt" style="background:#f8fafc;">
-        <div class="container">
-            <h2 class="section-title">Kontakt & Beratung</h2>
-            <p class="section-sub">Haben Sie Fragen? Wir helfen Ihnen gerne – persönlich oder digital.</p>
-
-            <div class="contact-box">
-                <form action="mailto:contact@sohabank.de" method="post" enctype="text/plain">
-                    <label for="name"><i class="fas fa-user"></i> Vollständiger Name</label>
-                    <input type="text" id="name" name="name" placeholder="Ihr Name" required />
-
-                    <label for="email"><i class="fas fa-envelope"></i> E-Mail</label>
-                    <input type="email" id="email" name="email" placeholder="ihre@email.de" required />
-
-                    <label for="tel"><i class="fas fa-phone"></i> Telefon</label>
-                    <input type="tel" id="tel" name="tel" placeholder="+49 30 12345678" />
-
-                    <label for="anliegen"><i class="fas fa-tag"></i> Anliegen</label>
-                    <select id="anliegen" name="anliegen">
-                        <option value="kredit">Kreditanfrage</option>
-                        <option value="baufinanzierung">Baufinanzierung</option>
-                        <option value="investieren">Investieren / Sparen</option>
-                        <option value="sonstiges">Sonstiges</option>
-                    </select>
-
-                    <label for="nachricht"><i class="fas fa-comment"></i> Ihre Nachricht</label>
-                    <textarea id="nachricht" name="nachricht" placeholder="Beschreiben Sie Ihr Anliegen..." required></textarea>
-
-                    <button type="submit" class="btn"><i class="fas fa-paper-plane"></i> Nachricht senden (E-Mail)</button>
-                </form>
-            </div>
-
-            <!-- WHATSAPP & EMAIL DIREKT -->
-            <div class="whatsapp-email">
-                <a href="https://wa.me/49123456789?text=Hallo%20soha%20Bank%2C%20ich%20habe%20eine%20Frage%20zu%20Ihren%20Kredit%2FInvestitionsangeboten." 
-                   target="_blank" class="btn">
-                    <i class="fab fa-whatsapp"></i> WhatsApp Business
-                </a>
-                <a href="mailto:contact@sohabank.de?subject=Anfrage%20zu%20Kredit%20%26%20Investieren" 
-                   class="btn btn-email">
-                    <i class="fas fa-envelope"></i> E-Mail schreiben
-                </a>
-            </div>
-            <p style="text-align:center; margin-top:20px; color:#475569;">
-                <i class="fas fa-lock" style="color:#b31b1b;"></i> Ihre Daten werden vertraulich behandelt.
-            </p>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-        <div class="container">
-            <div class="footer-links">
-                <a href="#kredit">Kredit</a>
-                <a href="#baufinanzierung">Baufinanzierung</a>
-                <a href="#sparen">Sparen & Investieren</a>
-                <a href="#kontakt">Kontakt</a>
-            </div>
-            <p>
-                &copy; 2026 <span style="color:#b31b1b;">soha Bank</span> – digitale Bank für Privatkunden.<br />
-                <i class="fas fa-envelope"></i> contact@sohabank.de &nbsp;|&nbsp; 
-                <i class="fab fa-whatsapp"></i> +49 123 456789
-            </p>
-        </div>
+    <!-- Pied de page -->
+    <footer class="site-footer">
+      <!-- Contenu du pied de page -->
     </footer>
 
-    <!-- JAVASCRIPT FÜR HAMBURGER -->
-    <script>
-        (function() {
-            const hamburger = document.getElementById('hamburger');
-            const navLinks = document.getElementById('navLinks');
-
-            hamburger.addEventListener('click', function() {
-                this.classList.toggle('active');
-                navLinks.classList.toggle('open');
-            });
-
-            // Schließen des Menüs bei Klick auf einen Link (optional)
-            document.querySelectorAll('.nav-links a').forEach(link => {
-                link.addEventListener('click', () => {
-                    hamburger.classList.remove('active');
-                    navLinks.classList.remove('open');
-                });
-            });
-        })();
-    </script>
 </body>
 </html>
