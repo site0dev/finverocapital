@@ -6,7 +6,6 @@
     <title>Soha Bank · Prêt & Investissement</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* ----- RESET & BASE ----- */
         * {
             margin: 0;
             padding: 0;
@@ -16,24 +15,15 @@
         body {
             background: #f4f7fc;
             color: #1a2a3a;
-            line-height: 1.6;
-        }
-        a {
-            text-decoration: none;
-            color: inherit;
         }
         .hidden {
             display: none !important;
         }
-
-        /* ----- CONTAINERS ----- */
         .app {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-
-        /* ----- TOP BAR ----- */
         .topbar {
             display: flex;
             justify-content: space-between;
@@ -79,21 +69,10 @@
             background: #0a2540;
             color: white;
         }
-        .topbar .user-info .btn-outline {
-            background: transparent;
-            border: 1px solid #0a2540;
-            color: #0a2540;
-        }
-        .topbar .user-info .btn-outline:hover {
-            background: #0a2540;
-            color: white;
-        }
         .topbar .user-info .btn-danger {
             background: #e74c3c;
             color: white;
         }
-
-        /* ----- NAV TABS ----- */
         .nav-tabs {
             display: flex;
             gap: 4px;
@@ -118,8 +97,6 @@
             background: #0a2540;
             color: white;
         }
-
-        /* ----- CARDS & TABLES ----- */
         .card {
             background: white;
             border-radius: 12px;
@@ -189,10 +166,6 @@
             background: #f8d7da;
             color: #721c24;
         }
-        .status.completed {
-            background: #cce5ff;
-            color: #004085;
-        }
         .status.active {
             background: #d1ecf1;
             color: #0c5460;
@@ -256,8 +229,6 @@
             resize: vertical;
             min-height: 80px;
         }
-
-        /* ----- MODAL AUTH ----- */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -334,8 +305,6 @@
             margin-top: 8px;
             text-align: center;
         }
-
-        /* ----- RESPONSIVE ----- */
         @media (max-width: 768px) {
             .topbar {
                 flex-direction: column;
@@ -358,8 +327,6 @@
 <body>
 
     <div id="app" class="app">
-
-        <!-- TOP BAR -->
         <div class="topbar">
             <div class="brand">🏦 Soha Bank <small>· Prêt & Investissement</small></div>
             <div class="user-info">
@@ -368,41 +335,35 @@
                 <button id="authActionBtn" class="btn">Se connecter</button>
             </div>
         </div>
-
-        <!-- NAVIGATION TABS (générés par JS) -->
         <div id="navTabs" class="nav-tabs"></div>
-
-        <!-- CONTENU PRINCIPAL -->
         <div id="pageContent"></div>
     </div>
 
-    <!-- MODALE D'AUTHENTIFICATION (cachée par défaut) -->
     <div id="authModal" class="modal-overlay hidden">
         <div class="modal-auth">
             <span class="close" id="closeModal">&times;</span>
-            <div id="authModalContent">
-                <!-- Contenu dynamique : login ou register -->
-            </div>
+            <div id="authModalContent"></div>
         </div>
     </div>
 
     <script>
         // ============================================================
-        // 1. CONFIGURATION SUPABASE (à remplacer)
+        // ✅ CONFIGURATION SUPABASE (VOS IDENTIFIANTS)
         // ============================================================
-        const SUPABASE_URL = 'https://votre-projet.supabase.co';
-        const SUPABASE_ANON_KEY = 'votre-clé-anon';
+        const SUPABASE_URL = 'https://xblmpdxhkaieaoajaspn.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_ZiT75rIZ5AiVbNg0R6eReQ_BFrXd7yw';
+
         const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================================
-        // 2. ÉTAT GLOBAL
+        // ÉTAT GLOBAL
         // ============================================================
-        let currentUser = null; // null = non connecté
-        let currentRole = null; // 'borrower', 'investor', 'admin'
+        let currentUser = null;
+        let currentRole = null;
         let currentPage = 'home';
 
         // ============================================================
-        // 3. RÉFÉRENCES DOM
+        // RÉFÉRENCES DOM
         // ============================================================
         const userNameDisplay = document.getElementById('userNameDisplay');
         const userRoleDisplay = document.getElementById('userRoleDisplay');
@@ -412,10 +373,8 @@
         const closeModalBtn = document.getElementById('closeModal');
 
         // ============================================================
-        // 4. AUTHENTIFICATION – GESTION DE LA SESSION
+        // GESTION DE SESSION SUPABASE
         // ============================================================
-
-        // Vérifier la session au chargement
         async function checkSession() {
             const { data: { session }, error } = await supabase.auth.getSession();
             if (session) {
@@ -430,7 +389,6 @@
             navigateTo('home');
         }
 
-        // Récupérer le rôle depuis la table 'profiles'
         async function fetchUserRole() {
             if (!currentUser) return;
             const { data, error } = await supabase
@@ -449,7 +407,6 @@
             }
         }
 
-        // Mettre à jour l'interface utilisateur
         function updateUI() {
             if (currentUser) {
                 const name = currentUser.user_metadata?.full_name || currentUser.email || 'Utilisateur';
@@ -465,7 +422,6 @@
             }
         }
 
-        // Action du bouton en haut à droite
         authActionBtn.addEventListener('click', () => {
             if (currentUser) {
                 logout();
@@ -474,7 +430,6 @@
             }
         });
 
-        // Déconnexion
         async function logout() {
             await supabase.auth.signOut();
             currentUser = null;
@@ -486,87 +441,57 @@
         }
 
         // ============================================================
-        // 5. MODALE D'AUTHENTIFICATION
+        // MODALE AUTH
         // ============================================================
-
-        function openAuthModal(mode = 'login', message = '') {
+        function openAuthModal(mode = 'login', error = '') {
             authModal.classList.remove('hidden');
-            renderAuthForm(mode, message);
+            renderAuthForm(mode, error);
         }
 
-        function closeModal() {
-            authModal.classList.add('hidden');
-        }
-
+        function closeModal() { authModal.classList.add('hidden'); }
         closeModalBtn.addEventListener('click', closeModal);
-        authModal.addEventListener('click', (e) => {
-            if (e.target === authModal) closeModal();
-        });
+        authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
 
-        function renderAuthForm(mode, errorMsg = '') {
+        function renderAuthForm(mode, error) {
             if (mode === 'login') {
                 modalContent.innerHTML = `
                     <h2>🔐 Connexion</h2>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="modalEmail" placeholder="exemple@email.com" />
-                    </div>
-                    <div class="form-group">
-                        <label>Mot de passe</label>
-                        <input type="password" id="modalPassword" placeholder="••••••••" />
-                    </div>
+                    <div class="form-group"><label>Email</label><input type="email" id="modalEmail" placeholder="exemple@email.com" /></div>
+                    <div class="form-group"><label>Mot de passe</label><input type="password" id="modalPassword" placeholder="••••••••" /></div>
                     <button id="modalLoginBtn">Se connecter</button>
                     <div class="auth-link">Pas encore de compte ? <span id="modalGotoRegister">S'inscrire</span></div>
-                    <div class="error" id="modalError">${errorMsg}</div>
+                    <div class="error">${error}</div>
                 `;
-                document.getElementById('modalLoginBtn').addEventListener('click', () => handleLogin());
+                document.getElementById('modalLoginBtn').addEventListener('click', handleLogin);
                 document.getElementById('modalGotoRegister').addEventListener('click', () => renderAuthForm('register'));
-                // Enter key support
-                document.getElementById('modalPassword').addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') handleLogin();
-                });
+                document.getElementById('modalPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter')
+                        handleLogin(); });
             } else {
                 modalContent.innerHTML = `
                     <h2>📝 Créer un compte</h2>
-                    <div class="form-group">
-                        <label>Nom complet</label>
-                        <input type="text" id="modalRegisterName" placeholder="Jean Dupont" />
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="modalRegisterEmail" placeholder="exemple@email.com" />
-                    </div>
-                    <div class="form-group">
-                        <label>Mot de passe</label>
-                        <input type="password" id="modalRegisterPassword" placeholder="••••••••" />
-                    </div>
-                    <div class="form-group">
-                        <label>Rôle</label>
-                        <select id="modalRegisterRole">
-                            <option value="borrower">Emprunteur</option>
-                            <option value="investor">Investisseur</option>
-                        </select>
-                    </div>
+                    <div class="form-group"><label>Nom complet</label><input type="text" id="modalRegisterName" placeholder="Jean Dupont" /></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="modalRegisterEmail" placeholder="exemple@email.com" /></div>
+                    <div class="form-group"><label>Mot de passe</label><input type="password" id="modalRegisterPassword" placeholder="••••••••" /></div>
+                    <div class="form-group"><label>Rôle</label><select id="modalRegisterRole"><option value="borrower">Emprunteur</option><option value="investor">Investisseur</option></select></div>
                     <button id="modalRegisterBtn">S'inscrire</button>
                     <div class="auth-link">Déjà un compte ? <span id="modalGotoLogin">Se connecter</span></div>
-                    <div class="error" id="modalError">${errorMsg}</div>
+                    <div class="error">${error}</div>
                 `;
-                document.getElementById('modalRegisterBtn').addEventListener('click', () => handleRegister());
+                document.getElementById('modalRegisterBtn').addEventListener('click', handleRegister);
                 document.getElementById('modalGotoLogin').addEventListener('click', () => renderAuthForm('login'));
             }
         }
 
-        // Fonctions de login/register
         async function handleLogin() {
             const email = document.getElementById('modalEmail').value.trim();
             const password = document.getElementById('modalPassword').value.trim();
             if (!email || !password) {
-                document.getElementById('modalError').textContent = 'Veuillez remplir tous les champs.';
+                document.querySelector('.modal-auth .error').textContent = 'Veuillez remplir tous les champs.';
                 return;
             }
             const { data, error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) {
-                document.getElementById('modalError').textContent = error.message;
+                document.querySelector('.modal-auth .error').textContent = error.message;
                 return;
             }
             currentUser = data.user;
@@ -583,7 +508,7 @@
             const password = document.getElementById('modalRegisterPassword').value.trim();
             const role = document.getElementById('modalRegisterRole').value;
             if (!name || !email || !password) {
-                document.getElementById('modalError').textContent = 'Tous les champs sont requis.';
+                document.querySelector('.modal-auth .error').textContent = 'Tous les champs sont requis.';
                 return;
             }
             const { data, error } = await supabase.auth.signUp({
@@ -592,54 +517,46 @@
                 options: { data: { full_name: name, role } }
             });
             if (error) {
-                document.getElementById('modalError').textContent = error.message;
+                document.querySelector('.modal-auth .error').textContent = error.message;
                 return;
             }
             if (data.user) {
-                await supabase
-                    .from('profiles')
-                    .insert({ id: data.user.id, full_name: name, role });
+                await supabase.from('profiles').insert({ id: data.user.id, full_name: name, role });
             }
             alert('Compte créé ! Connectez-vous.');
             renderAuthForm('login', 'Inscription réussie, connectez-vous.');
         }
 
         // ============================================================
-        // 6. NAVIGATION (publiques + privées)
+        // NAVIGATION
         // ============================================================
-
         function buildNavigation() {
             const navTabs = document.getElementById('navTabs');
             navTabs.innerHTML = '';
-
-            // Onglets publics toujours visibles
             const tabs = [
                 { id: 'home', label: '🏠 Accueil', public: true },
                 { id: 'projects', label: '📌 Projets', public: true },
                 { id: 'loans-public', label: '📋 Prêts disponibles', public: true },
             ];
-
-            // Onglets privés (selon rôle)
             if (currentUser) {
                 if (currentRole === 'borrower') {
-                    tabs.push({ id: 'dashboard', label: '📊 Mon tableau', private: true });
-                    tabs.push({ id: 'request-loan', label: '📝 Demander un prêt', private: true });
-                    tabs.push({ id: 'my-loans', label: '📋 Mes prêts', private: true });
-                    tabs.push({ id: 'repayments', label: '💰 Remboursements', private: true });
+                    tabs.push({ id: 'dashboard', label: '📊 Mon tableau' });
+                    tabs.push({ id: 'request-loan', label: '📝 Demander un prêt' });
+                    tabs.push({ id: 'my-loans', label: '📋 Mes prêts' });
+                    tabs.push({ id: 'repayments', label: '💰 Remboursements' });
                 } else if (currentRole === 'investor') {
-                    tabs.push({ id: 'dashboard', label: '📊 Mon tableau', private: true });
-                    tabs.push({ id: 'portfolio', label: '💼 Mon portefeuille', private: true });
+                    tabs.push({ id: 'dashboard', label: '📊 Mon tableau' });
+                    tabs.push({ id: 'portfolio', label: '💼 Mon portefeuille' });
                 } else if (currentRole === 'admin') {
-                    tabs.push({ id: 'dashboard', label: '📊 Admin', private: true });
-                    tabs.push({ id: 'users', label: '👥 Utilisateurs', private: true });
-                    tabs.push({ id: 'admin-loans', label: '📋 Prêts', private: true });
-                    tabs.push({ id: 'investments', label: '📈 Investissements', private: true });
-                    tabs.push({ id: 'transactions', label: '💳 Transactions', private: true });
-                    tabs.push({ id: 'kyc', label: '🛡️ KYC', private: true });
-                    tabs.push({ id: 'documents', label: '📄 Documents', private: true });
+                    tabs.push({ id: 'dashboard', label: '📊 Admin' });
+                    tabs.push({ id: 'users', label: '👥 Utilisateurs' });
+                    tabs.push({ id: 'admin-loans', label: '📋 Prêts' });
+                    tabs.push({ id: 'investments', label: '📈 Investissements' });
+                    tabs.push({ id: 'transactions', label: '💳 Transactions' });
+                    tabs.push({ id: 'kyc', label: '🛡️ KYC' });
+                    tabs.push({ id: 'documents', label: '📄 Documents' });
                 }
             }
-
             tabs.forEach(tab => {
                 const div = document.createElement('div');
                 div.className = 'tab' + (currentPage === tab.id ? ' active' : '');
@@ -652,7 +569,6 @@
 
         function navigateTo(pageId) {
             currentPage = pageId;
-            // Mettre à jour l'active
             document.querySelectorAll('.nav-tabs .tab').forEach(el => {
                 el.classList.toggle('active', el.dataset.page === pageId);
             });
@@ -660,676 +576,448 @@
         }
 
         // ============================================================
-        // 7. RENDU DES PAGES
+        // RENDU DES PAGES
         // ============================================================
-
         function renderPage(pageId) {
             const container = document.getElementById('pageContent');
             container.innerHTML = '';
 
-            // Page d'accueil publique
             if (pageId === 'home') {
                 container.innerHTML = `
-                    <div class="card">
-                        <h3>🏦 Bienvenue sur Soha Bank</h3>
-                        <p>Plateforme de prêt entre particuliers et investissement responsable.</p>
-                        <p style="margin-top:12px;">Connectez-vous pour accéder à vos fonctionnalités personnalisées.</p>
-                    </div>
+                    <div class="card"><h3>🏦 Bienvenue sur Soha Bank</h3><p>Plateforme de prêt et investissement. Connectez-vous pour interagir.</p></div>
                     <div class="flex-row">
                         <div class="stat-box"><div class="label">Projets ouverts</div><div class="value" id="publicProjectsCount">0</div></div>
-                        <div class="stat-box"><div class="label">Prêts en cours</div><div class="value" id="publicLoansCount">0</div></div>
-                        <div class="stat-box"><div class="label">Montant total investi</div><div class="value" id="publicTotalInvested">0 €</div></div>
+                        <div class="stat-box"><div class="label">Prêts approuvés</div><div class="value" id="publicLoansCount">0</div></div>
+                        <div class="stat-box"><div class="label">Total investi</div><div class="value" id="publicTotalInvested">0 €</div></div>
                     </div>
-                    ${makeCard('📌 Derniers projets', '<div id="publicProjectsList">Chargement...</div>')}
-                    ${makeCard('📋 Derniers prêts', '<div id="publicLoansList">Chargement...</div>')}
+                    ${makeCard('📌 Projets', '<div id="publicProjectsList">Chargement...</div>')}
+                    ${makeCard('📋 Prêts récents', '<div id="publicLoansList">Chargement...</div>')}
                 `;
                 loadPublicData();
                 return;
             }
 
-            // Pages publiques : Projets
             if (pageId === 'projects') {
-                container.innerHTML = makeCard('📌 Tous les projets d\'investissement', '<div id="publicProjectsFull">Chargement...</div>');
+                container.innerHTML = makeCard('📌 Tous les projets', '<div id="allProjectsList">Chargement...</div>');
                 loadAllProjects();
                 return;
             }
 
-            // Pages publiques : Prêts disponibles
             if (pageId === 'loans-public') {
-                container.innerHTML = makeCard('📋 Prêts disponibles à financer', '<div id="publicLoansFull">Chargement...</div>');
+                container.innerHTML = makeCard('📋 Prêts disponibles', '<div id="allLoansList">Chargement...</div>');
                 loadAllLoans();
                 return;
             }
 
-            // ---- PAGES PRIVÉES (nécessitent connexion) ----
             if (!currentUser) {
-                container.innerHTML = `
-                    <div class="card">
-                        <h3>🔒 Accès réservé</h3>
-                        <p>Veuillez vous connecter ou créer un compte pour accéder à cette page.</p>
-                        <button class="btn btn-primary" id="gotoAuthFromPage">Se connecter / S'inscrire</button>
-                    </div>
-                `;
-                document.getElementById('gotoAuthFromPage')?.addEventListener('click', () => openAuthModal('login'));
+                container.innerHTML =
+                    `<div class="card"><h3>🔒 Accès réservé</h3><p>Connectez-vous pour accéder à vos fonctionnalités.</p><button class="btn btn-primary" id="gotoAuth">Se connecter</button></div>`;
+                document.getElementById('gotoAuth')?.addEventListener('click', () => openAuthModal('login'));
                 return;
             }
 
-            // Pages privées selon rôle
-            if (currentRole === 'borrower') {
-                if (pageId === 'dashboard') renderBorrowerDashboard();
-                else if (pageId === 'request-loan') renderRequestLoan();
-                else if (pageId === 'my-loans') renderMyLoans();
-                else if (pageId === 'repayments') renderRepayments();
-                else container.innerHTML = '<div class="card"><p>Page non disponible</p></div>';
-            } else if (currentRole === 'investor') {
-                if (pageId === 'dashboard') renderInvestorDashboard();
-                else if (pageId === 'portfolio') renderInvestorPortfolio();
-                else container.innerHTML = '<div class="card"><p>Page non disponible</p></div>';
-            } else if (currentRole === 'admin') {
-                if (pageId === 'dashboard') renderAdminDashboard();
-                else if (pageId === 'users') renderAdminUsers();
-                else if (pageId === 'admin-loans') renderAdminLoans();
-                else if (pageId === 'investments') renderAdminInvestments();
-                else if (pageId === 'transactions') renderAdminTransactions();
-                else if (pageId === 'kyc') renderAdminKyc();
-                else if (pageId === 'documents') renderAdminDocuments();
-                else container.innerHTML = '<div class="card"><p>Page non disponible</p></div>';
-            } else {
-                container.innerHTML = '<div class="card"><p>Rôle inconnu.</p></div>';
+            if (pageId === 'dashboard') {
+                if (currentRole === 'borrower') {
+                    container.innerHTML = `
+                        <div class="flex-row">
+                            <div class="stat-box"><div class="label">Prêts en cours</div><div class="value" id="borrowerLoanCount">0</div></div>
+                            <div class="stat-box"><div class="label">Demandes en attente</div><div class="value" id="borrowerPendingCount">0</div></div>
+                        </div>
+                        ${makeCard('Mes prêts', '<div id="borrowerLoanList">Chargement...</div>')}
+                    `;
+                    loadBorrowerDashboard();
+                } else if (currentRole === 'investor') {
+                    container.innerHTML = `
+                        <div class="flex-row">
+                            <div class="stat-box"><div class="label">Portefeuille</div><div class="value" id="investorPortfolioValue">0 €</div></div>
+                            <div class="stat-box"><div class="label">Investissements</div><div class="value" id="investorCount">0</div></div>
+                        </div>
+                        ${makeCard('Mes investissements', '<div id="investorInvestList">Chargement...</div>')}
+                    `;
+                    loadInvestorDashboard();
+                } else if (currentRole === 'admin') {
+                    container.innerHTML = `
+                        <div class="flex-row">
+                            <div class="stat-box"><div class="label">Utilisateurs</div><div class="value" id="adminUserCount">0</div></div>
+                            <div class="stat-box"><div class="label">Prêts actifs</div><div class="value" id="adminLoanCount">0</div></div>
+                            <div class="stat-box"><div class="label">Investissements</div><div class="value" id="adminInvestCount">0</div></div>
+                        </div>
+                        ${makeCard('Activité récente', '<div id="adminActivity">Chargement...</div>')}
+                    `;
+                    loadAdminDashboard();
+                }
+                return;
             }
+
+            if (pageId === 'request-loan') {
+                container.innerHTML = `
+                    <div class="card">
+                        <h3>📝 Demander un prêt</h3>
+                        <form id="loanRequestForm">
+                            <div class="form-group"><label>Montant (€)</label><input type="number" id="loanAmount" required /></div>
+                            <div class="form-group"><label>Durée (mois)</label><input type="number" id="loanDuration" required /></div>
+                            <div class="form-group"><label>Objet</label><textarea id="loanPurpose" placeholder="Décrivez votre projet..."></textarea></div>
+                            <button type="submit" class="btn btn-primary">Soumettre</button>
+                        </form>
+                        <div id="loanRequestMessage"></div>
+                    </div>
+                `;
+                document.getElementById('loanRequestForm').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const amount = parseFloat(document.getElementById('loanAmount').value);
+                    const duration = parseInt(document.getElementById('loanDuration').value);
+                    const purpose = document.getElementById('loanPurpose').value;
+                    if (!amount || !duration) {
+                        document.getElementById('loanRequestMessage').innerHTML =
+                            '<span style="color:red;">Veuillez remplir tous les champs.</span>';
+                        return;
+                    }
+                    const { error } = await supabase
+                        .from('loans')
+                        .insert({ borrower_id: currentUser.id, amount, duration_months: duration, purpose,
+                            status: 'pending', created_at: new Date().toISOString() });
+                    if (error) {
+                        document.getElementById('loanRequestMessage').innerHTML =
+                            `<span style="color:red;">Erreur : ${error.message}</span>`;
+                    } else {
+                        document.getElementById('loanRequestMessage').innerHTML =
+                            '<span style="color:green;">✅ Demande soumise !</span>';
+                        document.getElementById('loanRequestForm').reset();
+                    }
+                });
+                return;
+            }
+
+            if (pageId === 'my-loans') {
+                container.innerHTML = makeCard('Mes prêts', '<div id="myLoansList">Chargement...</div>');
+                loadMyLoans();
+                return;
+            }
+
+            if (pageId === 'repayments') {
+                container.innerHTML = makeCard('💰 Remboursements', '<div id="repaymentsList">Chargement...</div>');
+                loadRepayments();
+                return;
+            }
+
+            if (pageId === 'portfolio') {
+                container.innerHTML = makeCard('💼 Portefeuille', '<div id="portfolioList">Chargement...</div>');
+                loadPortfolio();
+                return;
+            }
+
+            if (pageId === 'users') {
+                container.innerHTML = makeCard('👥 Utilisateurs', '<div id="adminUsersList">Chargement...</div>');
+                loadAdminUsers();
+                return;
+            }
+            if (pageId === 'admin-loans') {
+                container.innerHTML = makeCard('📋 Gestion des prêts', '<div id="adminLoansList">Chargement...</div>');
+                loadAdminLoans();
+                return;
+            }
+            if (pageId === 'investments') {
+                container.innerHTML = makeCard('📈 Investissements', '<div id="adminInvestmentsList">Chargement...</div>');
+                loadAdminInvestments();
+                return;
+            }
+            if (pageId === 'transactions') {
+                container.innerHTML = makeCard('💳 Transactions', '<div id="adminTransactionsList">Chargement...</div>');
+                loadAdminTransactions();
+                return;
+            }
+            if (pageId === 'kyc') {
+                container.innerHTML = makeCard('🛡️ KYC', '<div id="adminKycList">Chargement...</div>');
+                loadAdminKyc();
+                return;
+            }
+            if (pageId === 'documents') {
+                container.innerHTML = makeCard('📄 Documents', '<div id="adminDocumentsList">Chargement...</div>');
+                loadAdminDocuments();
+                return;
+            }
+
+            container.innerHTML = `<div class="card"><p>Page en construction.</p></div>`;
         }
 
-        // Helper pour générer une carte
         function makeCard(title, content) {
             return `<div class="card"><h3>${title}</h3>${content}</div>`;
         }
 
         // ============================================================
-        // 8. CHARGEMENT DES DONNÉES PUBLIQUES
+        // CHARGEMENT DES DONNÉES SUPABASE
         // ============================================================
 
         async function loadPublicData() {
-            // Nombre de projets ouverts
-            const { count: projectCount } = await supabase
-                .from('projects')
-                .select('*', { count: 'exact', head: true })
+            const { count: projectCount } = await supabase.from('projects').select('*', { count: 'exact', head: true })
                 .eq('status', 'open');
             document.getElementById('publicProjectsCount').textContent = projectCount || 0;
 
-            // Nombre de prêts approuvés
-            const { count: loanCount } = await supabase
-                .from('loans')
-                .select('*', { count: 'exact', head: true })
+            const { count: loanCount } = await supabase.from('loans').select('*', { count: 'exact', head: true })
                 .eq('status', 'approved');
             document.getElementById('publicLoansCount').textContent = loanCount || 0;
 
-            // Montant total investi
-            const { data: investments } = await supabase.from('investments').select('amount');
+            const { data: invs } = await supabase.from('investments').select('amount');
             let total = 0;
-            if (investments) investments.forEach(i => total += i.amount);
+            if (invs) invs.forEach(i => total += i.amount);
             document.getElementById('publicTotalInvested').textContent = total.toFixed(2) + ' €';
 
-            // Derniers projets
-            const { data: projects } = await supabase
-                .from('projects')
-                .select('*')
-                .eq('status', 'open')
-                .order('created_at', { ascending: false })
-                .limit(3);
-            let html = '<table><tr><th>Nom</th><th>Montant</th><th>Collecté</th></tr>';
+            const { data: projects } = await supabase.from('projects').select('*').eq('status', 'open').order(
+                'created_at', { ascending: false }).limit(3);
+            let html = '<table><tr><th>Nom</th><th>Montant</th></tr>';
             if (projects && projects.length) {
-                for (const p of projects) {
-                    const { data: invs } = await supabase
-                        .from('investments')
-                        .select('amount')
-                        .eq('project_id', p.id);
-                    let collected = 0;
-                    if (invs) invs.forEach(i => collected += i.amount);
-                    html += `<tr><td>${p.name}</td><td>${p.amount_required} €</td><td>${collected.toFixed(2)} €</td></tr>`;
-                }
-            } else {
-                html += '<tr><td colspan="3">Aucun projet actif</td></tr>';
-            }
+                projects.forEach(p => { html += `<tr><td>${p.name}</td><td>${p.amount_required} €</td></tr>`; });
+            } else { html += '<tr><td colspan="2">Aucun projet actif</td></tr>'; }
             html += '</table>';
             document.getElementById('publicProjectsList').innerHTML = html;
 
-            // Derniers prêts approuvés
-            const { data: loans } = await supabase
-                .from('loans')
-                .select('*, profiles(full_name)')
-                .eq('status', 'approved')
-                .order('created_at', { ascending: false })
-                .limit(3);
-            let html2 = '<table><tr><th>Emprunteur</th><th>Montant</th><th>Durée</th></tr>';
+            const { data: loans } = await supabase.from('loans').select('*, profiles(full_name)').eq('status',
+                'approved').order('created_at', { ascending: false }).limit(3);
+            let html2 = '<table><tr><th>Emprunteur</th><th>Montant</th></tr>';
             if (loans && loans.length) {
-                loans.forEach(l => {
-                    html2 += `<tr><td>${l.profiles?.full_name || l.borrower_id}</td><td>${l.amount} €</td><td>${l.duration_months} mois</td></tr>`;
-                });
-            } else {
-                html2 += '<tr><td colspan="3">Aucun prêt approuvé</td></tr>';
-            }
+                loans.forEach(l => { html2 +=
+                        `<tr><td>${l.profiles?.full_name || l.borrower_id}</td><td>${l.amount} €</td></tr>`; });
+            } else { html2 += '<tr><td colspan="2">Aucun prêt approuvé</td></tr>'; }
             html2 += '</table>';
             document.getElementById('publicLoansList').innerHTML = html2;
         }
 
-        // Liste complète des projets (publique)
         async function loadAllProjects() {
-            const { data: projects } = await supabase
-                .from('projects')
-                .select('*')
-                .eq('status', 'open')
-                .order('created_at', { ascending: false });
-            let html = '<table><tr><th>Nom</th><th>Description</th><th>Montant requis</th><th>Collecté</th><th>Action</th></tr>';
+            const { data: projects } = await supabase.from('projects').select('*').eq('status', 'open').order(
+                'created_at', { ascending: false });
+            let html = '<table><tr><th>Nom</th><th>Description</th><th>Montant</th><th>Action</th></tr>';
             if (projects && projects.length) {
-                for (const p of projects) {
-                    const { data: invs } = await supabase
-                        .from('investments')
-                        .select('amount')
-                        .eq('project_id', p.id);
-                    let collected = 0;
-                    if (invs) invs.forEach(i => collected += i.amount);
-                    const progress = p.amount_required > 0 ? (collected / p.amount_required * 100).toFixed(0) : 0;
-                    const actionBtn = currentUser ?
-                        `<button class="btn btn-primary invest-action" data-project-id="${p.id}">Investir</button>` :
-                        `<button class="btn btn-outline invest-action-require-login">Connectez-vous</button>`;
-                    html += `<tr>
-                        <td><strong>${p.name}</strong></td>
-                        <td>${p.description || '-'}</td>
-                        <td>${p.amount_required} €</td>
-                        <td>${collected.toFixed(2)} € (${progress}%)</td>
-                        <td>${actionBtn}</td>
-                    </tr>`;
-                }
-            } else {
-                html += '<tr><td colspan="5">Aucun projet disponible</td></tr>';
-            }
+                projects.forEach(p => {
+                    const action = currentUser ?
+                        `<button class="btn btn-primary invest-btn" data-id="${p.id}">Investir</button>` :
+                        `<button class="btn btn-outline" onclick="openAuthModal('login')">Connectez-vous</button>`;
+                    html +=
+                        `<tr><td><strong>${p.name}</strong></td><td>${p.description || '-'}</td><td>${p.amount_required} €</td><td>${action}</td></tr>`;
+                });
+            } else { html += '<tr><td colspan="4">Aucun projet</td></tr>'; }
             html += '</table>';
-            document.getElementById('publicProjectsFull').innerHTML = html;
+            document.getElementById('allProjectsList').innerHTML = html;
 
-            // Événements
-            document.querySelectorAll('.invest-action').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const projectId = btn.dataset.projectId;
+            document.querySelectorAll('.invest-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const id = btn.dataset.id;
                     const amount = prompt('Montant à investir (€) :');
                     if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
-                        investInProject(projectId, parseFloat(amount));
+                        const { error } = await supabase
+                            .from('investments')
+                            .insert({ investor_id: currentUser.id, project_id: id, amount: parseFloat(
+                                    amount), status: 'active', created_at: new Date()
+                                .toISOString() });
+                        if (error) alert('Erreur: ' + error.message);
+                        else alert('✅ Investissement réalisé !');
+                        loadAllProjects();
                     }
                 });
             });
-            document.querySelectorAll('.invest-action-require-login').forEach(btn => {
-                btn.addEventListener('click', () => openAuthModal('login', 'Veuillez vous connecter pour investir.'));
-            });
         }
 
-        // Liste complète des prêts (publics)
         async function loadAllLoans() {
-            const { data: loans } = await supabase
-                .from('loans')
-                .select('*, profiles(full_name)')
-                .eq('status', 'approved')
-                .order('created_at', { ascending: false });
-            let html = '<table><tr><th>Emprunteur</th><th>Montant</th><th>Durée (mois)</th><th>Objet</th><th>Date</th></tr>';
+            const { data: loans } = await supabase.from('loans').select('*, profiles(full_name)').eq('status',
+                'approved').order('created_at', { ascending: false });
+            let html = '<table><tr><th>Emprunteur</th><th>Montant</th><th>Durée</th></tr>';
             if (loans && loans.length) {
-                loans.forEach(l => {
-                    html += `<tr><td>${l.profiles?.full_name || l.borrower_id}</td><td>${l.amount} €</td><td>${l.duration_months}</td><td>${l.purpose || '-'}</td><td>${new Date(l.created_at).toLocaleDateString()}</td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="5">Aucun prêt approuvé</td></tr>';
-            }
+                loans.forEach(l => { html +=
+                        `<tr><td>${l.profiles?.full_name || l.borrower_id}</td><td>${l.amount} €</td><td>${l.duration_months} mois</td></tr>`; });
+            } else { html += '<tr><td colspan="3">Aucun prêt</td></tr>'; }
             html += '</table>';
-            document.getElementById('publicLoansFull').innerHTML = html;
+            document.getElementById('allLoansList').innerHTML = html;
         }
 
-        // ============================================================
-        // 9. FONCTIONS D'ACTION (nécessitent connexion)
-        // ============================================================
+        async function loadBorrowerDashboard() {
+            const { data: loans } = await supabase.from('loans').select('*').eq('borrower_id', currentUser.id);
+            const approved = loans?.filter(l => l.status === 'approved').length || 0;
+            const pending = loans?.filter(l => l.status === 'pending').length || 0;
+            document.getElementById('borrowerLoanCount').textContent = approved;
+            document.getElementById('borrowerPendingCount').textContent = pending;
 
-        async function investInProject(projectId, amount) {
-            if (!currentUser) {
-                openAuthModal('login', 'Vous devez être connecté pour investir.');
-                return;
-            }
-            const { error } = await supabase
-                .from('investments')
-                .insert({
-                    investor_id: currentUser.id,
-                    project_id: projectId,
-                    amount: amount,
-                    status: 'active',
-                    created_at: new Date().toISOString()
-                });
-            if (error) {
-                alert('Erreur : ' + error.message);
-            } else {
-                alert('✅ Investissement réalisé avec succès !');
-                navigateTo('projects'); // refresh
-            }
-        }
-
-        // ============================================================
-        // 10. RENDU DES PAGES PRIVÉES (emprunteur, investisseur, admin)
-        // ============================================================
-
-        // --- BORROWER ---
-        function renderBorrowerDashboard() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = `
-                <div class="flex-row">
-                    <div class="stat-box"><div class="label">Solde disponible</div><div class="value">0 €</div></div>
-                    <div class="stat-box"><div class="label">Prêts en cours</div><div class="value" id="borrowerLoanCount">0</div></div>
-                    <div class="stat-box"><div class="label">Prochain remboursement</div><div class="value">-</div></div>
-                </div>
-                ${makeCard('📋 Résumé des prêts', '<div id="borrowerLoanList">Chargement...</div>')}
-            `;
-            loadBorrowerDashboardData();
-        }
-
-        async function loadBorrowerDashboardData() {
-            const { data, error } = await supabase
-                .from('loans')
-                .select('id')
-                .eq('borrower_id', currentUser.id)
-                .in('status', ['approved', 'pending']);
-            document.getElementById('borrowerLoanCount').textContent = data ? data.length : 0;
-            // Liste des prêts
-            const { data: loans } = await supabase
-                .from('loans')
-                .select('*')
-                .eq('borrower_id', currentUser.id)
-                .order('created_at', { ascending: false })
-                .limit(5);
             let html = '<table><tr><th>Montant</th><th>Statut</th><th>Date</th></tr>';
             if (loans && loans.length) {
-                loans.forEach(l => {
-                    html += `<tr><td>${l.amount} €</td><td><span class="status ${l.status}">${l.status}</span></td><td>${new Date(l.created_at).toLocaleDateString()}</td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="3">Aucun prêt</td></tr>';
-            }
+                loans.slice(0, 5).forEach(l => { html +=
+                        `<tr><td>${l.amount} €</td><td><span class="status ${l.status}">${l.status}</span></td><td>${new Date(l.created_at).toLocaleDateString()}</td></tr>`; });
+            } else { html += '<tr><td colspan="3">Aucun prêt</td></tr>'; }
             html += '</table>';
             document.getElementById('borrowerLoanList').innerHTML = html;
         }
 
-        function renderRequestLoan() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = `
-                <div class="card">
-                    <h3>📝 Demander un prêt</h3>
-                    <form id="loanRequestForm">
-                        <div class="form-group"><label>Montant (€)</label><input type="number" id="loanAmount" required /></div>
-                        <div class="form-group"><label>Durée (mois)</label><input type="number" id="loanDuration" required /></div>
-                        <div class="form-group"><label>Objet</label><textarea id="loanPurpose" placeholder="Décrivez votre projet..."></textarea></div>
-                        <button type="submit" class="btn btn-primary">Soumettre la demande</button>
-                    </form>
-                    <div id="loanRequestMessage"></div>
-                </div>
-            `;
-            document.getElementById('loanRequestForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const amount = parseFloat(document.getElementById('loanAmount').value);
-                const duration = parseInt(document.getElementById('loanDuration').value);
-                const purpose = document.getElementById('loanPurpose').value;
-                if (!amount || !duration) {
-                    document.getElementById('loanRequestMessage').innerHTML = '<span style="color:red;">Veuillez remplir tous les champs.</span>';
-                    return;
-                }
-                const { error } = await supabase
-                    .from('loans')
-                    .insert({
-                        borrower_id: currentUser.id,
-                        amount: amount,
-                        duration_months: duration,
-                        purpose: purpose,
-                        status: 'pending',
-                        created_at: new Date().toISOString()
-                    });
-                if (error) {
-                    document.getElementById('loanRequestMessage').innerHTML = `<span style="color:red;">Erreur : ${error.message}</span>`;
-                } else {
-                    document.getElementById('loanRequestMessage').innerHTML = '<span style="color:green;">✅ Demande soumise avec succès !</span>';
-                    document.getElementById('loanRequestForm').reset();
-                }
-            });
-        }
-
-        function renderMyLoans() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = makeCard('📋 Mes prêts', '<div id="borrowerLoansTable">Chargement...</div>');
-            loadMyLoansData();
-        }
-
-        async function loadMyLoansData() {
-            const { data, error } = await supabase
-                .from('loans')
-                .select('*')
-                .eq('borrower_id', currentUser.id)
-                .order('created_at', { ascending: false });
-            let html = '<table><tr><th>Montant</th><th>Durée (mois)</th><th>Objet</th><th>Statut</th><th>Date</th></tr>';
-            if (data && data.length) {
-                data.forEach(l => {
-                    html += `<tr><td>${l.amount} €</td><td>${l.duration_months}</td><td>${l.purpose || '-'}</td><td><span class="status ${l.status}">${l.status}</span></td><td>${new Date(l.created_at).toLocaleDateString()}</td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="5">Aucun prêt</td></tr>';
-            }
-            html += '</table>';
-            document.getElementById('borrowerLoansTable').innerHTML = html;
-        }
-
-        function renderRepayments() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = makeCard('💰 Remboursements', '<div id="repaymentsTable">Chargement...</div>');
-            loadRepaymentsData();
-        }
-
-        async function loadRepaymentsData() {
-            const { data: loans } = await supabase
-                .from('loans')
-                .select('*')
-                .eq('borrower_id', currentUser.id)
-                .eq('status', 'approved');
-            let html = '<table><tr><th>Prêt</th><th>Mensualité</th><th>Date échéance</th><th>Statut</th></tr>';
+        async function loadMyLoans() {
+            const { data: loans } = await supabase.from('loans').select('*').eq('borrower_id', currentUser.id).order(
+                'created_at', { ascending: false });
+            let html = '<table><tr><th>Montant</th><th>Durée</th><th>Statut</th><th>Date</th></tr>';
             if (loans && loans.length) {
-                loans.forEach(l => {
-                    const monthly = (l.amount / l.duration_months).toFixed(2);
-                    const due = new Date();
-                    due.setMonth(due.getMonth() + 1);
-                    html += `<tr><td>${l.amount} €</td><td>${monthly} €</td><td>${due.toLocaleDateString()}</td><td><span class="status pending">à venir</span></td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="4">Aucun remboursement prévu</td></tr>';
-            }
+                loans.forEach(l => { html +=
+                        `<tr><td>${l.amount} €</td><td>${l.duration_months} mois</td><td><span class="status ${l.status}">${l.status}</span></td><td>${new Date(l.created_at).toLocaleDateString()}</td></tr>`; });
+            } else { html += '<tr><td colspan="4">Aucun prêt</td></tr>'; }
             html += '</table>';
-            document.getElementById('repaymentsTable').innerHTML = html;
+            document.getElementById('myLoansList').innerHTML = html;
         }
 
-        // --- INVESTOR ---
-        function renderInvestorDashboard() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = `
-                <div class="flex-row">
-                    <div class="stat-box"><div class="label">Portefeuille investi</div><div class="value" id="investorPortfolioValue">0 €</div></div>
-                    <div class="stat-box"><div class="label">Projets actifs</div><div class="value" id="investorProjectCount">0</div></div>
-                    <div class="stat-box"><div class="label">Retour estimé</div><div class="value" id="investorReturns">0 €</div></div>
-                </div>
-                ${makeCard('📈 Derniers investissements', '<div id="investorInvestList">Chargement...</div>')}
-            `;
-            loadInvestorDashboardData();
+        async function loadRepayments() {
+            const { data: loans } = await supabase.from('loans').select('*').eq('borrower_id', currentUser.id).eq(
+                'status', 'approved');
+            let html = '<table><tr><th>Prêt</th><th>Mensualité</th><th>Statut</th></tr>';
+            if (loans && loans.length) {
+                loans.forEach(l => { const monthly = (l.amount / l.duration_months).toFixed(2);
+                    html +=
+                        `<tr><td>${l.amount} €</td><td>${monthly} €</td><td><span class="status pending">à venir</span></td></tr>`; });
+            } else { html += '<tr><td colspan="3">Aucun remboursement</td></tr>'; }
+            html += '</table>';
+            document.getElementById('repaymentsList').innerHTML = html;
         }
 
-        async function loadInvestorDashboardData() {
-            const { data: investments } = await supabase
-                .from('investments')
-                .select('amount')
-                .eq('investor_id', currentUser.id);
+        async function loadInvestorDashboard() {
+            const { data: invs } = await supabase.from('investments').select('amount').eq('investor_id', currentUser.id);
             let total = 0;
-            if (investments) investments.forEach(i => total += i.amount);
+            if (invs) invs.forEach(i => total += i.amount);
             document.getElementById('investorPortfolioValue').textContent = total.toFixed(2) + ' €';
-            const { data: projects } = await supabase
-                .from('investments')
-                .select('project_id')
-                .eq('investor_id', currentUser.id);
-            const uniqueProjects = new Set(projects ? projects.map(p => p.project_id) : []);
-            document.getElementById('investorProjectCount').textContent = uniqueProjects.size;
-            document.getElementById('investorReturns').textContent = (total * 0.05).toFixed(2) + ' €';
+            document.getElementById('investorCount').textContent = invs?.length || 0;
 
-            const { data: lastInv } = await supabase
-                .from('investments')
-                .select('*, projects(name)')
-                .eq('investor_id', currentUser.id)
-                .order('created_at', { ascending: false })
-                .limit(5);
+            const { data: list } = await supabase.from('investments').select('*, projects(name)').eq('investor_id',
+                currentUser.id).order('created_at', { ascending: false }).limit(5);
             let html = '<table><tr><th>Projet</th><th>Montant</th><th>Date</th></tr>';
-            if (lastInv && lastInv.length) {
-                lastInv.forEach(inv => {
-                    html += `<tr><td>${inv.projects?.name || 'Projet'}</td><td>${inv.amount} €</td><td>${new Date(inv.created_at).toLocaleDateString()}</td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="3">Aucun investissement</td></tr>';
-            }
+            if (list && list.length) {
+                list.forEach(i => { html +=
+                        `<tr><td>${i.projects?.name || 'Projet'}</td><td>${i.amount} €</td><td>${new Date(i.created_at).toLocaleDateString()}</td></tr>`; });
+            } else { html += '<tr><td colspan="3">Aucun investissement</td></tr>'; }
             html += '</table>';
             document.getElementById('investorInvestList').innerHTML = html;
         }
 
-        function renderInvestorPortfolio() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = makeCard('💼 Mon portefeuille', '<div id="investorPortfolioTable">Chargement...</div>');
-            loadPortfolioData();
-        }
-
-        async function loadPortfolioData() {
-            const { data: investments } = await supabase
-                .from('investments')
-                .select('*, projects(name, amount_required)')
-                .eq('investor_id', currentUser.id);
-            let html = '<table><tr><th>Projet</th><th>Montant investi</th><th>Date</th><th>Statut</th></tr>';
-            if (investments && investments.length) {
-                investments.forEach(inv => {
-                    html += `<tr><td>${inv.projects?.name || 'Projet'}</td><td>${inv.amount} €</td><td>${new Date(inv.created_at).toLocaleDateString()}</td><td><span class="status active">actif</span></td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="4">Aucun investissement</td></tr>';
-            }
+        async function loadPortfolio() {
+            const { data: invs } = await supabase.from('investments').select('*, projects(name)').eq('investor_id',
+                currentUser.id);
+            let html = '<table><tr><th>Projet</th><th>Montant</th><th>Date</th></tr>';
+            if (invs && invs.length) {
+                invs.forEach(i => { html +=
+                        `<tr><td>${i.projects?.name || 'Projet'}</td><td>${i.amount} €</td><td>${new Date(i.created_at).toLocaleDateString()}</td></tr>`; });
+            } else { html += '<tr><td colspan="3">Aucun investissement</td></tr>'; }
             html += '</table>';
-            document.getElementById('investorPortfolioTable').innerHTML = html;
+            document.getElementById('portfolioList').innerHTML = html;
         }
 
-        // --- ADMIN ---
-        function renderAdminDashboard() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = `
-                <div class="flex-row">
-                    <div class="stat-box"><div class="label">Total utilisateurs</div><div class="value" id="adminUserCount">0</div></div>
-                    <div class="stat-box"><div class="label">Prêts actifs</div><div class="value" id="adminLoanCount">0</div></div>
-                    <div class="stat-box"><div class="label">Investissements totaux</div><div class="value" id="adminInvestmentTotal">0 €</div></div>
-                </div>
-                ${makeCard('📊 Activité récente', '<div id="adminActivity">Chargement...</div>')}
-            `;
-            loadAdminDashboardData();
-        }
-
-        async function loadAdminDashboardData() {
-            const { count: userCount } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
-            document.getElementById('adminUserCount').textContent = userCount || 0;
-            const { count: loanCount } = await supabase.from('loans').select('*', { count: 'exact', head: true }).eq('status', 'approved');
-            document.getElementById('adminLoanCount').textContent = loanCount || 0;
+        async function loadAdminDashboard() {
+            const { count: users } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
+            document.getElementById('adminUserCount').textContent = users || 0;
+            const { count: loans } = await supabase.from('loans').select('*', { count: 'exact', head: true }).eq(
+                'status', 'approved');
+            document.getElementById('adminLoanCount').textContent = loans || 0;
             const { data: invs } = await supabase.from('investments').select('amount');
-            let total = 0;
-            if (invs) invs.forEach(i => total += i.amount);
-            document.getElementById('adminInvestmentTotal').textContent = total.toFixed(2) + ' €';
+            document.getElementById('adminInvestCount').textContent = invs?.length || 0;
 
-            const { data: recentLoans } = await supabase
-                .from('loans')
-                .select('*, profiles(full_name)')
-                .order('created_at', { ascending: false })
-                .limit(5);
-            let html = '<table><tr><th>Emprunteur</th><th>Montant</th><th>Statut</th><th>Date</th></tr>';
-            if (recentLoans && recentLoans.length) {
-                recentLoans.forEach(l => {
-                    html += `<tr><td>${l.profiles?.full_name || l.borrower_id}</td><td>${l.amount} €</td><td><span class="status ${l.status}">${l.status}</span></td><td>${new Date(l.created_at).toLocaleDateString()}</td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="4">Aucune activité</td></tr>';
-            }
+            const { data: recent } = await supabase.from('loans').select('*, profiles(full_name)').order('created_at',
+                { ascending: false }).limit(5);
+            let html = '<table><tr><th>Emprunteur</th><th>Montant</th><th>Statut</th></tr>';
+            if (recent && recent.length) {
+                recent.forEach(l => { html +=
+                        `<tr><td>${l.profiles?.full_name || l.borrower_id}</td><td>${l.amount} €</td><td><span class="status ${l.status}">${l.status}</span></td></tr>`; });
+            } else { html += '<tr><td colspan="3">Aucune activité</td></tr>'; }
             html += '</table>';
             document.getElementById('adminActivity').innerHTML = html;
         }
 
-        function renderAdminUsers() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = makeCard('👥 Utilisateurs', '<div id="adminUsersTable">Chargement...</div>');
-            loadAdminUsersData();
-        }
-
-        async function loadAdminUsersData() {
+        async function loadAdminUsers() {
             const { data: users } = await supabase.from('profiles').select('*');
-            let html = '<table><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Action</th></tr>';
+            let html = '<table><tr><th>Nom</th><th>Rôle</th></tr>';
             if (users && users.length) {
-                users.forEach(u => {
-                    html += `<tr><td>${u.full_name || '-'}</td><td>${u.email || u.id}</td><td>${u.role}</td><td><button class="btn btn-outline btn-sm" onclick="alert('Gestion à implémenter')">Modifier</button></td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="4">Aucun utilisateur</td></tr>';
-            }
+                users.forEach(u => { html += `<tr><td>${u.full_name || u.id}</td><td>${u.role}</td></tr>`; });
+            } else { html += '<tr><td colspan="2">Aucun utilisateur</td></tr>'; }
             html += '</table>';
-            document.getElementById('adminUsersTable').innerHTML = html;
+            document.getElementById('adminUsersList').innerHTML = html;
         }
 
-        function renderAdminLoans() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = makeCard('📋 Gestion des prêts', '<div id="adminLoansTable">Chargement...</div>');
-            loadAdminLoansData();
-        }
-
-        async function loadAdminLoansData() {
-            const { data: loans } = await supabase
-                .from('loans')
-                .select('*, profiles(full_name)')
-                .order('created_at', { ascending: false });
-            let html = '<table><tr><th>Emprunteur</th><th>Montant</th><th>Durée</th><th>Statut</th><th>Action</th></tr>';
+        async function loadAdminLoans() {
+            const { data: loans } = await supabase.from('loans').select('*, profiles(full_name)').order('created_at',
+                { ascending: false });
+            let html = '<table><tr><th>Emprunteur</th><th>Montant</th><th>Statut</th><th>Action</th></tr>';
             if (loans && loans.length) {
                 loans.forEach(l => {
-                    html += `<tr>
-                        <td>${l.profiles?.full_name || l.borrower_id}</td>
-                        <td>${l.amount} €</td>
-                        <td>${l.duration_months} mois</td>
-                        <td><span class="status ${l.status}">${l.status}</span></td>
-                        <td>
-                            ${l.status === 'pending' ? `<button class="btn btn-success btn-sm approve-loan" data-id="${l.id}">Approuver</button> <button class="btn btn-danger btn-sm reject-loan" data-id="${l.id}">Rejeter</button>` : '-'}
-                        </td>
-                    </tr>`;
+                    const actions = l.status === 'pending' ?
+                        `<button class="btn btn-success btn-sm approve-btn" data-id="${l.id}">Approuver</button> <button class="btn btn-danger btn-sm reject-btn" data-id="${l.id}">Rejeter</button>` :
+                        '-';
+                    html +=
+                        `<tr><td>${l.profiles?.full_name || l.borrower_id}</td><td>${l.amount} €</td><td><span class="status ${l.status}">${l.status}</span></td><td>${actions}</td></tr>`;
                 });
-            } else {
-                html += '<tr><td colspan="5">Aucun prêt</td></tr>';
-            }
+            } else { html += '<tr><td colspan="4">Aucun prêt</td></tr>'; }
             html += '</table>';
-            document.getElementById('adminLoansTable').innerHTML = html;
+            document.getElementById('adminLoansList').innerHTML = html;
 
-            document.querySelectorAll('.approve-loan').forEach(btn => {
+            document.querySelectorAll('.approve-btn').forEach(btn => {
                 btn.addEventListener('click', async () => {
-                    const id = btn.dataset.id;
-                    const { error } = await supabase.from('loans').update({ status: 'approved' }).eq('id', id);
-                    if (!error) { alert('Prêt approuvé'); navigateTo('admin-loans'); }
+                    await supabase.from('loans').update({ status: 'approved' }).eq('id', btn.dataset.id);
+                    loadAdminLoans();
                 });
             });
-            document.querySelectorAll('.reject-loan').forEach(btn => {
+            document.querySelectorAll('.reject-btn').forEach(btn => {
                 btn.addEventListener('click', async () => {
-                    const id = btn.dataset.id;
-                    const { error } = await supabase.from('loans').update({ status: 'rejected' }).eq('id', id);
-                    if (!error) { alert('Prêt rejeté'); navigateTo('admin-loans'); }
+                    await supabase.from('loans').update({ status: 'rejected' }).eq('id', btn.dataset.id);
+                    loadAdminLoans();
                 });
             });
         }
 
-        function renderAdminInvestments() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = makeCard('📈 Investissements', '<div id="adminInvestmentsTable">Chargement...</div>');
-            loadAdminInvestmentsData();
-        }
-
-        async function loadAdminInvestmentsData() {
-            const { data: invs } = await supabase
-                .from('investments')
-                .select('*, projects(name), profiles(full_name)')
+        async function loadAdminInvestments() {
+            const { data: invs } = await supabase.from('investments').select('*, projects(name), profiles(full_name)')
                 .order('created_at', { ascending: false });
-            let html = '<table><tr><th>Investisseur</th><th>Projet</th><th>Montant</th><th>Date</th></tr>';
+            let html = '<table><tr><th>Investisseur</th><th>Projet</th><th>Montant</th></tr>';
             if (invs && invs.length) {
-                invs.forEach(inv => {
-                    html += `<tr><td>${inv.profiles?.full_name || inv.investor_id}</td><td>${inv.projects?.name || 'Projet'}</td><td>${inv.amount} €</td><td>${new Date(inv.created_at).toLocaleDateString()}</td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="4">Aucun investissement</td></tr>';
-            }
+                invs.forEach(i => { html +=
+                        `<tr><td>${i.profiles?.full_name || i.investor_id}</td><td>${i.projects?.name || 'Projet'}</td><td>${i.amount} €</td></tr>`; });
+            } else { html += '<tr><td colspan="3">Aucun investissement</td></tr>'; }
             html += '</table>';
-            document.getElementById('adminInvestmentsTable').innerHTML = html;
+            document.getElementById('adminInvestmentsList').innerHTML = html;
         }
 
-        function renderAdminTransactions() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = makeCard('💳 Transactions', '<div id="adminTransactionsTable">Chargement...</div>');
-            loadAdminTransactionsData();
-        }
-
-        async function loadAdminTransactionsData() {
+        async function loadAdminTransactions() {
             const { data: loans } = await supabase.from('loans').select('amount, created_at, status');
             const { data: invs } = await supabase.from('investments').select('amount, created_at');
             let rows = [];
-            if (loans) loans.forEach(l => rows.push({ type: 'Prêt', amount: l.amount, date: l.created_at, status: l.status }));
-            if (invs) invs.forEach(i => rows.push({ type: 'Investissement', amount: i.amount, date: i.created_at, status: 'terminé' }));
+            if (loans) loans.forEach(l => rows.push({ type: 'Prêt', amount: l.amount, date: l.created_at }));
+            if (invs) invs.forEach(i => rows.push({ type: 'Invest', amount: i.amount, date: i.created_at }));
             rows.sort((a, b) => new Date(b.date) - new Date(a.date));
-            let html = '<table><tr><th>Type</th><th>Montant</th><th>Date</th><th>Statut</th></tr>';
+            let html = '<table><tr><th>Type</th><th>Montant</th><th>Date</th></tr>';
             if (rows.length) {
-                rows.slice(0, 20).forEach(r => {
-                    html += `<tr><td>${r.type}</td><td>${r.amount} €</td><td>${new Date(r.date).toLocaleDateString()}</td><td><span class="status ${r.status}">${r.status}</span></td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="4">Aucune transaction</td></tr>';
-            }
+                rows.slice(0, 15).forEach(r => { html +=
+                        `<tr><td>${r.type}</td><td>${r.amount} €</td><td>${new Date(r.date).toLocaleDateString()}</td></tr>`; });
+            } else { html += '<tr><td colspan="3">Aucune transaction</td></tr>'; }
             html += '</table>';
-            document.getElementById('adminTransactionsTable').innerHTML = html;
+            document.getElementById('adminTransactionsList').innerHTML = html;
         }
 
-        function renderAdminKyc() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = makeCard('🛡️ KYC', '<div id="adminKycTable">Chargement...</div>');
-            loadAdminKycData();
-        }
-
-        async function loadAdminKycData() {
-            const { data: kyc } = await supabase.from('kyc').select('*, profiles(full_name)').order('created_at', { ascending: false });
-            let html = '<table><tr><th>Utilisateur</th><th>Type</th><th>Statut</th><th>Action</th></tr>';
+        async function loadAdminKyc() {
+            const { data: kyc } = await supabase.from('kyc').select('*, profiles(full_name)').order('created_at',
+                { ascending: false });
+            let html = '<table><tr><th>Utilisateur</th><th>Statut</th></tr>';
             if (kyc && kyc.length) {
-                kyc.forEach(k => {
-                    html += `<tr><td>${k.profiles?.full_name || k.user_id}</td><td>${k.document_type || 'ID'}</td><td><span class="status ${k.status}">${k.status}</span></td><td><button class="btn btn-success btn-sm">Vérifier</button></td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="4">Aucune demande KYC</td></tr>';
-            }
+                kyc.forEach(k => { html +=
+                        `<tr><td>${k.profiles?.full_name || k.user_id}</td><td><span class="status ${k.status}">${k.status}</span></td></tr>`; });
+            } else { html += '<tr><td colspan="2">Aucune demande</td></tr>'; }
             html += '</table>';
-            document.getElementById('adminKycTable').innerHTML = html;
+            document.getElementById('adminKycList').innerHTML = html;
         }
 
-        function renderAdminDocuments() {
-            const container = document.getElementById('pageContent');
-            container.innerHTML = makeCard('📄 Documents', '<div id="adminDocumentsTable">Chargement...</div>');
-            loadAdminDocumentsData();
-        }
-
-        async function loadAdminDocumentsData() {
-            const { data: docs } = await supabase.from('documents').select('*, profiles(full_name)').order('created_at', { ascending: false });
-            let html = '<table><tr><th>Utilisateur</th><th>Nom du fichier</th><th>Date</th><th>Action</th></tr>';
+        async function loadAdminDocuments() {
+            const { data: docs } = await supabase.from('documents').select('*, profiles(full_name)').order('created_at',
+                { ascending: false });
+            let html = '<table><tr><th>Utilisateur</th><th>Fichier</th></tr>';
             if (docs && docs.length) {
-                docs.forEach(d => {
-                    html += `<tr><td>${d.profiles?.full_name || d.user_id}</td><td>${d.file_name}</td><td>${new Date(d.created_at).toLocaleDateString()}</td><td><a href="#" class="btn btn-outline btn-sm">Télécharger</a></td></tr>`;
-                });
-            } else {
-                html += '<tr><td colspan="4">Aucun document</td></tr>';
-            }
+                docs.forEach(d => { html += `<tr><td>${d.profiles?.full_name || d.user_id}</td><td>${d.file_name}</td></tr>`; });
+            } else { html += '<tr><td colspan="2">Aucun document</td></tr>'; }
             html += '</table>';
-            document.getElementById('adminDocumentsTable').innerHTML = html;
+            document.getElementById('adminDocumentsList').innerHTML = html;
         }
 
         // ============================================================
-        // 11. INITIALISATION
+        // INIT
         // ============================================================
-
         checkSession();
 
-        // Pour les besoins de démonstration, on affiche un message dans la console
-        console.log('🏦 Soha Bank - Mode public activé. Connectez-vous pour investir ou emprunter.');
-
-        // ============================================================
-        // 12. STRUCTURE DES TABLES SUPABASE (rappel)
-        // ============================================================
-        /*
-        Tables nécessaires :
-        - profiles (id, full_name, role, email)
-        - loans (id, borrower_id, amount, duration_months, purpose, status, created_at)
-        - projects (id, name, description, amount_required, status, created_at)
-        - investments (id, investor_id, project_id, amount, status, created_at)
-        - kyc (id, user_id, document_type, status, created_at)
-        - documents (id, user_id, file_name, file_url, created_at)
-        */
+        console.log('🏦 Soha Bank connectée à Supabase');
+        console.log('URL:', SUPABASE_URL);
+        console.log('Clé anon:', SUPABASE_ANON_KEY ? '✅ Présente' : '❌ MANQUANTE !');
     </script>
 </body>
 </html>
