@@ -1,1342 +1,911 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kundenbank – Online-Banking, Kredite, Sparprodukte</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Soha Bank</title>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* ---------- RESET & VARIABLES ---------- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            background: #f4f8fc;
-            color: #1e2a3a;
-            line-height: 1.6;
-        }
-        :root {
-            --primary: #0f2b4b;
-            --primary-light: #1a3f64;
-            --accent: #00a3e0;
-            --accent-hover: #0088c0;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-500: #6b7280;
-            --gray-700: #374151;
-            --gray-900: #111827;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 20px 50px -10px rgba(0, 0, 0, 0.12);
-            --radius: 12px;
-            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        /* ----- RESET & BASE ----- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f4f7fc; color: #1a2a3a; }
+        a { text-decoration: none; color: inherit; }
+        .hidden { display: none !important; }
 
-        /* ---------- HEADER ---------- */
-        .navbar {
-            background: var(--primary);
-            padding: 0 2rem;
-            height: 72px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        }
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            color: white;
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .nav-logo i { color: var(--accent); font-size: 1.9rem; }
-        .nav-logo span { color: white; }
-        .nav-logo small { font-size: 0.7rem; font-weight: 400; opacity: 0.8; margin-left: 4px; letter-spacing: 0.3px; }
+        /* ----- CONTAINERS ----- */
+        .page { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .auth-page { max-width: 420px; margin: 60px auto; background: white; padding: 40px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+        .auth-page h2 { text-align: center; margin-bottom: 24px; color: #0a2540; }
+        .auth-page input { width: 100%; padding: 12px 16px; margin: 8px 0 16px; border: 1px solid #d0d9e8; border-radius: 8px; font-size: 1rem; }
+        .auth-page button { width: 100%; padding: 14px; background: #0a2540; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.2s; }
+        .auth-page button:hover { background: #1d3b5a; }
+        .auth-link { text-align: center; margin-top: 16px; }
+        .auth-link span { color: #0a2540; font-weight: 600; cursor: pointer; }
 
-        /* Bouton hamburger (dépliant) */
-        .menu-toggle {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 0.55rem 1.2rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            transition: var(--transition);
-            font-family: 'Inter', sans-serif;
-        }
-        .menu-toggle:hover {
-            background: var(--accent-hover);
-            transform: scale(1.02);
-            box-shadow: 0 4px 12px rgba(0,163,224,0.3);
-        }
-        .menu-toggle i { font-size: 1.1rem; }
+        /* ----- TOP BAR ----- */
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 24px; }
+        .topbar .brand { font-size: 1.5rem; font-weight: 700; color: #0a2540; }
+        .topbar .brand small { font-weight: 400; color: #5a6f8c; }
+        .topbar .user-info { display: flex; align-items: center; gap: 16px; }
+        .topbar .user-info .role-badge { background: #eef3f9; padding: 4px 12px; border-radius: 30px; font-size: 0.8rem; font-weight: 600; color: #0a2540; }
+        .topbar .user-info button { background: #e74c3c; color: white; border: none; padding: 6px 16px; border-radius: 30px; cursor: pointer; font-weight: 600; }
 
-        /* Menu dépliant (overlay) */
-        .menu-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.4);
-            z-index: 999;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        .menu-overlay.open {
-            display: block;
-            opacity: 1;
-        }
+        /* ----- NAV TABS ----- */
+        .nav-tabs { display: flex; gap: 4px; background: white; border-radius: 12px; padding: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 24px; flex-wrap: wrap; }
+        .nav-tabs .tab { padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: 0.15s; }
+        .nav-tabs .tab:hover { background: #eef3f9; }
+        .nav-tabs .tab.active { background: #0a2540; color: white; }
 
-        .menu-panel {
-            position: fixed;
-            top: 0;
-            right: -420px;
-            width: 400px;
-            max-width: 90vw;
-            height: 100vh;
-            background: white;
-            box-shadow: var(--shadow-lg);
-            z-index: 1001;
-            padding: 2rem 1.8rem;
-            overflow-y: auto;
-            transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            gap: 1.8rem;
-        }
-        .menu-panel.open {
-            right: 0;
-        }
+        /* ----- CARDS & TABLES ----- */
+        .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 20px; }
+        .card h3 { margin-bottom: 16px; color: #0a2540; }
+        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; }
+        .flex-row > * { flex: 1; min-width: 200px; }
+        .stat-box { background: #f8faff; padding: 16px; border-radius: 10px; border-left: 4px solid #0a2540; }
+        .stat-box .label { font-size: 0.8rem; color: #5a6f8c; }
+        .stat-box .value { font-size: 1.8rem; font-weight: 700; color: #0a2540; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td { padding: 12px 8px; text-align: left; border-bottom: 1px solid #e9edf4; }
+        th { color: #5a6f8c; font-weight: 600; }
+        .status { padding: 4px 12px; border-radius: 30px; font-size: 0.75rem; font-weight: 600; display: inline-block; }
+        .status.pending { background: #fff3cd; color: #856404; }
+        .status.approved { background: #d4edda; color: #155724; }
+        .status.rejected { background: #f8d7da; color: #721c24; }
+        .status.completed { background: #cce5ff; color: #004085; }
+        .btn { display: inline-block; padding: 6px 16px; border-radius: 30px; font-weight: 600; font-size: 0.8rem; border: none; cursor: pointer; transition: 0.15s; }
+        .btn-primary { background: #0a2540; color: white; }
+        .btn-primary:hover { background: #1d3b5a; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-outline { background: transparent; border: 1px solid #0a2540; color: #0a2540; }
+        .btn-outline:hover { background: #0a2540; color: white; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 4px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #d0d9e8; border-radius: 8px; font-size: 0.95rem; }
+        .form-group textarea { resize: vertical; min-height: 80px; }
 
-        .menu-panel .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--gray-200);
-            padding-bottom: 1rem;
-        }
-        .menu-panel .panel-header h3 {
-            font-size: 1.3rem;
-            color: var(--primary);
-        }
-        .menu-panel .panel-header .close-panel {
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            cursor: pointer;
-            color: var(--gray-400);
-            transition: var(--transition);
-        }
-        .menu-panel .panel-header .close-panel:hover {
-            color: var(--gray-900);
-            transform: rotate(90deg);
-        }
-
-        /* Navigation links */
-        .nav-section {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-        .nav-section p {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--gray-400);
-            font-weight: 600;
-            margin-bottom: 0.3rem;
-        }
-        .nav-section a {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 0.6rem 0.8rem;
-            border-radius: 8px;
-            color: var(--gray-700);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-        .nav-section a:hover {
-            background: var(--gray-50);
-            color: var(--primary);
-        }
-        .nav-section a i {
-            width: 1.6rem;
-            color: var(--accent);
-            font-size: 1.1rem;
-        }
-        .nav-section a .badge {
-            margin-left: auto;
-            background: var(--gray-100);
-            padding: 0.1rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            color: var(--gray-500);
-        }
-
-        /* Authentication dans le menu */
-        .auth-section {
-            border-top: 1px solid var(--gray-200);
-            padding-top: 1.2rem;
-            margin-top: 0.2rem;
-        }
-        .auth-section .auth-toggle {
-            display: flex;
-            background: var(--gray-100);
-            border-radius: 50px;
-            padding: 4px;
-            margin-bottom: 1.2rem;
-        }
-        .auth-section .auth-toggle button {
-            flex: 1;
-            border: none;
-            background: transparent;
-            padding: 0.5rem 0;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--gray-500);
-            font-family: 'Inter', sans-serif;
-        }
-        .auth-section .auth-toggle button.active-tab {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        .auth-form { display: none; flex-direction: column; gap: 1rem; }
-        .auth-form.active-form { display: flex; }
-        .auth-form .social-login {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.8rem;
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            border-radius: 50px;
-            padding: 0.65rem;
-            cursor: pointer;
-            transition: var(--transition);
-            color: var(--gray-700);
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-        .auth-form .social-login:hover {
-            background: white;
-            border-color: var(--gray-300);
-        }
-        .auth-form .social-login i { font-size: 1.2rem; color: #db4437; }
-        .auth-form .divider {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            color: var(--gray-400);
-            font-size: 0.8rem;
-        }
-        .auth-form .divider hr { flex: 1; border: none; border-top: 1px solid var(--gray-200); }
-
-        .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
-        .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--gray-700); }
-        .form-group input {
-            padding: 0.7rem 1rem;
-            border: 1.5px solid var(--gray-200);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: var(--transition);
-            font-family: 'Inter', sans-serif;
-            background: var(--gray-50);
-        }
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--accent);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(0,163,224,0.12);
-        }
-        .password-requirements {
-            font-size: 0.7rem;
-            color: var(--gray-500);
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.3rem 0.8rem;
-            margin-top: 4px;
-        }
-        .password-requirements span { display: flex; align-items: center; gap: 4px; }
-        .password-requirements .valid { color: #16a34a; }
-        .password-requirements .invalid { color: #dc2626; }
-
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 0.2rem 0;
-        }
-        .form-options a {
-            color: var(--accent);
-            font-size: 0.85rem;
-            text-decoration: none;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        .form-options a:hover { text-decoration: underline; }
-
-        .btn-submit {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.8rem;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Inter', sans-serif;
-            margin-top: 0.3rem;
-        }
-        .btn-submit:hover {
-            background: var(--primary-light);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(15,43,75,0.2);
-        }
-
-        .reset-section { display: none; flex-direction: column; gap: 1rem; }
-        .reset-section.active-reset { display: flex; }
-        .back-to-login {
-            color: var(--accent);
-            cursor: pointer;
-            font-weight: 500;
-            background: none;
-            border: none;
-            align-self: flex-start;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .message-box {
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            display: none;
-        }
-        .message-box.success { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; display: block; }
-        .message-box.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; display: block; }
-
-        /* ---------- HERO ---------- */
-        .hero {
-            max-width: 1200px;
-            margin: 2rem auto 2.5rem;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-        .hero-content h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            line-height: 1.1;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-        .hero-content h1 .highlight { color: var(--accent); }
-        .hero-content p {
-            font-size: 1.05rem;
-            color: var(--gray-500);
-            margin-bottom: 1.8rem;
-        }
-        .hero-cta {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        .hero-cta .btn-primary {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 0.85rem 2.2rem;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Inter', sans-serif;
-        }
-        .hero-cta .btn-primary:hover {
-            background: var(--accent-hover);
-            transform: scale(1.02);
-        }
-        .hero-cta .btn-outline {
-            background: transparent;
-            color: var(--primary);
-            border: 2px solid var(--gray-300);
-            padding: 0.85rem 2.2rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Inter', sans-serif;
-        }
-        .hero-cta .btn-outline:hover {
-            border-color: var(--primary);
-            background: var(--gray-50);
-        }
-
-        /* ---------- CALCULATOR ---------- */
-        .calc-card {
-            background: white;
-            padding: 1.8rem 2rem 2rem;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--gray-200);
-        }
-        .calc-card h2 {
-            font-size: 1.3rem;
-            color: var(--primary);
-            margin-bottom: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .calc-card h2 i { color: var(--accent); }
-
-        .calc-field {
-            margin-bottom: 1.2rem;
-        }
-        .calc-field label {
-            display: flex;
-            justify-content: space-between;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: var(--gray-700);
-            margin-bottom: 4px;
-        }
-        .calc-field label span {
-            color: var(--primary);
-            background: var(--gray-100);
-            padding: 0.1rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-        }
-        .calc-field input[type="range"] {
-            width: 100%;
-            height: 6px;
-            -webkit-appearance: none;
-            appearance: none;
-            background: var(--gray-200);
-            border-radius: 10px;
-            outline: none;
-            transition: background 0.2s;
-        }
-        .calc-field input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            background: var(--accent);
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid white;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-        }
-        .calc-field input[type="range"]::-moz-range-thumb {
-            width: 18px;
-            height: 18px;
-            background: var(--accent);
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid white;
-        }
-        .calc-field .value-input {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 6px;
-        }
-        .calc-field .value-input input[type="number"] {
-            flex: 1;
-            padding: 0.4rem 0.8rem;
-            border: 1.5px solid var(--gray-200);
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            background: var(--gray-50);
-            width: 100%;
-        }
-        .calc-field .value-input input[type="number"]:focus {
-            border-color: var(--accent);
-            background: white;
-            outline: none;
-        }
-        .calc-field .value-input .unit {
-            font-weight: 600;
-            color: var(--gray-500);
-            min-width: 30px;
-        }
-
-        .result-box {
-            background: var(--primary);
-            color: white;
-            border-radius: var(--radius);
-            padding: 1rem 1.5rem;
-            margin-top: 1.2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .result-box .label { font-size: 0.85rem; opacity: 0.8; font-weight: 500; }
-        .result-box .value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .result-details {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 0.6rem;
-            padding: 0 0.2rem;
-            font-size: 0.8rem;
-            color: var(--gray-500);
-        }
-        .result-details strong { color: var(--gray-900); }
-
-        /* ---------- TOP THEMES ---------- */
-        .section-title {
-            max-width: 1200px;
-            margin: 2.5rem auto 0.5rem;
-            padding: 0 2rem;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .section-title i { color: var(--accent); margin-right: 8px; }
-
-        .top-themes {
-            max-width: 1200px;
-            margin: 1.5rem auto 2.5rem;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-        .theme-card {
-            background: white;
-            padding: 1.8rem 1.5rem;
-            border-radius: var(--radius);
-            border: 1px solid var(--gray-200);
-            transition: var(--transition);
-            text-align: center;
-        }
-        .theme-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow);
-        }
-        .theme-card i {
-            font-size: 2.2rem;
-            color: var(--accent);
-            margin-bottom: 0.8rem;
-        }
-        .theme-card h3 {
-            font-size: 1.1rem;
-            color: var(--primary);
-            margin-bottom: 0.4rem;
-        }
-        .theme-card p {
-            font-size: 0.9rem;
-            color: var(--gray-500);
-        }
-        .theme-card .highlight-rate {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        .theme-card .highlight-rate small {
-            font-size: 1rem;
-            font-weight: 400;
-            color: var(--gray-500);
-        }
-        .theme-card .btn-theme {
-            margin-top: 1rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: var(--transition);
-            font-family: 'Inter', sans-serif;
-        }
-        .theme-card .btn-theme:hover {
-            background: var(--primary-light);
-        }
-
-        /* ---------- PRODUKTE ---------- */
-        .produkte-grid {
-            max-width: 1200px;
-            margin: 1.5rem auto 2.5rem;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.5rem;
-        }
-        .produkt-card {
-            background: white;
-            padding: 1.5rem 1.2rem;
-            border-radius: var(--radius);
-            border: 1px solid var(--gray-200);
-            transition: var(--transition);
-            text-align: center;
-        }
-        .produkt-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow);
-        }
-        .produkt-card i {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 0.6rem;
-        }
-        .produkt-card h4 {
-            font-size: 1rem;
-            color: var(--primary);
-            margin-bottom: 0.3rem;
-        }
-        .produkt-card p {
-            font-size: 0.85rem;
-            color: var(--gray-500);
-        }
-        .produkt-card .badge {
-            display: inline-block;
-            background: #ecfdf5;
-            color: #065f46;
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 0.15rem 0.6rem;
-            border-radius: 20px;
-            margin-top: 0.4rem;
-        }
-
-        /* ---------- SERVICE ---------- */
-        .service-section {
-            max-width: 800px;
-            margin: 2rem auto 3rem;
-            padding: 0 2rem;
-            text-align: center;
-        }
-        .service-content ul {
-            list-style: none;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.6rem 1.5rem;
-            margin: 1.2rem 0 0;
-            text-align: left;
-            justify-items: center;
-        }
-        .service-content ul li {
-            font-size: 0.95rem;
-            color: var(--gray-700);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .service-content ul li i {
-            color: var(--accent);
-            font-size: 1rem;
-            width: 20px;
-        }
-
-        /* ---------- KONTAKT ---------- */
-        .kontakt-section {
-            max-width: 1200px;
-            margin: 2rem auto 2.5rem;
-            padding: 0 2rem;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-        .kontakt-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: var(--radius);
-            border: 1px solid var(--gray-200);
-            text-align: center;
-        }
-        .kontakt-card i {
-            font-size: 2rem;
-            color: var(--accent);
-            margin-bottom: 0.6rem;
-        }
-        .kontakt-card h4 {
-            font-size: 1rem;
-            color: var(--primary);
-            margin-bottom: 0.3rem;
-        }
-        .kontakt-card p {
-            font-size: 0.9rem;
-            color: var(--gray-500);
-        }
-
-        /* ---------- FOOTER ---------- */
-        .footer {
-            background: var(--primary);
-            color: rgba(255,255,255,0.7);
-            padding: 2.5rem 2rem;
-            text-align: center;
-            margin-top: 2rem;
-            border-top: 4px solid var(--accent);
-        }
-        .footer span { color: white; font-weight: 600; }
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-        }
-        .footer-links a {
-            color: rgba(255,255,255,0.7);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: var(--transition);
-        }
-        .footer-links a:hover { color: white; }
-
-        /* ---------- RESPONSIVE ---------- */
-        @media (max-width: 1024px) {
-            .produkte-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 900px) {
-            .hero { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
-            .hero-cta { justify-content: center; }
-            .top-themes { grid-template-columns: 1fr 1fr; }
-            .kontakt-section { grid-template-columns: 1fr; }
-            .navbar { padding: 0 1rem; }
-            .service-content ul { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 600px) {
-            .top-themes { grid-template-columns: 1fr; }
-            .produkte-grid { grid-template-columns: 1fr; }
-            .menu-panel { width: 100%; right: -100%; }
-            .hero-content h1 { font-size: 2rem; }
-            .result-box .value { font-size: 1.4rem; }
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 768px) {
+            .topbar { flex-direction: column; gap: 12px; align-items: stretch; }
+            .nav-tabs .tab { flex: 1; text-align: center; padding: 8px 12px; }
+            .flex-row { flex-direction: column; }
         }
     </style>
 </head>
 <body>
 
-<!-- ========== HEADER ========== -->
-<header class="navbar">
-    <a href="#" class="nav-logo">
-        <i class="fas fa-building-columns"></i>
-        <span>Kundenbank</span> <small>· Finanzen</small>
-    </a>
-
-    <!-- Bouton dépliant unique -->
-    <button class="menu-toggle" id="menuToggleBtn">
-        <i class="fas fa-bars"></i> Menü
-    </button>
-
-    <!-- Overlay -->
-    <div class="menu-overlay" id="menuOverlay"></div>
-
-    <!-- Panneau dépliant -->
-    <div class="menu-panel" id="menuPanel">
-        <div class="panel-header">
-            <h3><i class="fas fa-bars" style="color:var(--accent); margin-right:8px;"></i> Navigation</h3>
-            <button class="close-panel" id="closePanelBtn">&times;</button>
+<!-- ===================== AUTH PAGES ===================== -->
+<div id="authContainer">
+    <!-- LOGIN -->
+    <div id="loginPage" class="auth-page">
+        <h2>🔐 Connexion</h2>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="exemple@email.com" />
         </div>
-
-        <!-- ===== LIENS DE NAVIGATION ===== -->
-        <div class="nav-section">
-            <p>Hauptmenü</p>
-            <a href="#"><i class="fas fa-home"></i> Startseite</a>
-            <a href="#"><i class="fas fa-chart-pie"></i> Finanzen</a>
-            <a href="#konten"><i class="fas fa-credit-card"></i> Konten &amp; Karten <span class="badge">neu</span></a>
-            <a href="#kredite"><i class="fas fa-hand-holding-usd"></i> Kredite</a>
-            <a href="#sparen"><i class="fas fa-coins"></i> Sparen &amp; Anlegen</a>
-            <a href="#service"><i class="fas fa-headset"></i> Service</a>
+        <div class="form-group">
+            <label>Mot de passe</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" />
         </div>
+        <button id="loginBtn">Se connecter</button>
+        <div class="auth-link">Pas encore de compte ? <span id="gotoRegister">S'inscrire</span></div>
+        <div id="loginError" style="color:#dc3545; margin-top:12px; text-align:center;"></div>
+    </div>
 
-        <!-- ===== SESSIONS (Authentification) ===== -->
-        <div class="auth-section">
-            <p style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px; color:var(--gray-400); font-weight:600; margin-bottom:0.5rem;">
-                <i class="fas fa-lock" style="margin-right:6px; color:var(--accent);"></i> Konto
-            </p>
-            <div class="auth-toggle">
-                <button class="active-tab" data-tab="login">Anmelden</button>
-                <button data-tab="register">Registrieren</button>
-            </div>
+    <!-- REGISTER -->
+    <div id="registerPage" class="auth-page hidden">
+        <h2>📝 Créer un compte</h2>
+        <div class="form-group">
+            <label>Nom complet</label>
+            <input type="text" id="registerName" placeholder="Jean Dupont" />
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="registerEmail" placeholder="exemple@email.com" />
+        </div>
+        <div class="form-group">
+            <label>Mot de passe</label>
+            <input type="password" id="registerPassword" placeholder="••••••••" />
+        </div>
+        <div class="form-group">
+            <label>Rôle</label>
+            <select id="registerRole">
+                <option value="borrower">Emprunteur</option>
+                <option value="investor">Investisseur</option>
+            </select>
+        </div>
+        <button id="registerBtn">S'inscrire</button>
+        <div class="auth-link">Déjà un compte ? <span id="gotoLogin">Se connecter</span></div>
+        <div id="registerError" style="color:#dc3545; margin-top:12px; text-align:center;"></div>
+    </div>
+</div>
 
-            <!-- LOGIN -->
-            <div class="auth-form active-form" id="loginForm">
-                <div class="social-login" id="googleLoginBtn">
-                    <i class="fab fa-google"></i> Mit Google anmelden
-                </div>
-                <div class="divider"><hr> oder <hr></div>
-                <div class="form-group">
-                    <label for="loginEmail">E-Mail</label>
-                    <input type="email" id="loginEmail" placeholder="name@beispiel.de">
-                </div>
-                <div class="form-group">
-                    <label for="loginPassword">Passwort</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••">
-                </div>
-                <div class="form-options">
-                    <label style="font-size:0.85rem; display:flex; align-items:center; gap:6px; color:var(--gray-700);">
-                        <input type="checkbox"> Angemeldet bleiben
-                    </label>
-                    <a id="forgotPasswordLink">Passwort vergessen?</a>
-                </div>
-                <button class="btn-submit" id="loginSubmit">Anmelden</button>
-                <div id="loginMessage" class="message-box"></div>
-            </div>
+<!-- ===================== APP (after auth) ===================== -->
+<div id="appContainer" class="hidden">
 
-            <!-- REGISTER -->
-            <div class="auth-form" id="registerForm">
-                <div class="social-login" id="googleRegisterBtn">
-                    <i class="fab fa-google"></i> Mit Google registrieren
-                </div>
-                <div class="divider"><hr> oder <hr></div>
-                <div class="form-group">
-                    <label for="regName">Vollständiger Name</label>
-                    <input type="text" id="regName" placeholder="Max Mustermann">
-                </div>
-                <div class="form-group">
-                    <label for="regEmail">E-Mail</label>
-                    <input type="email" id="regEmail" placeholder="name@beispiel.de">
-                </div>
-                <div class="form-group">
-                    <label for="regPassword">Passwort</label>
-                    <input type="password" id="regPassword" placeholder="••••••••">
-                    <div class="password-requirements" id="passwordReqs">
-                        <span id="reqLength"><i class="fa-regular fa-circle"></i> 8 Zeichen</span>
-                        <span id="reqUpper"><i class="fa-regular fa-circle"></i> Großbuchstabe</span>
-                        <span id="reqLower"><i class="fa-regular fa-circle"></i> Kleinbuchstabe</span>
-                        <span id="reqDigit"><i class="fa-regular fa-circle"></i> Ziffer</span>
-                        <span id="reqSpecial"><i class="fa-regular fa-circle"></i> Sonderzeichen (@$!%*?&)</span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="regConfirm">Passwort bestätigen</label>
-                    <input type="password" id="regConfirm" placeholder="••••••••">
-                </div>
-                <button class="btn-submit" id="registerSubmit">Konto erstellen</button>
-                <div id="registerMessage" class="message-box"></div>
-            </div>
-
-            <!-- RESET -->
-            <div class="reset-section" id="resetSection">
-                <button class="back-to-login" id="backToLoginFromReset"><i class="fas fa-arrow-left"></i> Zurück</button>
-                <h4 style="margin:0.5rem 0 0.2rem; color:var(--primary);">Passwort zurücksetzen</h4>
-                <p style="font-size:0.85rem; color:var(--gray-500);">Geben Sie Ihre E-Mail ein, um einen Link zu erhalten.</p>
-                <div class="form-group">
-                    <label for="resetEmail">E-Mail-Adresse</label>
-                    <input type="email" id="resetEmail" placeholder="name@beispiel.de">
-                </div>
-                <button class="btn-submit" id="resetSubmit" style="background: var(--gray-700);">Link senden</button>
-                <div id="resetMessage" class="message-box"></div>
-            </div>
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <div class="brand">🏦 Soha Bank <small>· Plateforme de prêt</small></div>
+        <div class="user-info">
+            <span id="userNameDisplay">Utilisateur</span>
+            <span class="role-badge" id="userRoleDisplay">rôle</span>
+            <button id="logoutBtn">Déconnexion</button>
         </div>
     </div>
-</header>
 
-<!-- ========== MAIN ========== -->
-<main>
+    <!-- NAVIGATION TABS (générés par JS) -->
+    <div id="navTabs" class="nav-tabs"></div>
 
-    <!-- ===== HERO + CALCULATOR ===== -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Planen Sie mit uns <br><span class="highlight">Ihre finanzielle Zukunft</span></h1>
-            <p>Ob Girokonto, flexible Finanzierung oder Vorsorge – wir unterstützen Sie mit maßgeschneiderten Lösungen.</p>
-            <div class="hero-cta">
-                <button class="btn-primary">Konto eröffnen</button>
-                <button class="btn-outline">Beratung vereinbaren</button>
-            </div>
-        </div>
-        <div class="calc-card">
-            <h2><i class="fas fa-calculator"></i> Kreditrechner</h2>
-            <div class="calc-field">
-                <label><span>Kreditbetrag</span><span id="amountDisplay">25.000 €</span></label>
-                <input type="range" id="amountSlider" min="1500" max="80000" step="100" value="25000">
-                <div class="value-input">
-                    <input type="number" id="amountInput" min="1500" max="80000" step="100" value="25000">
-                    <span class="unit">€</span>
-                </div>
-            </div>
-            <div class="calc-field">
-                <label><span>Laufzeit</span><span id="durationDisplay">48 Monate</span></label>
-                <input type="range" id="durationSlider" min="12" max="96" step="1" value="48">
-                <div class="value-input">
-                    <input type="number" id="durationInput" min="12" max="96" step="1" value="48">
-                    <span class="unit">Monate</span>
-                </div>
-            </div>
-            <div class="calc-field">
-                <label><span>Sollzinssatz (p.a.)</span><span id="rateDisplay">3,49 %</span></label>
-                <input type="range" id="rateSlider" min="0.5" max="12" step="0.01" value="3.49">
-                <div class="value-input">
-                    <input type="number" id="rateInput" min="0.5" max="12" step="0.01" value="3.49">
-                    <span class="unit">%</span>
-                </div>
-            </div>
-            <div class="result-box">
-                <div>
-                    <div class="label">Monatliche Rate</div>
-                    <div class="value" id="monthlyRate">455,12 €</div>
-                </div>
-                <div style="text-align: right;">
-                    <div class="label">Eff. Jahreszins</div>
-                    <div style="font-weight: 700; font-size: 1.1rem;" id="aprDisplay">3,49 %</div>
-                </div>
-            </div>
-            <div class="result-details">
-                <span>Gesamtbetrag: <strong id="totalAmount">21.845,76 €</strong></span>
-                <span>Zinsen: <strong id="totalInterest">1.845,76 €</strong></span>
-            </div>
-        </div>
-    </section>
+    <!-- PAGES -->
+    <div id="pageContent"></div>
+</div>
 
-    <!-- ===== TOP-THEMEN ===== -->
-    <h2 class="section-title"><i class="fas fa-star"></i> Top-Themen</h2>
-    <section class="top-themes">
-        <div class="theme-card">
-            <i class="fas fa-piggy-bank"></i>
-            <h3>Tages- und Festgeld</h3>
-            <p>Top-Zinsen bei kurzer Laufzeit:</p>
-            <div class="highlight-rate">3,25 % <small>p.a.</small></div>
-            <p style="font-size:0.8rem; color:var(--gray-400);">auf Tagesgeld</p>
-            <button class="btn-theme">Mehr erfahren</button>
-        </div>
-        <div class="theme-card">
-            <i class="fas fa-hand-holding-usd"></i>
-            <h3>Online-Kredit</h3>
-            <p>Der Kredit, der sich Ihrem Leben anpasst.</p>
-            <div class="highlight-rate" style="font-size:1.2rem;">ab 3,49 % <small>eff. Jahreszins</small></div>
-            <button class="btn-theme">Jetzt berechnen</button>
-        </div>
-        <div class="theme-card">
-            <i class="fas fa-chart-line"></i>
-            <h3>Depotmodelle</h3>
-            <p>Selbst aktiv handeln oder beraten lassen.</p>
-            <p style="font-size:0.85rem; color:var(--gray-500);">Attraktive Modelle für jeden Anlegertyp.</p>
-            <button class="btn-theme">Depot entdecken</button>
-        </div>
-    </section>
-
-    <!-- ===== KONTEN & KARTEN ===== -->
-    <h2 class="section-title" id="konten"><i class="fas fa-credit-card"></i> Konten &amp; Karten</h2>
-    <section class="produkte-grid">
-        <div class="produkt-card">
-            <i class="fas fa-university"></i>
-            <h4>Online-Konto</h4>
-            <p>Kostenlose Kontoführung bei Geldeingang ab 600 €.</p>
-            <span class="badge">kostenlos</span>
-        </div>
-        <div class="produkt-card">
-            <i class="fas fa-crown"></i>
-            <h4>Premium-Konto</h4>
-            <p>Weltweit kostenlos Geld abheben &amp; Concierge-Service.</p>
-            <span class="badge">Premium</span>
-        </div>
-        <div class="produkt-card">
-            <i class="fas fa-credit-card"></i>
-            <h4>Kreditkarten</h4>
-            <p>Online-Classic-Karte mit Gratis-Cash-Funktion.</p>
-            <span class="badge">Visa</span>
-        </div>
-        <div class="produkt-card">
-            <i class="fas fa-exchange-alt"></i>
-            <h4>Kontowechsel-Service</h4>
-            <p>Wir erledigen den Umzug Ihrer Finanzen für Sie.</p>
-            <span class="badge">Service</span>
-        </div>
-    </section>
-
-    <!-- ===== KREDITE ===== -->
-    <h2 class="section-title" id="kredite"><i class="fas fa-hand-holding-usd"></i> Unsere Kredite</h2>
-    <section class="produkte-grid">
-        <div class="produkt-card">
-            <i class="fas fa-laptop"></i>
-            <h4>Online-Kredit</h4>
-            <p>1.500 € – 80.000 €, Laufzeit 12–96 Monate.</p>
-            <span class="badge">ab 3,49 %</span>
-        </div>
-        <div class="produkt-card">
-            <i class="fas fa-car"></i>
-            <h4>Autokredit</h4>
-            <p>Schnelle Finanzierung für Ihren Traumwagen.</p>
-            <span class="badge">flexibel</span>
-        </div>
-        <div class="produkt-card">
-            <i class="fas fa-home"></i>
-            <h4>Wohnkredit</h4>
-            <p>Finanzierung für Bau, Kauf oder Modernisierung.</p>
-            <span class="badge">attraktive Zinsen</span>
-        </div>
-        <div class="produkt-card">
-            <i class="fas fa-user-tie"></i>
-            <h4>Selbstständigenkredit</h4>
-            <p>1.500 € – 50.000 € für Freiberufler &amp; Gründer.</p>
-            <span class="badge">spezial</span>
-        </div>
-    </section>
-
-    <!-- ===== SPAREN & ANLEGEN ===== -->
-    <h2 class="section-title" id="sparen"><i class="fas fa-coins"></i> Sparen &amp; Anlegen</h2>
-    <section class="produkte-grid">
-        <div class="produkt-card">
-            <i class="fas fa-clock"></i>
-            <h4>Festgeld</h4>
-            <p>Garantierte Zinsen ab 7 Tagen Laufzeit.</p>
-            <span class="badge">bis 2,60 %</span>
-        </div>
-        <div class="produkt-card">
-            <i class="fas fa-chart-pie"></i>
-            <h4>Doppelzins-Sparen</h4>
-            <p>Rentable Alternative zum Sparbuch.</p>
-            <span class="badge">flexibel</span>
-        </div>
-        <div class="produkt-card">
-            <i class="fas fa-leaf"></i>
-            <h4>Nachhaltiges Investment</h4>
-            <p>Nachhaltige Fonds &amp; ETFs entdecken.</p>
-            <span class="badge">ESG</span>
-        </div>
-        <div class="produkt-card">
-            <i class="fas fa-building"></i>
-            <h4>Vermögensaufbau</h4>
-            <p>Individuelle Strategien für Ihre Zukunft.</p>
-            <span class="badge">Beratung</span>
-        </div>
-    </section>
-
-    <!-- ===== SERVICE ===== -->
-    <h2 class="section-title" id="service"><i class="fas fa-headset"></i> Service &amp; Funktionen</h2>
-    <section class="service-section">
-        <div class="service-content">
-            <p style="color:var(--gray-500); margin-bottom:1rem;">Unsere Finanzexperten beraten Sie so, wie Sie es möchten: vor Ort, am Telefon oder online.</p>
-            <ul>
-                <li><i class="fas fa-check-circle"></i> Kontoübersicht &amp; Umsatzanzeige</li>
-                <li><i class="fas fa-check-circle"></i> Überweisungen &amp; Daueraufträge</li>
-                <li><i class="fas fa-check-circle"></i> Push-Benachrichtigungen</li>
-                <li><i class="fas fa-check-circle"></i> Bargeld-Service &amp; Cash ohne Karte</li>
-                <li><i class="fas fa-check-circle"></i> Digitales Haushaltsbuch</li>
-                <li><i class="fas fa-check-circle"></i> Konto-SMS-Service</li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- ===== KONTAKT ===== -->
-    <h2 class="section-title"><i class="fas fa-phone"></i> Kontakt</h2>
-    <section class="kontakt-section">
-        <div class="kontakt-card">
-            <i class="fas fa-map-marker-alt"></i>
-            <h4>Filiale finden</h4>
-            <p>340 Filialen in Ihrer Nähe – persönliche Beratung vor Ort.</p>
-        </div>
-        <div class="kontakt-card">
-            <i class="fas fa-phone"></i>
-            <h4>Telefon-Banking</h4>
-            <p>Mo. – Sa. von 8:00 – 20:00 Uhr<br><strong style="color:var(--primary);">0800 123 4567</strong></p>
-        </div>
-        <div class="kontakt-card">
-            <i class="fas fa-envelope"></i>
-            <h4>Nachricht senden</h4>
-            <p>KI-bearbeitete Anfragen – wir antworten schnell.</p>
-        </div>
-    </section>
-
-</main>
-
-<!-- ========== FOOTER ========== -->
-<footer class="footer">
-    <div class="footer-links">
-        <a href="#">Impressum</a>
-        <a href="#">Datenschutz</a>
-        <a href="#">AGB</a>
-        <a href="#">Karriere</a>
-        <a href="#">Presse</a>
-    </div>
-    <p>&copy; 2026 <span>Kundenbank</span> – Alle Rechte vorbehalten. <br style="display:none;" class="sm-break"> Wir geben Rückenwind.</p>
-</footer>
-
-<!-- ========== JAVASCRIPT ========== -->
 <script>
-    (function() {
-        'use strict';
+    // ============================================================
+    // 1. CONFIGURATION SUPABASE (remplacez par vos valeurs)
+    // ============================================================
+    const SUPABASE_URL = 'https://votre-projet.supabase.co';
+    const SUPABASE_ANON_KEY = 'votre-clé-anon';
+    const supabase = supabaseJs.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ===== MENU TOGGLE =====
-        const menuToggle = document.getElementById('menuToggleBtn');
-        const menuPanel = document.getElementById('menuPanel');
-        const menuOverlay = document.getElementById('menuOverlay');
-        const closePanel = document.getElementById('closePanelBtn');
+    // ============================================================
+    // 2. ÉTAT GLOBAL
+    // ============================================================
+    let currentUser = null;        // utilisateur connecté (objet Supabase)
+    let currentRole = null;       // 'borrower', 'investor', 'admin'
+    let currentPage = 'dashboard'; // nom de la page active
 
-        function openMenu() {
-            menuPanel.classList.add('open');
-            menuOverlay.classList.add('open');
-            document.body.style.overflow = 'hidden';
+    // ============================================================
+    // 3. AUTHENTIFICATION
+    // ============================================================
+    const authContainer = document.getElementById('authContainer');
+    const appContainer = document.getElementById('appContainer');
+
+    // Éléments des pages auth
+    const loginPage = document.getElementById('loginPage');
+    const registerPage = document.getElementById('registerPage');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginError = document.getElementById('loginError');
+    const registerName = document.getElementById('registerName');
+    const registerEmail = document.getElementById('registerEmail');
+    const registerPassword = document.getElementById('registerPassword');
+    const registerRole = document.getElementById('registerRole');
+    const registerBtn = document.getElementById('registerBtn');
+    const registerError = document.getElementById('registerError');
+
+    // Basculer entre login et register
+    document.getElementById('gotoRegister').addEventListener('click', () => {
+        loginPage.classList.add('hidden');
+        registerPage.classList.remove('hidden');
+    });
+    document.getElementById('gotoLogin').addEventListener('click', () => {
+        registerPage.classList.add('hidden');
+        loginPage.classList.remove('hidden');
+    });
+
+    // Fonction pour vérifier la session existante
+    async function checkSession() {
+        const { data: { session }, error } = await supabase.auth.getSession();
+        if (session) {
+            currentUser = session.user;
+            await fetchUserRole();
+            showApp();
+        } else {
+            showAuth();
         }
-        function closeMenu() {
-            menuPanel.classList.remove('open');
-            menuOverlay.classList.remove('open');
-            document.body.style.overflow = '';
+    }
+
+    // Récupérer le rôle depuis la table 'profiles'
+    async function fetchUserRole() {
+        if (!currentUser) return;
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', currentUser.id)
+            .single();
+        if (data) {
+            currentRole = data.role;
+        } else {
+            // Fallback: si pas de profil, on crée un profil par défaut (emprunteur)
+            const { error: insertError } = await supabase
+                .from('profiles')
+                .insert({ id: currentUser.id, role: 'borrower', full_name: currentUser.email });
+            if (!insertError) currentRole = 'borrower';
         }
+    }
 
-        menuToggle.addEventListener('click', openMenu);
-        closePanel.addEventListener('click', closeMenu);
-        menuOverlay.addEventListener('click', closeMenu);
+    // Connexion
+    loginBtn.addEventListener('click', async () => {
+        const email = loginEmail.value.trim();
+        const password = loginPassword.value.trim();
+        if (!email || !password) {
+            loginError.textContent = 'Veuillez remplir tous les champs.';
+            return;
+        }
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+            loginError.textContent = error.message;
+            return;
+        }
+        currentUser = data.user;
+        await fetchUserRole();
+        showApp();
+    });
 
-        // Fermer avec Échap
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeMenu();
+    // Inscription
+    registerBtn.addEventListener('click', async () => {
+        const name = registerName.value.trim();
+        const email = registerEmail.value.trim();
+        const password = registerPassword.value.trim();
+        const role = registerRole.value;
+        if (!name || !email || !password) {
+            registerError.textContent = 'Veuillez remplir tous les champs.';
+            return;
+        }
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: { full_name: name, role: role }
+            }
         });
+        if (error) {
+            registerError.textContent = error.message;
+            return;
+        }
+        // Créer le profil
+        if (data.user) {
+            const { error: profileError } = await supabase
+                .from('profiles')
+                .insert({ id: data.user.id, full_name: name, role: role });
+            if (profileError) console.error('Erreur création profil:', profileError);
+        }
+        alert('Compte créé ! Connectez-vous.');
+        registerPage.classList.add('hidden');
+        loginPage.classList.remove('hidden');
+    });
 
-        // ===== AUTH LOGIC (dans le menu) =====
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        const resetSection = document.getElementById('resetSection');
-        const tabBtns = document.querySelectorAll('.auth-toggle button');
-        const forgotLink = document.getElementById('forgotPasswordLink');
-        const backToLogin = document.getElementById('backToLoginFromReset');
-        const loginMsg = document.getElementById('loginMessage');
-        const registerMsg = document.getElementById('registerMessage');
-        const resetMsg = document.getElementById('resetMessage');
-        const loginEmail = document.getElementById('loginEmail');
-        const loginPassword = document.getElementById('loginPassword');
-        const loginSubmit = document.getElementById('loginSubmit');
-        const regName = document.getElementById('regName');
-        const regEmail = document.getElementById('regEmail');
-        const regPassword = document.getElementById('regPassword');
-        const regConfirm = document.getElementById('regConfirm');
-        const registerSubmit = document.getElementById('registerSubmit');
-        const resetEmail = document.getElementById('resetEmail');
-        const resetSubmit = document.getElementById('resetSubmit');
-        const googleLoginBtn = document.getElementById('googleLoginBtn');
-        const googleRegisterBtn = document.getElementById('googleRegisterBtn');
-        const reqLength = document.getElementById('reqLength');
-        const reqUpper = document.getElementById('reqUpper');
-        const reqLower = document.getElementById('reqLower');
-        const reqDigit = document.getElementById('reqDigit');
-        const reqSpecial = document.getElementById('reqSpecial');
+    // Déconnexion
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        currentUser = null;
+        currentRole = null;
+        showAuth();
+    });
 
-        function showTab(tabId) {
-            loginForm.classList.remove('active-form');
-            registerForm.classList.remove('active-form');
-            resetSection.classList.remove('active-reset');
-            loginMsg.className = 'message-box';
-            registerMsg.className = 'message-box';
-            resetMsg.className = 'message-box';
-            tabBtns.forEach(b => b.classList.remove('active-tab'));
-            document.querySelector(`.auth-toggle button[data-tab="${tabId}"]`).classList.add('active-tab');
-            if (tabId === 'login') loginForm.classList.add('active-form');
-            else if (tabId === 'register') registerForm.classList.add('active-form');
+    // Afficher les pages d'auth
+    function showAuth() {
+        authContainer.classList.remove('hidden');
+        appContainer.classList.add('hidden');
+        loginPage.classList.remove('hidden');
+        registerPage.classList.add('hidden');
+        loginError.textContent = '';
+        registerError.textContent = '';
+    }
+
+    // Afficher l'application
+    function showApp() {
+        authContainer.classList.add('hidden');
+        appContainer.classList.remove('hidden');
+        // Mettre à jour les infos utilisateur
+        document.getElementById('userNameDisplay').textContent = currentUser?.user_metadata?.full_name || currentUser?.email || 'Utilisateur';
+        document.getElementById('userRoleDisplay').textContent = currentRole || 'inconnu';
+        buildNavigation();
+        navigateTo('dashboard');
+    }
+
+    // ============================================================
+    // 4. NAVIGATION
+    // ============================================================
+    function buildNavigation() {
+        const navTabs = document.getElementById('navTabs');
+        navTabs.innerHTML = '';
+        let tabs = [];
+        if (currentRole === 'borrower') {
+            tabs = [
+                { id: 'dashboard', label: '📊 Tableau de bord' },
+                { id: 'request-loan', label: '📝 Demander un prêt' },
+                { id: 'my-loans', label: '📋 Mes prêts' },
+                { id: 'repayments', label: '💰 Remboursements' },
+            ];
+        } else if (currentRole === 'investor') {
+            tabs = [
+                { id: 'dashboard', label: '📊 Tableau de bord' },
+                { id: 'projects', label: '📌 Projets' },
+                { id: 'portfolio', label: '💼 Portefeuille' },
+            ];
+        } else if (currentRole === 'admin') {
+            tabs = [
+                { id: 'dashboard', label: '📊 Admin' },
+                { id: 'users', label: '👥 Utilisateurs' },
+                { id: 'loans', label: '📋 Prêts' },
+                { id: 'investments', label: '📈 Investissements' },
+                { id: 'transactions', label: '💳 Transactions' },
+                { id: 'kyc', label: '🛡️ KYC' },
+                { id: 'documents', label: '📄 Documents' },
+            ];
+        }
+        tabs.forEach(tab => {
+            const div = document.createElement('div');
+            div.className = 'tab' + (currentPage === tab.id ? ' active' : '');
+            div.textContent = tab.label;
+            div.dataset.page = tab.id;
+            div.addEventListener('click', () => navigateTo(tab.id));
+            navTabs.appendChild(div);
+        });
+    }
+
+    function navigateTo(pageId) {
+        currentPage = pageId;
+        // Mettre à jour les classes actives
+        document.querySelectorAll('.nav-tabs .tab').forEach(el => {
+            el.classList.toggle('active', el.dataset.page === pageId);
+        });
+        renderPage(pageId);
+    }
+
+    // ============================================================
+    // 5. RENDU DES PAGES (SIMPLIFIÉ MAIS FONCTIONNEL)
+    // ============================================================
+    function renderPage(pageId) {
+        const container = document.getElementById('pageContent');
+        container.innerHTML = '';
+
+        // Fonctions utilitaires pour générer du HTML
+        function makeCard(title, content) {
+            return `<div class="card"><h3>${title}</h3>${content}</div>`;
         }
 
-        function validatePassword(password) {
-            return {
-                length: password.length >= 8,
-                upper: /[A-Z]/.test(password),
-                lower: /[a-z]/.test(password),
-                digit: /\d/.test(password),
-                special: /[@$!%*?&]/.test(password)
-            };
+        // --- PAGE DASHBOARD (générique selon rôle) ---
+        if (pageId === 'dashboard') {
+            if (currentRole === 'borrower') {
+                container.innerHTML = `
+                    <div class="flex-row">
+                        <div class="stat-box"><div class="label">Solde disponible</div><div class="value">0 €</div></div>
+                        <div class="stat-box"><div class="label">Prêts en cours</div><div class="value" id="borrowerLoanCount">0</div></div>
+                        <div class="stat-box"><div class="label">Prochain remboursement</div><div class="value">-</div></div>
+                    </div>
+                    ${makeCard('📋 Résumé des prêts', `<div id="borrowerLoanList">Chargement...</div>`)}
+                `;
+                loadBorrowerDashboard();
+            } else if (currentRole === 'investor') {
+                container.innerHTML = `
+                    <div class="flex-row">
+                        <div class="stat-box"><div class="label">Portefeuille investi</div><div class="value" id="investorPortfolioValue">0 €</div></div>
+                        <div class="stat-box"><div class="label">Projets actifs</div><div class="value" id="investorProjectCount">0</div></div>
+                        <div class="stat-box"><div class="label">Retour estimé</div><div class="value" id="investorReturns">0 €</div></div>
+                    </div>
+                    ${makeCard('📈 Derniers investissements', `<div id="investorInvestList">Chargement...</div>`)}
+                `;
+                loadInvestorDashboard();
+            } else if (currentRole === 'admin') {
+                container.innerHTML = `
+                    <div class="flex-row">
+                        <div class="stat-box"><div class="label">Total utilisateurs</div><div class="value" id="adminUserCount">0</div></div>
+                        <div class="stat-box"><div class="label">Prêts actifs</div><div class="value" id="adminLoanCount">0</div></div>
+                        <div class="stat-box"><div class="label">Investissements totaux</div><div class="value" id="adminInvestmentTotal">0 €</div></div>
+                    </div>
+                    ${makeCard('📊 Activité récente', `<div id="adminActivity">Chargement...</div>`)}
+                `;
+                loadAdminDashboard();
+            }
         }
-        function updatePasswordUI(password) {
-            const checks = validatePassword(password);
-            const map = { length: reqLength, upper: reqUpper, lower: reqLower, digit: reqDigit, special: reqSpecial };
-            for (const [key, el] of Object.entries(map)) {
-                const icon = el.querySelector('i');
-                if (checks[key]) {
-                    el.className = 'valid';
-                    icon.className = 'fa-solid fa-circle-check';
-                } else {
-                    el.className = 'invalid';
-                    icon.className = 'fa-regular fa-circle';
+
+        // --- BORROWER PAGES ---
+        else if (pageId === 'request-loan' && currentRole === 'borrower') {
+            container.innerHTML = `
+                <div class="card">
+                    <h3>📝 Demander un prêt</h3>
+                    <form id="loanRequestForm">
+                        <div class="form-group"><label>Montant (€)</label><input type="number" id="loanAmount" required /></div>
+                        <div class="form-group"><label>Durée (mois)</label><input type="number" id="loanDuration" required /></div>
+                        <div class="form-group"><label>Objet</label><textarea id="loanPurpose" placeholder="Décrivez votre projet..."></textarea></div>
+                        <button type="submit" class="btn btn-primary">Soumettre la demande</button>
+                    </form>
+                    <div id="loanRequestMessage"></div>
+                </div>
+            `;
+            document.getElementById('loanRequestForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const amount = parseFloat(document.getElementById('loanAmount').value);
+                const duration = parseInt(document.getElementById('loanDuration').value);
+                const purpose = document.getElementById('loanPurpose').value;
+                if (!amount || !duration) {
+                    document.getElementById('loanRequestMessage').innerHTML = '<span style="color:red;">Veuillez remplir tous les champs.</span>';
+                    return;
                 }
-            }
-            return checks;
-        }
-
-        function handleRegister() {
-            const name = regName.value.trim(), email = regEmail.value.trim(), password = regPassword.value, confirm = regConfirm.value;
-            registerMsg.className = 'message-box';
-            if (!name || !email || !password || !confirm) { registerMsg.className = 'message-box error'; registerMsg.textContent = 'Bitte füllen Sie alle Felder aus.'; return; }
-            const checks = validatePassword(password);
-            if (!Object.values(checks).every(v => v === true)) { registerMsg.className = 'message-box error'; registerMsg.textContent = 'Das Passwort entspricht nicht den Sicherheitskriterien.'; return; }
-            if (password !== confirm) { registerMsg.className = 'message-box error'; registerMsg.textContent = 'Passwörter stimmen nicht überein.'; return; }
-            const users = JSON.parse(localStorage.getItem('kundenbank_users') || '[]');
-            if (users.find(u => u.email === email)) { registerMsg.className = 'message-box error'; registerMsg.textContent = 'Diese E-Mail wird bereits verwendet.'; return; }
-            users.push({ name, email, password });
-            localStorage.setItem('kundenbank_users', JSON.stringify(users));
-            registerMsg.className = 'message-box success';
-            registerMsg.textContent = 'Konto erfolgreich erstellt! Sie können sich jetzt anmelden.';
-            regName.value = ''; regEmail.value = ''; regPassword.value = ''; regConfirm.value = ''; updatePasswordUI('');
-            setTimeout(() => { showTab('login'); registerMsg.className = 'message-box'; }, 1500);
-        }
-
-        function handleLogin() {
-            const email = loginEmail.value.trim(), password = loginPassword.value.trim();
-            loginMsg.className = 'message-box';
-            if (!email || !password) { loginMsg.className = 'message-box error'; loginMsg.textContent = 'Bitte E-Mail und Passwort eingeben.'; return; }
-            const users = JSON.parse(localStorage.getItem('kundenbank_users') || '[]');
-            const user = users.find(u => u.email === email && u.password === password);
-            if (user) {
-                loginMsg.className = 'message-box success';
-                loginMsg.textContent = `Willkommen ${user.name}! Anmeldung erfolgreich.`;
-                menuToggle.innerHTML = `<i class="fas fa-user-check"></i> ${user.name}`;
-                menuToggle.style.background = '#16a34a';
-                setTimeout(() => closeMenu(), 1000);
-            } else {
-                loginMsg.className = 'message-box error';
-                loginMsg.textContent = 'E-Mail oder Passwort falsch.';
-            }
-        }
-
-        function handleReset() {
-            const email = resetEmail.value.trim();
-            resetMsg.className = 'message-box';
-            if (!email) { resetMsg.className = 'message-box error'; resetMsg.textContent = 'Bitte E-Mail eingeben.'; return; }
-            const users = JSON.parse(localStorage.getItem('kundenbank_users') || '[]');
-            if (!users.find(u => u.email === email)) { resetMsg.className = 'message-box error'; resetMsg.textContent = 'Kein Konto mit dieser E-Mail gefunden.'; return; }
-            resetMsg.className = 'message-box success';
-            resetMsg.textContent = 'Ein Link zum Zurücksetzen wurde gesendet (simuliert).';
-            resetEmail.value = '';
-            setTimeout(() => { resetSection.classList.remove('active-reset'); showTab('login'); resetMsg.className = 'message-box'; }, 2000);
-        }
-
-        function mockGoogle() { alert('🔐 Google-Anmeldung (Simulation) – In Produktion verfügbar.'); }
-
-        // Events
-        tabBtns.forEach(btn => btn.addEventListener('click', function() { if (resetSection.classList.contains('active-reset')) resetSection.classList.remove('active-reset'); showTab(this.dataset.tab); }));
-        forgotLink.addEventListener('click', (e) => { e.preventDefault(); loginForm.classList.remove('active-form'); registerForm.classList.remove('active-form'); resetSection.classList.add('active-reset'); resetMsg.className = 'message-box'; });
-        backToLogin.addEventListener('click', () => { resetSection.classList.remove('active-reset'); showTab('login'); });
-        registerSubmit.addEventListener('click', handleRegister);
-        loginSubmit.addEventListener('click', handleLogin);
-        resetSubmit.addEventListener('click', handleReset);
-        loginPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
-        loginEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
-        regConfirm.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleRegister(); });
-        resetEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleReset(); });
-        regPassword.addEventListener('input', function() { updatePasswordUI(this.value); });
-        googleLoginBtn.addEventListener('click', mockGoogle);
-        googleRegisterBtn.addEventListener('click', mockGoogle);
-        updatePasswordUI('');
-
-        // Demo user
-        const demoUsers = JSON.parse(localStorage.getItem('kundenbank_users') || '[]');
-        if (demoUsers.length === 0) {
-            demoUsers.push({ name: 'Admin Kundenbank', email: 'demo@kundenbank.de', password: 'Admin@123' });
-            localStorage.setItem('kundenbank_users', JSON.stringify(demoUsers));
-            console.log('🔑 Demo: demo@kundenbank.de / Admin@123');
-        }
-
-        // ===== LOAN CALCULATOR =====
-        const amountSlider = document.getElementById('amountSlider');
-        const amountInput = document.getElementById('amountInput');
-        const amountDisplay = document.getElementById('amountDisplay');
-        const durationSlider = document.getElementById('durationSlider');
-        const durationInput = document.getElementById('durationInput');
-        const durationDisplay = document.getElementById('durationDisplay');
-        const rateSlider = document.getElementById('rateSlider');
-        const rateInput = document.getElementById('rateInput');
-        const rateDisplay = document.getElementById('rateDisplay');
-        const aprDisplay = document.getElementById('aprDisplay');
-        const monthlyRateEl = document.getElementById('monthlyRate');
-        const totalAmountEl = document.getElementById('totalAmount');
-        const totalInterestEl = document.getElementById('totalInterest');
-
-        function formatEuro(value) {
-            return value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + ' €';
-        }
-
-        function calculateLoan() {
-            let amount = parseFloat(amountInput.value) || 0;
-            let months = parseInt(durationInput.value) || 1;
-            let annualRate = parseFloat(rateInput.value) || 0;
-            if (amount < 1500) amount = 1500;
-            if (amount > 80000) amount = 80000;
-            if (months < 12) months = 12;
-            if (months > 96) months = 96;
-            if (annualRate < 0.5) annualRate = 0.5;
-            if (annualRate > 12) annualRate = 12;
-
-            amountSlider.value = amount;
-            amountInput.value = amount;
-            amountDisplay.textContent = formatEuro(amount);
-            durationSlider.value = months;
-            durationInput.value = months;
-            durationDisplay.textContent = months + ' Monate';
-            rateSlider.value = annualRate;
-            rateInput.value = annualRate.toFixed(2);
-            const rateFormatted = annualRate.toFixed(2).replace('.', ',') + ' %';
-            rateDisplay.textContent = rateFormatted;
-            aprDisplay.textContent = annualRate.toFixed(2).replace('.', ',') + ' %';
-
-            let monthlyRate = 0, totalPayment = 0, totalInterest = 0;
-            if (months > 0 && amount > 0) {
-                const monthlyInterest = annualRate / 100 / 12;
-                if (annualRate === 0) {
-                    monthlyRate = amount / months;
+                const { error } = await supabase
+                    .from('loans')
+                    .insert({
+                        borrower_id: currentUser.id,
+                        amount: amount,
+                        duration_months: duration,
+                        purpose: purpose,
+                        status: 'pending',
+                        created_at: new Date().toISOString()
+                    });
+                if (error) {
+                    document.getElementById('loanRequestMessage').innerHTML = `<span style="color:red;">Erreur : ${error.message}</span>`;
                 } else {
-                    const factor = Math.pow(1 + monthlyInterest, months);
-                    monthlyRate = amount * (monthlyInterest * factor) / (factor - 1);
+                    document.getElementById('loanRequestMessage').innerHTML = '<span style="color:green;">✅ Demande soumise avec succès !</span>';
+                    document.getElementById('loanRequestForm').reset();
                 }
-                totalPayment = monthlyRate * months;
-                totalInterest = totalPayment - amount;
+            });
+        }
+
+        else if (pageId === 'my-loans' && currentRole === 'borrower') {
+            container.innerHTML = makeCard('📋 Mes prêts', `<div id="borrowerLoansTable">Chargement...</div>`);
+            loadBorrowerLoans();
+        }
+
+        else if (pageId === 'repayments' && currentRole === 'borrower') {
+            container.innerHTML = makeCard('💰 Remboursements', `<div id="repaymentsTable">Chargement...</div>`);
+            loadRepayments();
+        }
+
+        // --- INVESTOR PAGES ---
+        else if (pageId === 'projects' && currentRole === 'investor') {
+            container.innerHTML = makeCard('📌 Projets disponibles', `<div id="investorProjectsList">Chargement...</div>`);
+            loadInvestorProjects();
+        }
+
+        else if (pageId === 'portfolio' && currentRole === 'investor') {
+            container.innerHTML = makeCard('💼 Portefeuille', `<div id="investorPortfolioTable">Chargement...</div>`);
+            loadInvestorPortfolio();
+        }
+
+        // --- ADMIN PAGES ---
+        else if (pageId === 'users' && currentRole === 'admin') {
+            container.innerHTML = makeCard('👥 Utilisateurs', `<div id="adminUsersTable">Chargement...</div>`);
+            loadAdminUsers();
+        }
+        else if (pageId === 'loans' && currentRole === 'admin') {
+            container.innerHTML = makeCard('📋 Gestion des prêts', `<div id="adminLoansTable">Chargement...</div>`);
+            loadAdminLoans();
+        }
+        else if (pageId === 'investments' && currentRole === 'admin') {
+            container.innerHTML = makeCard('📈 Investissements', `<div id="adminInvestmentsTable">Chargement...</div>`);
+            loadAdminInvestments();
+        }
+        else if (pageId === 'transactions' && currentRole === 'admin') {
+            container.innerHTML = makeCard('💳 Transactions', `<div id="adminTransactionsTable">Chargement...</div>`);
+            loadAdminTransactions();
+        }
+        else if (pageId === 'kyc' && currentRole === 'admin') {
+            container.innerHTML = makeCard('🛡️ KYC', `<div id="adminKycTable">Chargement...</div>`);
+            loadAdminKyc();
+        }
+        else if (pageId === 'documents' && currentRole === 'admin') {
+            container.innerHTML = makeCard('📄 Documents', `<div id="adminDocumentsTable">Chargement...</div>`);
+            loadAdminDocuments();
+        }
+        else {
+            container.innerHTML = `<div class="card"><p>Page en construction ou non accessible.</p></div>`;
+        }
+    }
+
+    // ============================================================
+    // 6. FONCTIONS DE CHARGEMENT DES DONNÉES (API Supabase)
+    // ============================================================
+
+    // --- BORROWER DASHBOARD ---
+    async function loadBorrowerDashboard() {
+        const { data, error } = await supabase
+            .from('loans')
+            .select('id')
+            .eq('borrower_id', currentUser.id)
+            .in('status', ['approved', 'pending']);
+        const count = data ? data.length : 0;
+        document.getElementById('borrowerLoanCount').textContent = count;
+        // Liste des prêts
+        const { data: loans } = await supabase
+            .from('loans')
+            .select('*')
+            .eq('borrower_id', currentUser.id)
+            .order('created_at', { ascending: false })
+            .limit(5);
+        let html = '<table><tr><th>Montant</th><th>Statut</th><th>Date</th></tr>';
+        if (loans && loans.length) {
+            loans.forEach(l => {
+                html += `<tr><td>${l.amount} €</td><td><span class="status ${l.status}">${l.status}</span></td><td>${new Date(l.created_at).toLocaleDateString()}</td></tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="3">Aucun prêt</td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('borrowerLoanList').innerHTML = html;
+    }
+
+    // --- BORROWER LOANS ---
+    async function loadBorrowerLoans() {
+        const { data, error } = await supabase
+            .from('loans')
+            .select('*')
+            .eq('borrower_id', currentUser.id)
+            .order('created_at', { ascending: false });
+        let html = '<table><tr><th>Montant</th><th>Durée (mois)</th><th>Objet</th><th>Statut</th><th>Date</th></tr>';
+        if (data && data.length) {
+            data.forEach(l => {
+                html += `<tr><td>${l.amount} €</td><td>${l.duration_months}</td><td>${l.purpose || '-'}</td><td><span class="status ${l.status}">${l.status}</span></td><td>${new Date(l.created_at).toLocaleDateString()}</td></tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="5">Aucun prêt</td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('borrowerLoansTable').innerHTML = html;
+    }
+
+    // --- REPAYMENTS ---
+    async function loadRepayments() {
+        // Simuler des remboursements : on récupère les prêts approuvés et on génère des échéances
+        const { data: loans } = await supabase
+            .from('loans')
+            .select('*')
+            .eq('borrower_id', currentUser.id)
+            .eq('status', 'approved');
+        let html = '<table><tr><th>Prêt</th><th>Mensualité</th><th>Date échéance</th><th>Statut</th></tr>';
+        if (loans && loans.length) {
+            // Pour simplifier, on affiche une ligne par prêt avec un montant fictif
+            loans.forEach(l => {
+                const monthly = (l.amount / l.duration_months).toFixed(2);
+                const due = new Date();
+                due.setMonth(due.getMonth() + 1);
+                html += `<tr><td>${l.amount} €</td><td>${monthly} €</td><td>${due.toLocaleDateString()}</td><td><span class="status pending">à venir</span></td></tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="4">Aucun remboursement prévu</td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('repaymentsTable').innerHTML = html;
+    }
+
+    // --- INVESTOR DASHBOARD ---
+    async function loadInvestorDashboard() {
+        // Total investi
+        const { data: investments } = await supabase
+            .from('investments')
+            .select('amount')
+            .eq('investor_id', currentUser.id);
+        let total = 0;
+        if (investments) investments.forEach(i => total += i.amount);
+        document.getElementById('investorPortfolioValue').textContent = total.toFixed(2) + ' €';
+
+        // Nombre de projets actifs (on compte les investissements uniques)
+        const { data: projects } = await supabase
+            .from('investments')
+            .select('project_id')
+            .eq('investor_id', currentUser.id);
+        const uniqueProjects = new Set(projects ? projects.map(p => p.project_id) : []);
+        document.getElementById('investorProjectCount').textContent = uniqueProjects.size;
+
+        // Retour estimé (simulé : 5% du total)
+        document.getElementById('investorReturns').textContent = (total * 0.05).toFixed(2) + ' €';
+
+        // Derniers investissements
+        const { data: lastInv } = await supabase
+            .from('investments')
+            .select('*, projects(name)')
+            .eq('investor_id', currentUser.id)
+            .order('created_at', { ascending: false })
+            .limit(5);
+        let html = '<table><tr><th>Projet</th><th>Montant</th><th>Date</th></tr>';
+        if (lastInv && lastInv.length) {
+            lastInv.forEach(inv => {
+                html += `<tr><td>${inv.projects?.name || 'Projet'}</td><td>${inv.amount} €</td><td>${new Date(inv.created_at).toLocaleDateString()}</td></tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="3">Aucun investissement</td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('investorInvestList').innerHTML = html;
+    }
+
+    // --- INVESTOR PROJECTS ---
+    async function loadInvestorProjects() {
+        // On récupère tous les projets avec leur besoin de financement
+        const { data: projects } = await supabase
+            .from('projects')
+            .select('*')
+            .eq('status', 'open');
+        let html = '<table><tr><th>Nom</th><th>Description</th><th>Montant requis</th><th>Collecté</th><th>Action</th></tr>';
+        if (projects && projects.length) {
+            for (const p of projects) {
+                // Calculer le montant collecté
+                const { data: invs } = await supabase
+                    .from('investments')
+                    .select('amount')
+                    .eq('project_id', p.id);
+                let collected = 0;
+                if (invs) invs.forEach(i => collected += i.amount);
+                const progress = p.amount_required > 0 ? (collected / p.amount_required * 100).toFixed(0) : 0;
+                html += `<tr>
+                    <td><strong>${p.name}</strong></td>
+                    <td>${p.description || '-'}</td>
+                    <td>${p.amount_required} €</td>
+                    <td>${collected.toFixed(2)} € (${progress}%)</td>
+                    <td><button class="btn btn-primary invest-btn" data-project-id="${p.id}">Investir</button></td>
+                </tr>`;
             }
-            monthlyRateEl.textContent = formatEuro(monthlyRate);
-            totalAmountEl.textContent = formatEuro(totalPayment);
-            totalInterestEl.textContent = formatEuro(totalInterest);
+        } else {
+            html += '<tr><td colspan="5">Aucun projet disponible</td></tr>';
         }
+        html += '</table>';
+        document.getElementById('investorProjectsList').innerHTML = html;
 
-        function syncSliderToInput(slider, input) {
-            input.value = slider.value;
-            calculateLoan();
+        // Ajouter les événements des boutons "Investir"
+        document.querySelectorAll('.invest-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const projectId = btn.dataset.projectId;
+                const amount = prompt('Montant à investir (€) :');
+                if (amount && !isNaN(amount) && parseFloat(amount) > 0) {
+                    investInProject(projectId, parseFloat(amount));
+                }
+            });
+        });
+    }
+
+    async function investInProject(projectId, amount) {
+        const { error } = await supabase
+            .from('investments')
+            .insert({
+                investor_id: currentUser.id,
+                project_id: projectId,
+                amount: amount,
+                status: 'active',
+                created_at: new Date().toISOString()
+            });
+        if (error) {
+            alert('Erreur : ' + error.message);
+        } else {
+            alert('✅ Investissement réalisé avec succès !');
+            navigateTo('projects');
         }
-        function syncInputToSlider(input, slider, min, max) {
-            let val = parseFloat(input.value);
-            if (isNaN(val)) val = min;
-            if (val < min) val = min;
-            if (val > max) val = max;
-            input.value = val;
-            slider.value = val;
-            calculateLoan();
+    }
+
+    // --- INVESTOR PORTFOLIO ---
+    async function loadInvestorPortfolio() {
+        const { data: investments } = await supabase
+            .from('investments')
+            .select('*, projects(name, amount_required)')
+            .eq('investor_id', currentUser.id);
+        let html = '<table><tr><th>Projet</th><th>Montant investi</th><th>Date</th><th>Statut</th></tr>';
+        if (investments && investments.length) {
+            investments.forEach(inv => {
+                html += `<tr><td>${inv.projects?.name || 'Projet'}</td><td>${inv.amount} €</td><td>${new Date(inv.created_at).toLocaleDateString()}</td><td><span class="status active">actif</span></td></tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="4">Aucun investissement</td></tr>';
         }
+        html += '</table>';
+        document.getElementById('investorPortfolioTable').innerHTML = html;
+    }
 
-        amountSlider.addEventListener('input', function() { syncSliderToInput(this, amountInput); });
-        amountInput.addEventListener('input', function() { syncInputToSlider(this, amountSlider, 1500, 80000); });
-        amountInput.addEventListener('blur', function() { syncInputToSlider(this, amountSlider, 1500, 80000); });
-        durationSlider.addEventListener('input', function() { syncSliderToInput(this, durationInput); });
-        durationInput.addEventListener('input', function() { syncInputToSlider(this, durationSlider, 12, 96); });
-        durationInput.addEventListener('blur', function() { syncInputToSlider(this, durationSlider, 12, 96); });
-        rateSlider.addEventListener('input', function() { syncSliderToInput(this, rateInput); });
-        rateInput.addEventListener('input', function() { syncInputToSlider(this, rateSlider, 0.5, 12); });
-        rateInput.addEventListener('blur', function() { syncInputToSlider(this, rateSlider, 0.5, 12); });
+    // --- ADMIN DASHBOARD ---
+    async function loadAdminDashboard() {
+        const { count: userCount } = await supabase.from('profiles').select('*', { count: 'exact', head: true });
+        document.getElementById('adminUserCount').textContent = userCount || 0;
 
-        calculateLoan();
+        const { count: loanCount } = await supabase.from('loans').select('*', { count: 'exact', head: true }).eq('status', 'approved');
+        document.getElementById('adminLoanCount').textContent = loanCount || 0;
 
-    })();
+        const { data: invs } = await supabase.from('investments').select('amount');
+        let total = 0;
+        if (invs) invs.forEach(i => total += i.amount);
+        document.getElementById('adminInvestmentTotal').textContent = total.toFixed(2) + ' €';
+
+        // Activité récente (ex: 5 derniers prêts)
+        const { data: recentLoans } = await supabase
+            .from('loans')
+            .select('*, profiles(full_name)')
+            .order('created_at', { ascending: false })
+            .limit(5);
+        let html = '<table><tr><th>Emprunteur</th><th>Montant</th><th>Statut</th><th>Date</th></tr>';
+        if (recentLoans && recentLoans.length) {
+            recentLoans.forEach(l => {
+                html += `<tr><td>${l.profiles?.full_name || l.borrower_id}</td><td>${l.amount} €</td><td><span class="status ${l.status}">${l.status}</span></td><td>${new Date(l.created_at).toLocaleDateString()}</td></tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="4">Aucune activité</td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('adminActivity').innerHTML = html;
+    }
+
+    // --- ADMIN USERS ---
+    async function loadAdminUsers() {
+        const { data: users } = await supabase.from('profiles').select('*');
+        let html = '<table><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Action</th></tr>';
+        if (users && users.length) {
+            users.forEach(u => {
+                html += `<tr><td>${u.full_name || '-'}</td><td>${u.email || u.id}</td><td>${u.role}</td><td><button class="btn btn-outline btn-sm" onclick="alert('Gestion utilisateur à implémenter')">Modifier</button></td></tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="4">Aucun utilisateur</td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('adminUsersTable').innerHTML = html;
+    }
+
+    // --- ADMIN LOANS ---
+    async function loadAdminLoans() {
+        const { data: loans } = await supabase
+            .from('loans')
+            .select('*, profiles(full_name)')
+            .order('created_at', { ascending: false });
+        let html = '<table><tr><th>Emprunteur</th><th>Montant</th><th>Durée</th><th>Statut</th><th>Action</th></tr>';
+        if (loans && loans.length) {
+            loans.forEach(l => {
+                html += `<tr>
+                    <td>${l.profiles?.full_name || l.borrower_id}</td>
+                    <td>${l.amount} €</td>
+                    <td>${l.duration_months} mois</td>
+                    <td><span class="status ${l.status}">${l.status}</span></td>
+                    <td>
+                        ${l.status === 'pending' ? `<button class="btn btn-success btn-sm approve-loan" data-id="${l.id}">Approuver</button> <button class="btn btn-danger btn-sm reject-loan" data-id="${l.id}">Rejeter</button>` : '-'}
+                    </td>
+                </tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="5">Aucun prêt</td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('adminLoansTable').innerHTML = html;
+
+        // Événements pour approuver/rejeter
+        document.querySelectorAll('.approve-loan').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.id;
+                const { error } = await supabase.from('loans').update({ status: 'approved' }).eq('id', id);
+                if (!error) { alert('Prêt approuvé'); navigateTo('loans'); }
+            });
+        });
+        document.querySelectorAll('.reject-loan').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const id = btn.dataset.id;
+                const { error } = await supabase.from('loans').update({ status: 'rejected' }).eq('id', id);
+                if (!error) { alert('Prêt rejeté'); navigateTo('loans'); }
+            });
+        });
+    }
+
+    // --- ADMIN INVESTMENTS ---
+    async function loadAdminInvestments() {
+        const { data: invs } = await supabase
+            .from('investments')
+            .select('*, projects(name), profiles(full_name)')
+            .order('created_at', { ascending: false });
+        let html = '<table><tr><th>Investisseur</th><th>Projet</th><th>Montant</th><th>Date</th></tr>';
+        if (invs && invs.length) {
+            invs.forEach(inv => {
+                html += `<tr><td>${inv.profiles?.full_name || inv.investor_id}</td><td>${inv.projects?.name || 'Projet'}</td><td>${inv.amount} €</td><td>${new Date(inv.created_at).toLocaleDateString()}</td></tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="4">Aucun investissement</td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('adminInvestmentsTable').innerHTML = html;
+    }
+
+    // --- ADMIN TRANSACTIONS ---
+    async function loadAdminTransactions() {
+        // Simuler des transactions (on peut fusionner prêts + investissements)
+        const { data: loans } = await supabase.from('loans').select('amount, created_at, status');
+        const { data: invs } = await supabase.from('investments').select('amount, created_at');
+        let rows = [];
+        if (loans) loans.forEach(l => rows.push({ type: 'Prêt', amount: l.amount, date: l.created_at, status: l.status }));
+        if (invs) invs.forEach(i => rows.push({ type: 'Investissement', amount: i.amount, date: i.created_at, status: 'terminé' }));
+        rows.sort((a,b) => new Date(b.date) - new Date(a.date));
+        let html = '<table><tr><th>Type</th><th>Montant</th><th>Date</th><th>Statut</th></tr>';
+        if (rows.length) {
+            rows.slice(0, 20).forEach(r => {
+                html += `<tr><td>${r.type}</td><td>${r.amount} €</td><td>${new Date(r.date).toLocaleDateString()}</td><td><span class="status ${r.status}">${r.status}</span></td></tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="4">Aucune transaction</td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('adminTransactionsTable').innerHTML = html;
+    }
+
+    // --- ADMIN KYC ---
+    async function loadAdminKyc() {
+        // Simuler des demandes KYC (on peut utiliser la table 'kyc' si elle existe)
+        const { data: kyc } = await supabase.from('kyc').select('*, profiles(full_name)').order('created_at', { ascending: false });
+        let html = '<table><tr><th>Utilisateur</th><th>Type</th><th>Statut</th><th>Action</th></tr>';
+        if (kyc && kyc.length) {
+            kyc.forEach(k => {
+                html += `<tr><td>${k.profiles?.full_name || k.user_id}</td><td>${k.document_type || 'ID'}</td><td><span class="status ${k.status}">${k.status}</span></td><td><button class="btn btn-success btn-sm">Vérifier</button></td></tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="4">Aucune demande KYC</td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('adminKycTable').innerHTML = html;
+    }
+
+    // --- ADMIN DOCUMENTS ---
+    async function loadAdminDocuments() {
+        const { data: docs } = await supabase.from('documents').select('*, profiles(full_name)').order('created_at', { ascending: false });
+        let html = '<table><tr><th>Utilisateur</th><th>Nom du fichier</th><th>Date</th><th>Action</th></tr>';
+        if (docs && docs.length) {
+            docs.forEach(d => {
+                html += `<tr><td>${d.profiles?.full_name || d.user_id}</td><td>${d.file_name}</td><td>${new Date(d.created_at).toLocaleDateString()}</td><td><a href="#" class="btn btn-outline btn-sm">Télécharger</a></td></tr>`;
+            });
+        } else {
+            html += '<tr><td colspan="4">Aucun document</td></tr>';
+        }
+        html += '</table>';
+        document.getElementById('adminDocumentsTable').innerHTML = html;
+    }
+
+    // ============================================================
+    // 7. INITIALISATION
+    // ============================================================
+    // Vérifier la session au chargement
+    checkSession();
+
+    // Gestion de la déconnexion via le bouton (déjà défini)
+
+    // Pour les besoins de démonstration, on crée des tables si elles n'existent pas
+    // (Normalement, vous devez les créer dans Supabase SQL Editor)
+    console.log('Soha Bank - Prêt à l\'emploi !');
+
+    // ============================================================
+    // 8. STRUCTURE DE BASE DE DONNÉES SUPABASE (à créer)
+    // ============================================================
+    /*
+    Tables nécessaires :
+
+    profiles :
+    - id (uuid, PK, references auth.users)
+    - full_name (text)
+    - role (text) : 'borrower', 'investor', 'admin'
+    - email (text)
+
+    loans :
+    - id (uuid, PK)
+    - borrower_id (uuid, references profiles.id)
+    - amount (numeric)
+    - duration_months (int)
+    - purpose (text)
+    - status (text) : 'pending', 'approved', 'rejected', 'completed'
+    - created_at (timestamp)
+
+    projects :
+    - id (uuid, PK)
+    - name (text)
+    - description (text)
+    - amount_required (numeric)
+    - status (text) : 'open', 'funded', 'closed'
+    - created_at (timestamp)
+
+    investments :
+    - id (uuid, PK)
+    - investor_id (uuid, references profiles.id)
+    - project_id (uuid, references projects.id)
+    - amount (numeric)
+    - status (text) : 'active', 'completed'
+    - created_at (timestamp)
+
+    kyc :
+    - id (uuid, PK)
+    - user_id (uuid, references profiles.id)
+    - document_type (text)
+    - status (text) : 'pending', 'verified', 'rejected'
+    - created_at (timestamp)
+
+    documents :
+    - id (uuid, PK)
+    - user_id (uuid, references profiles.id)
+    - file_name (text)
+    - file_url (text)
+    - created_at (timestamp)
+
+    (Adaptez selon vos besoins)
+    */
 </script>
-
 </body>
 </html>
