@@ -3,19 +3,27 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Soha Bank · Plateforme complète</title>
+    <title>Soha Bank · Plateforme</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
     <style>
         /* ===== RESET & BASE ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
-            --primary:#0a2540; --primary-light:#1d3b5a; --secondary:#4a6f8c;
-            --bg:#f4f7fc; --white:#ffffff; --gray:#e9edf4;
-            --text:#1a2a3a; --text-light:#5a6f8c;
-            --shadow:0 4px 20px rgba(0,0,0,0.05); --radius:12px;
+            --primary:#0a2540;
+            --primary-light:#1d3b5a;
+            --secondary:#4a6f8c;
+            --bg:#f4f7fc;
+            --white:#ffffff;
+            --gray:#e9edf4;
+            --text:#1a2a3a;
+            --text-light:#5a6f8c;
+            --shadow:0 4px 20px rgba(0,0,0,0.04);
+            --radius:12px;
             --transition:0.25s ease;
-            --green:#28a745; --orange:#fd7e14; --red:#dc3545; --blue:#0d6efd;
-            --sidebar-width:260px; --header-height:70px;
+            --green:#28a745;
+            --orange:#fd7e14;
+            --red:#dc3545;
+            --blue:#0d6efd;
         }
         html { scroll-behavior:smooth; }
         body {
@@ -85,39 +93,67 @@
         /* ===== TOPBAR ===== */
         .topbar {
             display:flex; justify-content:space-between; align-items:center;
-            padding:14px 24px; background:var(--white); border-radius:var(--radius);
-            box-shadow:var(--shadow); margin-bottom:24px; flex-wrap:wrap; gap:12px;
-            position:relative;
+            padding:16px 28px; background:var(--white); border-radius:var(--radius);
+            box-shadow:var(--shadow); margin-bottom:28px; position:relative;
+            transition:box-shadow var(--transition);
         }
-        .topbar .brand { font-size:1.4rem; font-weight:700; color:var(--primary); cursor:pointer; }
-        .topbar .brand small { font-weight:400; color:var(--text-light); }
-        .topbar .user-info { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-        .topbar .user-info .role-badge { background:var(--bg); padding:4px 12px; border-radius:30px; font-size:0.75rem; font-weight:600; color:var(--secondary); }
+        .topbar:hover { box-shadow:0 8px 30px rgba(0,0,0,0.06); }
+        .topbar .brand {
+            font-size:1.5rem; font-weight:700; color:var(--primary); cursor:pointer;
+            letter-spacing:-0.3px;
+        }
+        .topbar .brand small { font-weight:400; color:var(--text-light); font-size:1rem; }
         .topbar .menu-btn {
-            background:none; border:none; font-size:1.6rem; cursor:pointer;
-            padding:4px 8px; border-radius:var(--radius); transition:background var(--transition);
-            color:var(--text-light);
+            background:none; border:none; font-size:1.8rem; cursor:pointer;
+            padding:6px 12px; border-radius:var(--radius); transition:all var(--transition);
+            color:var(--text-light); display:flex; align-items:center; gap:8px;
+            font-weight:500;
         }
         .topbar .menu-btn:hover { background:var(--bg); color:var(--primary); }
+        .topbar .menu-btn .icon { font-size:1.8rem; }
 
         /* ===== SECTIONS DROPDOWN ===== */
         .sections-dropdown {
-            position:absolute; top:calc(100% + 8px); right:0;
+            position:absolute; top:calc(100% + 12px); right:0;
             background:var(--white); border-radius:var(--radius);
-            box-shadow:0 8px 40px rgba(0,0,0,0.12); padding:8px 0;
-            min-width:240px; z-index:1000; display:none;
+            box-shadow:0 20px 60px rgba(0,0,0,0.10); padding:12px 0;
+            min-width:280px; z-index:1000; display:none;
             border:1px solid var(--gray);
             max-height:80vh; overflow-y:auto;
+            animation:dropdownFade 0.2s ease;
+        }
+        @keyframes dropdownFade {
+            from { opacity:0; transform:translateY(-8px); }
+            to { opacity:1; transform:translateY(0); }
         }
         .sections-dropdown.open { display:block; }
-        .sections-dropdown a {
-            display:flex; align-items:center; gap:12px; padding:10px 20px;
-            color:var(--text); font-size:0.9rem; transition:background var(--transition);
-            cursor:pointer;
+        .sections-dropdown .user-info {
+            padding:8px 20px 12px; border-bottom:1px solid var(--gray);
+            margin-bottom:6px;
         }
-        .sections-dropdown a:hover { background:var(--bg); }
-        .sections-dropdown a .icon { font-size:1.4rem; width:28px; text-align:center; }
+        .sections-dropdown .user-info .username {
+            font-weight:600; color:var(--primary); font-size:1rem;
+        }
+        .sections-dropdown .user-info .role {
+            font-size:0.8rem; color:var(--text-light); display:block; margin-top:2px;
+        }
+        .sections-dropdown .user-info .auth-btn {
+            margin-top:8px; width:100%; text-align:center;
+        }
+        .sections-dropdown a {
+            display:flex; align-items:center; gap:14px; padding:10px 20px;
+            color:var(--text); font-size:0.9rem; transition:background var(--transition);
+            cursor:pointer; border-left:3px solid transparent;
+        }
+        .sections-dropdown a:hover {
+            background:var(--bg); border-left-color:var(--primary);
+        }
+        .sections-dropdown a .icon { font-size:1.4rem; width:28px; text-align:center; color:var(--secondary); }
         .sections-dropdown .divider { height:1px; background:var(--gray); margin:4px 16px; }
+        .sections-dropdown .section-label {
+            padding:6px 20px; font-size:0.65rem; text-transform:uppercase;
+            color:var(--text-light); letter-spacing:0.5px; font-weight:600;
+        }
 
         .page-container { max-width:1200px; margin:0 auto; padding:20px 24px; }
 
@@ -192,7 +228,7 @@
         /* ===== DASHBOARD LAYOUT ===== */
         .dashboard-layout { display:flex; min-height:100vh; background:var(--bg); }
         .sidebar {
-            position:fixed; top:0; left:0; height:100vh; width:var(--sidebar-width);
+            position:fixed; top:0; left:0; height:100vh; width:260px;
             background:var(--primary); color:white; padding:20px 0;
             display:flex; flex-direction:column; z-index:1000;
             transition:transform var(--transition); overflow-y:auto;
@@ -223,9 +259,9 @@
         .sidebar .footer-links a .icon { font-size:1rem; width:20px; text-align:center; }
         .sidebar-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:999; }
         .sidebar-overlay.open { display:block; }
-        .main { margin-left:var(--sidebar-width); flex:1; min-height:100vh; padding:0; width:calc(100% - var(--sidebar-width)); }
+        .main { margin-left:260px; flex:1; min-height:100vh; padding:0; width:calc(100% - 260px); }
         .header {
-            height:var(--header-height); background:var(--white); border-bottom:1px solid var(--gray);
+            height:70px; background:var(--white); border-bottom:1px solid var(--gray);
             padding:0 32px; display:flex; align-items:center; justify-content:space-between;
             position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,0,0,0.02);
         }
@@ -243,7 +279,7 @@
         .header .right .user-menu .name { font-weight:500; font-size:0.9rem; }
         .header .right .user-menu .chevron { color:var(--text-light); font-size:0.7rem; }
         .dropdown-menu {
-            position:absolute; top:calc(var(--header-height) - 4px); right:20px;
+            position:absolute; top:calc(70px - 4px); right:20px;
             background:var(--white); border-radius:var(--radius);
             box-shadow:0 8px 40px rgba(0,0,0,0.12); padding:8px 0;
             min-width:220px; z-index:200; display:none; border:1px solid var(--gray);
@@ -286,7 +322,7 @@
         .shortcut-btn .icon { font-size:2rem; display:block; margin-bottom:4px; }
         .shortcut-btn .label { font-weight:500; font-size:0.8rem; }
 
-        /* ===== STEPPER (Loan Request) ===== */
+        /* ===== STEPPER ===== */
         .stepper {
             display:flex; justify-content:space-between; align-items:center;
             margin-bottom:32px; position:relative; padding:0 8px;
@@ -340,13 +376,13 @@
         .file-item .name { font-weight:500; font-size:0.9rem; }
         .file-item .remove { color:var(--red); cursor:pointer; font-weight:600; }
 
-        /* ===== KYC PAGE ===== */
+        /* ===== KYC ===== */
         .kyc-form { max-width:600px; margin:0 auto; }
         .kyc-form .form-group { margin-bottom:20px; }
         .kyc-form .form-group label { font-weight:600; }
         .kyc-form .file-upload-area { padding:16px; }
 
-        /* ===== MODAL OVERLAY ===== */
+        /* ===== MODAL ===== */
         .modal-overlay {
             position:fixed; top:0; left:0; width:100%; height:100%;
             background:rgba(0,0,0,0.4); backdrop-filter:blur(4px);
@@ -372,7 +408,7 @@
             .auth-left h1 { font-size:1.6rem; }
             .auth-right { padding:32px 28px; }
             .auth-footer { flex-direction:column; align-items:center; text-align:center; }
-            .topbar { flex-direction:column; align-items:stretch; }
+            .topbar { flex-direction:row; padding:12px 16px; }
             .hero-landing h1 { font-size:2rem; }
             .hero-landing { padding:40px 20px; }
             .sidebar { transform:translateX(-100%); width:280px; }
@@ -392,8 +428,9 @@
             .stepper::before { display:none; }
             .stepper .step { flex:0 0 auto; }
             .stepper .step .label { font-size:0.6rem; }
-            .sections-dropdown { right:0; left:auto; width:100%; }
+            .sections-dropdown { right:0; left:auto; width:100%; max-height:60vh; }
             .section-banner { height:120px; }
+            .topbar .menu-btn span { display:none; }
         }
         @media (max-width:480px) {
             .auth-left { padding:24px 20px; }
@@ -422,40 +459,48 @@
     <!-- ===== TOPBAR ===== -->
     <header class="topbar" id="mainTopbar">
         <div class="brand" data-page="home">🏦 Soha Bank <small>· Plateforme</small></div>
-        <div class="user-info">
-            <button class="menu-btn" id="sectionsMenuBtn" aria-label="Menu">☰</button>
-            <div class="sections-dropdown" id="sectionsDropdown">
-                <a data-page="home"><span class="icon">🏠</span> Accueil</a>
-                <a data-page="how-it-works"><span class="icon">📖</span> Comment ça marche</a>
-                <a data-page="invest"><span class="icon">📈</span> Investir</a>
-                <a data-page="borrow"><span class="icon">🏗️</span> Emprunter</a>
-                <a data-page="opportunities"><span class="icon">📌</span> Opportunités</a>
-                <a data-page="about"><span class="icon">ℹ️</span> À propos</a>
-                <a data-page="security"><span class="icon">🛡️</span> Sécurité</a>
-                <a data-page="faq"><span class="icon">❓</span> FAQ</a>
-                <a data-page="contact"><span class="icon">✉️</span> Contact</a>
-                <div class="divider"></div>
-                <a data-page="kyc"><span class="icon">🪪</span> Vérification KYC</a>
-                <div class="divider" id="dashDivider"></div>
-                <a data-page="investor-dashboard" id="dashInvestorLink"><span class="icon">📊</span> Tableau de bord Investisseur</a>
-                <a data-page="borrower-dashboard" id="dashBorrowerLink"><span class="icon">📊</span> Tableau de bord Emprunteur</a>
-                <div class="divider"></div>
-                <a data-page="login"><span class="icon">🔐</span> Connexion</a>
-                <a data-page="register"><span class="icon">📝</span> Inscription</a>
-                <a data-page="forgot-password"><span class="icon">🔑</span> Mot de passe oublié</a>
+        <button class="menu-btn" id="sectionsMenuBtn" aria-label="Menu">
+            <span class="icon">☰</span>
+            <span>Menu</span>
+        </button>
+        <div class="sections-dropdown" id="sectionsDropdown">
+            <!-- User info section -->
+            <div class="user-info" id="dropdownUserInfo">
+                <div class="username" id="dropdownUserName">Invité</div>
+                <span class="role" id="dropdownUserRole">public</span>
+                <div class="auth-btn" id="dropdownAuthBtn">
+                    <button class="btn btn-sm btn-block" id="dropdownAuthAction">Se connecter</button>
+                </div>
             </div>
-            <span id="topUserName">Invité</span>
-            <span class="role-badge" id="topUserRole">public</span>
-            <button class="btn" id="topAuthBtn">Se connecter</button>
+            <div class="section-label">📌 Navigation</div>
+            <a data-page="home"><span class="icon">🏠</span> Accueil</a>
+            <a data-page="how-it-works"><span class="icon">📖</span> Comment ça marche</a>
+            <a data-page="invest"><span class="icon">📈</span> Investir</a>
+            <a data-page="borrow"><span class="icon">🏗️</span> Emprunter</a>
+            <a data-page="opportunities"><span class="icon">📌</span> Opportunités</a>
+            <a data-page="about"><span class="icon">ℹ️</span> À propos</a>
+            <a data-page="security"><span class="icon">🛡️</span> Sécurité</a>
+            <a data-page="faq"><span class="icon">❓</span> FAQ</a>
+            <a data-page="contact"><span class="icon">✉️</span> Contact</a>
+            <div class="divider"></div>
+            <div class="section-label">🛡️ Vérification</div>
+            <a data-page="kyc"><span class="icon">🪪</span> KYC</a>
+            <div class="divider" id="dashDivider"></div>
+            <div class="section-label">📊 Espace personnel</div>
+            <a data-page="investor-dashboard" id="dashInvestorLink"><span class="icon">📊</span> Tableau de bord Investisseur</a>
+            <a data-page="borrower-dashboard" id="dashBorrowerLink"><span class="icon">📊</span> Tableau de bord Emprunteur</a>
+            <div class="divider"></div>
+            <div class="section-label">🔐 Compte</div>
+            <a data-page="login"><span class="icon">🔐</span> Connexion</a>
+            <a data-page="register"><span class="icon">📝</span> Inscription</a>
+            <a data-page="forgot-password"><span class="icon">🔑</span> Mot de passe oublié</a>
         </div>
     </header>
 
     <!-- ===== CONTENEUR DES PAGES ===== -->
     <div id="pageContainer">
 
-        <!-- =====================================================================
-        PAGE 1 — ACCUEIL
-        ===================================================================== -->
+        <!-- ===== PAGE 1 — ACCUEIL ===== -->
         <div id="page-home" class="page-content">
             <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=300&fit=crop" alt="Financer" class="section-banner" />
             <div class="hero-landing" style="margin-top:0;">
@@ -497,9 +542,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGE 2 — COMMENT ÇA MARCHE
-        ===================================================================== -->
+        <!-- ===== PAGE 2 — COMMENT ÇA MARCHE ===== -->
         <div id="page-how-it-works" class="page-content hidden">
             <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=200&fit=crop" alt="Comment ça marche" class="section-banner" />
             <h1 style="font-size:2rem; color:var(--primary); margin-bottom:8px;">Comment fonctionne notre plateforme ?</h1>
@@ -566,9 +609,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGE 3 — INVESTIR
-        ===================================================================== -->
+        <!-- ===== PAGE 3 — INVESTIR ===== -->
         <div id="page-invest" class="page-content hidden">
             <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=200&fit=crop" alt="Investir" class="section-banner" />
             <h1 style="font-size:2rem; color:var(--primary);">Découvrez des opportunités d'investissement</h1>
@@ -623,9 +664,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGE 4 — EMPRUNTER
-        ===================================================================== -->
+        <!-- ===== PAGE 4 — EMPRUNTER ===== -->
         <div id="page-borrow" class="page-content hidden">
             <img src="https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&h=200&fit=crop" alt="Emprunter" class="section-banner" />
             <h1 style="font-size:2rem; color:var(--primary);">Financez votre projet</h1>
@@ -668,9 +707,7 @@
             <button class="btn btn-success" data-page="loan-request" style="margin-top:16px;">COMMENCER MA DEMANDE</button>
         </div>
 
-        <!-- =====================================================================
-        PAGE 5 — OPPORTUNITÉS
-        ===================================================================== -->
+        <!-- ===== PAGE 5 — OPPORTUNITÉS ===== -->
         <div id="page-opportunities" class="page-content hidden">
             <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&h=200&fit=crop" alt="Opportunités" class="section-banner" />
             <h1 style="font-size:2rem; color:var(--primary);">Opportunités d'investissement</h1>
@@ -726,9 +763,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGE 6 — À PROPOS
-        ===================================================================== -->
+        <!-- ===== PAGE 6 — À PROPOS ===== -->
         <div id="page-about" class="page-content hidden">
             <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800&h=200&fit=crop" alt="À propos" class="section-banner" />
             <h1 style="font-size:2rem; color:var(--primary);">À propos de Soha Bank</h1>
@@ -787,9 +822,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGE 7 — SÉCURITÉ
-        ===================================================================== -->
+        <!-- ===== PAGE 7 — SÉCURITÉ ===== -->
         <div id="page-security" class="page-content hidden">
             <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800&h=200&fit=crop" alt="Sécurité" class="section-banner" />
             <h1 style="font-size:2rem; color:var(--primary);">Votre sécurité est une priorité</h1>
@@ -826,9 +859,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGE 8 — FAQ
-        ===================================================================== -->
+        <!-- ===== PAGE 8 — FAQ ===== -->
         <div id="page-faq" class="page-content hidden">
             <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=800&h=200&fit=crop" alt="FAQ" class="section-banner" />
             <h1 style="font-size:2rem; color:var(--primary);">Questions fréquentes</h1>
@@ -844,9 +875,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGE 9 — CONTACT
-        ===================================================================== -->
+        <!-- ===== PAGE 9 — CONTACT ===== -->
         <div id="page-contact" class="page-content hidden">
             <img src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=200&fit=crop" alt="Contact" class="section-banner" />
             <h1 style="font-size:2rem; color:var(--primary);">Comment pouvons-nous vous aider ?</h1>
@@ -910,9 +939,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGES AUTH (Login, Register, Forgot)
-        ===================================================================== -->
+        <!-- ===== PAGES AUTH ===== -->
         <div id="page-login" class="page-content hidden">
             <div class="auth-container" style="margin:0 auto;">
                 <div class="auth-left">
@@ -990,9 +1017,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGE 13 — VÉRIFICATION KYC
-        ===================================================================== -->
+        <!-- ===== PAGE KYC ===== -->
         <div id="page-kyc" class="page-content hidden">
             <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=200&fit=crop" alt="KYC" class="section-banner" />
             <div style="max-width:700px; margin:0 auto;">
@@ -1042,9 +1067,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGE 14 — DEMANDE DE FINANCEMENT (loan-request)
-        ===================================================================== -->
+        <!-- ===== DEMANDE DE FINANCEMENT (loan-request) ===== -->
         <div id="page-loan-request" class="page-content hidden" style="padding:0;">
             <div class="dashboard-layout">
                 <aside class="sidebar" id="loanRequestSidebar">
@@ -1176,9 +1199,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGE 15 — DÉTAILS D'UNE DEMANDE (loan-request-details)
-        ===================================================================== -->
+        <!-- ===== DÉTAILS D'UNE DEMANDE ===== -->
         <div id="page-loan-request-details" class="page-content hidden" style="padding:0;">
             <div class="dashboard-layout">
                 <aside class="sidebar" id="loanDetailsSidebar">
@@ -1221,9 +1242,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        PAGE 16 — NOTIFICATIONS
-        ===================================================================== -->
+        <!-- ===== NOTIFICATIONS ===== -->
         <div id="page-notifications" class="page-content hidden" style="padding:0;">
             <div class="dashboard-layout">
                 <aside class="sidebar" id="notifSidebar"><div class="brand"><div class="logo">🏦 Soha Bank <small>· Notifications</small></div></div>
@@ -1237,9 +1256,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        DASHBOARD INVESTISSEUR
-        ===================================================================== -->
+        <!-- ===== DASHBOARD INVESTISSEUR ===== -->
         <div id="page-investor-dashboard" class="page-content hidden" style="padding:0;">
             <div class="dashboard-layout">
                 <aside class="sidebar" id="investorSidebar"><div class="brand"><div class="logo">🏦 Soha Bank <small>· Investisseur</small></div></div>
@@ -1272,9 +1289,7 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        DASHBOARD EMPRUNTEUR
-        ===================================================================== -->
+        <!-- ===== DASHBOARD EMPRUNTEUR ===== -->
         <div id="page-borrower-dashboard" class="page-content hidden" style="padding:0;">
             <div class="dashboard-layout">
                 <aside class="sidebar" id="borrowerSidebar"><div class="brand"><div class="logo">🏦 Soha Bank <small>· Emprunteur</small></div></div>
@@ -1307,18 +1322,14 @@
             </div>
         </div>
 
-        <!-- =====================================================================
-        SOUS-PAGES INVESTISSEUR (vues rapides)
-        ===================================================================== -->
+        <!-- ===== SOUS-PAGES INVESTISSEUR ===== -->
         <div id="page-investor-investments" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="investorSidebar2"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Mes investissements</h1><span>Tous</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">M</div><span class="name">Marie</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="investorInvestmentsContent"></div></div></div></div>
         <div id="page-investor-transactions" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="investorSidebar3"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Transactions</h1><span>Historique</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">M</div><span class="name">Marie</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="investorTransactionsContent"></div></div></div></div>
         <div id="page-investor-repayments" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="investorSidebar4"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Remboursements</h1><span>Suivi</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">M</div><span class="name">Marie</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="investorRepaymentsContent"></div></div></div></div>
         <div id="page-investor-documents" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="investorSidebar5"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Documents</h1><span>Tous</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">M</div><span class="name">Marie</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="investorDocumentsContent"></div></div></div></div>
         <div id="page-investor-profile" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="investorSidebar6"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Profil</h1><span>Mes données</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">M</div><span class="name">Marie</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="investorProfileContent"></div></div></div></div>
 
-        <!-- =====================================================================
-        SOUS-PAGES EMPRUNTEUR (vues rapides)
-        ===================================================================== -->
+        <!-- ===== SOUS-PAGES EMPRUNTEUR ===== -->
         <div id="page-borrower-requests" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="borrowerSidebar2"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Mes demandes</h1><span>Toutes</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">J</div><span class="name">Jean</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="borrowerRequestsContent"></div></div></div></div>
         <div id="page-borrower-loans" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="borrowerSidebar3"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Financements</h1><span>Actifs</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">J</div><span class="name">Jean</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="borrowerLoansContent"></div></div></div></div>
         <div id="page-borrower-repayments" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="borrowerSidebar4"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Remboursements</h1><span>Suivi</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">J</div><span class="name">Jean</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="borrowerRepaymentsContent"></div></div></div></div>
@@ -1486,19 +1497,19 @@
     // TOPBAR
     // ================================================================
     function updateTopbar() {
-        const topUserName = document.getElementById('topUserName');
-        const topUserRole = document.getElementById('topUserRole');
-        const topAuthBtn = document.getElementById('topAuthBtn');
+        const dropdownUserName = document.getElementById('dropdownUserName');
+        const dropdownUserRole = document.getElementById('dropdownUserRole');
+        const dropdownAuthAction = document.getElementById('dropdownAuthAction');
         if (currentUser) {
-            topUserName.textContent = currentUser.firstName + ' ' + currentUser.lastName;
-            topUserRole.textContent = currentUser.role === 'investor' ? 'Investisseur' : 'Emprunteur';
-            topAuthBtn.textContent = 'Déconnexion';
-            topAuthBtn.className = 'btn btn-danger';
+            dropdownUserName.textContent = currentUser.firstName + ' ' + currentUser.lastName;
+            dropdownUserRole.textContent = currentUser.role === 'investor' ? 'Investisseur' : 'Emprunteur';
+            dropdownAuthAction.innerHTML = '<button class="btn btn-sm btn-danger btn-block" id="dropdownLogoutBtn">Déconnexion</button>';
+            document.getElementById('dropdownLogoutBtn')?.addEventListener('click', function(e) { e.stopPropagation(); logout(); });
         } else {
-            topUserName.textContent = 'Invité';
-            topUserRole.textContent = 'public';
-            topAuthBtn.textContent = 'Se connecter';
-            topAuthBtn.className = 'btn';
+            dropdownUserName.textContent = 'Invité';
+            dropdownUserRole.textContent = 'public';
+            dropdownAuthAction.innerHTML = '<button class="btn btn-sm btn-block" id="dropdownLoginBtn">Se connecter</button>';
+            document.getElementById('dropdownLoginBtn')?.addEventListener('click', function(e) { e.stopPropagation(); navigateTo('login'); });
         }
         // Dashboard-Links im Dropdown ein-/ausblenden
         const dashInvestor = document.getElementById('dashInvestorLink');
@@ -1540,11 +1551,8 @@
     document.addEventListener('click', function(e) {
         const target = e.target.closest('[data-page]');
         if (target) { e.preventDefault(); navigateTo(target.dataset.page); }
-        // Logout
-        if (target && (target.id === 'investorLogout' || target.id === 'investorDropdownLogout' ||
-                target.id === 'borrowerLogout' || target.id === 'borrowerDropdownLogout' ||
-                target.id === 'loanRequestLogout' || target.id === 'loanDetailsLogout' ||
-                target.id === 'notifLogout')) {
+        // Logout depuis le dropdown
+        if (target && target.id === 'dropdownLogoutBtn') {
             e.preventDefault(); logout();
         }
         // Toggle password
@@ -1578,6 +1586,13 @@
         // Sections menu toggle
         if (target && target.id === 'sectionsMenuBtn') {
             document.getElementById('sectionsDropdown').classList.toggle('open');
+        }
+        // Logout depuis les dashboards
+        if (target && (target.id === 'investorLogout' || target.id === 'investorDropdownLogout' ||
+                target.id === 'borrowerLogout' || target.id === 'borrowerDropdownLogout' ||
+                target.id === 'loanRequestLogout' || target.id === 'loanDetailsLogout' ||
+                target.id === 'notifLogout')) {
+            e.preventDefault(); logout();
         }
     });
     document.addEventListener('click', function(e) {
@@ -1649,8 +1664,6 @@
         e.preventDefault();
         document.getElementById('contactFormStatus').innerHTML = '✅ Votre demande a bien été enregistrée. Référence : SUP-2026-000001.';
     });
-
-    document.getElementById('topAuthBtn').addEventListener('click', function() { if (currentUser) logout(); else navigateTo('login'); });
 
     // ================================================================
     // KYC
