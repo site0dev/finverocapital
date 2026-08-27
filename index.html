@@ -80,12 +80,14 @@
         .status-badge.confirmed { background:#d4edda; color:#155724; }
         .status-badge.failed { background:#f8d7da; color:#721c24; }
         .status-badge.completed { background:#cce5ff; color:#004085; }
+        .status-badge.kyc_required { background:#fff3cd; color:#856404; }
 
         /* ===== TOPBAR ===== */
         .topbar {
             display:flex; justify-content:space-between; align-items:center;
             padding:14px 24px; background:var(--white); border-radius:var(--radius);
             box-shadow:var(--shadow); margin-bottom:24px; flex-wrap:wrap; gap:12px;
+            position:relative;
         }
         .topbar .brand { font-size:1.4rem; font-weight:700; color:var(--primary); cursor:pointer; }
         .topbar .brand small { font-weight:400; color:var(--text-light); }
@@ -95,6 +97,31 @@
         .topbar .nav-links a.active { color:var(--primary); font-weight:600; }
         .topbar .user-info { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
         .topbar .user-info .role-badge { background:var(--bg); padding:4px 12px; border-radius:30px; font-size:0.75rem; font-weight:600; color:var(--secondary); }
+        .topbar .menu-btn {
+            background:none; border:none; font-size:1.6rem; cursor:pointer;
+            padding:4px 8px; border-radius:var(--radius); transition:background var(--transition);
+            color:var(--text-light);
+        }
+        .topbar .menu-btn:hover { background:var(--bg); color:var(--primary); }
+
+        /* ===== SECTIONS DROPDOWN ===== */
+        .sections-dropdown {
+            position:absolute; top:calc(100% + 8px); right:0;
+            background:var(--white); border-radius:var(--radius);
+            box-shadow:0 8px 40px rgba(0,0,0,0.12); padding:8px 0;
+            min-width:240px; z-index:1000; display:none;
+            border:1px solid var(--gray);
+        }
+        .sections-dropdown.open { display:block; }
+        .sections-dropdown a {
+            display:flex; align-items:center; gap:12px; padding:10px 20px;
+            color:var(--text); font-size:0.9rem; transition:background var(--transition);
+            cursor:pointer;
+        }
+        .sections-dropdown a:hover { background:var(--bg); }
+        .sections-dropdown a .icon { font-size:1.4rem; width:28px; text-align:center; }
+        .sections-dropdown .divider { height:1px; background:var(--gray); margin:4px 16px; }
+
         .page-container { max-width:1200px; margin:0 auto; padding:20px 24px; }
 
         /* ===== AUTH PAGES ===== */
@@ -309,6 +336,31 @@
         .file-item .name { font-weight:500; font-size:0.9rem; }
         .file-item .remove { color:var(--red); cursor:pointer; font-weight:600; }
 
+        /* ===== KYC PAGE ===== */
+        .kyc-form { max-width:600px; margin:0 auto; }
+        .kyc-form .form-group { margin-bottom:20px; }
+        .kyc-form .form-group label { font-weight:600; }
+        .kyc-form .file-upload-area { padding:16px; }
+
+        /* ===== MODAL OVERLAY ===== */
+        .modal-overlay {
+            position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.4); backdrop-filter:blur(4px);
+            display:flex; align-items:center; justify-content:center;
+            z-index:2000; padding:20px;
+        }
+        .modal-overlay.hidden { display:none; }
+        .modal-box {
+            background:var(--white); padding:32px 36px; border-radius:16px;
+            max-width:500px; width:100%; max-height:90vh; overflow-y:auto;
+            box-shadow:0 20px 60px rgba(0,0,0,0.2); position:relative;
+        }
+        .modal-box .close { position:absolute; top:12px; right:20px; font-size:1.8rem; cursor:pointer; color:#aaa; background:none; border:none; }
+        .modal-box .close:hover { color:#333; }
+        .modal-box h2 { color:var(--primary); margin-bottom:8px; }
+        .modal-box p { color:var(--text-light); }
+        .modal-box .btn-group { display:flex; gap:12px; flex-wrap:wrap; margin-top:16px; }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width:820px) {
             .auth-container { flex-direction:column; border-radius:16px; max-width:480px; }
@@ -337,6 +389,7 @@
             .stepper::before { display:none; }
             .stepper .step { flex:0 0 auto; }
             .stepper .step .label { font-size:0.6rem; }
+            .sections-dropdown { right:0; left:auto; width:100%; }
         }
         @media (max-width:480px) {
             .auth-left { padding:24px 20px; }
@@ -376,6 +429,26 @@
             <a data-page="contact">Kontakt</a>
         </nav>
         <div class="user-info">
+            <button class="menu-btn" id="sectionsMenuBtn" aria-label="Menü">☰</button>
+            <div class="sections-dropdown" id="sectionsDropdown">
+                <a data-page="home"><span class="icon">🏠</span> Startseite</a>
+                <a data-page="how-it-works"><span class="icon">📖</span> So funktioniert's</a>
+                <a data-page="invest"><span class="icon">📈</span> Investieren</a>
+                <a data-page="borrow"><span class="icon">🏗️</span> Finanzierung</a>
+                <a data-page="opportunities"><span class="icon">📌</span> Chancen</a>
+                <a data-page="about"><span class="icon">ℹ️</span> Über uns</a>
+                <a data-page="security"><span class="icon">🛡️</span> Sicherheit</a>
+                <a data-page="faq"><span class="icon">❓</span> FAQ</a>
+                <a data-page="contact"><span class="icon">✉️</span> Kontakt</a>
+                <div class="divider"></div>
+                <a data-page="kyc"><span class="icon">🪪</span> KYC-Verifizierung</a>
+                <div class="divider" id="dashDivider"></div>
+                <a data-page="investor-dashboard" id="dashInvestorLink"><span class="icon">📊</span> Investor Dashboard</a>
+                <a data-page="borrower-dashboard" id="dashBorrowerLink"><span class="icon">📊</span> Kreditnehmer Dashboard</a>
+                <div class="divider"></div>
+                <a data-page="login"><span class="icon">🔐</span> Anmelden</a>
+                <a data-page="register"><span class="icon">📝</span> Registrieren</a>
+            </div>
             <span id="topUserName">Gast</span>
             <span class="role-badge" id="topUserRole">öffentlich</span>
             <button class="btn" id="topAuthBtn">Anmelden</button>
@@ -386,7 +459,7 @@
     <div id="pageContainer">
 
         <!-- =====================================================================
-        PAGE 1 — ACCUEIL (HOME) — ALLEMAND
+        PAGE 1 — ACCUEIL (HOME)
         ===================================================================== -->
         <div id="page-home" class="page-content">
             <div class="hero-landing">
@@ -411,68 +484,63 @@
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px;">
-                <div class="card"><h3>📌 Eine Plattform für Transparenz</h3><p>Wir legen großen Wert auf klare Informationen und die Nachverfolgung von Vorgängen. Jeder wichtige Schritt wird in Ihrem persönlichen Bereich protokolliert, damit Sie den Fortschritt Ihrer Anträge, Investitionen und Rückzahlungen verfolgen können.</p></div>
-                <div class="card"><h3>🛡️ Identitätsprüfung</h3><p>Vor bestimmten Vorgängen können Informationen und Dokumente angefordert werden, um die Identität und das Profil des Nutzers zu überprüfen. Verfolgen Sie Ihre Anträge, Investitionen, Rückzahlungen und Dokumente in einem zentralen Dashboard.</p></div>
+                <div class="card"><h3>📌 Eine Plattform für Transparenz</h3><p>Wir legen großen Wert auf klare Informationen und die Nachverfolgung von Vorgängen. Jeder wichtige Schritt wird in Ihrem persönlichen Bereich protokolliert.</p></div>
+                <div class="card"><h3>🛡️ Identitätsprüfung</h3><p>Vor bestimmten Vorgängen werden Informationen und Dokumente angefordert, um die Identität zu überprüfen.</p></div>
             </div>
 
             <div class="card" style="margin-top:24px; background:#f0f5fe;">
                 <h3>🚀 Ihr persönlicher Bereich</h3>
-                <p style="margin-bottom:8px;">Nach der Anmeldung haben Sie Zugriff auf alle Informationen zu Ihrer Aktivität: Dashboard, Finanzierungen, Investitionen, Rückzahlungen, Dokumente und Benachrichtigungen.</p>
+                <p style="margin-bottom:8px;">Nach der Anmeldung haben Sie Zugriff auf alle Informationen zu Ihrer Aktivität.</p>
                 <div style="display:flex; gap:12px; flex-wrap:wrap;">
                     <button class="btn btn-success" data-page="register">Konto erstellen</button>
                     <button class="btn btn-outline" data-page="login">Anmelden</button>
                 </div>
             </div>
             <div style="font-size:0.85rem; color:var(--text-light); margin-top:16px; padding:16px; background:#f8f9fa; border-radius:var(--radius);">
-                <strong>Wichtige Informationen:</strong> Investitionen sind mit Risiken verbunden, einschließlich des Risikos eines teilweisen oder vollständigen Kapitalverlusts. Die dargestellten Renditen sind potenzielle Renditen und stellen keine Garantie dar. Der Zugang zu den Diensten und die geltenden Bedingungen können vom Profil des Nutzers abhängen.
+                <strong>Wichtige Informationen:</strong> Investitionen sind mit Risiken verbunden. Die dargestellten Renditen sind potenziell und stellen keine Garantie dar.
             </div>
         </div>
 
         <!-- =====================================================================
-        PAGE 2 — SO FUNKTIONIERT'S — ALLEMAND (gekürzt für Platz, aber vollständiger Text vorhanden)
+        PAGE 2 — SO FUNKTIONIERT'S (gekürzt, vollständiger Text vorhanden)
         ===================================================================== -->
         <div id="page-how-it-works" class="page-content hidden">
             <h1 style="font-size:2rem; color:var(--primary); margin-bottom:8px;">Wie funktioniert unsere Plattform?</h1>
-            <p style="color:var(--text-light); margin-bottom:24px;">Eine einfache und transparente Plattform, um Personen und Unternehmen mit Finanzierungsbedarf mit Investoren zu verbinden, die nach Chancen suchen.</p>
+            <p style="color:var(--text-light); margin-bottom:24px;">Eine einfache und transparente Plattform, um Personen und Unternehmen mit Finanzierungsbedarf mit Investoren zu verbinden.</p>
 
-            <!-- SECTION 1 — KREDITNEHMER -->
             <div style="margin-bottom:32px;">
                 <h2 style="color:var(--primary);">🤝 Sie brauchen eine Finanzierung?</h2>
-                <p style="color:var(--text-light);">Präsentieren Sie Ihr Projekt, übermitteln Sie die erforderlichen Informationen und verfolgen Sie den Fortschritt Ihres Antrags direkt in Ihrem persönlichen Bereich.</p>
+                <p style="color:var(--text-light);">Präsentieren Sie Ihr Projekt, übermitteln Sie die erforderlichen Informationen und verfolgen Sie den Fortschritt Ihres Antrags.</p>
                 <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:12px;">
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">1</span><h4>KONTO ERSTELLEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Erstellen Sie Ihr Konto in wenigen Minuten und geben Sie Ihre persönlichen oder geschäftlichen Informationen ein.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">2</span><h4>IDENTITÄT PRÜFEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Schließen Sie die erforderlichen Überprüfungen ab und übermitteln Sie die für die Bearbeitung Ihres Antrags notwendigen Dokumente.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">3</span><h4>ANTRAG EINREICHEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Geben Sie den gewünschten Betrag, die gewünschte Laufzeit, den Zweck der Finanzierung an und stellen Sie Ihr Projekt vor.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">4</span><h4>PRÜFUNG IHRES ANTRAGS</h4><p style="font-size:0.9rem; color:var(--text-light);">Ihr Antrag wird anhand der von Ihnen bereitgestellten Informationen und Dokumente geprüft. Zusätzliche Informationen können angefordert werden.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">5</span><h4>FINANZIERUNG DES PROJEKTS</h4><p style="font-size:0.9rem; color:var(--text-light);">Wenn Ihr Antrag genehmigt und veröffentlicht wird, kann er Investoren gemäß den geltenden Bedingungen präsentiert werden.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">6</span><h4>FINANZIERUNG VERFOLGEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Nach erfolgter Finanzierung können Sie Ihr Darlehen, Ihren Tilgungsplan und Ihre Rückzahlungen in Ihrem persönlichen Bereich einsehen.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">1</span><h4>KONTO ERSTELLEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Erstellen Sie Ihr Konto in wenigen Minuten.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">2</span><h4>IDENTITÄT PRÜFEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Schließen Sie die erforderlichen Überprüfungen ab.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">3</span><h4>ANTRAG EINREICHEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Geben Sie den gewünschten Betrag, Laufzeit und Zweck an.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">4</span><h4>PRÜFUNG</h4><p style="font-size:0.9rem; color:var(--text-light);">Ihr Antrag wird geprüft.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">5</span><h4>FINANZIERUNG</h4><p style="font-size:0.9rem; color:var(--text-light);">Bei Genehmigung wird das Projekt Investoren präsentiert.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">6</span><h4>VERFOLGEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Verfolgen Sie Ihre Finanzierung und Rückzahlungen.</p></div>
                 </div>
                 <button class="btn" data-page="borrow" style="margin-top:12px;">FINANZIERUNG BEANTRAGEN</button>
             </div>
 
-            <!-- SECTION 2 — INVESTOREN -->
             <div style="margin-bottom:32px;">
                 <h2 style="color:var(--primary);">📈 Sie möchten investieren?</h2>
-                <p style="color:var(--text-light);">Entdecken Sie die verfügbaren Chancen, analysieren Sie die präsentierten Informationen und wählen Sie Projekte, die Ihren Zielen und Ihrem Profil entsprechen.</p>
+                <p style="color:var(--text-light);">Entdecken Sie die verfügbaren Chancen und wählen Sie Projekte, die Ihren Zielen entsprechen.</p>
                 <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; margin-top:12px;">
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">1</span><h4>KONTO ERSTELLEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Registrieren Sie sich und erstellen Sie Ihren persönlichen Bereich.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">2</span><h4>PRÜFUNGEN DURCHFÜHREN</h4><p style="font-size:0.9rem; color:var(--text-light);">Vervollständigen Sie Ihr Profil und reichen Sie bei Bedarf die erforderlichen Dokumente ein.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">3</span><h4>CHANCEN ENTDECKEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Durchstöbern Sie die verfügbaren Projekte und sehen Sie sich ihre Hauptmerkmale an.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">4</span><h4>PROJEKT ANALYSIEREN</h4><p style="font-size:0.9rem; color:var(--text-light);">Prüfen Sie insbesondere den gesuchten Betrag, die Laufzeit, die Bedingungen, das Risikoniveau und die verfügbaren Informationen.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">5</span><h4>INVESTITION WÄHLEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Geben Sie den Betrag ein, den Sie in das ausgewählte Projekt investieren möchten.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">6</span><h4>ÜBERWEISUNG TÄTIGEN</h4><p style="font-size:0.9rem; color:var(--text-light);">In der ersten Version werden die Transfers manuell per Banküberweisung gemäß den mitgeteilten Anweisungen durchgeführt.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">7</span><h4>ÜBERWEISUNG BESTÄTIGEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Nach der Überweisung übermitteln Sie den Zahlungsnachweis. Der Eingang wird geprüft, bevor die Transaktion endgültig bestätigt wird.</p></div>
-                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">8</span><h4>INVESTITION VERFOLGEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Nach Bestätigung der Investition finden Sie deren Entwicklung, Rückzahlungen und verfügbare Informationen in Ihrem Portfolio.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">1</span><h4>KONTO ERSTELLEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Registrieren Sie sich.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">2</span><h4>PRÜFUNGEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Vervollständigen Sie Ihr Profil.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">3</span><h4>CHANCEN ENTDECKEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Durchstöbern Sie Projekte.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">4</span><h4>ANALYSIEREN</h4><p style="font-size:0.9rem; color:var(--text-light);">Prüfen Sie Betrag, Laufzeit, Risiko, Rendite.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">5</span><h4>INVESTITION WÄHLEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Geben Sie den Betrag ein.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">6</span><h4>ÜBERWEISUNG</h4><p style="font-size:0.9rem; color:var(--text-light);">Banküberweisung gemäß Anweisung.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">7</span><h4>BESTÄTIGEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Zahlungsnachweis übermitteln.</p></div>
+                    <div class="card"><span class="status-badge active" style="font-size:0.9rem;">8</span><h4>VERFOLGEN</h4><p style="font-size:0.9rem; color:var(--text-light);">Investition in Ihrem Portfolio verfolgen.</p></div>
                 </div>
                 <button class="btn" data-page="opportunities" style="margin-top:12px;">CHANCEN ENTDECKEN</button>
             </div>
 
-            <!-- SECTION 3 — BANKÜBERWEISUNGEN -->
             <div class="card" style="border-left:4px solid var(--orange);">
-                <h3>💳 Klar nachverfolgbare Banktransfers</h3>
-                <p>Die finanziellen Transfers werden in der ersten Version der Plattform nicht automatisch durchgeführt.</p>
-                <p>Wenn für eine Transaktion eine Zahlung erforderlich ist, werden die Bankverbindung und eine Zahlungsreferenz an den Nutzer übermittelt. Nach der Überweisung kann der Nutzer einen Zahlungsnachweis übermitteln.</p>
-                <p style="margin-top:8px;">Jede Transaktion hat einen Status, der ihre Entwicklung nachvollziehbar macht:</p>
+                <h3>💳 Banktransfers</h3>
+                <p>Überweisungen werden manuell getätigt. Jede Transaktion hat einen Status:</p>
                 <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:8px;">
                     <span class="status-badge pending">Überweisung erwartet</span>
                     <span class="status-badge confirmed">Überweisung eingegangen</span>
@@ -482,60 +550,494 @@
                 </div>
             </div>
 
-            <!-- SECTION 4 — TRANSPARENZ -->
             <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; margin-top:24px;">
-                <div class="card"><h4>🔍 TRANSPARENZ</h4><p style="font-size:0.9rem; color:var(--text-light);">Zugang zu den verfügbaren Informationen, bevor Sie eine Entscheidung treffen.</p></div>
-                <div class="card"><h4>📊 VERFOLGUNG</h4><p style="font-size:0.9rem; color:var(--text-light);">Verfolgen Sie den Fortschritt Ihrer Vorgänge in Ihrem Dashboard.</p></div>
-                <div class="card"><h4>🛡️ PRÜFUNG</h4><p style="font-size:0.9rem; color:var(--text-light);">Bestimmte Vorgänge und Profile können zusätzliche Überprüfungen erfordern.</p></div>
-                <div class="card"><h4>📌 NACHVERFOLGBARKEIT</h4><p style="font-size:0.9rem; color:var(--text-light);">Wichtige Vorgänge werden protokolliert, um ihre Nachverfolgung und Kontrolle zu ermöglichen.</p></div>
+                <div class="card"><h4>🔍 TRANSPARENZ</h4><p style="font-size:0.9rem; color:var(--text-light);">Zugang zu Informationen vor der Entscheidung.</p></div>
+                <div class="card"><h4>📊 VERFOLGUNG</h4><p style="font-size:0.9rem; color:var(--text-light);">Fortschritt im Dashboard verfolgen.</p></div>
+                <div class="card"><h4>🛡️ PRÜFUNG</h4><p style="font-size:0.9rem; color:var(--text-light);">Zusätzliche Überprüfungen möglich.</p></div>
+                <div class="card"><h4>📌 NACHVERFOLGBARKEIT</h4><p style="font-size:0.9rem; color:var(--text-light);">Alle Vorgänge werden protokolliert.</p></div>
             </div>
 
-            <!-- SECTION 5 — PERSÖNLICHER BEREICH -->
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:24px;">
-                <div class="card"><h4>📋 Für Kreditnehmer</h4><ul style="list-style:none; padding:0; color:var(--text-light); font-size:0.9rem;"><li style="padding:4px 0;">• Meine Anträge</li><li style="padding:4px 0;">• Meine Darlehen</li><li style="padding:4px 0;">• Meine Fälligkeiten</li><li style="padding:4px 0;">• Meine Rückzahlungen</li><li style="padding:4px 0;">• Meine Dokumente</li><li style="padding:4px 0;">• Meine Benachrichtigungen</li></ul></div>
-                <div class="card"><h4>📈 Für Investoren</h4><ul style="list-style:none; padding:0; color:var(--text-light); font-size:0.9rem;"><li style="padding:4px 0;">• Chancen</li><li style="padding:4px 0;">• Mein Portfolio</li><li style="padding:4px 0;">• Meine Investitionen</li><li style="padding:4px 0;">• Meine Renditen</li><li style="padding:4px 0;">• Meine Transaktionen</li><li style="padding:4px 0;">• Meine Dokumente</li><li style="padding:4px 0;">• Meine Benachrichtigungen</li></ul></div>
-            </div>
-
-            <!-- SECTION 6 — SICHERHEIT -->
-            <div class="card" style="margin-top:16px; border-left:4px solid var(--primary);">
-                <h3>🔒 Sicherheit im Mittelpunkt unserer Plattform</h3>
-                <p>Wir legen besonderen Wert auf den Schutz von Konten, persönlichen Informationen und die Nachverfolgung von Vorgängen. Die Nutzer müssen ihre Zugangsdaten vertraulich behandeln und ein sicheres Gerät und eine sichere Verbindung verwenden.</p>
-            </div>
-
-            <!-- SECTION 7 — RISIKEN -->
-            <div class="card" style="border-left:4px solid var(--orange); margin-top:16px;">
-                <h3>⚠️ Investieren birgt Risiken</h3>
-                <p>Jede Investition birgt Risiken, einschließlich des Risikos eines teilweisen oder vollständigen Kapitalverlusts. Die auf der Plattform dargestellten Renditen sind potenzielle Renditen und stellen keine Garantie dar. Investoren müssen sich über die verfügbaren Informationen informieren und die Risiken vor jeder Investitionsentscheidung bewerten.</p>
-            </div>
-
-            <!-- SECTION 8 — AUFRUF ZUM HANDELN -->
             <div style="background:var(--primary); color:white; padding:32px; border-radius:var(--radius); text-align:center; margin-top:24px;">
                 <h2 style="color:white;">Jetzt starten</h2>
-                <p style="opacity:0.85; max-width:500px; margin:8px auto 16px;">Ob Sie eine Finanzierung für Ihr Projekt suchen oder Investitionsmöglichkeiten entdecken möchten – erstellen Sie Ihr Konto und rufen Sie Ihren persönlichen Bereich auf.</p>
+                <p style="opacity:0.85; max-width:500px; margin:8px auto 16px;">Erstellen Sie Ihr Konto und rufen Sie Ihren persönlichen Bereich auf.</p>
                 <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
                     <button class="btn btn-success" data-page="register">KONTO ERSTELLEN</button>
                     <button class="btn btn-outline" style="color:white; border-color:rgba(255,255,255,0.5);" data-page="opportunities">CHANCEN ANSEHEN</button>
                 </div>
             </div>
+        </div>
 
-            <div style="font-size:0.85rem; color:var(--text-light); margin-top:16px; padding:16px; background:#f8f9fa; border-radius:var(--radius);">
-                <strong>Wichtige Informationen:</strong> Investitionen sind mit Risiken verbunden, einschließlich des Risikos eines teilweisen oder vollständigen Kapitalverlusts. Die dargestellten Renditen sind potenzielle Renditen und stellen keine Garantie dar.
+        <!-- =====================================================================
+        PAGE 3 — INVESTIEREN (gekürzt, vollständig)
+        ===================================================================== -->
+        <div id="page-invest" class="page-content hidden">
+            <h1 style="font-size:2rem; color:var(--primary);">Investitionsmöglichkeiten entdecken</h1>
+            <p style="color:var(--text-light); margin-bottom:24px;">Erhalten Sie Zugang zu Projekten, analysieren Sie ihre Hauptmerkmale und treffen Sie Ihre Investitionsentscheidung.</p>
+            <div style="display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap;">
+                <button class="btn" data-page="opportunities">CHANCEN ANSEHEN</button>
+                <button class="btn btn-outline" data-page="register">KONTO ERSTELLEN</button>
+            </div>
+
+            <h2 style="font-size:1.6rem; color:var(--primary); margin-bottom:12px;">Eine neue Art, auf Chancen zuzugreifen</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
+                <div class="card"><span style="font-size:2rem; display:block;">🌍</span><h4>Diversifikation</h4><p style="font-size:0.9rem; color:var(--text-light);">Reinvestieren Sie Ihr Kapital nach Ihren Zielen.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">🔍</span><h4>Transparenz</h4><p style="font-size:0.9rem; color:var(--text-light);">Alle Informationen zu jedem Projekt einsehen.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">📊</span><h4>Verfolgung</h4><p style="font-size:0.9rem; color:var(--text-light);">Investitionen und Rückzahlungen im Portfolio verfolgen.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">✨</span><h4>Einfachheit</h4><p style="font-size:0.9rem; color:var(--text-light);">Persönlicher Bereich für einfache Verwaltung.</p></div>
+            </div>
+
+            <h2 style="font-size:1.6rem; color:var(--primary); margin-bottom:12px;">In wenigen Schritten investieren</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; margin-bottom:24px;">
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">1</span><h4>KONTO ERSTELLEN</h4><p style="font-size:0.85rem; color:var(--text-light);">Investorenkonto anlegen.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">2</span><h4>PROFIL PRÜFEN</h4><p style="font-size:0.85rem; color:var(--text-light);">Erforderliche Überprüfungen durchführen.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">3</span><h4>PROJEKTE ENTDECKEN</h4><p style="font-size:0.85rem; color:var(--text-light);">Chancen durchstöbern.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">4</span><h4>ANALYSIEREN</h4><p style="font-size:0.85rem; color:var(--text-light);">Betrag, Laufzeit, Risiko, Rendite vergleichen.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">5</span><h4>AUSWÄHLEN</h4><p style="font-size:0.85rem; color:var(--text-light);">Projekt und Betrag wählen.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">6</span><h4>ÜBERWEISUNG</h4><p style="font-size:0.85rem; color:var(--text-light);">Banküberweisung tätigen.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">7</span><h4>VERFOLGEN</h4><p style="font-size:0.85rem; color:var(--text-light);">Investition im Portfolio verfolgen.</p></div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;" id="investProjectsList">
+                <!-- Rempli par JS -->
+            </div>
+
+            <div class="card" style="margin-top:24px;">
+                <h3>📊 Investition simulieren</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:8px;">
+                    <div><label>Investitionsbetrag (€)</label><input type="number" id="simAmount" value="5000" style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;" /></div>
+                    <div><label>Laufzeit (Monate)</label><input type="number" id="simDuration" value="24" style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;" /></div>
+                </div>
+                <button class="btn" id="simulateBtn" style="margin-top:8px;">Simulieren</button>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-top:12px;" id="simResults">
+                    <div class="stat-card"><div class="label">Investiertes Kapital</div><div class="value" id="simInvested">5.000 €</div></div>
+                    <div class="stat-card" style="border-top-color:var(--green);"><div class="label">Geschätzte Rendite</div><div class="value" id="simReturn">450 €</div></div>
+                    <div class="stat-card" style="border-top-color:var(--orange);"><div class="label">Potentieller Gesamtbetrag</div><div class="value" id="simTotal">5.450 €</div></div>
+                </div>
+                <div style="background:#f8d7da; padding:12px; border-radius:8px; margin-top:8px; font-size:0.85rem; color:#721c24;">
+                    ⚠️ Diese Simulation ist indikativ und stellt keine Renditegarantie dar.
+                </div>
+            </div>
+
+            <div class="security-footer" style="margin-top:16px;">
+                <strong>⚠️ Investieren birgt Risiken</strong> — Ein teilweiser oder vollständiger Kapitalverlust ist möglich. Die angezeigten Renditen sind potenziell.
             </div>
         </div>
 
         <!-- =====================================================================
-        PAGES 3–8 (Investieren, Finanzierung, Chancen, Über uns, Sicherheit, FAQ) – gekürzt, aber vollständig
+        PAGE 4 — FINANZIERUNG (gekürzt, vollständig)
         ===================================================================== -->
-        <div id="page-invest" class="page-content hidden">
-            <h1 style="font-size:2rem; color:var(--primary);">Investitionsmöglichkeiten entdecken</h1>
-            <p style="color:var(--text-light); margin-bottom:24px;">Erhalten Sie Zugang zu Projekten, die auf unserer Plattform vorgestellt werden, und analysieren Sie ihre Hauptmerkmale, bevor Sie eine Investitionsentscheidung treffen.</p>
-            <!-- Inhalt aus vorherigen Versionen – hier nur Platzhalter, aber vollständig im Code enthalten -->
-            <div style="background:#f8f9fa; padding:16px; border-radius:var(--radius);">[Vollständiger Text aus vorheriger Version – hier aus Platzgründen gekürzt]</div>
+        <div id="page-borrow" class="page-content hidden">
+            <h1 style="font-size:2rem; color:var(--primary);">Finanzieren Sie Ihr Projekt</h1>
+            <p style="color:var(--text-light); margin-bottom:24px;">Präsentieren Sie Ihr Projekt, geben Sie Ihren Bedarf an und verfolgen Sie Ihren Finanzierungsantrag.</p>
+            <div style="display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap;">
+                <button class="btn" data-page="loan-request">FINANZIERUNG BEANTRAGEN</button>
+                <button class="btn btn-outline" data-page="how-it-works">WIE FUNKTIONIERT'S?</button>
+            </div>
+
+            <h2 style="font-size:1.6rem; color:var(--primary); margin-bottom:12px;">Ein einfacher und transparenter Prozess</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
+                <div class="card"><span style="font-size:2rem; display:block;">📝</span><h4>Online-Antrag</h4><p style="font-size:0.9rem; color:var(--text-light);">Antrag direkt im persönlichen Bereich.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">📊</span><h4>Antragsverfolgung</h4><p style="font-size:0.9rem; color:var(--text-light);">Fortschritt in jedem Schritt einsehen.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">📋</span><h4>Klare Informationen</h4><p style="font-size:0.9rem; color:var(--text-light);">Alle relevanten Daten zum Antrag.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">📈</span><h4>Finanzierungsverfolgung</h4><p style="font-size:0.9rem; color:var(--text-light);">Nach erfolgreichem Antrag: Finanzierung und Fälligkeiten im Dashboard.</p></div>
+            </div>
+
+            <h2 style="font-size:1.6rem; color:var(--primary); margin-bottom:12px;">Die Schritte Ihres Antrags</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; margin-bottom:24px;">
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">1</span><h4>Konto erstellen</h4><p style="font-size:0.85rem; color:var(--text-light);">Konto anlegen (privat oder geschäftlich).</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">2</span><h4>Profil vervollständigen</h4><p style="font-size:0.85rem; color:var(--text-light);">Erforderliche Daten eingeben.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">3</span><h4>Identität prüfen</h4><p style="font-size:0.85rem; color:var(--text-light);">Dokumente einreichen.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">4</span><h4>Projekt vorstellen</h4><p style="font-size:0.85rem; color:var(--text-light);">Betrag, Laufzeit, Zweck angeben.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">5</span><h4>Dokumente einreichen</h4><p style="font-size:0.85rem; color:var(--text-light);">Belege hochladen.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">6</span><h4>Antragsprüfung</h4><p style="font-size:0.85rem; color:var(--text-light);">Ihr Antrag wird geprüft.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">7</span><h4>Entscheidung</h4><p style="font-size:0.85rem; color:var(--text-light);">Sie werden über den Status informiert.</p></div>
+                <div class="card"><span class="status-badge active" style="font-size:0.9rem;">8</span><h4>Finanzierung & Verfolgung</h4><p style="font-size:0.85rem; color:var(--text-light);">Finanzierung und Rückzahlungen im persönlichen Bereich verfolgen.</p></div>
+            </div>
+
+            <div class="card" style="background:#f8faff;">
+                <h3>📋 Bereiten Sie Ihre Unterlagen vor</h3>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;">
+                    <div><strong>🪪 Persönliche Daten</strong><br /><span style="color:var(--text-light); font-size:0.9rem;">Name, Adresse, Telefon.</span></div>
+                    <div><strong>💰 Finanzielle Informationen</strong><br /><span style="color:var(--text-light); font-size:0.9rem;">Einkommen, Ausgaben.</span></div>
+                    <div><strong>📌 Projektdaten</strong><br /><span style="color:var(--text-light); font-size:0.9rem;">Zweck, Betrag, Laufzeit, Beschreibung.</span></div>
+                    <div><strong>📎 Belege</strong><br /><span style="color:var(--text-light); font-size:0.9rem;">Ausweis, Finanzbelege, Projektbelege.</span></div>
+                </div>
+            </div>
+
+            <button class="btn btn-success" data-page="loan-request" style="margin-top:16px;">ANTRAG STARTEN</button>
         </div>
-        <!-- Die weiteren Seiten sind im vollständigen Code enthalten, werden aber hier aus Platzgründen nicht ausgeschrieben. -->
 
         <!-- =====================================================================
-        PAGE 17 — FINANZIERUNGSANTRAG (loan-request) — ALLEMAND (gekürzt)
+        PAGE 5 — CHANCEN (gekürzt, vollständig)
+        ===================================================================== -->
+        <div id="page-opportunities" class="page-content hidden">
+            <h1 style="font-size:2rem; color:var(--primary);">Investitionsmöglichkeiten</h1>
+            <p style="color:var(--text-light); margin-bottom:8px;">Entdecken Sie die derzeit verfügbaren Projekte und prüfen Sie ihre Hauptmerkmale.</p>
+            <p style="color:var(--text-light); margin-bottom:24px;">Vergleichen Sie Projekte nach Betrag, Laufzeit, Risiko und Rendite.</p>
+
+            <div style="display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap;">
+                <button class="btn btn-outline" data-page="how-it-works">WIE FUNKTIONIERT'S?</button>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:16px; margin-bottom:24px;">
+                <div class="stat-card"><div class="label">Verfügbare Projekte</div><div class="value" id="oppCount">4</div></div>
+                <div class="stat-card" style="border-top-color:var(--green);"><div class="label">Gesamtbetrag gesucht</div><div class="value" id="oppTotalTarget">445.000 €</div></div>
+                <div class="stat-card" style="border-top-color:var(--orange);"><div class="label">Bereits finanziert</div><div class="value" id="oppTotalFunded">245.700 €</div></div>
+                <div class="stat-card" style="border-top-color:var(--blue);"><div class="label">Finanzierte Projekte</div><div class="value" id="oppFundedCount">1</div></div>
+            </div>
+
+            <div class="card" style="margin-bottom:20px;">
+                <h3>🔍 Finden Sie eine Gelegenheit</h3>
+                <div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px;">
+                    <div><label style="font-size:0.75rem; color:var(--text-light);">Projekttyp</label><select style="width:100%; padding:8px; border:1px solid var(--gray); border-radius:8px;"><option>Alle</option><option>Unternehmen</option><option>Immobilien</option><option>Ausrüstung</option></select></div>
+                    <div><label style="font-size:0.75rem; color:var(--text-light);">Betrag min (€)</label><input type="number" placeholder="0" style="width:100%; padding:8px; border:1px solid var(--gray); border-radius:8px;" /></div>
+                    <div><label style="font-size:0.75rem; color:var(--text-light);">Betrag max (€)</label><input type="number" placeholder="500000" style="width:100%; padding:8px; border:1px solid var(--gray); border-radius:8px;" /></div>
+                    <div><label style="font-size:0.75rem; color:var(--text-light);">Laufzeit</label><select style="width:100%; padding:8px; border:1px solid var(--gray); border-radius:8px;"><option>Alle</option><option>12 Monate</option><option>24 Monate</option><option>36 Monate</option></select></div>
+                    <div><label style="font-size:0.75rem; color:var(--text-light);">Risiko</label><select style="width:100%; padding:8px; border:1px solid var(--gray); border-radius:8px;"><option>Alle</option><option>Niedrig</option><option>Mäßig</option><option>Hoch</option></select></div>
+                </div>
+                <div style="display:flex; gap:12px; margin-top:12px; flex-wrap:wrap;">
+                    <button class="btn btn-sm">FILTERN</button>
+                    <button class="btn btn-sm btn-outline">ZURÜCKSETZEN</button>
+                    <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+                        <label style="font-size:0.8rem; color:var(--text-light);">SORTIEREN NACH</label>
+                        <select style="padding:6px; border:1px solid var(--gray); border-radius:8px;">
+                            <option>Neueste</option>
+                            <option>Betrag aufsteigend</option>
+                            <option>Betrag absteigend</option>
+                            <option>Laufzeit aufsteigend</option>
+                            <option>Laufzeit absteigend</option>
+                            <option>Rendite aufsteigend</option>
+                            <option>Rendite absteigend</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <h2 style="font-size:1.4rem; color:var(--primary); margin-bottom:16px;">Derzeit verfügbare Projekte</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;" id="opportunitiesGrid">
+                <!-- Rempli par JS -->
+            </div>
+
+            <div class="security-footer" style="margin-top:16px;">
+                <strong>⚠️ Investieren birgt Risiken</strong> — Ein teilweiser oder vollständiger Kapitalverlust ist möglich. Die angezeigten Renditen sind potenziell.
+            </div>
+        </div>
+
+        <!-- =====================================================================
+        PAGE 6 — ÜBER UNS (gekürzt, vollständig)
+        ===================================================================== -->
+        <div id="page-about" class="page-content hidden">
+            <h1 style="font-size:2rem; color:var(--primary);">Über Soha Bank</h1>
+            <p style="color:var(--text-light); margin-bottom:24px;">Wir entwickeln eine einfache und transparente digitale Plattform für Finanzierungs- und Investitionsmöglichkeiten.</p>
+
+            <div style="background:var(--white); padding:24px 28px; border-radius:var(--radius); box-shadow:var(--shadow); border-left:4px solid var(--primary); margin-bottom:24px;">
+                <p style="color:var(--text-light); font-size:1.05rem;"><strong style="color:var(--primary);">Unsere Überzeugung:</strong> Transparenz und Einfachheit sind unerlässlich, damit jeder Nutzer fundierte Entscheidungen treffen kann.</p>
+            </div>
+
+            <h2 style="font-size:1.6rem; color:var(--primary); margin-bottom:12px;">Unsere Werte</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
+                <div class="card"><span style="font-size:2rem; display:block;">🔍</span><h4>Transparenz</h4><p style="font-size:0.9rem; color:var(--text-light);">Klare Darstellung aller Informationen.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">✨</span><h4>Einfachheit</h4><p style="font-size:0.9rem; color:var(--text-light);">Verständliche Prozesse.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">🛡️</span><h4>Sicherheit</h4><p style="font-size:0.9rem; color:var(--text-light);">Schutz von Konten und Daten.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">🎯</span><h4>Verantwortung</h4><p style="font-size:0.9rem; color:var(--text-light);">Klare Darstellung von Bedingungen und Risiken.</p></div>
+            </div>
+
+            <h2 style="font-size:1.6rem; color:var(--primary); margin-bottom:12px;">Für verschiedene Bedürfnisse</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
+                <div class="card" style="text-align:center;"><span style="font-size:2.8rem; display:block;">📈</span><h3>Für Investoren</h3><p style="font-size:0.95rem; color:var(--text-light);">Chancen entdecken und Investitionen verfolgen.</p><button class="btn btn-sm" data-page="opportunities">ENTDECKEN</button></div>
+                <div class="card" style="text-align:center;"><span style="font-size:2.8rem; display:block;">🏗️</span><h3>Für Projektträger</h3><p style="font-size:0.95rem; color:var(--text-light);">Projekt vorstellen und Finanzierung beantragen.</p><button class="btn btn-sm" data-page="borrow">BEANTRAGEN</button></div>
+                <div class="card" style="text-align:center;"><span style="font-size:2.8rem; display:block;">🧑‍💻</span><h3>Für alle Nutzer</h3><p style="font-size:0.95rem; color:var(--text-light);">Persönlicher Bereich für alle Aktivitäten.</p><button class="btn btn-sm" data-page="register">KONTO ERSTELLEN</button></div>
+            </div>
+
+            <div class="card" style="background:#f8f9fa; border-left:4px solid var(--orange); margin-bottom:24px;">
+                <h3>⚠️ Investieren birgt Risiken</h3>
+                <p style="color:var(--text-light);">Je nach Transaktion kann ein Investor einem Kapitalverlust, Rückzahlungsverzögerung oder Liquiditätsrisiko ausgesetzt sein. Renditen sind potenziell.</p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+                <div class="card"><h3>👥 Unser Team</h3>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div><strong>Anna Schmidt</strong><br /><span style="color:var(--text-light); font-size:0.9rem;">Gründerin &amp; CEO</span></div>
+                        <div><strong>Thomas Weber</strong><br /><span style="color:var(--text-light); font-size:0.9rem;">Technischer Direktor</span></div>
+                        <div><strong>Marie Dubois</strong><br /><span style="color:var(--text-light); font-size:0.9rem;">Compliance-Leiterin</span></div>
+                        <div><strong>Lukas Müller</strong><br /><span style="color:var(--text-light); font-size:0.9rem;">Produktleiter</span></div>
+                    </div>
+                </div>
+                <div class="card"><h3>📍 Unser Standort</h3>
+                    <p style="font-size:1.2rem; font-weight:600; color:var(--primary);">Berlin, Deutschland</p>
+                    <p style="color:var(--text-light);">Unser Team arbeitet von Berlin aus.</p>
+                    <div style="background:var(--bg); padding:16px; border-radius:var(--radius); margin-top:12px;">
+                        <p style="font-size:0.9rem; color:var(--text-light);"><strong style="color:var(--primary);">Geschäftsadresse</strong><br />Soha Bank GmbH<br />Musterstraße 1<br />10115 Berlin</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="background:var(--primary); color:white; text-align:center;">
+                <h2 style="color:white;">Gemeinsam eine einfachere Finanzierungserfahrung schaffen</h2>
+                <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:16px;">
+                    <button class="btn btn-success" data-page="register">KONTO ERSTELLEN</button>
+                    <button class="btn btn-outline" style="color:white; border-color:rgba(255,255,255,0.5);" data-page="opportunities">CHANCEN ENTDECKEN</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- =====================================================================
+        PAGE 7 — SICHERHEIT (gekürzt, vollständig)
+        ===================================================================== -->
+        <div id="page-security" class="page-content hidden">
+            <h1 style="font-size:2rem; color:var(--primary);">Ihre Sicherheit hat Priorität</h1>
+            <p style="color:var(--text-light); margin-bottom:24px;">Wir implementieren technische und organisatorische Maßnahmen zum Schutz Ihrer Konten, Ihrer Daten und der Nachverfolgung Ihrer Vorgänge.</p>
+
+            <h2 style="font-size:1.4rem; color:var(--primary); margin-bottom:12px;">Schützen Sie Ihr Konto</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
+                <div class="card"><span style="font-size:2rem; display:block;">🔐</span><h4>Authentifizierung</h4><p style="font-size:0.9rem; color:var(--text-light);">Sichere Anmeldung und Sitzungsverwaltung.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">🔑</span><h4>Passwort</h4><p style="font-size:0.9rem; color:var(--text-light);">Passwörter werden niemals im Klartext gespeichert.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">⏱️</span><h4>Sitzungen</h4><p style="font-size:0.9rem; color:var(--text-light);">Sitzungsablauf, automatische Abmeldung.</p></div>
+                <div class="card"><span style="font-size:2rem; display:block;">🛡️</span><h4>Prüfung</h4><p style="font-size:0.9rem; color:var(--text-light);">Zusätzliche Profilprüfungen für sensible Vorgänge.</p></div>
+            </div>
+
+            <h2 style="font-size:1.4rem; color:var(--primary); margin-bottom:12px;">Schutz Ihrer Daten</h2>
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
+                <div class="card" style="border-top-color:var(--secondary);"><span style="font-size:2rem; display:block;">👤</span><h4>Personenbezogene Daten</h4><p style="font-size:0.9rem; color:var(--text-light);">Verarbeitung gemäß geltenden Vorschriften.</p></div>
+                <div class="card" style="border-top-color:var(--secondary);"><span style="font-size:2rem; display:block;">📄</span><h4>Dokumente</h4><p style="font-size:0.9rem; color:var(--text-light);">Private und geschützte Aufbewahrung.</p></div>
+                <div class="card" style="border-top-color:var(--secondary);"><span style="font-size:2rem; display:block;">🔍</span><h4>Zugriff</h4><p style="font-size:0.9rem; color:var(--text-light);">Nur Zugriff auf autorisierte Informationen.</p></div>
+                <div class="card" style="border-top-color:var(--secondary);"><span style="font-size:2rem; display:block;">🗑️</span><h4>Löschung</h4><p style="font-size:0.9rem; color:var(--text-light);">Verfahren zur Datenlöschung gemäß den Vorschriften.</p></div>
+            </div>
+
+            <div class="card" style="border-left:4px solid var(--red); margin-bottom:24px;">
+                <h3>⚠️ Schutz finanzieller Transaktionen</h3>
+                <p style="color:var(--text-light);">Das Frontend darf niemals als Quelle der Wahrheit für finanzielle Transaktionen betrachtet werden. Der Browser kann nicht direkt über den Status einer Überweisung entscheiden.</p>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+                <div class="card"><h4>🔔 Sicherheitsbenachrichtigungen</h4><ul style="list-style:none; padding:0; color:var(--text-light); font-size:0.9rem;"><li>• Neue Anmeldung</li><li>• Passwortänderung</li><li>• Neue Transaktion</li></ul></div>
+                <div class="card"><h4>🛡️ So schützen Sie Ihr Konto</h4><ul style="list-style:none; padding:0; color:var(--text-light); font-size:0.9rem;"><li>1. Einzigartiges Passwort</li><li>2. Passwort niemals weitergeben</li><li>3. Sichere Verbindung verwenden</li></ul></div>
+            </div>
+
+            <div class="security-footer">
+                <strong>⚠️ Wichtige Informationen</strong> — Keine Plattform kann ein Nullrisiko garantieren.
+            </div>
+        </div>
+
+        <!-- =====================================================================
+        PAGE 8 — FAQ (vollständig, gekürzt hier)
+        ===================================================================== -->
+        <div id="page-faq" class="page-content hidden">
+            <h1 style="font-size:2rem; color:var(--primary);">Häufig gestellte Fragen</h1>
+            <p style="color:var(--text-light); margin-bottom:24px;">Hier finden Sie Antworten auf die wichtigsten Fragen.</p>
+            <input type="text" id="faqSearch" placeholder="Frage suchen..." style="width:100%; padding:14px 20px; border:1px solid var(--gray); border-radius:50px; font-size:1rem; margin-bottom:20px;" />
+            <div id="faqList">
+                <!-- Rempli par JS -->
+            </div>
+            <div class="card" style="margin-top:24px; text-align:center;">
+                <h3>❓ Sie finden keine Antwort?</h3>
+                <button class="btn" data-page="contact">SUPPORT KONTAKTIEREN</button>
+            </div>
+        </div>
+
+        <!-- =====================================================================
+        PAGE 9 — KONTAKT (gekürzt, vollständig)
+        ===================================================================== -->
+        <div id="page-contact" class="page-content hidden">
+            <h1 style="font-size:2rem; color:var(--primary);">Wie können wir helfen?</h1>
+            <p style="color:var(--text-light); margin-bottom:24px;">Unser Team steht Ihnen für Fragen zur Verfügung.</p>
+            <button class="btn btn-outline" data-page="faq" style="margin-bottom:24px;">ZUM HILFEZENTRUM</button>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
+                <div class="card"><span style="font-size:2rem; display:block;">📧</span><h4>E-Mail</h4><p style="font-size:0.9rem; color:var(--text-light);">contact@sohabank.com</p><button class="btn btn-sm">E-MAIL SENDEN</button></div>
+                <div class="card"><span style="font-size:2rem; display:block;">💬</span><h4>Support</h4><p style="font-size:0.9rem; color:var(--text-light);">Online-Hilfe</p><button class="btn btn-sm">SUPPORT KONTAKTIEREN</button></div>
+                <div class="card"><span style="font-size:2rem; display:block;">📞</span><h4>Telefon</h4><p style="font-size:0.9rem; color:var(--text-light);">+49 30 12345678</p><button class="btn btn-sm">ANRUFEN</button></div>
+                <div class="card"><span style="font-size:2rem; display:block;">📍</span><h4>Adresse</h4><p style="font-size:0.9rem; color:var(--text-light);">Musterstraße 1, 10115 Berlin</p></div>
+            </div>
+
+            <div class="card">
+                <h3>📝 Nachricht senden</h3>
+                <form id="contactForm">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                        <div><label>Nachname</label><input type="text" placeholder="Müller" style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;" /></div>
+                        <div><label>Vorname</label><input type="text" placeholder="Anna" style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;" /></div>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;">
+                        <div><label>E-Mail</label><input type="email" placeholder="anna@email.de" style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;" /></div>
+                        <div><label>Telefon</label><input type="tel" placeholder="+49 30 12345678" style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;" /></div>
+                    </div>
+                    <div style="margin-top:12px;">
+                        <label>Anfrageart</label>
+                        <select style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;">
+                            <option>Allgemeine Frage</option>
+                            <option>Problem mit meinem Konto</option>
+                            <option>Investition</option>
+                            <option>Finanzierungsantrag</option>
+                            <option>Banküberweisung</option>
+                            <option>Rückzahlung</option>
+                            <option>Dokument</option>
+                            <option>Sicherheit</option>
+                            <option>Reklamation</option>
+                            <option>Sonstiges</option>
+                        </select>
+                    </div>
+                    <div style="margin-top:12px;">
+                        <label>Betreff</label><input type="text" placeholder="Betreff" style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;" />
+                    </div>
+                    <div style="margin-top:12px;">
+                        <label>Nachricht</label>
+                        <textarea rows="4" placeholder="Beschreiben Sie Ihre Anfrage..." style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px; resize:vertical;"></textarea>
+                    </div>
+                    <div style="margin-top:12px;">
+                        <label>Anhang (optional)</label>
+                        <input type="file" style="width:100%; padding:10px; border:1px dashed var(--gray); border-radius:8px;" />
+                    </div>
+                    <div style="margin-top:12px; display:flex; align-items:center; gap:12px;">
+                        <input type="checkbox" id="contactConsent" />
+                        <label for="contactConsent" style="font-size:0.9rem; color:var(--text-light);">Ich stimme der Nutzung meiner Daten gemäß der Datenschutzerklärung zu.</label>
+                    </div>
+                    <button type="submit" class="btn btn-success" style="margin-top:12px;">ANFRAGE SENDEN</button>
+                    <div id="contactFormStatus" style="margin-top:12px;"></div>
+                </form>
+                <div class="security-notice" style="margin-top:16px;">
+                    <strong>🔒 Geben Sie niemals Ihr Passwort oder Ihre Sicherheitscodes über das Kontaktformular weiter.</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- =====================================================================
+        PAGE 10 — LOGIN
+        ===================================================================== -->
+        <div id="page-login" class="page-content hidden">
+            <div class="auth-container" style="margin:0 auto;">
+                <div class="auth-left">
+                    <div class="logo">🏦 Soha Bank <small>· Plattform</small></div>
+                    <h1>Willkommen</h1>
+                    <p>Melden Sie sich in Ihrem persönlichen Bereich an.</p>
+                    <div class="security-badge"><span class="icon">🔒</span><span>Sichere Anmeldung</span></div>
+                </div>
+                <div class="auth-right">
+                    <div class="form-header"><h2>Anmelden</h2><p>Verwenden Sie Ihre Zugangsdaten.</p></div>
+                    <form id="loginForm">
+                        <div class="form-group"><label>E-Mail</label><input type="email" id="loginEmail" placeholder="beispiel@email.de" /></div>
+                        <div class="form-group"><label>Passwort</label><div class="input-wrapper"><input type="password" id="loginPassword" placeholder="Ihr Passwort" /><button type="button" class="toggle-pwd" id="loginTogglePwd">👁️</button></div></div>
+                        <div style="text-align:right; margin-bottom:12px;"><a data-page="forgot-password" style="font-size:0.9rem; color:var(--text-light); cursor:pointer;">Passwort vergessen?</a></div>
+                        <button type="submit" class="btn-submit" id="loginBtn">ANMELDEN</button>
+                        <div class="form-status" id="loginStatus"></div>
+                    </form>
+                    <div class="auth-links">Sie haben noch kein Konto? <a data-page="register" style="cursor:pointer;">KONTO ERSTELLEN</a></div>
+                    <div class="security-notice"><strong>🔒 Sichere Anmeldung</strong><br />Geben Sie Ihr Passwort niemals weiter.</div>
+                    <div class="auth-footer"><div class="links"><a data-page="security" style="cursor:pointer;">Sicherheit</a><a data-page="faq" style="cursor:pointer;">FAQ</a><a data-page="contact" style="cursor:pointer;">Kontakt</a></div><div class="copy">© 2026 Soha Bank</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =====================================================================
+        PAGE 11 — REGISTER
+        ===================================================================== -->
+        <div id="page-register" class="page-content hidden">
+            <div class="auth-container" style="margin:0 auto;">
+                <div class="auth-left">
+                    <div class="logo">🏦 Soha Bank <small>· Plattform</small></div>
+                    <h1>Konto erstellen</h1>
+                    <p>Registrieren Sie sich und erhalten Sie Zugang zu allen Funktionen.</p>
+                    <div class="security-badge"><span class="icon">🔒</span><span>Ihre Daten sind geschützt.</span></div>
+                </div>
+                <div class="auth-right">
+                    <div class="form-header"><h2>Konto erstellen</h2><p>Füllen Sie die Informationen aus.</p></div>
+                    <form id="registerForm">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                            <div class="form-group"><label>Nachname</label><input type="text" id="regLastName" placeholder="Müller" /></div>
+                            <div class="form-group"><label>Vorname</label><input type="text" id="regFirstName" placeholder="Anna" /></div>
+                        </div>
+                        <div class="form-group"><label>E-Mail</label><input type="email" id="regEmail" placeholder="beispiel@email.de" /></div>
+                        <div class="form-group"><label>Passwort</label><div class="input-wrapper"><input type="password" id="regPassword" placeholder="Mindestens 8 Zeichen" /><button type="button" class="toggle-pwd" id="regTogglePwd">👁️</button></div></div>
+                        <div class="form-group"><label>Rolle</label>
+                            <select id="regRole" style="width:100%; padding:14px 16px; border:1.5px solid var(--gray); border-radius:var(--radius); font-size:1rem;">
+                                <option value="borrower">Kreditnehmer</option>
+                                <option value="investor">Investor</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-submit" id="registerBtn">KONTO ERSTELLEN</button>
+                        <div class="form-status" id="registerStatus"></div>
+                    </form>
+                    <div class="auth-links">Bereits ein Konto? <a data-page="login" style="cursor:pointer;">ANMELDEN</a></div>
+                    <div class="auth-footer"><div class="links"><a data-page="security" style="cursor:pointer;">Sicherheit</a><a data-page="faq" style="cursor:pointer;">FAQ</a><a data-page="contact" style="cursor:pointer;">Kontakt</a></div><div class="copy">© 2026 Soha Bank</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =====================================================================
+        PAGE 12 — FORGOT PASSWORD
+        ===================================================================== -->
+        <div id="page-forgot-password" class="page-content hidden">
+            <div class="auth-container" style="margin:0 auto;">
+                <div class="auth-left">
+                    <div class="logo">🏦 Soha Bank <small>· Plattform</small></div>
+                    <h1>Passwort vergessen?</h1>
+                    <p>Geben Sie Ihre E-Mail-Adresse ein, um Anweisungen zum Zurücksetzen zu erhalten.</p>
+                </div>
+                <div class="auth-right">
+                    <div class="form-header"><h2>Passwort zurücksetzen</h2></div>
+                    <form id="forgotForm">
+                        <div class="form-group"><label>E-Mail</label><input type="email" id="forgotEmail" placeholder="beispiel@email.de" /></div>
+                        <button type="submit" class="btn-submit">LINK SENDEN</button>
+                        <div class="form-status" id="forgotStatus"></div>
+                    </form>
+                    <div class="auth-links">Sie erinnern sich? <a data-page="login" style="cursor:pointer;">ANMELDEN</a></div>
+                    <div class="auth-footer"><div class="links"><a data-page="security" style="cursor:pointer;">Sicherheit</a><a data-page="faq" style="cursor:pointer;">FAQ</a></div><div class="copy">© 2026 Soha Bank</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =====================================================================
+        PAGE 13 — KYC-VERIFIZIERUNG
+        ===================================================================== -->
+        <div id="page-kyc" class="page-content hidden">
+            <div style="max-width:700px; margin:0 auto;">
+                <h1 style="font-size:2rem; color:var(--primary); text-align:center;">🪪 KYC-Verifizierung</h1>
+                <p style="color:var(--text-light); text-align:center; margin-bottom:24px;">Um Investitionen zu tätigen oder einen Finanzierungsantrag zu stellen, benötigen wir eine Identitätsprüfung. Bitte laden Sie die erforderlichen Dokumente hoch.</p>
+                <div class="card">
+                    <form id="kycForm" class="kyc-form">
+                        <div class="form-group">
+                            <label>Ausweisdokument (Personalausweis oder Reisepass) *</label>
+                            <div class="file-upload-area" onclick="document.getElementById('kycIdFile').click()">
+                                <span class="icon">🪪</span>
+                                <p>Klicken Sie hier, um Ihr Ausweisdokument hochzuladen</p>
+                                <input type="file" id="kycIdFile" accept=".pdf,.jpg,.jpeg,.png" required />
+                            </div>
+                            <div style="font-size:0.85rem; color:var(--text-light); margin-top:4px;">Erlaubte Formate: PDF, JPG, PNG. Max. Größe: 5 MB.</div>
+                            <div id="kycIdStatus" style="margin-top:4px; font-weight:500;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Adressnachweis (z.B. Stromrechnung, Bankauszug) *</label>
+                            <div class="file-upload-area" onclick="document.getElementById('kycAddressFile').click()">
+                                <span class="icon">📄</span>
+                                <p>Klicken Sie hier, um Ihren Adressnachweis hochzuladen</p>
+                                <input type="file" id="kycAddressFile" accept=".pdf,.jpg,.jpeg,.png" required />
+                            </div>
+                            <div id="kycAddressStatus" style="margin-top:4px; font-weight:500;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Optional: Weitere Nachweise (z.B. Steuererklärung, Handelsregister)</label>
+                            <div class="file-upload-area" onclick="document.getElementById('kycExtraFile').click()">
+                                <span class="icon">📎</span>
+                                <p>Zusätzliche Dokumente hochladen (optional)</p>
+                                <input type="file" id="kycExtraFile" accept=".pdf,.jpg,.jpeg,.png" />
+                            </div>
+                            <div id="kycExtraStatus" style="margin-top:4px; font-weight:500;"></div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:12px; margin:16px 0;">
+                            <input type="checkbox" id="kycConfirm" required />
+                            <label for="kycConfirm" style="font-size:0.95rem;">Ich bestätige, dass die hochgeladenen Dokumente echt und aktuell sind.</label>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block">VERIFIZIERUNG ABSCHLIESSEN</button>
+                        <div id="kycStatus" style="margin-top:12px;"></div>
+                    </form>
+                </div>
+                <div class="security-footer" style="margin-top:16px;">
+                    <strong>🔒 Ihre Dokumente werden vertraulich behandelt und nur für die KYC-Prüfung verwendet.</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- =====================================================================
+        PAGE 14 — FINANZIERUNGSANTRAG (loan-request)
         ===================================================================== -->
         <div id="page-loan-request" class="page-content hidden" style="padding:0;">
             <div class="dashboard-layout">
@@ -563,7 +1065,6 @@
                         </div>
                     </header>
                     <div class="page-content" id="loanRequestContent">
-                        <!-- Hero -->
                         <div style="margin-bottom:24px;">
                             <h1 style="font-size:1.8rem; color:var(--primary);">Finanzierung beantragen</h1>
                             <p style="color:var(--text-light);">Stellen Sie Ihr Projekt vor und geben Sie die für die Prüfung Ihres Antrags erforderlichen Informationen an.</p>
@@ -571,7 +1072,6 @@
                                 ⚠️ Die Einreichung eines Antrags garantiert nicht die Gewährung einer Finanzierung.
                             </div>
                         </div>
-                        <!-- Stepper (gekürzt) -->
                         <div class="stepper" id="loanStepper">
                             <div class="step active" data-step="1"><div class="circle">1</div><div class="label">Persönliche Daten</div></div>
                             <div class="step" data-step="2"><div class="circle">2</div><div class="label">Projekt</div></div>
@@ -582,778 +1082,230 @@
                             <div class="step" data-step="7"><div class="circle">7</div><div class="label">Einreichung</div></div>
                         </div>
                         <div style="text-align:center; font-size:0.9rem; color:var(--text-light); margin-bottom:16px;" id="stepIndicator">Schritt 1 von 7</div>
-                        <!-- Form Steps – aus Platzgründen nur Struktur, aber vollständig im Code enthalten -->
                         <form id="loanRequestForm">
                             <div class="form-step active" data-step="1">
                                 <h2 style="font-size:1.3rem; color:var(--primary);">Ihre Informationen</h2>
                                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;">
-                                    <div><label>Vorname</label><input type="text" id="lrFirstName" value="Jean" disabled style="background:var(--bg);" /></div>
-                                    <div><label>Nachname</label><input type="text" id="lrLastName" value="Dupont" disabled style="background:var(--bg);" /></div>
-                                    <div><label>E-Mail</label><input type="email" id="lrEmail" value="jean@email.de" disabled style="background:var(--bg);" /></div>
+                                    <div><label>Vorname</label><input type="text" id="lrFirstName" value="" disabled style="background:var(--bg);" /></div>
+                                    <div><label>Nachname</label><input type="text" id="lrLastName" value="" disabled style="background:var(--bg);" /></div>
+                                    <div><label>E-Mail</label><input type="email" id="lrEmail" value="" disabled style="background:var(--bg);" /></div>
                                     <div><label>Telefon</label><input type="tel" id="lrPhone" placeholder="+49 30 12345678" /></div>
                                     <div><label>Land</label><input type="text" id="lrCountry" placeholder="Deutschland" /></div>
                                 </div>
                                 <div class="step-actions"><button type="button" class="btn btn-success" onclick="nextStep()">Weiter →</button></div>
                             </div>
-                            <!-- Weitere Steps – vollständig im Code enthalten -->
+                            <div class="form-step" data-step="2">
+                                <h2 style="font-size:1.3rem; color:var(--primary);">Ihr Projekt</h2>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;">
+                                    <div><label>Projektname *</label><input type="text" id="lrProjectName" placeholder="z.B. Erweiterung" required /></div>
+                                    <div><label>Kategorie *</label><select id="lrCategory" required style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;"><option value="">Bitte wählen</option><option>Unternehmen</option><option>Handel</option><option>Dienstleistungen</option><option>Technologie</option><option>Immobilien</option><option>Sonstiges</option></select></div>
+                                    <div><label>Branche</label><input type="text" id="lrSector" placeholder="z.B. Einzelhandel" /></div>
+                                    <div><label>Stadt</label><input type="text" id="lrCity" placeholder="z.B. Berlin" /></div>
+                                </div>
+                                <div style="margin-top:12px;">
+                                    <label>Projektbeschreibung *</label>
+                                    <textarea id="lrDescription" rows="4" placeholder="Beschreiben Sie Ihr Projekt..." required style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px; resize:vertical;"></textarea>
+                                    <div style="text-align:right; font-size:0.8rem; color:var(--text-light);" id="descCounter">0 / 3000</div>
+                                </div>
+                                <div class="step-actions"><button type="button" class="btn btn-outline" onclick="prevStep()">← Zurück</button><button type="button" class="btn btn-success" onclick="nextStep()">Weiter →</button></div>
+                            </div>
+                            <div class="form-step" data-step="3">
+                                <h2 style="font-size:1.3rem; color:var(--primary);">Ihr Finanzierungsbedarf</h2>
+                                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px;">
+                                    <div><label>Beantragter Betrag (€) *</label><input type="number" id="lrAmount" placeholder="50000" min="500" required style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;" /></div>
+                                    <div><label>Laufzeit *</label><select id="lrDuration" required style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;"><option value="">Bitte wählen</option><option value="12">12 Monate</option><option value="24">24 Monate</option><option value="36">36 Monate</option><option value="48">48 Monate</option></select></div>
+                                    <div><label>Zweck *</label><select id="lrPurpose" required style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;"><option value="">Bitte wählen</option><option value="Entwicklung">Entwicklung</option><option value="Ausrüstung">Ausrüstung</option><option value="Lager">Lager</option><option value="Liquidität">Liquidität</option><option value="Expansion">Expansion</option><option value="Sonstiges">Sonstiges</option></select></div>
+                                    <div><label>Startdatum</label><input type="date" id="lrStartDate" style="width:100%; padding:10px; border:1px solid var(--gray); border-radius:8px;" /></div>
+                                </div>
+                                <div class="step-actions"><button type="button" class="btn btn-outline" onclick="prevStep()">← Zurück</button><button type="button" class="btn btn-success" onclick="nextStep()">Weiter →</button></div>
+                            </div>
+                            <div class="form-step" data-step="4">
+                                <h2 style="font-size:1.3rem; color:var(--primary);">Dokumente</h2>
+                                <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
+                                    <span class="icon">📤</span>
+                                    <p>Klicken Sie hier, um Dokumente hochzuladen</p>
+                                    <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png" />
+                                </div>
+                                <div class="file-list" id="fileList"></div>
+                                <div class="step-actions"><button type="button" class="btn btn-outline" onclick="prevStep()">← Zurück</button><button type="button" class="btn btn-success" onclick="nextStep()">Weiter →</button></div>
+                            </div>
+                            <div class="form-step" data-step="5">
+                                <h2 style="font-size:1.3rem; color:var(--primary);">Prüfung</h2>
+                                <div id="reviewSummary" style="background:var(--bg); padding:16px; border-radius:var(--radius);"></div>
+                                <div class="step-actions"><button type="button" class="btn btn-outline" onclick="prevStep()">← Zurück</button><button type="button" class="btn btn-success" onclick="nextStep()">Weiter →</button></div>
+                            </div>
+                            <div class="form-step" data-step="6">
+                                <h2 style="font-size:1.3rem; color:var(--primary);">Zusammenfassung</h2>
+                                <div id="finalSummary" style="background:var(--bg); padding:16px; border-radius:var(--radius);"></div>
+                                <div style="margin-top:16px;">
+                                    <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:8px;">
+                                        <input type="checkbox" id="confirmAccurate" />
+                                        <label for="confirmAccurate" style="font-size:0.95rem;">Ich bestätige die Korrektheit der Angaben.</label>
+                                    </div>
+                                    <div style="display:flex; align-items:flex-start; gap:12px;">
+                                        <input type="checkbox" id="confirmTerms" />
+                                        <label for="confirmTerms" style="font-size:0.95rem;">Ich habe die Bedingungen gelesen und akzeptiert.</label>
+                                    </div>
+                                </div>
+                                <div class="step-actions"><button type="button" class="btn btn-outline" onclick="prevStep()">← Zurück</button><button type="button" class="btn btn-success" onclick="nextStep()" id="submitBtnFinal">Weiter →</button></div>
+                            </div>
+                            <div class="form-step" data-step="7">
+                                <h2 style="font-size:1.3rem; color:var(--primary);">Einreichung</h2>
+                                <div style="background:#d4edda; padding:16px; border-radius:var(--radius); border-left:4px solid var(--green);">
+                                    <p style="font-size:1.1rem; font-weight:600; color:#155724;">✅ Sie sind bereit einzureichen!</p>
+                                    <p style="color:#155724;">Die Einreichung garantiert nicht die Annahme.</p>
+                                </div>
+                                <button type="submit" class="btn btn-success btn-block btn-lg" id="submitFinalBtn">ANTRAG EINREICHEN</button>
+                                <div id="submissionStatus" style="margin-top:12px;"></div>
+                                <div class="step-actions"><button type="button" class="btn btn-outline" onclick="prevStep()">← Zurück</button></div>
+                            </div>
                         </form>
                         <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between;">
                             <button class="btn btn-outline" id="saveDraftBtn">📝 Entwurf speichern</button>
                             <button class="btn btn-outline" data-page="borrower-requests">Zu meinen Anträgen</button>
                         </div>
+                        <div id="draftStatus" style="margin-top:8px;"></div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- =====================================================================
-        RESTLICHE SEITEN (Dashboard, etc.) – aus Platzgründen nicht ausgeschrieben, aber im vollständigen Code enthalten
+        PAGE 15 — ANTRAGSDETAILS (loan-request-details) — gekürzt
         ===================================================================== -->
-
-    </div><!-- fin pageContainer -->
-
-    <!-- ===== FOOTER ===== -->
-    <footer style="margin-top:40px; padding:32px 0 20px; border-top:1px solid var(--gray); background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow);">
-        <div style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:32px; padding:0 24px;">
-            <div><div style="font-size:1.4rem; font-weight:700; color:var(--primary);">🏦 Soha Bank</div><p style="color:var(--text-light); font-size:0.9rem; margin-top:4px;">Eine digitale Plattform für Finanzierung und Investition.</p></div>
-            <div><h5 style="color:var(--primary); font-size:0.9rem; margin-bottom:8px;">Navigation</h5><a data-page="home" style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">Startseite</a><a data-page="how-it-works" style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">So funktioniert's</a><a data-page="invest" style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">Investieren</a><a data-page="borrow" style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">Finanzierung</a><a data-page="opportunities" style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">Chancen</a></div>
-            <div><h5 style="color:var(--primary); font-size:0.9rem; margin-bottom:8px;">Benutzerbereich</h5><a data-page="register" style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">Konto erstellen</a><a data-page="login" style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">Anmelden</a><a data-page="investor-dashboard" style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">Mein Bereich</a></div>
-            <div><h5 style="color:var(--primary); font-size:0.9rem; margin-bottom:8px;">Rechtliches</h5><a style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">Impressum</a><a style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">AGB</a><a style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">Datenschutz</a><a style="display:block; color:var(--text-light); font-size:0.9rem; padding:3px 0; cursor:pointer;">Risikohinweis</a></div>
+        <div id="page-loan-request-details" class="page-content hidden" style="padding:0;">
+            <div class="dashboard-layout">
+                <aside class="sidebar" id="loanDetailsSidebar">
+                    <div class="brand"><div class="logo">🏦 Soha Bank <small>· Antrag</small></div></div>
+                    <nav class="nav">
+                        <div class="nav-label">Menü</div>
+                        <a data-page="borrower-dashboard"><span class="icon">📊</span> Dashboard</a>
+                        <a data-page="borrower-requests" class="active"><span class="icon">📝</span> Meine Anträge</a>
+                        <a data-page="borrower-loans"><span class="icon">🏦</span> Meine Finanzierungen</a>
+                        <a data-page="security"><span class="icon">🔒</span> Sicherheit</a>
+                    </nav>
+                    <div class="footer-links">
+                        <a data-page="faq"><span class="icon">❓</span> Hilfezentrum</a>
+                        <a data-page="contact"><span class="icon">✉️</span> Kontakt</a>
+                        <a id="loanDetailsLogout" style="color:rgba(255,255,255,0.6);"><span class="icon">🚪</span> Abmelden</a>
+                    </div>
+                </aside>
+                <div class="main">
+                    <header class="header">
+                        <div class="left"><button class="hamburger" id="loanDetailsHamburger">☰</button><div class="page-title"><h1>Antragsdetails</h1><span>FIN-2026-000001</span></div></div>
+                        <div class="right">
+                            <button class="notif-btn">🔔<span class="dot"></span></button>
+                            <div class="user-menu"><div class="avatar">J</div><span class="name">Jean</span><span class="chevron">▼</span></div>
+                        </div>
+                    </header>
+                    <div class="page-content" id="loanDetailsContent">
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-bottom:24px;">
+                            <div class="stat-card"><div class="label">Referenz</div><div class="value" style="font-size:1.2rem;">FIN-2026-000001</div></div>
+                            <div class="stat-card" style="border-top-color:var(--green);"><div class="label">Status</div><div class="value" style="font-size:1.2rem;"><span class="status-badge submitted">EINGEREICHT</span></div></div>
+                            <div class="stat-card" style="border-top-color:var(--blue);"><div class="label">Datum</div><div class="value" style="font-size:1.2rem;">20.06.2025</div></div>
+                        </div>
+                        <div class="card"><h3>📋 Projekt</h3><div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 24px;"><div><span style="color:var(--text-light);">Name:</span> <strong>Rénovation de commerce</strong></div><div><span style="color:var(--text-light);">Kategorie:</span> <strong>Unternehmen</strong></div></div></div>
+                        <div class="card"><h3>💰 Finanzierungsdetails</h3><div style="display:grid; grid-template-columns:1fr 1fr 1fr;"><div><span style="color:var(--text-light);">Betrag:</span> <strong>45.000 €</strong></div><div><span style="color:var(--text-light);">Laufzeit:</span> <strong>36 Monate</strong></div><div><span style="color:var(--text-light);">Zweck:</span> <strong>Entwicklung</strong></div></div></div>
+                        <div class="card"><h3>📅 Fortschritt</h3><div style="display:flex; flex-wrap:wrap; gap:12px;"><span class="status-badge confirmed">Antrag erstellt</span><span class="status-badge confirmed">Eingereicht</span><span class="status-badge pending">In Prüfung</span><span class="status-badge draft">Entscheidung</span></div></div>
+                        <div class="card"><h3>📄 Dokumente</h3><span class="status-badge confirmed">Ausweis (hochgeladen)</span> <span class="status-badge pending">Projektbeschreibung (fehlt)</span></div>
+                        <div class="security-footer" style="margin-top:16px;"><strong>⚠️</strong> Die Einreichung garantiert nicht die Annahme.</div>
+                        <div style="margin-top:16px; display:flex; gap:12px;"><button class="btn btn-outline" data-page="borrower-requests">ZU MEINEN ANTRÄGEN</button></div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div style="text-align:center; font-size:0.85rem; color:var(--text-light); padding-top:24px; margin-top:24px; border-top:1px solid var(--gray);">© 2026 Soha Bank. Alle Rechte vorbehalten.</div>
-    </footer>
-</div><!-- fin app -->
 
-<script>
-    // ================================================================
-    // localStorage Datenverwaltung
-    // ================================================================
-    const DB = {
-        get(key) {
-            try { return JSON.parse(localStorage.getItem('sohabank_' + key)); } catch { return null; }
-        },
-        set(key, value) {
-            localStorage.setItem('sohabank_' + key, JSON.stringify(value));
-        },
-        init() {
-            if (!this.get('users')) {
-                this.set('users', [
-                    { id: 'user1', firstName: 'Marie', lastName: 'Dubois', email: 'invest@demo.de', password: 'test123', role: 'investor', verified: true },
-                    { id: 'user2', firstName: 'Jean', lastName: 'Dupont', email: 'borrow@demo.de', password: 'test123', role: 'borrower', verified: true }
-                ]);
-            }
-            if (!this.get('projects')) {
-                this.set('projects', [
-                    { id: 'p1', name: 'Rénovation énergétique', description: 'Isolation et panneaux solaires', target: 75000, funded: 48500, duration: 24, return: 9.0, risk: 'modéré', status: 'open' },
-                    { id: 'p2', name: 'Micro-brasserie artisanale', description: 'Équipement et local', target: 30000, funded: 18500, duration: 18, return: 11.0, risk: 'élevé', status: 'open' },
-                    { id: 'p3', name: 'Ferme aquaponique', description: 'Serre et bassins', target: 75000, funded: 72000, duration: 36, return: 8.0, risk: 'modéré', status: 'almost' },
-                    { id: 'p4', name: 'Développement e-commerce', description: 'Plateforme en ligne', target: 80000, funded: 32000, duration: 24, return: 12.0, risk: 'élevé', status: 'open' }
-                ]);
-            }
-            if (!this.get('investments')) {
-                this.set('investments', [
-                    { id: 'i1', userId: 'user1', projectId: 'p1', amount: 25000, date: '2025-02-15', duration: 36, expectedReturn: 9.5, nextPayment: '2025-07-15', status: 'active' },
-                    { id: 'i2', userId: 'user1', projectId: 'p2', amount: 18000, date: '2025-03-01', duration: 24, expectedReturn: 11.0, nextPayment: '2025-08-01', status: 'active' },
-                    { id: 'i3', userId: 'user1', projectId: 'p3', amount: 35000, date: '2025-01-20', duration: 48, expectedReturn: 8.0, nextPayment: '2025-06-20', status: 'repayment' }
-                ]);
-            }
-            if (!this.get('loanRequests')) {
-                this.set('loanRequests', [
-                    { id: 'lr1', userId: 'user2', projectName: 'Rénovation de commerce', amount: 45000, duration: 36, purpose: 'Entwicklung', status: 'approved', submittedAt: '2025-04-10', reference: 'FIN-2026-001' },
-                    { id: 'lr2', userId: 'user2', projectName: 'Achat de matériel', amount: 15000, duration: 24, purpose: 'Ausrüstungskauf', status: 'under_review', submittedAt: '2025-05-15', reference: 'FIN-2026-002' }
-                ]);
-            }
-            if (!this.get('transactions')) {
-                this.set('transactions', [
-                    { id: 't1', userId: 'user1', date: '2025-06-10', type: 'investissement', description: 'Rénovation énergétique', amount: -5000, status: 'confirmé' },
-                    { id: 't2', userId: 'user1', date: '2025-06-05', type: 'remboursement', description: 'Ferme aquaponique', amount: 1250, status: 'confirmé' },
-                    { id: 't3', userId: 'user2', date: '2025-04-20', type: 'financement', description: 'Rénovation de commerce', amount: 45000, status: 'confirmé' }
-                ]);
-            }
-            if (!this.get('notifications')) {
-                this.set('notifications', [
-                    { id: 'n1', userId: 'user1', icon: '✅', title: 'Investition registriert', description: '5.000 € in "Rénovation énergétique"', time: '2h', new: false },
-                    { id: 'n2', userId: 'user1', icon: '💰', title: 'Rückzahlung verfügbar', description: '1.250 € für "Ferme aquaponique"', time: '5h', new: true },
-                    { id: 'n3', userId: 'user2', icon: '✅', title: 'Antrag genehmigt', description: '"Rénovation de commerce"', time: '2d', new: false },
-                    { id: 'n4', userId: 'user2', icon: '📝', title: 'Dokument erforderlich', description: 'Identitätsnachweis', time: '3d', new: true }
-                ]);
-            }
-            if (!this.get('documents')) {
-                this.set('documents', [
-                    { id: 'd1', userId: 'user1', name: 'Vertrag - Rénovation', type: 'Vertrag', date: '2025-02-20', status: 'signé' },
-                    { id: 'd2', userId: 'user1', name: 'Abrechnung Juni 2025', type: 'Abrechnung', date: '2025-06-01', status: 'disponible' },
-                    { id: 'd3', userId: 'user2', name: 'Ausweis', type: 'Identität', date: '2025-01-25', status: 'verifiziert' },
-                    { id: 'd4', userId: 'user2', name: 'Finanzierungsvertrag', type: 'Vertrag', date: '2025-04-25', status: 'signé' }
-                ]);
-            }
-            if (!this.get('repayments')) {
-                this.set('repayments', [
-                    { id: 'r1', userId: 'user1', project: 'Ferme aquaponique', date: '2025-06-20', principal: 850, interest: 400, total: 1250, status: 'pending' },
-                    { id: 'r2', userId: 'user1', project: 'Rénovation énergétique', date: '2025-07-15', principal: 720, interest: 380, total: 1100, status: 'pending' },
-                    { id: 'r3', userId: 'user2', date: '2025-05-15', principal: 1250, interest: 450, total: 1700, status: 'paid' },
-                    { id: 'r4', userId: 'user2', date: '2025-06-15', principal: 1250, interest: 440, total: 1690, status: 'paid' },
-                    { id: 'r5', userId: 'user2', date: '2025-07-15', principal: 1250, interest: 430, total: 1680, status: 'pending' }
-                ]);
-            }
-            if (!this.get('currentUser')) {
-                this.set('currentUser', null);
-            }
-        },
-        getCurrentUser() {
-            return this.get('currentUser');
-        },
-        setCurrentUser(user) {
-            this.set('currentUser', user);
-        },
-        getUserById(id) {
-            const users = this.get('users') || [];
-            return users.find(u => u.id === id) || null;
-        },
-        getUserByEmail(email) {
-            const users = this.get('users') || [];
-            return users.find(u => u.email === email) || null;
-        },
-        addUser(user) {
-            const users = this.get('users') || [];
-            users.push(user);
-            this.set('users', users);
-        },
-        updateUser(user) {
-            const users = this.get('users') || [];
-            const idx = users.findIndex(u => u.id === user.id);
-            if (idx !== -1) { users[idx] = user; this.set('users', users); }
-        },
-        getProjects() { return this.get('projects') || []; },
-        getInvestments(userId) {
-            const all = this.get('investments') || [];
-            return all.filter(i => i.userId === userId);
-        },
-        addInvestment(inv) {
-            const all = this.get('investments') || [];
-            all.push(inv);
-            this.set('investments', all);
-        },
-        getLoanRequests(userId) {
-            const all = this.get('loanRequests') || [];
-            return all.filter(l => l.userId === userId);
-        },
-        addLoanRequest(req) {
-            const all = this.get('loanRequests') || [];
-            all.push(req);
-            this.set('loanRequests', all);
-        },
-        updateLoanRequest(req) {
-            const all = this.get('loanRequests') || [];
-            const idx = all.findIndex(l => l.id === req.id);
-            if (idx !== -1) { all[idx] = req; this.set('loanRequests', all); }
-        },
-        getTransactions(userId) {
-            const all = this.get('transactions') || [];
-            return all.filter(t => t.userId === userId);
-        },
-        addTransaction(t) {
-            const all = this.get('transactions') || [];
-            all.push(t);
-            this.set('transactions', all);
-        },
-        getNotifications(userId) {
-            const all = this.get('notifications') || [];
-            return all.filter(n => n.userId === userId);
-        },
-        addNotification(n) {
-            const all = this.get('notifications') || [];
-            all.push(n);
-            this.set('notifications', all);
-        },
-        getDocuments(userId) {
-            const all = this.get('documents') || [];
-            return all.filter(d => d.userId === userId);
-        },
-        addDocument(d) {
-            const all = this.get('documents') || [];
-            all.push(d);
-            this.set('documents', all);
-        },
-        getRepayments(userId) {
-            const all = this.get('repayments') || [];
-            return all.filter(r => r.userId === userId);
-        }
-    };
-
-    // ================================================================
-    // GLOBALE VARIABLEN
-    // ================================================================
-    let currentUser = DB.getCurrentUser();
-    let currentPage = 'home';
-    let currentStep = 1;
-    let uploadedFiles = [];
-
-    // ================================================================
-    // NAVIGATION
-    // ================================================================
-    function navigateTo(pageId) {
-        // Zugriffsschutz für Dashboards
-        if (pageId.startsWith('investor') && (!currentUser || currentUser.role !== 'investor')) { pageId = 'login'; }
-        if (pageId.startsWith('borrower') && (!currentUser || currentUser.role !== 'borrower')) { pageId = 'login'; }
-        // Seiten ausblenden
-        document.querySelectorAll('#pageContainer > div[id^="page-"]').forEach(el => el.classList.add('hidden'));
-        const target = document.getElementById('page-' + pageId);
-        if (target) { target.classList.remove('hidden'); currentPage = pageId; }
-        else { document.getElementById('page-home').classList.remove('hidden'); currentPage = 'home'; }
-        updateTopbar();
-        // Dynamische Inhalte rendern
-        if (pageId === 'invest') renderInvestPage();
-        else if (pageId === 'opportunities') renderOpportunitiesPage();
-        else if (pageId === 'faq') renderFaqPage();
-        else if (pageId === 'investor-dashboard') renderInvestorDashboard();
-        else if (pageId === 'investor-investments') renderInvestorInvestments();
-        else if (pageId === 'investor-transactions') renderInvestorTransactions();
-        else if (pageId === 'investor-repayments') renderInvestorRepayments();
-        else if (pageId === 'investor-documents') renderInvestorDocuments();
-        else if (pageId === 'investor-profile') renderInvestorProfile();
-        else if (pageId === 'borrower-dashboard') renderBorrowerDashboard();
-        else if (pageId === 'borrower-requests') renderBorrowerRequests();
-        else if (pageId === 'borrower-loans') renderBorrowerLoans();
-        else if (pageId === 'borrower-repayments') renderBorrowerRepayments();
-        else if (pageId === 'borrower-transactions') renderBorrowerTransactions();
-        else if (pageId === 'borrower-documents') renderBorrowerDocuments();
-        else if (pageId === 'borrower-profile') renderBorrowerProfile();
-        else if (pageId === 'notifications') renderNotificationsPage();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // ================================================================
-    // TOPBAR
-    // ================================================================
-    function updateTopbar() {
-        const topUserName = document.getElementById('topUserName');
-        const topUserRole = document.getElementById('topUserRole');
-        const topAuthBtn = document.getElementById('topAuthBtn');
-        if (currentUser) {
-            topUserName.textContent = currentUser.firstName + ' ' + currentUser.lastName;
-            topUserRole.textContent = currentUser.role === 'investor' ? 'Investor' : 'Kreditnehmer';
-            topAuthBtn.textContent = 'Abmelden';
-            topAuthBtn.className = 'btn btn-danger';
-        } else {
-            topUserName.textContent = 'Gast';
-            topUserRole.textContent = 'öffentlich';
-            topAuthBtn.textContent = 'Anmelden';
-            topAuthBtn.className = 'btn';
-        }
-        document.querySelectorAll('#mainNav a').forEach(el => el.classList.toggle('active', el.dataset.page === currentPage));
-    }
-
-    // ================================================================
-    // AUTH
-    // ================================================================
-    function login(email, password) {
-        const user = DB.getUserByEmail(email);
-        if (!user || user.password !== password) { return false; }
-        currentUser = user;
-        DB.setCurrentUser(user);
-        updateTopbar();
-        navigateTo(user.role === 'investor' ? 'investor-dashboard' : 'borrower-dashboard');
-        return true;
-    }
-
-    function logout() {
-        currentUser = null;
-        DB.setCurrentUser(null);
-        updateTopbar();
-        navigateTo('home');
-    }
-
-    // ================================================================
-    // ÉVÉNEMENTS
-    // ================================================================
-    document.addEventListener('click', function(e) {
-        const target = e.target.closest('[data-page]');
-        if (target) { e.preventDefault(); navigateTo(target.dataset.page); }
-        // Logout
-        if (target && (target.id === 'investorLogout' || target.id === 'investorDropdownLogout' ||
-                target.id === 'borrowerLogout' || target.id === 'borrowerDropdownLogout' ||
-                target.id === 'loanRequestLogout' || target.id === 'loanDetailsLogout' ||
-                target.id === 'notifLogout')) {
-            e.preventDefault(); logout();
-        }
-        // Toggle password
-        if (target && target.classList.contains('toggle-pwd')) {
-            const inp = target.closest('.input-wrapper').querySelector('input');
-            if (inp) { inp.type = inp.type === 'password' ? 'text' : 'password'; target.textContent = inp.type === 'password' ? '👁️' : '🙈'; }
-        }
-        // Hamburger
-        if (target && (target.id === 'investorHamburger' || target.id === 'investorHamburger2')) {
-            document.getElementById('investorSidebar')?.classList.toggle('open');
-        }
-        if (target && target.id === 'borrowerHamburger') {
-            document.getElementById('borrowerSidebar')?.classList.toggle('open');
-        }
-        if (target && target.id === 'loanRequestHamburger') {
-            document.getElementById('loanRequestSidebar')?.classList.toggle('open');
-        }
-        if (target && target.id === 'loanDetailsHamburger') {
-            document.getElementById('loanDetailsSidebar')?.classList.toggle('open');
-        }
-        // Dropdown
-        if (target && target.closest('#investorUserMenu')) {
-            document.getElementById('investorDropdown')?.classList.toggle('open');
-        }
-        if (target && target.closest('#borrowerUserMenu')) {
-            document.getElementById('borrowerDropdown')?.classList.toggle('open');
-        }
-        if (target && (target.id === 'investorNotifBtn' || target.id === 'borrowerNotifBtn')) {
-            navigateTo('notifications');
-        }
-    });
-    document.addEventListener('click', function(e) {
-        if (!e.target.closest('#investorUserMenu') && !e.target.closest('#investorDropdown')) {
-            document.getElementById('investorDropdown')?.classList.remove('open');
-        }
-        if (!e.target.closest('#borrowerUserMenu') && !e.target.closest('#borrowerDropdown')) {
-            document.getElementById('borrowerDropdown')?.classList.remove('open');
-        }
-    });
-
-    // ================================================================
-    // FORMULAIRE AUTH
-    // ================================================================
-    document.getElementById('loginForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPassword').value.trim();
-        const status = document.getElementById('loginStatus');
-        if (!email || !password) { status.className = 'form-status error'; status.textContent = 'Bitte füllen Sie alle Felder aus.'; return; }
-        if (login(email, password)) {
-            status.className = 'form-status success'; status.textContent = 'Anmeldung erfolgreich! Weiterleitung...';
-        } else {
-            status.className = 'form-status error'; status.textContent = 'E-Mail oder Passwort falsch.';
-        }
-    });
-
-    document.getElementById('registerForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const firstName = document.getElementById('regFirstName').value.trim();
-        const lastName = document.getElementById('regLastName').value.trim();
-        const email = document.getElementById('regEmail').value.trim();
-        const password = document.getElementById('regPassword').value.trim();
-        const role = document.getElementById('regRole').value;
-        const status = document.getElementById('registerStatus');
-        if (!firstName || !lastName || !email || !password) {
-            status.className = 'form-status error'; status.textContent = 'Bitte füllen Sie alle Felder aus.'; return;
-        }
-        if (DB.getUserByEmail(email)) {
-            status.className = 'form-status error'; status.textContent = 'Diese E-Mail ist bereits registriert.'; return;
-        }
-        const newUser = {
-            id: 'user' + Date.now(),
-            firstName, lastName, email, password, role,
-            verified: true
-        };
-        DB.addUser(newUser);
-        currentUser = newUser;
-        DB.setCurrentUser(newUser);
-        status.className = 'form-status success'; status.textContent = 'Konto erstellt! Weiterleitung...';
-        setTimeout(() => navigateTo(role === 'investor' ? 'investor-dashboard' : 'borrower-dashboard'), 800);
-    });
-
-    document.getElementById('forgotForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('forgotEmail').value.trim();
-        const status = document.getElementById('forgotStatus');
-        if (!email) { status.className = 'form-status error'; status.textContent = 'Bitte geben Sie Ihre E-Mail-Adresse ein.'; return; }
-        status.className = 'form-status success';
-        status.innerHTML = 'Wenn eine mit einem Konto verbundene Adresse angegeben wurde, erhalten Sie die Anweisungen zum Zurücksetzen Ihres Passworts.';
-    });
-
-    document.getElementById('contactForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        document.getElementById('contactFormStatus').innerHTML = '✅ Ihre Anfrage wurde erfolgreich registriert. Referenz: SUP-2026-000001.';
-    });
-
-    document.getElementById('topAuthBtn').addEventListener('click', function() { if (currentUser) logout(); else navigateTo('login'); });
-
-    // ================================================================
-    // LOAN REQUEST — STEPPER & LOGIK
-    // ================================================================
-    function nextStep() {
-        const current = document.querySelector('.form-step.active');
-        if (!current) return;
-        const idx = parseInt(current.dataset.step);
-        if (idx === 7) return;
-        const required = current.querySelectorAll('[required]');
-        let valid = true;
-        required.forEach(el => {
-            if (!el.value.trim()) { el.style.borderColor = 'var(--red)'; valid = false; }
-            else { el.style.borderColor = ''; }
-        });
-        if (!valid) { alert('Bitte füllen Sie alle erforderlichen Felder aus.'); return; }
-        if (idx === 6) {
-            const c1 = document.getElementById('confirmAccurate');
-            const c2 = document.getElementById('confirmTerms');
-            if (!c1?.checked || !c2?.checked) { alert('Bitte bestätigen Sie beide Bedingungen.'); return; }
-        }
-        current.classList.remove('active');
-        const next = document.querySelector(`.form-step[data-step="${idx+1}"]`);
-        if (next) {
-            next.classList.add('active');
-            currentStep = idx + 1;
-            updateStepper();
-            document.getElementById('stepIndicator').textContent = 'Schritt ' + currentStep + ' von 7';
-            if (currentStep === 5) generateReview();
-            if (currentStep === 6) generateFinalSummary();
-        }
-    }
-
-    function prevStep() {
-        const current = document.querySelector('.form-step.active');
-        if (!current) return;
-        const idx = parseInt(current.dataset.step);
-        if (idx === 1) return;
-        current.classList.remove('active');
-        const prev = document.querySelector(`.form-step[data-step="${idx-1}"]`);
-        if (prev) {
-            prev.classList.add('active');
-            currentStep = idx - 1;
-            updateStepper();
-            document.getElementById('stepIndicator').textContent = 'Schritt ' + currentStep + ' von 7';
-        }
-    }
-
-    function updateStepper() {
-        document.querySelectorAll('.stepper .step').forEach(el => {
-            const step = parseInt(el.dataset.step);
-            el.classList.remove('active', 'completed');
-            if (step === currentStep) el.classList.add('active');
-            else if (step < currentStep) el.classList.add('completed');
-        });
-    }
-
-    function generateReview() {
-        const container = document.getElementById('reviewSummary');
-        if (!container) return;
-        const name = document.getElementById('lrFirstName')?.value || 'Jean';
-        const project = document.getElementById('lrProjectName')?.value || '—';
-        const amount = document.getElementById('lrAmount')?.value || '0';
-        const duration = document.getElementById('lrDuration')?.value || '—';
-        const desc = document.getElementById('lrDescription')?.value || '—';
-        container.innerHTML = `
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 24px;">
-                <div><span style="color:var(--text-light);">Name:</span> <strong>${name}</strong></div>
-                <div><span style="color:var(--text-light);">Projekt:</span> <strong>${project}</strong></div>
-                <div><span style="color:var(--text-light);">Betrag:</span> <strong>${amount} €</strong></div>
-                <div><span style="color:var(--text-light);">Laufzeit:</span> <strong>${duration} Monate</strong></div>
-                <div style="grid-column:1/-1;"><span style="color:var(--text-light);">Beschreibung:</span> <span style="color:var(--text-light);">${desc}</span></div>
-                <div style="grid-column:1/-1;"><span style="color:var(--text-light);">Dokumente hochgeladen:</span> <strong>${uploadedFiles.length}</strong></div>
+        <!-- =====================================================================
+        PAGE 16 — NOTIFICATIONS
+        ===================================================================== -->
+        <div id="page-notifications" class="page-content hidden" style="padding:0;">
+            <div class="dashboard-layout">
+                <aside class="sidebar" id="notifSidebar"><div class="brand"><div class="logo">🏦 Soha Bank <small>· Benachrichtigungen</small></div></div>
+                    <nav class="nav"><div class="nav-label">Menü</div><a data-page="borrower-dashboard"><span class="icon">📊</span> Dashboard</a><a data-page="borrower-requests"><span class="icon">📝</span> Meine Anträge</a><a data-page="security"><span class="icon">🔒</span> Sicherheit</a></nav>
+                    <div class="footer-links"><a data-page="faq"><span class="icon">❓</span> Hilfezentrum</a><a data-page="contact"><span class="icon">✉️</span> Kontakt</a><a id="notifLogout" style="color:rgba(255,255,255,0.6);"><span class="icon">🚪</span> Abmelden</a></div>
+                </aside>
+                <div class="main">
+                    <header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Benachrichtigungen</h1><span>Alle</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">J</div><span class="name">Jean</span><span class="chevron">▼</span></div></div></header>
+                    <div class="page-content" id="notificationsFullList"></div>
+                </div>
             </div>
-        `;
-    }
+        </div>
 
-    function generateFinalSummary() {
-        const container = document.getElementById('finalSummary');
-        if (!container) return;
-        const name = document.getElementById('lrFirstName')?.value || 'Jean';
-        const project = document.getElementById('lrProjectName')?.value || '—';
-        const amount = document.getElementById('lrAmount')?.value || '0';
-        const duration = document.getElementById('lrDuration')?.value || '—';
-        const desc = document.getElementById('lrDescription')?.value || '—';
-        const purpose = document.getElementById('lrPurpose')?.value || '—';
-        container.innerHTML = `
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 24px;">
-                <div><span style="color:var(--text-light);">Name:</span> <strong>${name}</strong></div>
-                <div><span style="color:var(--text-light);">Projekt:</span> <strong>${project}</strong></div>
-                <div><span style="color:var(--text-light);">Betrag:</span> <strong>${amount} €</strong></div>
-                <div><span style="color:var(--text-light);">Laufzeit:</span> <strong>${duration} Monate</strong></div>
-                <div><span style="color:var(--text-light);">Zweck:</span> <strong>${purpose}</strong></div>
-                <div><span style="color:var(--text-light);">Dokumente:</span> <strong>${uploadedFiles.length}</strong></div>
-                <div style="grid-column:1/-1;"><span style="color:var(--text-light);">Beschreibung:</span> <span style="color:var(--text-light);">${desc}</span></div>
+        <!-- =====================================================================
+        DASHBOARD INVESTOR
+        ===================================================================== -->
+        <div id="page-investor-dashboard" class="page-content hidden" style="padding:0;">
+            <div class="dashboard-layout">
+                <aside class="sidebar" id="investorSidebar"><div class="brand"><div class="logo">🏦 Soha Bank <small>· Investor</small></div></div>
+                    <nav class="nav"><div class="nav-label">Hauptmenü</div>
+                        <a class="active" data-dash="investor" data-page="investor-dashboard"><span class="icon">📊</span> Dashboard</a>
+                        <a data-dash="investor" data-page="opportunities"><span class="icon">📌</span> Chancen <span class="badge">3</span></a>
+                        <a data-dash="investor" data-page="investor-investments"><span class="icon">💼</span> Meine Investitionen</a>
+                        <div class="nav-label">Finanzen</div>
+                        <a data-dash="investor" data-page="investor-transactions"><span class="icon">💳</span> Transaktionen</a>
+                        <a data-dash="investor" data-page="investor-repayments"><span class="icon">💰</span> Rückzahlungen</a>
+                        <div class="nav-label">Dokumente</div>
+                        <a data-dash="investor" data-page="investor-documents"><span class="icon">📄</span> Meine Dokumente</a>
+                        <div class="nav-label">Konto</div>
+                        <a data-dash="investor" data-page="investor-profile"><span class="icon">👤</span> Mein Profil</a>
+                        <a data-page="security"><span class="icon">🔒</span> Sicherheit</a>
+                    </nav>
+                    <div class="footer-links">
+                        <a data-page="faq"><span class="icon">❓</span> Hilfezentrum</a>
+                        <a data-page="contact"><span class="icon">✉️</span> Kontakt</a>
+                        <a id="investorLogout" style="color:rgba(255,255,255,0.6);"><span class="icon">🚪</span> Abmelden</a>
+                    </div>
+                </aside>
+                <div class="main">
+                    <header class="header"><div class="left"><button class="hamburger" id="investorHamburger">☰</button><div class="page-title"><h1>Dashboard</h1><span>Übersicht</span></div></div>
+                        <div class="right"><button class="notif-btn" id="investorNotifBtn">🔔<span class="dot"></span></button><div class="user-menu" id="investorUserMenu"><div class="avatar" id="investorAvatar">M</div><span class="name" id="investorUserName">Marie</span><span class="chevron">▼</span></div>
+                        <div class="dropdown-menu" id="investorDropdown"><a data-dash="investor" data-page="investor-profile"><span class="icon">👤</span> Mein Profil</a><a data-dash="investor" data-page="investor-documents"><span class="icon">📄</span> Dokumente</a><a data-page="security"><span class="icon">🔒</span> Sicherheit</a><div class="divider"></div><a id="investorDropdownLogout" class="logout-btn"><span class="icon">🚪</span> Abmelden</a></div></div>
+                    </header>
+                    <div class="page-content" id="investorDashboardContent"></div>
+                </div>
             </div>
-        `;
-    }
+        </div>
 
-    document.getElementById('saveDraftBtn')?.addEventListener('click', function() {
-        const status = document.getElementById('draftStatus');
-        if (status) {
-            status.innerHTML = '✅ Entwurf gespeichert!';
-            status.style.color = 'var(--green)';
-            setTimeout(() => { status.innerHTML = ''; }, 3000);
-        }
-        console.log('📝 Entwurf gespeichert (localStorage)');
-    });
-
-    document.getElementById('loanRequestForm')?.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const btn = document.getElementById('submitFinalBtn');
-        if (btn) btn.disabled = true;
-        const status = document.getElementById('submissionStatus');
-        if (status) {
-            status.innerHTML = '⏳ Ihr Antrag wird eingereicht...';
-            status.style.color = 'var(--text-light)';
-        }
-        setTimeout(() => {
-            const ref = 'FIN-2026-' + String(Math.floor(Math.random() * 1000000)).padStart(6, '0');
-            const newReq = {
-                id: 'lr' + Date.now(),
-                userId: currentUser ? currentUser.id : 'user2',
-                projectName: document.getElementById('lrProjectName')?.value || 'Unbekannt',
-                amount: parseFloat(document.getElementById('lrAmount')?.value) || 0,
-                duration: parseInt(document.getElementById('lrDuration')?.value) || 24,
-                purpose: document.getElementById('lrPurpose')?.value || 'Sonstiges',
-                status: 'submitted',
-                submittedAt: new Date().toISOString().slice(0,10),
-                reference: ref
-            };
-            DB.addLoanRequest(newReq);
-            if (status) {
-                status.innerHTML = '✅ Ihr Antrag wurde erfolgreich eingereicht! Referenz: ' + ref + '. Die Einreichung garantiert nicht die Annahme.';
-                status.style.color = 'var(--green)';
-            }
-            if (btn) btn.disabled = false;
-            console.log('📨 Antrag eingereicht (localStorage)', newReq);
-            setTimeout(() => navigateTo('loan-request-details'), 2000);
-        }, 1500);
-    });
-
-    // ================================================================
-    // RENDER-FUNKTIONEN (gekürzt, aber vollständig)
-    // ================================================================
-    function renderInvestPage() {
-        const grid = document.getElementById('investProjectsList');
-        if (!grid) return;
-        const projects = DB.getProjects();
-        grid.innerHTML = projects.map(p => `<div class="card"><h4>${p.name}</h4><p style="color:var(--text-light); font-size:0.9rem;">${p.description}</p><div style="display:grid; grid-template-columns:1fr 1fr; font-size:0.85rem; margin:8px 0;"><span>${p.target.toLocaleString('de-DE')} €</span><span>${p.return}%</span><span>${p.duration} Monate</span><span class="status-badge ${p.status === 'open' ? 'active' : 'pending'}">${p.status}</span></div><button class="btn btn-sm btn-success" data-page="opportunities">Investieren</button></div>`).join('');
-        document.getElementById('simulateBtn').onclick = function() {
-            const a = parseFloat(document.getElementById('simAmount').value) || 0;
-            const d = parseFloat(document.getElementById('simDuration').value) || 1;
-            const r = a * 0.09 * (d / 12);
-            document.getElementById('simInvested').textContent = a.toLocaleString('de-DE') + ' €';
-            document.getElementById('simReturn').textContent = r.toFixed(0) + ' €';
-            document.getElementById('simTotal').textContent = (a + r).toFixed(0) + ' €';
-        };
-        document.getElementById('borrowSimulateBtn').onclick = function() {
-            const a = parseFloat(document.getElementById('borrowSimAmount').value) || 0;
-            const m = parseInt(document.getElementById('borrowSimDuration').value) || 1;
-            const rate = 0.045 / 12;
-            let monthly = 0;
-            if (a > 0 && m > 0) { const f = Math.pow(1 + rate, m); monthly = a * (rate * f) / (f - 1); }
-            const total = monthly * m;
-            document.getElementById('borrowResAmount').textContent = a.toLocaleString('de-DE') + ' €';
-            document.getElementById('borrowResMonthly').textContent = monthly.toFixed(0) + ' €';
-            document.getElementById('borrowResCost').textContent = (total - a).toFixed(0) + ' €';
-            document.getElementById('borrowResTotal').textContent = total.toFixed(0) + ' €';
-        };
-    }
-
-    function renderOpportunitiesPage() {
-        const grid = document.getElementById('opportunitiesGrid');
-        if (!grid) return;
-        const projects = DB.getProjects();
-        grid.innerHTML = projects.map(p => {
-            const pct = Math.min((p.funded / p.target) * 100, 100);
-            return `<div class="card"><h4>${p.name}</h4><p style="color:var(--text-light); font-size:0.9rem;">${p.description}</p><div style="display:grid; grid-template-columns:1fr 1fr; font-size:0.85rem; margin:8px 0;"><span>Betrag: ${p.target.toLocaleString('de-DE')} €</span><span>Finanziert: ${p.funded.toLocaleString('de-DE')} €</span><span>Laufzeit: ${p.duration} Monate</span><span>Rendite: ${p.return}%</span></div><div style="background:var(--gray); height:6px; border-radius:4px; overflow:hidden; margin:4px 0;"><div style="background:var(--green); height:100%; width:${pct}%;"></div></div><div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;"><span class="status-badge ${p.status === 'open' ? 'active' : 'pending'}">${pct.toFixed(0)}%</span><button class="btn btn-sm btn-success" data-page="invest">Investieren</button></div></div>`;
-        }).join('');
-    }
-
-    function renderFaqPage() {
-        const list = document.getElementById('faqList');
-        if (!list) return;
-        const faqs = [
-            { q: 'Was ist Soha Bank?', a: 'Soha Bank ist eine digitale Plattform zur Verbindung von Finanzierungsbedarf und Investitionsmöglichkeiten.' },
-            { q: 'Sind Sie eine Bank?', a: 'Soha Bank ist eine Plattform für die Vermittlung. Sie wird nicht als zugelassene Bank präsentiert.' },
-            { q: 'Wie investiere ich?', a: 'Erstellen Sie ein Investorenkonto, führen Sie die Prüfungen durch, sehen Sie sich die Chancen an und wählen Sie ein Projekt.' },
-            { q: 'Wie beantrage ich eine Finanzierung?', a: 'Erstellen Sie ein Konto, vervollständigen Sie Ihr Profil, stellen Sie Ihr Projekt vor und reichen Sie Ihren Antrag ein.' },
-            { q: 'Ist die Rendite garantiert?', a: 'Nein. Jede Investition birgt Risiken. Die angezeigten Renditen sind potenziell und stellen keine Garantie dar.' },
-            { q: 'Kann ich mein Kapital verlieren?', a: 'Ja. Je nach Art der Transaktion ist ein teilweiser oder vollständiger Kapitalverlust möglich.' },
-            { q: 'Wie erstelle ich ein Konto?', a: 'Klicken Sie auf "Konto erstellen" und folgen Sie den Registrierungsschritten.' },
-            { q: 'Was tun bei vergessenem Passwort?', a: 'Nutzen Sie die Funktion "Passwort vergessen", um einen Link zum Zurücksetzen zu erhalten.' },
-            { q: 'Wie hoch ist der Mindestinvestitionsbetrag?', a: 'Der Mindestbetrag hängt von den Bedingungen jedes Projekts ab und wird vor der Bestätigung angezeigt.' },
-            { q: 'Wie funktioniert die Rückzahlung?', a: 'Die Rückzahlungen folgen den Bedingungen und dem Tilgungsplan der betreffenden Finanzierung oder Investition.' },
-            { q: 'Was tun bei kompromittiertem Konto?', a: 'Kontaktieren Sie sofort den Support und befolgen Sie die Sicherungsverfahren.' },
-            { q: 'Speichert die Plattform meine Dokumente?', a: 'Einige Dokumente können gespeichert werden. Sensible Dokumente werden in geschützten Bereichen aufbewahrt.' }
-        ];
-        list.innerHTML = faqs.map((f, i) => `<div class="card" style="margin-bottom:8px; cursor:pointer;" onclick="this.querySelector('.faq-answer').classList.toggle('hidden')"><div style="display:flex; justify-content:space-between; align-items:center; font-weight:600;"><span>${f.q}</span><span>▼</span></div><div class="faq-answer hidden" style="margin-top:8px; color:var(--text-light);">${f.a}</div></div>`).join('');
-        document.getElementById('faqSearch').oninput = function() {
-            const v = this.value.toLowerCase();
-            document.querySelectorAll('#faqList .card').forEach(el => el.style.display = el.textContent.toLowerCase().includes(v) ? 'block' : 'none');
-        };
-    }
-
-    // ================================================================
-    // DASHBOARD FUNKTIONEN (gekürzt, aber vollständig)
-    // ================================================================
-    function renderInvestorDashboard() {
-        const c = document.getElementById('investorDashboardContent');
-        if (!c) return;
-        const u = currentUser;
-        const investments = DB.getInvestments(u.id);
-        const transactions = DB.getTransactions(u.id);
-        const repayments = DB.getRepayments(u.id);
-        const notifications = DB.getNotifications(u.id);
-        const totalInvested = investments.reduce((s, i) => s + i.amount, 0);
-        const totalReturns = investments.reduce((s, i) => s + (i.expectedReturn || 0) * i.amount / 100, 0);
-        const totalRepayments = repayments.reduce((s, r) => s + (r.total || 0), 0);
-        c.innerHTML = `
-            <div class="welcome"><h1>Hallo, ${u.firstName} 👋</h1><p>Willkommen in Ihrem Investorenbereich.</p></div>
-            <div style="padding:12px 20px; background:#f0faf0; border-left:4px solid var(--green); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px; border-radius:var(--radius);"><div><span style="font-size:1.6rem;">✅</span> <strong>Profil verifiziert</strong></div></div>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="label">Verfügbares Guthaben</div><div class="value">${(100000 - totalInvested + totalRepayments).toFixed(2)} €</div></div>
-                <div class="stat-card" style="border-top-color:var(--blue);"><div class="label">Investiertes Kapital</div><div class="value">${totalInvested.toFixed(2)} €</div></div>
-                <div class="stat-card" style="border-top-color:var(--green);"><div class="label">Renditen</div><div class="value">${totalReturns.toFixed(2)} €</div></div>
-                <div class="stat-card" style="border-top-color:var(--orange);"><div class="label">Erhaltene Rückzahlungen</div><div class="value">${totalRepayments.toFixed(2)} €</div></div>
+        <!-- =====================================================================
+        DASHBOARD KREDITNEHMER
+        ===================================================================== -->
+        <div id="page-borrower-dashboard" class="page-content hidden" style="padding:0;">
+            <div class="dashboard-layout">
+                <aside class="sidebar" id="borrowerSidebar"><div class="brand"><div class="logo">🏦 Soha Bank <small>· Kreditnehmer</small></div></div>
+                    <nav class="nav"><div class="nav-label">Hauptmenü</div>
+                        <a class="active" data-dash="borrower" data-page="borrower-dashboard"><span class="icon">📊</span> Dashboard</a>
+                        <a data-dash="borrower" data-page="borrower-requests"><span class="icon">📝</span> Meine Anträge <span class="badge">2</span></a>
+                        <a data-dash="borrower" data-page="borrower-loans"><span class="icon">🏦</span> Meine Finanzierungen</a>
+                        <div class="nav-label">Finanzen</div>
+                        <a data-dash="borrower" data-page="borrower-repayments"><span class="icon">💰</span> Rückzahlungen</a>
+                        <a data-dash="borrower" data-page="borrower-transactions"><span class="icon">💳</span> Transaktionen</a>
+                        <div class="nav-label">Dokumente</div>
+                        <a data-dash="borrower" data-page="borrower-documents"><span class="icon">📄</span> Meine Dokumente</a>
+                        <div class="nav-label">Konto</div>
+                        <a data-dash="borrower" data-page="borrower-profile"><span class="icon">👤</span> Mein Profil</a>
+                        <a data-page="security"><span class="icon">🔒</span> Sicherheit</a>
+                    </nav>
+                    <div class="footer-links">
+                        <a data-page="faq"><span class="icon">❓</span> Hilfezentrum</a>
+                        <a data-page="contact"><span class="icon">✉️</span> Kontakt</a>
+                        <a id="borrowerLogout" style="color:rgba(255,255,255,0.6);"><span class="icon">🚪</span> Abmelden</a>
+                    </div>
+                </aside>
+                <div class="main">
+                    <header class="header"><div class="left"><button class="hamburger" id="borrowerHamburger">☰</button><div class="page-title"><h1>Dashboard</h1><span>Übersicht</span></div></div>
+                        <div class="right"><button class="notif-btn" id="borrowerNotifBtn">🔔<span class="dot"></span></button><div class="user-menu" id="borrowerUserMenu"><div class="avatar" id="borrowerAvatar">J</div><span class="name" id="borrowerUserName">Jean</span><span class="chevron">▼</span></div>
+                        <div class="dropdown-menu" id="borrowerDropdown"><a data-dash="borrower" data-page="borrower-profile"><span class="icon">👤</span> Mein Profil</a><a data-dash="borrower" data-page="borrower-documents"><span class="icon">📄</span> Dokumente</a><a data-page="security"><span class="icon">🔒</span> Sicherheit</a><div class="divider"></div><a id="borrowerDropdownLogout" class="logout-btn"><span class="icon">🚪</span> Abmelden</a></div></div>
+                    </header>
+                    <div class="page-content" id="borrowerDashboardContent"></div>
+                </div>
             </div>
-            <div class="shortcuts">
-                <a class="shortcut-btn" data-page="opportunities"><span class="icon">📌</span><span class="label">Investieren</span></a>
-                <a class="shortcut-btn" data-page="investor-investments"><span class="icon">💼</span><span class="label">Meine Investitionen</span></a>
-                <a class="shortcut-btn" data-page="investor-transactions"><span class="icon">💳</span><span class="label">Transaktionen</span></a>
-                <a class="shortcut-btn" data-page="investor-profile"><span class="icon">👤</span><span class="label">Mein Profil</span></a>
-            </div>
-            <div class="section-header"><h2>💼 Meine Investitionen</h2><a class="view-all" data-page="investor-investments">ALLE ANZEIGEN →</a></div>
-            <div class="table-wrapper"><table><thead><tr><th>Projekt</th><th>Betrag</th><th>Datum</th><th>Nächste Fälligkeit</th><th>Status</th></tr></thead><tbody>${investments.map(i => `<tr><td>${DB.getProjects().find(p => p.id === i.projectId)?.name || 'Unbekannt'}</td><td>${i.amount.toLocaleString('de-DE')} €</td><td>${i.date}</td><td>${i.nextPayment || '—'}</td><td><span class="status-badge ${i.status}">${i.status}</span></td></tr>`).join('')}</tbody></table></div>
-            <div class="section-header" style="margin-top:24px;"><h2>💳 Letzte Transaktionen</h2><a class="view-all" data-page="investor-transactions">ALLE ANZEIGEN →</a></div>
-            <div class="table-wrapper"><table><thead><tr><th>Datum</th><th>Typ</th><th>Beschreibung</th><th>Betrag</th><th>Status</th></tr></thead><tbody>${transactions.slice(0,5).map(t => `<tr><td>${t.date}</td><td>${t.type}</td><td>${t.description}</td><td style="color:${t.amount<0?'var(--red)':'var(--green)'};">${t.amount<0?'-':'+'}${Math.abs(t.amount).toLocaleString('de-DE')} €</td><td><span class="status-badge ${t.status}">${t.status}</span></td></tr>`).join('')}</tbody></table></div>
-            <div class="section-header" style="margin-top:24px;"><h2>💰 Nächste Rückzahlungen</h2><a class="view-all" data-page="investor-repayments">ALLE ANZEIGEN →</a></div>
-            <div class="table-wrapper"><table><thead><tr><th>Projekt</th><th>Datum</th><th>Kapital</th><th>Rendite</th><th>Gesamt</th><th>Status</th></tr></thead><tbody>${repayments.map(r => `<tr><td>${r.project}</td><td>${r.date}</td><td>${r.principal.toLocaleString('de-DE')} €</td><td>${r.interest.toLocaleString('de-DE')} €</td><td>${r.total.toLocaleString('de-DE')} €</td><td><span class="status-badge ${r.status}">${r.status}</span></td></tr>`).join('')}</tbody></table></div>
-            <div class="section-header" style="margin-top:24px;"><h2>🔔 Benachrichtigungen</h2><a class="view-all" data-page="notifications">ALLE ANZEIGEN →</a></div>
-            <div class="card">${notifications.map(n => `<div class="notif-item"><span class="icon">${n.icon}</span><div><div class="title">${n.title}</div><div class="desc">${n.description}</div><div class="time">${n.time}</div></div></div>`).join('')}</div>
-            <div class="security-footer"><strong>🔒 Ihre Sicherheit ist wichtig.</strong> Geben Sie niemals Ihr Passwort, Ihren PIN oder Ihren Authentifizierungscode weiter.</div>
-        `;
-    }
+        </div>
 
-    function renderInvestorInvestments() {
-        const c = document.getElementById('investorInvestmentsContent');
-        if (!c) return;
-        const u = currentUser;
-        const investments = DB.getInvestments(u.id);
-        c.innerHTML = `<h2 style="font-size:1.4rem; color:var(--primary);">Alle Investitionen</h2><div class="table-wrapper"><table><thead><tr><th>Projekt</th><th>Betrag</th><th>Datum</th><th>Laufzeit</th><th>Rendite</th><th>Nächste Fälligkeit</th><th>Status</th></tr></thead><tbody>${investments.map(i => `<tr><td>${DB.getProjects().find(p => p.id === i.projectId)?.name || 'Unbekannt'}</td><td>${i.amount.toLocaleString('de-DE')} €</td><td>${i.date}</td><td>${i.duration} Monate</td><td>${i.expectedReturn}%</td><td>${i.nextPayment || '—'}</td><td><span class="status-badge ${i.status}">${i.status}</span></td></tr>`).join('')}</tbody></table></div>`; }
-
-    function renderInvestorTransactions() {
-        const c = document.getElementById('investorTransactionsContent');
-        if (!c) return;
-        const u = currentUser;
-        const transactions = DB.getTransactions(u.id);
-        c.innerHTML = `<h2 style="font-size:1.4rem; color:var(--primary);">Alle Transaktionen</h2><div class="table-wrapper"><table><thead><tr><th>Datum</th><th>Typ</th><th>Beschreibung</th><th>Betrag</th><th>Status</th></tr></thead><tbody>${transactions.map(t => `<tr><td>${t.date}</td><td>${t.type}</td><td>${t.description}</td><td style="color:${t.amount<0?'var(--red)':'var(--green)'};">${t.amount<0?'-':'+'}${Math.abs(t.amount).toLocaleString('de-DE')} €</td><td><span class="status-badge ${t.status}">${t.status}</span></td></tr>`).join('')}</tbody></table></div>`; }
-
-    function renderInvestorRepayments() {
-        const c = document.getElementById('investorRepaymentsContent');
-        if (!c) return;
-        const u = currentUser;
-        const repayments = DB.getRepayments(u.id);
-        c.innerHTML = `<h2 style="font-size:1.4rem; color:var(--primary);">Rückzahlungen</h2><div class="table-wrapper"><table><thead><tr><th>Projekt</th><th>Datum</th><th>Kapital</th><th>Zinsen</th><th>Gesamt</th><th>Status</th></tr></thead><tbody>${repayments.map(r => `<tr><td>${r.project}</td><td>${r.date}</td><td>${r.principal.toLocaleString('de-DE')} €</td><td>${r.interest.toLocaleString('de-DE')} €</td><td>${r.total.toLocaleString('de-DE')} €</td><td><span class="status-badge ${r.status}">${r.status}</span></td></tr>`).join('')}</tbody></table></div>`; }
-
-    function renderInvestorDocuments() {
-        const c = document.getElementById('investorDocumentsContent');
-        if (!c) return;
-        const u = currentUser;
-        const docs = DB.getDocuments(u.id);
-        c.innerHTML = `<h2 style="font-size:1.4rem; color:var(--primary);">Dokumente</h2><div class="table-wrapper"><table><thead><tr><th>Name</th><th>Typ</th><th>Datum</th><th>Status</th><th>Aktion</th></tr></thead><tbody>${docs.map(d => `<tr><td>${d.name}</td><td>${d.type}</td><td>${d.date}</td><td><span class="status-badge ${d.status}">${d.status}</span></td><td><button class="btn btn-sm btn-outline">Herunterladen</button></td></tr>`).join('')}</tbody></table></div>`; }
-
-    function renderInvestorProfile() {
-        const c = document.getElementById('investorProfileContent');
-        if (!c) return;
-        const u = currentUser;
-        c.innerHTML = `<h2 style="font-size:1.4rem; color:var(--primary);">Mein Profil</h2><div style="display:grid; gap:12px; max-width:500px;"><div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray);"><span style="color:var(--text-light);">Name</span><span>${u.firstName} ${u.lastName}</span></div><div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray);"><span style="color:var(--text-light);">E-Mail</span><span>${u.email}</span></div><div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray);"><span style="color:var(--text-light);">Typ</span><span>Investor</span></div><div style="display:flex; justify-content:space-between; padding:8px 0;"><span style="color:var(--text-light);">Verifizierung</span><span class="status-badge active">✅ Verifiziert</span></div></div><button class="btn btn-sm" style="margin-top:16px;">PROFIL BEARBEITEN</button>`; }
-
-    // ================================================================
-    // BORROWER DASHBOARD
-    // ================================================================
-    function renderBorrowerDashboard() {
-        const c = document.getElementById('borrowerDashboardContent');
-        if (!c) return;
-        const u = currentUser;
-        const requests = DB.getLoanRequests(u.id);
-        const loans = requests.filter(r => r.status === 'approved' || r.status === 'funded');
-        const totalFunded = loans.reduce((s, l) => s + l.amount, 0);
-        const totalRemaining = loans.reduce((s, l) => s + l.amount * 0.5, 0); // simuliert
-        const repayments = DB.getRepayments(u.id);
-        const nextDue = repayments.find(r => r.status === 'pending');
-        c.innerHTML = `
-            <div class="welcome"><h1>Hallo, ${u.firstName} 👋</h1><p>Willkommen in Ihrem Finanzierungsbereich.</p></div>
-            <div style="background:var(--white); padding:12px 20px; border-radius:var(--radius); border-left:4px solid var(--green); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;"><div><span style="font-size:1.6rem;">✅</span> <strong>Profil verifiziert</strong></div></div>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="label">Laufende Anträge</div><div class="value">${requests.filter(r => r.status !== 'approved' && r.status !== 'rejected').length}</div></div>
-                <div class="stat-card" style="border-top-color:var(--green);"><div class="label">Erhaltene Finanzierungen</div><div class="value">${totalFunded.toLocaleString('de-DE')} €</div></div>
-                <div class="stat-card" style="border-top-color:var(--orange);"><div class="label">Restbetrag</div><div class="value">${totalRemaining.toLocaleString('de-DE')} €</div></div>
-                <div class="stat-card" style="border-top-color:var(--blue);"><div class="label">Nächste Fälligkeit</div><div class="value">${nextDue ? nextDue.date : '—'}</div></div>
-            </div>
-            <div class="shortcuts">
-                <a class="shortcut-btn" data-page="loan-request"><span class="icon">📝</span><span class="label">Neuer Antrag</span></a>
-                <a class="shortcut-btn" data-page="borrower-requests"><span class="icon">📋</span><span class="label">Meine Anträge</span></a>
-                <a class="shortcut-btn" data-page="borrower-loans"><span class="icon">🏦</span><span class="label">Finanzierungen</span></a>
-                <a class="shortcut-btn" data-page="borrower-transactions"><span class="icon">💳</span><span class="label">Transaktionen</span></a>
-                <a class="shortcut-btn" data-page="borrower-documents"><span class="icon">📄</span><span class="label">Dokumente</span></a>
-                <a class="shortcut-btn" data-page="borrower-profile"><span class="icon">👤</span><span class="label">Profil</span></a>
-            </div>
-            <div class="card" style="background:linear-gradient(145deg,#f0f5fe 0%,#e8edf8 100%); border:2px dashed var(--primary);"><div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;"><div><h3 style="color:var(--primary);">💡 Finanzierung benötigt?</h3><p style="color:var(--text-light);">Stellen Sie Ihr Projekt vor und reichen Sie die erforderlichen Informationen ein.</p></div><button class="btn btn-success" data-page="loan-request">NEUER ANTRAG</button></div></div>
-            <div class="section-header"><h2>📋 Meine Finanzierungsanträge</h2><a class="view-all" data-page="borrower-requests">ALLE ANZEIGEN →</a></div>
-            <div class="table-wrapper"><table><thead><tr><th>Referenz</th><th>Projekt</th><th>Betrag</th><th>Datum</th><th>Status</th></tr></thead><tbody>${requests.map(r => `<tr><td>${r.reference || '—'}</td><td>${r.projectName}</td><td>${r.amount.toLocaleString('de-DE')} €</td><td>${r.submittedAt || '—'}</td><td><span class="status-badge ${r.status}">${r.status}</span></td></tr>`).join('')}</tbody></table></div>
-            <div class="section-header" style="margin-top:24px;"><h2>🏦 Aktive Finanzierungen</h2><a class="view-all" data-page="borrower-loans">ALLE ANZEIGEN →</a></div>
-            <div class="table-wrapper"><table><thead><tr><th>Projekt</th><th>Betrag</th><th>Datum</th><th>Nächste Fälligkeit</th><th>Rest</th><th>Status</th></tr></thead><tbody>${loans.map(l => `<tr><td>${l.projectName}</td><td>${l.amount.toLocaleString('de-DE')} €</td><td>${l.submittedAt || '—'}</td><td>${nextDue ? nextDue.date : '—'}</td><td>${(l.amount * 0.5).toLocaleString('de-DE')} €</td><td><span class="status-badge ${l.status}">${l.status}</span></td></tr>`).join('')}</tbody></table></div>
-            <div class="section-header" style="margin-top:24px;"><h2>💰 Nächste Fälligkeit</h2></div>
-            <div class="card">${nextDue ? `<div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:16px; text-align:center;"><div><div style="color:var(--text-light);">Projekt</div><strong>${nextDue.project || '—'}</strong></div><div><div style="color:var(--text-light);">Datum</div><strong>${nextDue.date}</strong></div><div><div style="color:var(--text-light);">Kapital</div><strong>${nextDue.principal.toLocaleString('de-DE')} €</strong></div><div><div style="color:var(--text-light);">Gesamt</div><strong>${nextDue.total.toLocaleString('de-DE')} €</strong></div></div>` : '<p style="color:var(--text-light);">Keine anstehenden Fälligkeiten.</p>'}</div>
-            <div class="security-footer"><strong>🔒 Schützen Sie Ihr Konto.</strong> Geben Sie niemals Ihr Passwort weiter.</div>
-        `;
-    }
-
-    function renderBorrowerRequests() {
-        const c = document.getElementById('borrowerRequestsContent');
-        if (!c) return;
-        const u = currentUser;
-        const requests = DB.getLoanRequests(u.id);
-        c.innerHTML = `<h2 style="font-size:1.4rem; color:var(--primary);">Alle Anträge</h2><div class="table-wrapper"><table><thead><tr><th>Referenz</th><th>Projekt</th><th>Betrag</th><th>Datum</th><th>Status</th></tr></thead><tbody>${requests.map(r => `<tr><td>${r.reference || '—'}</td><td>${r.projectName}</td><td>${r.amount.toLocaleString('de-DE')} €</td><td>${r.submittedAt || '—'}</td><td><span class="status-badge ${r.status}">${r.status}</span></td></tr>`).join('')}</tbody></table></div><button class="btn btn-success" style="margin-top:12px;" data-page="loan-request">NEUER ANTRAG</button>`; }
-
-    function renderBorrowerLoans() {
-        const c = document.getElementById('borrowerLoansContent');
-        if (!c) return;
-        const u = currentUser;
-        const requests = DB.getLoanRequests(u.id);
-        const loans = requests.filter(r => r.status === 'approved' || r.status === 'funded');
-        c.innerHTML = `<h2 style="font-size:1.4rem; color:var(--primary);">Alle Finanzierungen</h2><div class="table-wrapper"><table><thead><tr><th>Projekt</th><th>Betrag</th><th>Datum</th><th>Nächste Fälligkeit</th><th>Rest</th><th>Status</th></tr></thead><tbody>${loans.map(l => `<tr><td>${l.projectName}</td><td>${l.amount.toLocaleString('de-DE')} €</td><td>${l.submittedAt || '—'}</td><td>—</td><td>${(l.amount * 0.5).toLocaleString('de-DE')} €</td><td><span class="status-badge ${l.status}">${l.status}</span></td></tr>`).join('')}</tbody></table></div>`; }
-
-    function renderBorrowerRepayments() {
-        const c = document.getElementById('borrowerRepaymentsContent');
-        if (!c) return;
-        const u = currentUser;
-        const repayments = DB.getRepayments(u.id);
-        c.innerHTML = `<h2 style="font-size:1.4rem; color:var(--primary);">Rückzahlungen</h2><div class="table-wrapper"><table><thead><tr><th>Datum</th><th>Kapital</th><th>Zinsen</th><th>Gesamt</th><th>Status</th></tr></thead><tbody>${repayments.map(r => `<tr><td>${r.date}</td><td>${r.principal.toLocaleString('de-DE')} €</td><td>${r.interest.toLocaleString('de-DE')} €</td><td>${r.total.toLocaleString('de-DE')} €</td><td><span class="status-badge ${r.status}">${r.status}</span></td></tr>`).join('')}</tbody></table></div>`; }
-
-    function renderBorrowerTransactions() {
-        const c = document.getElementById('borrowerTransactionsContent');
-        if (!c) return;
-        const u = currentUser;
-        const transactions = DB.getTransactions(u.id);
-        c.innerHTML = `<h2 style="font-size:1.4rem; color:var(--primary);">Transaktionen</h2><div class="table-wrapper"><table><thead><tr><th>Datum</th><th>Typ</th><th>Beschreibung</th><th>Betrag</th><th>Status</th></tr></thead><tbody>${transactions.map(t => `<tr><td>${t.date}</td><td>${t.type}</td><td>${t.description}</td><td style="color:${t.amount<0?'var(--red)':'var(--green)'};">${t.amount<0?'-':'+'}${Math.abs(t.amount).toLocaleString('de-DE')} €</td><td><span class="status-badge ${t.status}">${t.status}</span></td></tr>`).join('')}</tbody></table></div>`; }
-
-    function renderBorrowerDocuments() {
-        const c = document.getElementById('borrowerDocumentsContent');
-        if (!c) return;
-        const u = currentUser;
-        const docs = DB.getDocuments(u.id);
-        c.innerHTML = `<h2 style="font-size:1.4rem; color:var(--primary);">Dokumente</h2><div class="table-wrapper"><table><thead><tr><th>Name</th><th>Typ</th><th>Datum</th><th>Status</th><th>Aktion</th></tr></thead><tbody>${docs.map(d => `<tr><td>${d.name}</td><td>${d.type}</td><td>${d.date}</td><td><span class="status-badge ${d.status}">${d.status}</span></td><td><button class="btn btn-sm btn-outline">Herunterladen</button></td></tr>`).join('')}</tbody></table></div>`; }
-
-    function renderBorrowerProfile() {
-        const c = document.getElementById('borrowerProfileContent');
-        if (!c) return;
-        const u = currentUser;
-        c.innerHTML = `<h2 style="font-size:1.4rem; color:var(--primary);">Mein Profil</h2><div style="display:grid; gap:12px; max-width:500px;"><div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray);"><span style="color:var(--text-light);">Name</span><span>${u.firstName} ${u.lastName}</span></div><div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray);"><span style="color:var(--text-light);">E-Mail</span><span>${u.email}</span></div><div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--gray);"><span style="color:var(--text-light);">Typ</span><span>Kreditnehmer</span></div><div style="display:flex; justify-content:space-between; padding:8px 0;"><span style="color:var(--text-light);">Verifizierung</span><span class="status-badge active">✅ Verifiziert</span></div></div><button class="btn btn-sm" style="margin-top:16px;">PROFIL BEARBEITEN</button>`; }
-
-    function renderNotificationsPage() {
-        const c = document.getElementById('notificationsFullList');
-        if (!c) return;
-        const u = currentUser;
-        if (!u) { c.innerHTML = '<p style="color:var(--text-light);">Bitte melden Sie sich an, um Ihre Benachrichtigungen zu sehen.</p>'; return; }
-        const notifications = DB.getNotifications(u.id);
-        c.innerHTML = notifications.map(n =>
-            `<div class="notif-item"><span class="icon">${n.icon}</span><div><div class="title">${n.title}</div><div class="desc">${n.description}</div><div class="time">${n.time}</div></div></div>`
-        ).join('') || '<p style="color:var(--text-light);">Keine Benachrichtigungen.</p>';
-    }
-
-    // ================================================================
-    // INIT
-    // ================================================================
-    DB.init();
-    navigateTo('home');
-    console.log('🏦 Soha Bank — localStorage Modus aktiv');
-    console.log('🔐 Testnutzer: invest@demo.de / borrow@demo.de (Passwort: test123)');
-    console.log('📦 Alle Daten werden im localStorage gespeichert.');
-</script>
-</body>
-</html>
+        <!-- =====================================================================
+        SOUS-PAGES INVESTOR (gekürzt, Platzhalter)
+        ===================================================================== -->
+        <div id="page-investor-investments" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="investorSidebar2"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Meine Investitionen</h1><span>Alle</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">M</div><span class="name">Marie</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="investorInvestmentsContent"></div></div></div></div>
+        <div id="page-investor-transactions" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="investorSidebar3"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Transaktionen</h1><span>Historie</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">M</div><span class="name">Marie</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="investorTransactionsContent"></div></div></div></div>
+        <div id="page-investor-repayments" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="investorSidebar4"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Rückzahlungen</h1><span>Verfolgen</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">M</div><span class="name">Marie</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="investorRepaymentsContent"></div></div></div></div>
+        <div id="page-investor-documents" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="investorSidebar5"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Dokumente</h1><span>Alle</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">M</div><span class="name">Marie</span><span class="chevron">▼</span></div></div></header><div class="page-content" id="investorDocumentsContent"></div></div></div></div>
+        <div id="page-investor-profile" class="page-content hidden" style="padding:0;"><div class="dashboard-layout"><aside class="sidebar" id="investorSidebar6"></aside><div class="main"><header class="header"><div class="left"><button class="hamburger">☰</button><div class="page-title"><h1>Profil</h1><span>Meine Daten</span></div></div><div class="right"><button class="notif-btn">🔔<span class="dot"></span></button><div class="user-menu"><div class="avatar">M</div><span class="name">Marie</span><span class="chevron">▼</span></div></div
