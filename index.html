@@ -100,14 +100,63 @@
             padding: 1.8rem 2rem;
             margin: 1rem 0 1.8rem;
             border-left: 5px solid #0f2b4b;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1.5rem;
         }
-        .promo-banner p {
+        .promo-banner .promo-text {
+            flex: 2 1 300px;
+        }
+        .promo-banner .promo-text p {
             font-size: 1.2rem;
             color: #0f2b4b;
             font-weight: 500;
             line-height: 1.7;
         }
-        .promo-banner .emoji-big { font-size: 1.6rem; }
+        .promo-banner .promo-text .emoji-big { font-size: 1.6rem; }
+        .promo-banner .promo-image {
+            flex: 0 0 120px;
+            text-align: center;
+        }
+        .promo-banner .promo-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            display: block;
+        }
+
+        /* === ÉTAPES (déplacées avant le formulaire) === */
+        .steps-before-form {
+            margin: 2rem 0 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed #dce3ed;
+        }
+        .steps-before-form h3 {
+            font-size: 1.8rem;
+            color: #0f2b4b;
+            margin-bottom: 1.5rem;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .step-item {
+            border-top: 5px solid #2a7de1;
+            padding-top: 1.2rem;
+        }
+        .step-item strong {
+            display: block;
+            font-size: 1.3rem;
+            color: #0f2b4b;
+            margin-bottom: 0.3rem;
+        }
+        .step-item p {
+            font-size: 1rem;
+            color: #3d556e;
+            line-height: 1.6;
+        }
 
         .form-section {
             background: #f9fbfe;
@@ -200,7 +249,6 @@
             width: 100%;
         }
 
-        /* ---- TÉLÉPHONE : SÉLECTEUR EN HAUT, CHAMP EN DESSOUS ---- */
         .phone-wrapper {
             display: flex;
             flex-direction: column;
@@ -376,34 +424,47 @@
             margin-bottom: 0.5rem;
         }
 
-        .steps-after {
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px dashed #dce3ed;
+        .trust-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9edf4;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 2.5rem;
         }
-        .steps-after h3 {
-            font-size: 1.8rem;
+        .trust-content {
+            flex: 2 1 400px;
+        }
+        .trust-content h2 {
+            font-size: 2rem;
+            color: #0f2b4b;
+            margin-bottom: 1.5rem;
+        }
+        .trust-content .trust-item {
             margin-bottom: 1.2rem;
         }
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-        .step-item {
-            border-top: 5px solid #2a7de1;
-            padding-top: 1.2rem;
-        }
-        .step-item strong {
+        .trust-content .trust-item strong {
             display: block;
             font-size: 1.3rem;
             color: #0f2b4b;
-            margin-bottom: 0.3rem;
         }
-        .step-item p {
-            font-size: 1rem;
+        .trust-content .trust-item p {
+            font-size: 1.05rem;
             color: #3d556e;
             line-height: 1.6;
+            margin: 0;
+        }
+
+        .trust-image {
+            flex: 1 1 250px;
+            text-align: center;
+        }
+        .trust-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
         /* FLOATING BUTTONS */
@@ -544,6 +605,10 @@
 
         @media (max-width: 900px) {
             .steps-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+            .trust-section { flex-direction: column; text-align: center; }
+            .trust-content .trust-item { text-align: center; }
+            .promo-banner { flex-direction: column; text-align: center; }
+            .promo-banner .promo-image { flex: 0 0 auto; }
         }
         @media (max-width: 700px) {
             body { padding: 0.5rem; }
@@ -553,7 +618,7 @@
             .form-actions { flex-direction: column; align-items: stretch; }
             .btn { justify-content: center; }
             .promo-banner { padding: 1.2rem; }
-            .promo-banner p { font-size: 1rem; }
+            .promo-banner .promo-text p { font-size: 1rem; }
             .form-section { padding: 1.5rem; }
             .steps-grid { grid-template-columns: 1fr; gap: 1.2rem; }
             .step-item { padding-top: 0.8rem; }
@@ -561,6 +626,8 @@
             .floating-btn.whatsapp { bottom: 5.5rem; right: 1.2rem; }
             .floating-btn.chat { bottom: 1.2rem; right: 1.2rem; }
             .chat-window { width: calc(100vw - 1.5rem); right: 0.75rem; bottom: 6.5rem; max-height: 50vh; }
+            .trust-section { gap: 1.5rem; }
+            .trust-content h2 { font-size: 1.6rem; }
         }
         @media (max-width: 450px) {
             .phone-wrapper select { font-size: 0.9rem; padding: 0.7rem 0.8rem; }
@@ -577,10 +644,19 @@
         <div class="tagline">🔒 100% sécurisé</div>
     </header>
 
-    <!-- HERO -->
+    <!-- HERO avec IMAGE 1 -->
     <section class="hero">
         <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Père de famille" loading="lazy">
+            <picture>
+                <source srcset="1.avif" type="image/avif" />
+                <source srcset="1.webp" type="image/webp" />
+                <source srcset="1.png" type="image/png" />
+                <source srcset="1.jpg" type="image/jpeg" />
+                <source srcset="1.jpeg" type="image/jpeg" />
+                <source srcset="1.gif" type="image/gif" />
+                <source srcset="1.svg" type="image/svg+xml" />
+                <img src="1.png" alt="Financement" loading="lazy" />
+            </picture>
         </div>
         <div class="hero-text">
             <h1>Avez-vous besoin <br><span>d'un financement</span> ?</h1>
@@ -589,15 +665,48 @@
         </div>
     </section>
 
-    <!-- PROMO BANNER -->
+    <!-- PROMO BANNER avec IMAGE 2 -->
     <div class="promo-banner">
-        <p>
-            <span class="emoji-big">📄</span> Fini la paperasse. Fini les longues files d'attente. Fini les complications !<br>
-            Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨
-        </p>
-        <p style="margin-top: 0.6rem; font-weight: 400; font-size: 1.05rem;">
-            Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.
-        </p>
+        <div class="promo-image">
+            <picture>
+                <source srcset="2.avif" type="image/avif" />
+                <source srcset="2.webp" type="image/webp" />
+                <source srcset="2.png" type="image/png" />
+                <source srcset="2.jpg" type="image/jpeg" />
+                <source srcset="2.jpeg" type="image/jpeg" />
+                <source srcset="2.gif" type="image/gif" />
+                <source srcset="2.svg" type="image/svg+xml" />
+                <img src="2.png" alt="Documents" loading="lazy" />
+            </picture>
+        </div>
+        <div class="promo-text">
+            <p>
+                <span class="emoji-big">📄</span> Fini la paperasse. Fini les longues files d'attente. Fini les complications !<br>
+                Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨
+            </p>
+            <p style="margin-top: 0.6rem; font-weight: 400; font-size: 1.05rem;">
+                Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.
+            </p>
+        </div>
+    </div>
+
+    <!-- === DEMANDE DE CRÉDIT ENTIÈREMENT EN LIGNE (déplacé AVANT le formulaire) === -->
+    <div class="steps-before-form">
+        <h3>📋 Demande de crédit entièrement en ligne</h3>
+        <div class="steps-grid">
+            <div class="step-item">
+                <strong>Étape 1</strong>
+                <p>Calculez votre mensualité.</p>
+            </div>
+            <div class="step-item">
+                <strong>Étape 2</strong>
+                <p>Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
+            </div>
+            <div class="step-item">
+                <strong>Étape 3</strong>
+                <p>Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
+            </div>
+        </div>
     </div>
 
     <!-- FORMULAIRE -->
@@ -641,7 +750,7 @@
                 <div class="taux-static">3 %</div>
             </div>
 
-            <!-- Email & Téléphone (sélecteur détaché) -->
+            <!-- Email & Téléphone -->
             <div class="form-grid">
                 <div class="form-group">
                     <label for="email">Adresse e-mail</label>
@@ -719,30 +828,44 @@
                 <button type="button" class="btn btn-success" id="envoyerBtn">📩 Envoyer ma demande</button>
             </div>
 
-            <!-- MESSAGE + ÉTAPES -->
+            <!-- MESSAGE PROMO (sans les étapes, car déplacées) -->
             <div class="after-validation-message">
                 <p>Fini la paperasse. Fini les longues files d'attente. Fini les complications !</p>
                 <p>Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨</p>
                 <p>Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.</p>
-
-                <div class="steps-after">
-                    <h3>📋 Demande de crédit entièrement en ligne</h3>
-                    <div class="steps-grid">
-                        <div class="step-item">
-                            <strong>Étape 1</strong>
-                            <p>Calculez votre mensualité.</p>
-                        </div>
-                        <div class="step-item">
-                            <strong>Étape 2</strong>
-                            <p>Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
-                        </div>
-                        <div class="step-item">
-                            <strong>Étape 3</strong>
-                            <p>Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
-                        </div>
-                    </div>
-                </div>
             </div>
+        </div>
+    </section>
+
+    <!-- SECTION FIABLE, RAPIDE, SÛR avec IMAGE 3 -->
+    <section class="trust-section">
+        <div class="trust-content">
+            <h2>Pourquoi choisir Financio ?</h2>
+            <div class="trust-item">
+                <strong>🔒 Fiable</strong>
+                <p>Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.</p>
+            </div>
+            <div class="trust-item">
+                <strong>⚡ Rapide</strong>
+                <p>Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.</p>
+            </div>
+            <div class="trust-item">
+                <strong>🛡️ Sûr</strong>
+                <p>Avec Financio, vos données personnelles et financières sont 100 % sécurisées.</p>
+            </div>
+        </div>
+        <div class="trust-image">
+            <picture>
+                <source srcset="3.avif" type="image/avif" />
+                <source srcset="3.webp" type="image/webp" />
+                <source srcset="3.png" type="image/png" />
+                <source srcset="3.jpg" type="image/jpeg" />
+                <source srcset="3.jpeg" type="image/jpeg" />
+                <source srcset="3.gif" type="image/gif" />
+                <source srcset="3.svg" type="image/svg+xml" />
+                <img src="3.png" alt="Confiance, rapidité, sécurité" loading="lazy" />
+            </picture>
+            <p style="margin-top:0.5rem; font-size:0.85rem; color:#8ba0b9;">Votre sécurité, notre priorité</p>
         </div>
     </section>
 
