@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Financió – Simulation de crédit</title>
     <style>
-        /* ----- RESET & BASE ----- */
         * {
             margin: 0;
             padding: 0;
@@ -16,25 +15,27 @@
         body {
             background: #f4f7fc;
             color: #1e2b3c;
-            line-height: 1.6;
+            line-height: 1.5;
             padding: 1rem;
         }
 
         .container {
-            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
             background: #ffffff;
-            border-radius: 0;
-            box-shadow: none;
-            padding: 1.5rem 2rem;
+            border-radius: 28px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            padding: 2rem 2.5rem;
         }
 
-        /* ----- HEADER ----- */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 0;
+            padding-bottom: 1rem;
             border-bottom: 1px solid #e9edf4;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .logo {
@@ -42,57 +43,48 @@
             font-weight: 700;
             color: #0f2b4b;
         }
-        .logo span {
-            color: #2a7de1;
-        }
+        .logo span { color: #2a7de1; }
 
         .tagline {
             font-size: 0.9rem;
             color: #5b6f87;
             background: #f0f4fa;
-            padding: 0.3rem 1rem;
+            padding: 0.3rem 1.2rem;
             border-radius: 30px;
         }
 
-        /* ----- HERO ----- */
         .hero {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 2rem;
-            padding: 2rem 0 1rem;
-            width: 100%;
+            padding: 1.5rem 0 1rem;
         }
-
         .hero-image {
-            flex: 1 1 300px;
+            flex: 1 1 280px;
         }
         .hero-image img {
             width: 100%;
             height: auto;
-            border-radius: 24px;
+            border-radius: 20px;
             display: block;
         }
-
         .hero-text {
-            flex: 1 1 300px;
+            flex: 1 1 280px;
         }
         .hero-text h1 {
-            font-size: 2.6rem;
+            font-size: 2.4rem;
             font-weight: 700;
             color: #0f2b4b;
-            line-height: 1.2;
+            line-height: 1.15;
             margin-bottom: 0.5rem;
         }
-        .hero-text h1 span {
-            color: #2a7de1;
-        }
+        .hero-text h1 span { color: #2a7de1; }
         .hero-text p {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             color: #3d556e;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.2rem;
         }
-
         .badge {
             display: inline-block;
             background: #eaf2ff;
@@ -100,187 +92,104 @@
             padding: 0.3rem 1.2rem;
             border-radius: 50px;
             font-weight: 600;
-            font-size: 0.9rem;
         }
 
-        /* ----- PROMO BANNER ----- */
         .promo-banner {
             background: #eaf2ff;
-            border-radius: 20px;
-            padding: 2rem 2rem;
-            margin: 2rem 0;
-            border-left: 6px solid #0f2b4b;
-            width: 100%;
+            border-radius: 16px;
+            padding: 1.8rem 2rem;
+            margin: 1rem 0 1.8rem;
+            border-left: 5px solid #0f2b4b;
         }
         .promo-banner p {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             color: #0f2b4b;
             font-weight: 500;
             line-height: 1.7;
-            width: 100%;
-            margin: 0;
         }
-        .promo-banner .emoji-big {
-            font-size: 1.8rem;
-        }
+        .promo-banner .emoji-big { font-size: 1.6rem; }
 
-        /* ----- FORM SECTION ----- */
         .form-section {
-            margin-top: 1rem;
             background: #f9fbfe;
-            border-radius: 28px;
-            padding: 2rem 2rem 2.5rem;
-            width: 100%;
+            border-radius: 24px;
+            padding: 2rem 2.5rem;
         }
-
         .form-section h2 {
             font-size: 1.8rem;
-            font-weight: 600;
-            color: #0f2b4b;
-            margin-bottom: 0.3rem;
-            width: 100%;
+            margin-bottom: 0.2rem;
         }
         .form-section .sub {
             color: #5b6f87;
             margin-bottom: 2rem;
-            width: 100%;
+            font-size: 1rem;
         }
 
-        /* ----- SLIDERS ----- */
         .slider-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-            margin-bottom: 1.5rem;
-            width: 100%;
+            margin-bottom: 1.8rem;
         }
-
         .slider-header {
             display: flex;
             justify-content: space-between;
-            font-weight: 500;
-            color: #1e3349;
-            width: 100%;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
         }
-
-        .slider-header .label {
-            font-size: 0.95rem;
-        }
-
         .slider-header .value {
-            font-weight: 700;
-            color: #0f2b4b;
             background: #eaf2ff;
-            padding: 0.1rem 0.8rem;
+            padding: 0.1rem 1rem;
             border-radius: 30px;
-            font-size: 0.95rem;
+            font-weight: 700;
         }
-
         input[type="range"] {
-            -webkit-appearance: none;
             width: 100%;
             height: 6px;
-            border-radius: 10px;
+            -webkit-appearance: none;
             background: #dce3ed;
+            border-radius: 10px;
             outline: none;
         }
-
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            appearance: none;
             width: 20px;
             height: 20px;
             border-radius: 50%;
             background: #0f2b4b;
             cursor: pointer;
         }
-
         .range-labels {
             display: flex;
             justify-content: space-between;
             font-size: 0.8rem;
             color: #8ba0b9;
             margin-top: -0.2rem;
-            width: 100%;
         }
 
         .taux-static {
             background: #f0f4fa;
             border: 1px solid #dce3ed;
             border-radius: 12px;
-            padding: 0.7rem 1.2rem;
+            padding: 0.6rem 1.2rem;
             text-align: center;
             font-weight: 600;
             font-size: 1.1rem;
             color: #0f2b4b;
-            width: 100%;
         }
 
-        /* ----- CHAMPS EMAIL & TELEPHONE ----- */
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 1.5rem 2rem;
             margin-top: 1.5rem;
-            width: 100%;
         }
-
         .form-group {
             display: flex;
             flex-direction: column;
-            gap: 0.4rem;
-            width: 100%;
+            gap: 0.3rem;
         }
-
         .form-group label {
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #1e3349;
         }
-
-        .phone-group {
-            display: flex;
-            align-items: stretch;
-            border-radius: 14px;
-            border: 1.5px solid #dce3ed;
-            background: #ffffff;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .phone-group select {
-            border: none;
-            padding: 0 0.8rem 0 1rem;
-            background: #f4f7fc;
-            font-weight: 500;
-            font-size: 0.9rem;
-            color: #0f2b4b;
-            outline: none;
-            cursor: pointer;
-            min-width: 150px;
-            border-right: 1px solid #dce3ed;
-        }
-
-        .phone-group input[type="tel"] {
-            border: none;
-            padding: 0.8rem 1rem;
-            font-size: 1rem;
-            background: #ffffff;
-            outline: none;
-            flex: 1;
-        }
-
-        .phone-hint {
-            font-size: 0.8rem;
-            color: #8ba0b9;
-            margin-top: 0.2rem;
-            width: 100%;
-        }
-        .phone-hint.active {
-            color: #1f5fbd;
-            font-weight: 500;
-        }
-
         .form-group input[type="email"] {
             padding: 0.8rem 1rem;
             border: 1.5px solid #dce3ed;
@@ -291,18 +200,52 @@
             width: 100%;
         }
 
-        /* ----- BOUTONS ----- */
-        .form-actions {
+        /* ---- TÉLÉPHONE : SÉLECTEUR EN HAUT, CHAMP EN DESSOUS ---- */
+        .phone-wrapper {
             display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 2rem;
-            align-items: center;
+            flex-direction: column;
+            gap: 0.3rem;
             width: 100%;
         }
+        .phone-wrapper select {
+            padding: 0.8rem 1rem;
+            border: 1.5px solid #dce3ed;
+            border-radius: 14px;
+            font-size: 1rem;
+            background: #f4f7fc;
+            font-weight: 500;
+            color: #0f2b4b;
+            outline: none;
+            cursor: pointer;
+            width: 100%;
+        }
+        .phone-wrapper input[type="tel"] {
+            padding: 0.8rem 1rem;
+            border: 1.5px solid #dce3ed;
+            border-radius: 14px;
+            font-size: 1rem;
+            background: #ffffff;
+            outline: none;
+            width: 100%;
+        }
+        .phone-hint {
+            font-size: 0.8rem;
+            color: #8ba0b9;
+            margin-top: 0.2rem;
+        }
+        .phone-hint.active {
+            color: #1f5fbd;
+            font-weight: 500;
+        }
 
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
         .btn {
-            padding: 0.9rem 2.2rem;
+            padding: 0.8rem 2.5rem;
             border: none;
             border-radius: 40px;
             font-weight: 600;
@@ -312,61 +255,47 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            background: #eef3f9;
-            color: #1e3349;
+            transition: background 0.2s, transform 0.1s;
         }
-
+        .btn:hover { transform: scale(1.02); }
         .btn-primary {
             background: #0f2b4b;
             color: white;
         }
-        .btn-primary:hover {
-            background: #1a3a62;
-        }
-
+        .btn-primary:hover { background: #1a3a62; }
         .btn-success {
             background: #1f8b4c;
             color: white;
         }
-        .btn-success:hover {
-            background: #167a3e;
-        }
+        .btn-success:hover { background: #167a3e; }
 
-        /* ----- SIMULATION RESULTS ----- */
         .simulation-results {
-            margin-top: 2.5rem;
+            margin-top: 2rem;
             display: none;
             background: #ffffff;
-            border-radius: 24px;
+            border-radius: 20px;
             padding: 1.8rem 2rem;
             border: 1px solid #e9edf4;
-            width: 100%;
         }
-
-        .simulation-results.show {
-            display: block;
-        }
+        .simulation-results.show { display: block; }
 
         .results-summary {
             display: flex;
             flex-wrap: wrap;
-            gap: 2rem 3rem;
+            gap: 1.5rem 2.5rem;
             margin-bottom: 1.5rem;
-            width: 100%;
         }
-
         .result-item {
             background: #f7faff;
-            padding: 0.8rem 1.5rem;
-            border-radius: 16px;
+            padding: 0.6rem 1.5rem;
+            border-radius: 14px;
             border-left: 5px solid #2a7de1;
         }
-
         .result-item .label {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
             color: #5b6f87;
+            font-weight: 600;
         }
         .result-item .value {
             font-size: 1.6rem;
@@ -374,63 +303,48 @@
             color: #0f2b4b;
         }
 
-        .table-wrapper {
-            overflow-x: auto;
-            margin: 1.5rem 0 0.5rem;
-            width: 100%;
-        }
-
+        .table-wrapper { overflow-x: auto; margin: 1rem 0; }
         table {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.95rem;
         }
-
         th {
             background: #f0f4fa;
             color: #1e3349;
             font-weight: 600;
-            padding: 0.8rem 0.5rem;
-            text-align: center;
+            padding: 0.6rem;
         }
         td {
-            padding: 0.7rem 0.5rem;
-            text-align: center;
+            padding: 0.6rem;
             border-bottom: 1px solid #eef2f7;
         }
 
-        /* ----- TÉLÉCHARGEMENT (sans mention "obligatoire") ----- */
         .documents-upload {
             margin-top: 2rem;
             padding-top: 1.5rem;
             border-top: 1px solid #e9edf4;
-            width: 100%;
         }
         .documents-upload h4 {
             font-size: 1.2rem;
-            color: #0f2b4b;
             margin-bottom: 1.2rem;
-            width: 100%;
         }
         .doc-upload-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
             margin-bottom: 1.2rem;
-            width: 100%;
         }
         .doc-upload-group label {
             font-weight: 600;
             font-size: 0.95rem;
-            color: #1e3349;
+            display: block;
+            margin-bottom: 0.2rem;
         }
         .doc-upload-group input[type="file"] {
+            width: 100%;
             padding: 0.8rem 1rem;
             border: 1.5px solid #dce3ed;
             border-radius: 14px;
-            background: #ffffff;
             font-size: 1rem;
-            width: 100%;
+            background: #ffffff;
             cursor: pointer;
         }
         .doc-upload-group input[type="file"]::file-selector-button {
@@ -447,77 +361,54 @@
         .validation-area {
             display: flex;
             justify-content: flex-end;
-            margin-top: 1.8rem;
+            margin-top: 1.5rem;
             padding-top: 1.5rem;
             border-top: 1px solid #e9edf4;
-            width: 100%;
         }
 
-        /* ----- AFTER VALIDATION ----- */
         .after-validation-message {
-            margin-top: 2.5rem;
-            padding: 2rem 0;
-            background: transparent;
-            border: none;
-            text-align: left;
-            width: 100%;
+            margin-top: 2rem;
+            padding: 0.5rem 0;
         }
         .after-validation-message p {
-            font-size: 1.2rem;
-            color: #1e3349;
+            font-size: 1.15rem;
             line-height: 1.8;
-            width: 100%;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.5rem;
         }
 
         .steps-after {
-            margin-top: 2.5rem;
-            padding-top: 2rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
             border-top: 1px dashed #dce3ed;
-            width: 100%;
         }
         .steps-after h3 {
             font-size: 1.8rem;
-            color: #0f2b4b;
-            margin-bottom: 1.5rem;
-            text-align: left;
-            width: 100%;
+            margin-bottom: 1.2rem;
         }
         .steps-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
-            text-align: left;
-            width: 100%;
         }
         .step-item {
-            background: #ffffff;
-            padding: 1.8rem 0;
             border-top: 5px solid #2a7de1;
-            box-shadow: none;
-            text-align: left;
-            width: 100%;
+            padding-top: 1.2rem;
         }
         .step-item strong {
             display: block;
             font-size: 1.3rem;
             color: #0f2b4b;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.3rem;
         }
         .step-item p {
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: #3d556e;
-            line-height: 1.7;
-            text-align: left;
-            width: 100%;
-            margin: 0;
+            line-height: 1.6;
         }
 
-        /* ----- BOUTONS FLOTTANTS : WHATSAPP & IA ----- */
+        /* FLOATING BUTTONS */
         .floating-btn {
             position: fixed;
-            bottom: 2rem;
-            right: 2rem;
             width: 60px;
             height: 60px;
             border-radius: 50%;
@@ -525,19 +416,17 @@
             color: white;
             font-size: 2rem;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 1000;
             transition: transform 0.2s;
         }
-        .floating-btn:hover {
-            transform: scale(1.1);
-        }
+        .floating-btn:hover { transform: scale(1.08); }
         .floating-btn.whatsapp {
             background: #25D366;
-            bottom: 5.5rem;
+            bottom: 6rem;
             right: 2rem;
         }
         .floating-btn.chat {
@@ -545,26 +434,14 @@
             bottom: 2rem;
             right: 2rem;
         }
-        .floating-btn.chat .badge-ia {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: #ff6b6b;
-            color: white;
-            border-radius: 50%;
-            font-size: 0.6rem;
-            padding: 0.2rem 0.4rem;
-            font-weight: 700;
-        }
 
-        /* ----- CHATBOT (fenêtre) ----- */
         .chat-window {
             position: fixed;
             bottom: 8rem;
             right: 2rem;
             width: 380px;
             max-width: calc(100vw - 2rem);
-            max-height: 500px;
+            max-height: 480px;
             background: white;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
@@ -574,13 +451,11 @@
             z-index: 1001;
             border: 1px solid #e9edf4;
         }
-        .chat-window.open {
-            display: flex;
-        }
+        .chat-window.open { display: flex; }
         .chat-header {
             background: #0f2b4b;
             color: white;
-            padding: 1rem 1.2rem;
+            padding: 0.8rem 1.2rem;
             font-weight: 600;
             display: flex;
             justify-content: space-between;
@@ -592,7 +467,6 @@
             color: white;
             font-size: 1.4rem;
             cursor: pointer;
-            line-height: 1;
         }
         .chat-messages {
             flex: 1;
@@ -648,24 +522,6 @@
             font-weight: 600;
         }
 
-        /* ----- RESPONSIVE ----- */
-        @media (max-width: 900px) {
-            .steps-grid { grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 600px) {
-            .steps-grid { grid-template-columns: 1fr; }
-            .hero-text h1 { font-size: 2rem; }
-            .form-grid { grid-template-columns: 1fr; }
-            .form-actions { flex-direction: column; align-items: stretch; }
-            .btn { justify-content: center; }
-            .container { padding: 1rem; }
-            .promo-banner { padding: 1.5rem; }
-            .form-section { padding: 1.5rem; }
-            .header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
-            .chat-window { width: calc(100vw - 2rem); right: 1rem; bottom: 7rem; max-height: 60vh; }
-        }
-
-        /* ----- TOAST ----- */
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -673,531 +529,531 @@
             transform: translateX(-50%) translateY(100px);
             background: #1f8b4c;
             color: white;
-            padding: 1rem 2rem;
+            padding: 0.8rem 2rem;
             border-radius: 40px;
             font-weight: 600;
             opacity: 0;
             transition: all 0.4s ease;
             z-index: 999;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            text-align: center;
         }
         .toast.show {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
+
+        @media (max-width: 900px) {
+            .steps-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        }
+        @media (max-width: 700px) {
+            body { padding: 0.5rem; }
+            .container { padding: 1.2rem; }
+            .hero-text h1 { font-size: 2rem; }
+            .form-grid { grid-template-columns: 1fr; gap: 1rem; }
+            .form-actions { flex-direction: column; align-items: stretch; }
+            .btn { justify-content: center; }
+            .promo-banner { padding: 1.2rem; }
+            .promo-banner p { font-size: 1rem; }
+            .form-section { padding: 1.5rem; }
+            .steps-grid { grid-template-columns: 1fr; gap: 1.2rem; }
+            .step-item { padding-top: 0.8rem; }
+            .floating-btn { width: 50px; height: 50px; font-size: 1.6rem; }
+            .floating-btn.whatsapp { bottom: 5.5rem; right: 1.2rem; }
+            .floating-btn.chat { bottom: 1.2rem; right: 1.2rem; }
+            .chat-window { width: calc(100vw - 1.5rem); right: 0.75rem; bottom: 6.5rem; max-height: 50vh; }
+        }
+        @media (max-width: 450px) {
+            .phone-wrapper select { font-size: 0.9rem; padding: 0.7rem 0.8rem; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <!-- HEADER -->
-        <header class="header">
-            <div class="logo">Finan<span>ció</span></div>
-            <div class="tagline">🔒 100% sécurisé</div>
-        </header>
+    <!-- HEADER -->
+    <header class="header">
+        <div class="logo">Finan<span>ció</span></div>
+        <div class="tagline">🔒 100% sécurisé</div>
+    </header>
 
-        <!-- HERO -->
-        <section class="hero">
-            <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                alt="Père de famille avec ses enfants" loading="lazy">
-            </div>
-            <div class="hero-text">
-                <h1>Avez-vous besoin <br><span>d'un financement</span> ?</h1>
-                <p>Simulez votre crédit en quelques secondes, sans engagement.</p>
-                <span class="badge">✅ Réponse sous 24h</span>
-            </div>
-        </section>
-
-        <!-- PROMO BANNER -->
-        <div class="promo-banner">
-            <p>
-                <span class="emoji-big">📄</span> Fini la paperasse. Fini les longues files d'attente. Fini les complications !<br>
-                Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨
-            </p>
-            <p style="margin-top: 0.8rem; font-weight: 400; font-size: 1.15rem; color: #1e3349; width: 100%;">
-                Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.
-            </p>
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Père de famille" loading="lazy">
         </div>
+        <div class="hero-text">
+            <h1>Avez-vous besoin <br><span>d'un financement</span> ?</h1>
+            <p>Simulez votre crédit en quelques secondes, sans engagement.</p>
+            <span class="badge">✅ Réponse sous 24h</span>
+        </div>
+    </section>
 
-        <!-- FORMULAIRE -->
-        <section class="form-section">
-            <h2>Remplissez le formulaire suivant</h2>
-            <p class="sub">Ajustez le curseur pour le montant, la durée est libre.</p>
+    <!-- PROMO BANNER -->
+    <div class="promo-banner">
+        <p>
+            <span class="emoji-big">📄</span> Fini la paperasse. Fini les longues files d'attente. Fini les complications !<br>
+            Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨
+        </p>
+        <p style="margin-top: 0.6rem; font-weight: 400; font-size: 1.05rem;">
+            Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.
+        </p>
+    </div>
 
-            <form id="creditForm" novalidate>
-                <!-- Montant -->
-                <div class="slider-group">
-                    <div class="slider-header">
-                        <span class="label">Montant souhaité (€) – <span style="font-weight:400;color:#5b6f87;">maximum 350 000 €</span></span>
-                        <span class="value" id="montantDisplay">25 000</span>
-                    </div>
-                    <input type="range" id="montantSlider" min="1000" max="350000" step="500" value="25000">
-                    <div class="range-labels">
-                        <span>1 000 €</span>
-                        <span>350 000 €</span>
-                    </div>
+    <!-- FORMULAIRE -->
+    <section class="form-section">
+        <h2>Remplissez le formulaire suivant</h2>
+        <p class="sub">Ajustez le curseur pour le montant, la durée est libre.</p>
+
+        <form id="creditForm" novalidate>
+            <!-- Montant -->
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span>Montant souhaité (€) – <span style="font-weight:400;color:#5b6f87;">max 350 000 €</span></span>
+                    <span class="value" id="montantDisplay">25 000</span>
+                </div>
+                <input type="range" id="montantSlider" min="1000" max="350000" step="500" value="25000">
+                <div class="range-labels">
+                    <span>1 000 €</span>
+                    <span>350 000 €</span>
+                </div>
+            </div>
+
+            <!-- Durée -->
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span>Durée du prêt (mois)</span>
+                    <span class="value" id="dureeDisplay">60</span>
+                </div>
+                <input type="range" id="dureeSlider" min="3" max="360" step="1" value="60">
+                <div class="range-labels">
+                    <span>3 mois</span>
+                    <span>360 mois</span>
+                </div>
+            </div>
+
+            <!-- Taux -->
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span>Taux d’intérêt annuel (%)</span>
+                    <span class="value" style="background:#eef5e9;">3,0 %</span>
+                </div>
+                <div class="taux-static">3 %</div>
+            </div>
+
+            <!-- Email & Téléphone (sélecteur détaché) -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="email">Adresse e-mail</label>
+                    <input type="email" id="email" placeholder="votre@email.fr" required>
                 </div>
 
-                <!-- Durée -->
-                <div class="slider-group">
-                    <div class="slider-header">
-                        <span class="label">Durée du prêt (mois)</span>
-                        <span class="value" id="dureeDisplay">60</span>
+                <div class="form-group">
+                    <label for="telephone">Numéro de téléphone</label>
+                    <div class="phone-wrapper">
+                        <select id="countrySelect">
+                            <option value="FR|+33|10">🇫🇷 France (+33)</option>
+                            <option value="BE|+32|9">🇧🇪 Belgique (+32)</option>
+                            <option value="DE|+49|11">🇩🇪 Allemagne (+49)</option>
+                            <option value="IT|+39|10">🇮🇹 Italie (+39)</option>
+                            <option value="ES|+34|9">🇪🇸 Espagne (+34)</option>
+                            <option value="PT|+351|9">🇵🇹 Portugal (+351)</option>
+                            <option value="NL|+31|10">🇳🇱 Pays-Bas (+31)</option>
+                            <option value="LU|+352|9">🇱🇺 Luxembourg (+352)</option>
+                            <option value="CH|+41|10">🇨🇭 Suisse (+41)</option>
+                            <option value="AT|+43|11">🇦🇹 Autriche (+43)</option>
+                            <option value="GB|+44|10">🇬🇧 Royaume-Uni (+44)</option>
+                            <option value="IE|+353|10">🇮🇪 Irlande (+353)</option>
+                            <option value="DK|+45|8">🇩🇰 Danemark (+45)</option>
+                            <option value="SE|+46|10">🇸🇪 Suède (+46)</option>
+                            <option value="FI|+358|10">🇫🇮 Finlande (+358)</option>
+                            <option value="NO|+47|8">🇳🇴 Norvège (+47)</option>
+                            <option value="PL|+48|9">🇵🇱 Pologne (+48)</option>
+                            <option value="GR|+30|10">🇬🇷 Grèce (+30)</option>
+                            <option value="HU|+36|9">🇭🇺 Hongrie (+36)</option>
+                            <option value="CZ|+420|9">🇨🇿 République tchèque (+420)</option>
+                        </select>
+                        <input type="tel" id="telephone" placeholder="6 12 34 56 78" maxlength="10">
                     </div>
-                    <input type="range" id="dureeSlider" min="3" max="360" step="1" value="60">
-                    <div class="range-labels">
-                        <span>3 mois</span>
-                        <span>360 mois</span>
-                    </div>
+                    <div class="phone-hint" id="phoneHint">Format : 10 chiffres (indicatif exclu)</div>
                 </div>
+            </div>
 
-                <!-- Taux fixe 3 % -->
-                <div class="slider-group">
-                    <div class="slider-header">
-                        <span class="label">Taux d’intérêt annuel (%)</span>
-                        <span class="value" style="background:#eef5e9;">3,0 %</span>
-                    </div>
-                    <div class="taux-static">3 %</div>
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" id="simulerBtn">📊 Simuler mon crédit</button>
+            </div>
+        </form>
+
+        <!-- RÉSULTATS SIMULATION -->
+        <div id="simulationResults" class="simulation-results">
+            <div class="results-summary" id="resultsSummary"></div>
+            <div class="table-wrapper">
+                <table id="amortissementTable">
+                    <thead>
+                        <tr><th>Mois</th><th>Mensualité</th><th>Intérêts</th><th>Capital remboursé</th><th>Capital restant</th></tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+                <div style="font-size:0.8rem;color:#aab9ce;margin-top:0.3rem;">↕ Faites défiler pour voir toutes les échéances</div>
+            </div>
+
+            <!-- TÉLÉCHARGEMENT -->
+            <div class="documents-upload">
+                <h4>📎 Téléchargez vos documents</h4>
+                <div class="doc-upload-group">
+                    <label for="docId">Carte d'identité</label>
+                    <input type="file" id="docId" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
                 </div>
+                <div class="doc-upload-group">
+                    <label for="docTax">Code d'identification fiscale</label>
+                    <input type="file" id="docTax" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
+                </div>
+                <div class="doc-upload-group">
+                    <label for="docIncome">Document de revenu mensuel</label>
+                    <input type="file" id="docIncome" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
+                </div>
+            </div>
 
-                <!-- Email & Téléphone -->
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="email">Adresse e-mail</label>
-                        <input type="email" id="email" placeholder="votre@email.fr" required>
-                    </div>
+            <!-- ENVOYER -->
+            <div class="validation-area">
+                <button type="button" class="btn btn-success" id="envoyerBtn">📩 Envoyer ma demande</button>
+            </div>
 
-                    <div class="form-group">
-                        <label for="telephone">Numéro de téléphone</label>
-                        <div class="phone-group">
-                            <select id="countrySelect">
-                                <option value="FR|+33|10">🇫🇷 France (+33)</option>
-                                <option value="BE|+32|9">🇧🇪 Belgique (+32)</option>
-                                <option value="DE|+49|11">🇩🇪 Allemagne (+49)</option>
-                                <option value="IT|+39|10">🇮🇹 Italie (+39)</option>
-                                <option value="ES|+34|9">🇪🇸 Espagne (+34)</option>
-                                <option value="PT|+351|9">🇵🇹 Portugal (+351)</option>
-                                <option value="NL|+31|10">🇳🇱 Pays-Bas (+31)</option>
-                                <option value="LU|+352|9">🇱🇺 Luxembourg (+352)</option>
-                                <option value="CH|+41|10">🇨🇭 Suisse (+41)</option>
-                                <option value="AT|+43|11">🇦🇹 Autriche (+43)</option>
-                                <option value="GB|+44|10">🇬🇧 Royaume-Uni (+44)</option>
-                                <option value="IE|+353|10">🇮🇪 Irlande (+353)</option>
-                                <option value="DK|+45|8">🇩🇰 Danemark (+45)</option>
-                                <option value="SE|+46|10">🇸🇪 Suède (+46)</option>
-                                <option value="FI|+358|10">🇫🇮 Finlande (+358)</option>
-                                <option value="NO|+47|8">🇳🇴 Norvège (+47)</option>
-                                <option value="PL|+48|9">🇵🇱 Pologne (+48)</option>
-                                <option value="GR|+30|10">🇬🇷 Grèce (+30)</option>
-                                <option value="HU|+36|9">🇭🇺 Hongrie (+36)</option>
-                                <option value="CZ|+420|9">🇨🇿 République tchèque (+420)</option>
-                            </select>
-                            <input type="tel" id="telephone" placeholder="6 12 34 56 78" maxlength="10">
+            <!-- MESSAGE + ÉTAPES -->
+            <div class="after-validation-message">
+                <p>Fini la paperasse. Fini les longues files d'attente. Fini les complications !</p>
+                <p>Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨</p>
+                <p>Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.</p>
+
+                <div class="steps-after">
+                    <h3>📋 Demande de crédit entièrement en ligne</h3>
+                    <div class="steps-grid">
+                        <div class="step-item">
+                            <strong>Étape 1</strong>
+                            <p>Calculez votre mensualité.</p>
                         </div>
-                        <div class="phone-hint" id="phoneHint">Format : 10 chiffres (indicatif exclu)</div>
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn btn-primary" id="simulerBtn">📊 Simuler mon crédit</button>
-                </div>
-            </form>
-
-            <!-- RÉSULTATS SIMULATION -->
-            <div id="simulationResults" class="simulation-results">
-                <div class="results-summary" id="resultsSummary"></div>
-                <div class="table-wrapper">
-                    <table id="amortissementTable">
-                        <thead>
-                            <tr>
-                                <th>Mois</th>
-                                <th>Mensualité</th>
-                                <th>Intérêts</th>
-                                <th>Capital remboursé</th>
-                                <th>Capital restant</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody"></tbody>
-                    </table>
-                    <div class="scroll-hint" style="font-size:0.8rem;color:#aab9ce;margin-top:0.3rem;width:100%;">
-                        ↕ Faites défiler pour voir toutes les échéances
-                    </div>
-                </div>
-
-                <!-- TÉLÉCHARGEMENT (sans "(obligatoire)") -->
-                <div class="documents-upload">
-                    <h4>📎 Téléchargez vos documents</h4>
-                    <div class="doc-upload-group">
-                        <label for="docId">Carte d'identité</label>
-                        <input type="file" id="docId" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
-                    </div>
-                    <div class="doc-upload-group">
-                        <label for="docTax">Code d'identification fiscale</label>
-                        <input type="file" id="docTax" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
-                    </div>
-                    <div class="doc-upload-group">
-                        <label for="docIncome">Document de revenu mensuel</label>
-                        <input type="file" id="docIncome" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
-                    </div>
-                </div>
-
-                <!-- Bouton Envoyer -->
-                <div class="validation-area">
-                    <button type="button" class="btn btn-success" id="envoyerBtn">📩 Envoyer ma demande</button>
-                </div>
-
-                <!-- MESSAGE PROMO + ÉTAPES -->
-                <div class="after-validation-message">
-                    <p>Fini la paperasse. Fini les longues files d'attente. Fini les complications !</p>
-                    <p>Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨</p>
-                    <p>Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.</p>
-
-                    <div class="steps-after">
-                        <h3>📋 Demande de crédit entièrement en ligne</h3>
-                        <div class="steps-grid">
-                            <div class="step-item">
-                                <strong>Étape 1</strong>
-                                <p>Calculez votre mensualité.</p>
-                            </div>
-                            <div class="step-item">
-                                <strong>Étape 2</strong>
-                                <p>Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
-                            </div>
-                            <div class="step-item">
-                                <strong>Étape 3</strong>
-                                <p>Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
-                            </div>
+                        <div class="step-item">
+                            <strong>Étape 2</strong>
+                            <p>Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
+                        </div>
+                        <div class="step-item">
+                            <strong>Étape 3</strong>
+                            <p>Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <footer style="margin-top: 2rem; text-align: left; color: #8ba0b9; font-size: 0.85rem; padding: 1rem 0; width:100%;">
-            Financió © 2026 – Votre partenaire de confiance pour vos projets.
-        </footer>
+    <footer style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e9edf4; color: #8ba0b9; font-size: 0.85rem;">
+        Financió © 2026 – Votre partenaire de confiance pour vos projets.
+    </footer>
+</div>
+
+<!-- WHATSAPP -->
+<a href="https://wa.me/22961443597" target="_blank" class="floating-btn whatsapp" title="Service client WhatsApp">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+</a>
+
+<!-- CHATBOT -->
+<button class="floating-btn chat" id="chatToggle" title="Assistant virtuel">
+    💬
+</button>
+
+<div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+        <span>🤖 Assistant Financió</span>
+        <button class="close-chat" id="chatClose">✕</button>
     </div>
-
-    <!-- BOUTON WHATSAPP (service client) -->
-    <a href="https://wa.me/22961443597" target="_blank" class="floating-btn whatsapp" title="Service client WhatsApp">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-        </svg>
-    </a>
-
-    <!-- BOUTON IA (chatbot) -->
-    <button class="floating-btn chat" id="chatToggle" title="Assistant virtuel">
-        💬
-        <span class="badge-ia">IA</span>
-    </button>
-
-    <!-- FENÊTRE DU CHATBOT -->
-    <div class="chat-window" id="chatWindow">
-        <div class="chat-header">
-            <span>🤖 Assistant Financió</span>
-            <button class="close-chat" id="chatClose">✕</button>
-        </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="chat-message bot">Bonjour ! Je suis votre assistant virtuel. Posez-moi vos questions sur nos offres de crédit.</div>
-        </div>
-        <div class="chat-input-area">
-            <input type="text" id="chatInput" placeholder="Votre question..." />
-            <button id="chatSend">Envoyer</button>
-        </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Votre question..." />
+        <button id="chatSend">Envoyer</button>
     </div>
+</div>
 
-    <!-- TOAST -->
-    <div id="toast" class="toast">📨 Demande envoyée avec succès !</div>
+<!-- TOAST -->
+<div id="toast" class="toast">📨 Demande envoyée avec succès !</div>
 
-    <script>
-        // ----- CONSTANTES -----
-        const TAUX_FIXE = 3.0;
-        const CONTACT_EMAIL = 'otezaolga@gmail.com'; // Adresse modifiée
+<script>
+    // ----- CONSTANTES -----
+    const TAUX_FIXE = 3.0;
+    const CONTACT_EMAIL = 'otezaolga@gmail.com';
 
-        // ----- SLIDERS -----
-        const montantSlider = document.getElementById('montantSlider');
-        const dureeSlider = document.getElementById('dureeSlider');
-        const montantDisplay = document.getElementById('montantDisplay');
-        const dureeDisplay = document.getElementById('dureeDisplay');
+    // ----- SLIDERS -----
+    const montantSlider = document.getElementById('montantSlider');
+    const dureeSlider = document.getElementById('dureeSlider');
+    const montantDisplay = document.getElementById('montantDisplay');
+    const dureeDisplay = document.getElementById('dureeDisplay');
 
-        function updateMontant() {
-            montantDisplay.textContent = parseInt(montantSlider.value).toLocaleString('fr-FR');
-        }
-        function updateDuree() {
-            dureeDisplay.textContent = dureeSlider.value;
-        }
+    function updateMontant() {
+        montantDisplay.textContent = parseInt(montantSlider.value).toLocaleString('fr-FR');
+    }
+    function updateDuree() {
+        dureeDisplay.textContent = dureeSlider.value;
+    }
+    montantSlider.addEventListener('input', updateMontant);
+    dureeSlider.addEventListener('input', updateDuree);
+    updateMontant();
+    updateDuree();
 
-        montantSlider.addEventListener('input', updateMontant);
-        dureeSlider.addEventListener('input', updateDuree);
-        updateMontant();
-        updateDuree();
+    // ----- PAYS TÉLÉPHONE -----
+    const countrySelect = document.getElementById('countrySelect');
+    const phoneInput = document.getElementById('telephone');
+    const phoneHint = document.getElementById('phoneHint');
 
-        // ----- PAYS TÉLÉPHONE -----
-        const countrySelect = document.getElementById('countrySelect');
-        const phoneInput = document.getElementById('telephone');
-        const phoneHint = document.getElementById('phoneHint');
+    function updatePhoneRules() {
+        const parts = countrySelect.value.split('|');
+        const dialCode = parts[1];
+        const maxLen = parseInt(parts[2]);
+        phoneInput.maxLength = maxLen;
+        phoneInput.minLength = maxLen;
+        phoneInput.placeholder = `ex: ${dialCode} XXXX...`;
+        phoneHint.textContent = `Format : ${maxLen} chiffres (indicatif ${dialCode} exclu)`;
+        phoneHint.classList.add('active');
+        phoneInput.value = '';
+    }
+    countrySelect.addEventListener('change', updatePhoneRules);
+    updatePhoneRules();
 
-        function updatePhoneRules() {
-            const parts = countrySelect.value.split('|');
-            const dialCode = parts[1];
-            const maxLen = parseInt(parts[2]);
-            phoneInput.maxLength = maxLen;
-            phoneInput.minLength = maxLen;
-            phoneInput.placeholder = `ex: ${dialCode} XXXX...`;
-            phoneHint.textContent = `Format : ${maxLen} chiffres (indicatif ${dialCode} exclu)`;
-            phoneHint.classList.add('active');
-            phoneInput.value = '';
-        }
-        countrySelect.addEventListener('change', updatePhoneRules);
-        updatePhoneRules();
+    // ----- SIMULATEUR -----
+    function calculerMensualite(montant, dureeMois, tauxAnnuel) {
+        const tauxMensuel = tauxAnnuel / 100 / 12;
+        if (tauxMensuel === 0) return montant / dureeMois;
+        const denominator = 1 - Math.pow(1 + tauxMensuel, -dureeMois);
+        return (montant * tauxMensuel) / denominator;
+    }
 
-        // ----- SIMULATEUR -----
-        function calculerMensualite(montant, dureeMois, tauxAnnuel) {
-            const tauxMensuel = tauxAnnuel / 100 / 12;
-            if (tauxMensuel === 0) return montant / dureeMois;
-            const denominator = 1 - Math.pow(1 + tauxMensuel, -dureeMois);
-            return (montant * tauxMensuel) / denominator;
-        }
-
-        function genererTableauAmortissement(montant, dureeMois, tauxAnnuel) {
-            const tauxMensuel = tauxAnnuel / 100 / 12;
-            const mensualite = calculerMensualite(montant, dureeMois, tauxAnnuel);
-            let capitalRestant = montant;
-            const tableau = [];
-            for (let mois = 1; mois <= dureeMois; mois++) {
-                const interets = capitalRestant * tauxMensuel;
-                const capitalRembourse = mensualite - interets;
-                capitalRestant -= capitalRembourse;
-                if (mois === dureeMois) capitalRestant = 0;
-                tableau.push({
-                    mois,
-                    mensualite,
-                    interets,
-                    capitalRembourse,
-                    capitalRestant: Math.max(0, capitalRestant)
-                });
-            }
-            return tableau;
-        }
-
-        function afficherSimulation() {
-            const montant = parseFloat(montantSlider.value);
-            const duree = parseInt(dureeSlider.value);
-            const taux = TAUX_FIXE;
-            const email = document.getElementById('email').value.trim();
-            const telephone = phoneInput.value.trim();
-            const maxLen = parseInt(countrySelect.value.split('|')[2]);
-
-            if (!email || !email.includes('@')) {
-                alert('Veuillez entrer une adresse e-mail valide.');
-                return;
-            }
-            if (!telephone || !/^[0-9]+$/.test(telephone) || telephone.length !== maxLen) {
-                alert(`Veuillez entrer un numéro de téléphone valide (${maxLen} chiffres).`);
-                return;
-            }
-
-            const mensualite = calculerMensualite(montant, duree, taux);
-            const totalRembourse = mensualite * duree;
-            const totalInterets = totalRembourse - montant;
-            const tableau = genererTableauAmortissement(montant, duree, taux);
-
-            const summaryDiv = document.getElementById('resultsSummary');
-            summaryDiv.innerHTML = `
-                <div class="result-item"><div class="label">Mensualité estimée</div><div class="value">${mensualite.toFixed(2)} €</div></div>
-                <div class="result-item"><div class="label">Total à rembourser</div><div class="value">${totalRembourse.toFixed(2)} €</div></div>
-                <div class="result-item"><div class="label">Intérêts totaux</div><div class="value">${totalInterets.toFixed(2)} €</div></div>
-                <div class="result-item"><div class="label">Taux appliqué</div><div class="value">${taux.toFixed(1)} %</div></div>
-            `;
-
-            const tbody = document.getElementById('tableBody');
-            tbody.innerHTML = '';
-            tableau.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.innerHTML =
-                    `<td>${row.mois}</td><td>${row.mensualite.toFixed(2)} €</td><td>${row.interets.toFixed(2)} €</td><td>${row.capitalRembourse.toFixed(2)} €</td><td>${row.capitalRestant.toFixed(2)} €</td>`;
-                tbody.appendChild(tr);
+    function genererTableauAmortissement(montant, dureeMois, tauxAnnuel) {
+        const tauxMensuel = tauxAnnuel / 100 / 12;
+        const mensualite = calculerMensualite(montant, dureeMois, tauxAnnuel);
+        let capitalRestant = montant;
+        const tableau = [];
+        for (let mois = 1; mois <= dureeMois; mois++) {
+            const interets = capitalRestant * tauxMensuel;
+            const capitalRembourse = mensualite - interets;
+            capitalRestant -= capitalRembourse;
+            if (mois === dureeMois) capitalRestant = 0;
+            tableau.push({
+                mois,
+                mensualite,
+                interets,
+                capitalRembourse,
+                capitalRestant: Math.max(0, capitalRestant)
             });
+        }
+        return tableau;
+    }
 
-            const resultsDiv = document.getElementById('simulationResults');
-            resultsDiv.classList.add('show');
-            resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    function afficherSimulation() {
+        const montant = parseFloat(montantSlider.value);
+        const duree = parseInt(dureeSlider.value);
+        const taux = TAUX_FIXE;
+        const email = document.getElementById('email').value.trim();
+        const telephone = phoneInput.value.trim();
+        const maxLen = parseInt(countrySelect.value.split('|')[2]);
+
+        if (!email || !email.includes('@')) {
+            alert('Veuillez entrer une adresse e-mail valide.');
+            return;
+        }
+        if (!telephone || !/^[0-9]+$/.test(telephone) || telephone.length !== maxLen) {
+            alert(`Veuillez entrer un numéro de téléphone valide (${maxLen} chiffres).`);
+            return;
         }
 
-        // ----- ENVOI PAR MAIL (avec la nouvelle adresse) -----
-        function envoyerParEmail() {
-            const fileId = document.getElementById('docId');
-            const fileTax = document.getElementById('docTax');
-            const fileIncome = document.getElementById('docIncome');
+        const mensualite = calculerMensualite(montant, duree, taux);
+        const totalRembourse = mensualite * duree;
+        const totalInterets = totalRembourse - montant;
+        const tableau = genererTableauAmortissement(montant, duree, taux);
 
-            if (fileId.files.length === 0 || fileTax.files.length === 0 || fileIncome.files.length === 0) {
-                alert('Veuillez télécharger les trois documents (carte d’identité, code fiscal, justificatif de revenu).');
-                return;
+        document.getElementById('resultsSummary').innerHTML = `
+            <div class="result-item"><div class="label">Mensualité estimée</div><div class="value">${mensualite.toFixed(2)} €</div></div>
+            <div class="result-item"><div class="label">Total à rembourser</div><div class="value">${totalRembourse.toFixed(2)} €</div></div>
+            <div class="result-item"><div class="label">Intérêts totaux</div><div class="value">${totalInterets.toFixed(2)} €</div></div>
+            <div class="result-item"><div class="label">Taux appliqué</div><div class="value">${taux.toFixed(1)} %</div></div>
+        `;
+
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        tableau.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML =
+                `<td>${row.mois}</td><td>${row.mensualite.toFixed(2)} €</td><td>${row.interets.toFixed(2)} €</td><td>${row.capitalRembourse.toFixed(2)} €</td><td>${row.capitalRestant.toFixed(2)} €</td>`;
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('simulationResults').classList.add('show');
+        document.getElementById('simulationResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ----- ENVOI PAR MAIL -----
+    function envoyerParEmail() {
+        const fileId = document.getElementById('docId');
+        const fileTax = document.getElementById('docTax');
+        const fileIncome = document.getElementById('docIncome');
+
+        if (fileId.files.length === 0 || fileTax.files.length === 0 || fileIncome.files.length === 0) {
+            alert('Veuillez télécharger les trois documents (carte d’identité, code fiscal, justificatif de revenu).');
+            return;
+        }
+
+        const montant = montantSlider.value;
+        const duree = dureeSlider.value;
+        const taux = TAUX_FIXE;
+        const email = document.getElementById('email').value.trim();
+        const countryName = countrySelect.options[countrySelect.selectedIndex].text;
+        const telephone = phoneInput.value.trim();
+        const dialCode = countrySelect.value.split('|')[1];
+
+        const idName = fileId.files[0].name;
+        const taxName = fileTax.files[0].name;
+        const incomeName = fileIncome.files[0].name;
+
+        const mensualite = document.querySelector('.result-item .value')?.textContent || 'Non calculé';
+        const total = document.querySelectorAll('.result-item .value')[1]?.textContent || 'Non calculé';
+        const interets = document.querySelectorAll('.result-item .value')[2]?.textContent || 'Non calculé';
+
+        let corps = `Demande de prêt – Financió\n\n`;
+        corps += `Montant souhaité : ${montant} €\n`;
+        corps += `Durée de remboursement : ${duree} mois\n`;
+        corps += `Taux annuel : ${taux} % (fixe)\n`;
+        corps += `E-mail : ${email}\n`;
+        corps += `Téléphone : ${countryName} (${dialCode}) ${telephone}\n\n`;
+        corps += `--- DOCUMENTS TÉLÉCHARGÉS ---\n`;
+        corps += `Carte d'identité : ${idName}\n`;
+        corps += `Code fiscal : ${taxName}\n`;
+        corps += `Justificatif de revenu : ${incomeName}\n\n`;
+        corps += `--- RÉSULTATS DE LA SIMULATION ---\n`;
+        corps += `Mensualité estimée : ${mensualite}\n`;
+        corps += `Total à rembourser : ${total}\n`;
+        corps += `Intérêts totaux : ${interets}\n\n`;
+        corps += `Détail des échéances (extrait) :\n`;
+
+        const rows = document.querySelectorAll('#tableBody tr');
+        if (rows.length > 0) {
+            const lignes = [];
+            const max = 5;
+            const totalRows = rows.length;
+            for (let i = 0; i < Math.min(max, totalRows); i++) {
+                const cells = rows[i].querySelectorAll('td');
+                lignes.push(
+                    `Mois ${cells[0].textContent} : ${cells[1].textContent} (int. ${cells[2].textContent}, cap. ${cells[3].textContent}, reste ${cells[4].textContent})`
+                );
             }
-
-            const montant = montantSlider.value;
-            const duree = dureeSlider.value;
-            const taux = TAUX_FIXE;
-            const email = document.getElementById('email').value.trim();
-            const countryName = countrySelect.options[countrySelect.selectedIndex].text;
-            const telephone = phoneInput.value.trim();
-            const dialCode = countrySelect.value.split('|')[1];
-
-            const idName = fileId.files[0].name;
-            const taxName = fileTax.files[0].name;
-            const incomeName = fileIncome.files[0].name;
-
-            const mensualite = document.querySelector('.result-item .value')?.textContent || 'Non calculé';
-            const total = document.querySelectorAll('.result-item .value')[1]?.textContent || 'Non calculé';
-            const interets = document.querySelectorAll('.result-item .value')[2]?.textContent || 'Non calculé';
-
-            let corps = `Demande de prêt – Financió\n\n`;
-            corps += `Montant souhaité : ${montant} €\n`;
-            corps += `Durée de remboursement : ${duree} mois\n`;
-            corps += `Taux annuel : ${taux} % (fixe)\n`;
-            corps += `E-mail : ${email}\n`;
-            corps += `Téléphone : ${countryName} (${dialCode}) ${telephone}\n\n`;
-            corps += `--- DOCUMENTS TÉLÉCHARGÉS ---\n`;
-            corps += `Carte d'identité : ${idName}\n`;
-            corps += `Code fiscal : ${taxName}\n`;
-            corps += `Justificatif de revenu : ${incomeName}\n\n`;
-            corps += `--- RÉSULTATS DE LA SIMULATION ---\n`;
-            corps += `Mensualité estimée : ${mensualite}\n`;
-            corps += `Total à rembourser : ${total}\n`;
-            corps += `Intérêts totaux : ${interets}\n\n`;
-            corps += `Détail des échéances (extrait) :\n`;
-
-            const rows = document.querySelectorAll('#tableBody tr');
-            if (rows.length > 0) {
-                const lignes = [];
-                const max = 5;
-                const totalRows = rows.length;
-                for (let i = 0; i < Math.min(max, totalRows); i++) {
-                    const cells = rows[i].querySelectorAll('td');
-                    lignes.push(
-                        `Mois ${cells[0].textContent} : ${cells[1].textContent} (int. ${cells[2].textContent}, cap. ${cells[3].textContent}, reste ${cells[4].textContent})`
-                    );
-                }
-                if (totalRows > max * 2) {
-                    lignes.push(`... (${totalRows - max * 2} lignes omises) ...`);
-                }
-                for (let i = Math.max(max, totalRows - max); i < totalRows; i++) {
-                    const cells = rows[i].querySelectorAll('td');
-                    lignes.push(
-                        `Mois ${cells[0].textContent} : ${cells[1].textContent} (int. ${cells[2].textContent}, cap. ${cells[3].textContent}, reste ${cells[4].textContent})`
-                    );
-                }
-                corps += lignes.join('\n');
-            } else {
-                corps += `(Aucune échéance détaillée)`;
+            if (totalRows > max * 2) {
+                lignes.push(`... (${totalRows - max * 2} lignes omises) ...`);
             }
-
-            const sujet = encodeURIComponent('Demande de prêt – Simulation Financió');
-            const corpsEncoded = encodeURIComponent(corps);
-            window.location.href = `mailto:${CONTACT_EMAIL}?subject=${sujet}&body=${corpsEncoded}`;
-
-            const toast = document.getElementById('toast');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 5000);
-        }
-
-        // ----- ÉVÉNEMENTS -----
-        document.getElementById('simulerBtn').addEventListener('click', afficherSimulation);
-        document.getElementById('envoyerBtn').addEventListener('click', function() {
-            const resultsDiv = document.getElementById('simulationResults');
-            if (!resultsDiv.classList.contains('show')) {
-                alert('Veuillez d’abord simuler votre crédit avant d’envoyer votre demande.');
-                return;
+            for (let i = Math.max(max, totalRows - max); i < totalRows; i++) {
+                const cells = rows[i].querySelectorAll('td');
+                lignes.push(
+                    `Mois ${cells[0].textContent} : ${cells[1].textContent} (int. ${cells[2].textContent}, cap. ${cells[3].textContent}, reste ${cells[4].textContent})`
+                );
             }
-            const email = document.getElementById('email').value.trim();
-            if (!email || !email.includes('@')) {
-                alert('L’adresse e-mail est invalide.');
-                return;
+            corps += lignes.join('\n');
+        } else {
+            corps += `(Aucune échéance détaillée)`;
+        }
+
+        const sujet = encodeURIComponent('Demande de prêt – Simulation Financió');
+        const corpsEncoded = encodeURIComponent(corps);
+        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${sujet}&body=${corpsEncoded}`;
+
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 5000);
+    }
+
+    // ----- ÉVÉNEMENTS -----
+    document.getElementById('simulerBtn').addEventListener('click', afficherSimulation);
+    document.getElementById('envoyerBtn').addEventListener('click', function() {
+        const resultsDiv = document.getElementById('simulationResults');
+        if (!resultsDiv.classList.contains('show')) {
+            alert('Veuillez d’abord simuler votre crédit avant d’envoyer votre demande.');
+            return;
+        }
+        const email = document.getElementById('email').value.trim();
+        if (!email || !email.includes('@')) {
+            alert('L’adresse e-mail est invalide.');
+            return;
+        }
+        envoyerParEmail();
+    });
+
+    document.querySelectorAll('#email, #telephone').forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('simulerBtn').click();
             }
-            envoyerParEmail();
         });
+    });
 
-        document.querySelectorAll('#email, #telephone').forEach(input => {
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    document.getElementById('simulerBtn').click();
-                }
-            });
-        });
+    // ----- CHATBOT -----
+    const chatToggle = document.getElementById('chatToggle');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatClose = document.getElementById('chatClose');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatMessages = document.getElementById('chatMessages');
 
-        // ----- CHATBOT IA -----
-        const chatToggle = document.getElementById('chatToggle');
-        const chatWindow = document.getElementById('chatWindow');
-        const chatClose = document.getElementById('chatClose');
-        const chatInput = document.getElementById('chatInput');
-        const chatSend = document.getElementById('chatSend');
-        const chatMessages = document.getElementById('chatMessages');
+    const botReplies = {
+        'taux': 'Notre taux d’intérêt est fixe à **3 %** pour tous nos crédits.',
+        'durée': 'Vous pouvez choisir une durée de remboursement entre **3 et 360 mois** selon votre projet.',
+        'montant': 'Le montant maximum que nous finançons est de **350 000 €**. Utilisez le curseur sur la page pour simuler.',
+        'document': 'Les documents demandés sont : carte d’identité, code fiscal et justificatif de revenu. Vous pouvez les télécharger directement dans le formulaire.',
+        'simulation': 'La simulation se fait en cliquant sur « Simuler mon crédit » après avoir rempli le formulaire. Vous obtiendrez votre mensualité et le tableau d’amortissement.',
+        'contact': 'Vous pouvez nous joindre par WhatsApp au +229 61 44 35 97 ou par e-mail à otezaolga@gmail.com.',
+        'délai': 'Après validation de votre dossier, le versement est effectué dans les plus brefs délais (généralement sous 48h).',
+        'urgence': 'Pour une urgence, contactez-nous directement par WhatsApp, nous traitons les demandes prioritairement.',
+        'sécurité': 'Vos données sont protégées conformément au RGPD. Nous ne partageons aucune information avec des tiers.'
+    };
 
-        // Réponses du bot (base de connaissances)
-        const botReplies = {
-            'taux': 'Notre taux d’intérêt est fixe à **3 %** pour tous nos crédits.',
-            'durée': 'Vous pouvez choisir une durée de remboursement entre **3 et 360 mois** selon votre projet.',
-            'montant': 'Le montant maximum que nous finançons est de **350 000 €**. Utilisez le curseur sur la page pour simuler.',
-            'document': 'Les documents demandés sont : carte d’identité, code fiscal et justificatif de revenu. Vous pouvez les télécharger directement dans le formulaire.',
-            'simulation': 'La simulation se fait en cliquant sur « Simuler mon crédit » après avoir rempli le formulaire. Vous obtiendrez votre mensualité et le tableau d’amortissement.',
-            'contact': 'Vous pouvez nous joindre par WhatsApp au +229 61 44 35 97 ou par e-mail à otezaolga@gmail.com.',
-            'délai': 'Après validation de votre dossier, le versement est effectué dans les plus brefs délais (généralement sous 48h).',
-            'urgence': 'Pour une urgence, contactez-nous directement par WhatsApp, nous traitons les demandes prioritairement.',
-            'sécurité': 'Vos données sont protégées conformément au RGPD. Nous ne partageons aucune information avec des tiers.'
-        };
+    function getBotReply(userMessage) {
+        const msg = userMessage.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (msg.includes('taux') || msg.includes('pourcentage') || msg.includes('%')) return botReplies.taux;
+        if (msg.includes('durée') || msg.includes('mois') || msg.includes('année') || msg.includes('remboursement')) return botReplies.durée;
+        if (msg.includes('montant') || msg.includes('somme') || msg.includes('max') || msg.includes('maximum')) return botReplies.montant;
+        if (msg.includes('document') || msg.includes('papier') || msg.includes('justificatif') || msg.includes('identité') || msg.includes('carte')) return botReplies.document;
+        if (msg.includes('simulation') || msg.includes('simuler') || msg.includes('calcul') || msg.includes('mensualité')) return botReplies.simulation;
+        if (msg.includes('contact') || msg.includes('joindre') || msg.includes('email') || msg.includes('adresse') || msg.includes('telephone')) return botReplies.contact;
+        if (msg.includes('délai') || msg.includes('temps') || msg.includes('versement') || msg.includes('rapide')) return botReplies.délai;
+        if (msg.includes('urgent') || msg.includes('urgence') || msg.includes('vite')) return botReplies.urgence;
+        if (msg.includes('sécurité') || msg.includes('confidentiel') || msg.includes('rgpd') || msg.includes('donnée')) return botReplies.sécurité;
+        return "Je n’ai pas compris votre question. Pour toute demande précise, n’hésitez pas à contacter notre service client par WhatsApp ou par e-mail. Je suis là pour vous guider sur nos offres de crédit, les taux, les documents et les simulations.";
+    }
 
-        // Mots-clés pour déclencher les réponses
-        function getBotReply(userMessage) {
-            const msg = userMessage.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            if (msg.includes('taux') || msg.includes('pourcentage') || msg.includes('%')) return botReplies.taux;
-            if (msg.includes('durée') || msg.includes('mois') || msg.includes('année') || msg.includes('remboursement')) return botReplies.durée;
-            if (msg.includes('montant') || msg.includes('somme') || msg.includes('max') || msg.includes('maximum')) return botReplies.montant;
-            if (msg.includes('document') || msg.includes('papier') || msg.includes('justificatif') || msg.includes('identité') || msg.includes('carte')) return botReplies.document;
-            if (msg.includes('simulation') || msg.includes('simuler') || msg.includes('calcul') || msg.includes('mensualité')) return botReplies.simulation;
-            if (msg.includes('contact') || msg.includes('joindre') || msg.includes('email') || msg.includes('adresse') || msg.includes('telephone')) return botReplies.contact;
-            if (msg.includes('délai') || msg.includes('temps') || msg.includes('versement') || msg.includes('rapide')) return botReplies.délai;
-            if (msg.includes('urgent') || msg.includes('urgence') || msg.includes('vite')) return botReplies.urgence;
-            if (msg.includes('sécurité') || msg.includes('confidentiel') || msg.includes('rgpd') || msg.includes('donnée')) return botReplies.sécurité;
-            return "Je n’ai pas compris votre question. Pour toute demande précise, n’hésitez pas à contacter notre service client par WhatsApp ou par e-mail. Je suis là pour vous guider sur nos offres de crédit, les taux, les documents et les simulations.";
-        }
+    function addMessage(sender, text) {
+        const div = document.createElement('div');
+        div.className = `chat-message ${sender}`;
+        div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 
-        function addMessage(sender, text) {
-            const div = document.createElement('div');
-            div.className = `chat-message ${sender}`;
-            div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            chatMessages.appendChild(div);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+    function handleUserMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        addMessage('user', text);
+        chatInput.value = '';
+        setTimeout(() => {
+            const reply = getBotReply(text);
+            addMessage('bot', reply);
+        }, 500);
+    }
 
-        function handleUserMessage() {
-            const text = chatInput.value.trim();
-            if (!text) return;
-            addMessage('user', text);
-            chatInput.value = '';
-            // Simuler un temps de réponse
-            setTimeout(() => {
-                const reply = getBotReply(text);
-                addMessage('bot', reply);
-            }, 500);
-        }
+    chatToggle.addEventListener('click', () => chatWindow.classList.toggle('open'));
+    chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
+    chatSend.addEventListener('click', handleUserMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') handleUserMessage();
+    });
 
-        chatToggle.addEventListener('click', () => {
-            chatWindow.classList.toggle('open');
-        });
-        chatClose.addEventListener('click', () => {
-            chatWindow.classList.remove('open');
-        });
-        chatSend.addEventListener('click', handleUserMessage);
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleUserMessage();
-        });
+    addMessage('bot', 'Bonjour ! Je suis votre assistant virtuel. Posez-moi vos questions sur nos offres de crédit, les taux, les documents ou les délais.');
+</script>
 
-        // Message de bienvenue du bot
-        addMessage('bot', 'Bonjour ! Je suis votre assistant virtuel. Posez-moi vos questions sur nos offres de crédit, les taux, les documents ou les délais.');
-    </script>
 </body>
 </html>
