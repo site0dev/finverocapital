@@ -3,25 +3,6 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Financio — simulation de crédit en ligne pour les particuliers en Europe. Simulez votre financement, consultez vos échéances et découvrez les étapes d'une demande de crédit.">
-    <meta name="keywords" content="crédit, prêt, financement, simulation crédit, prêt personnel, crédit Europe, simulation prêt, mensualité">
-    <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta name="author" content="Financio">
-    <meta name="theme-color" content="#0f2b4b">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="Financio — Simulation de crédit en Europe">
-    <meta property="og:description" content="Simulez votre crédit en ligne et consultez une estimation de vos mensualités.">
-    <meta property="og:locale" content="fr_FR">
-    <meta name="twitter:card" content="summary">
-    <link rel="alternate" hreflang="fr" href="./">
-    <link rel="alternate" hreflang="en" href="./">
-    <link rel="alternate" hreflang="de" href="./">
-    <link rel="alternate" hreflang="es" href="./">
-    <link rel="alternate" hreflang="it" href="./">
-    <link rel="alternate" hreflang="pt" href="./">
-    <link rel="alternate" hreflang="nl" href="./">
-    <link rel="alternate" hreflang="x-default" href="./">
-
     <title>Financio – Simulation de crédit</title>
     <style>
         * {
@@ -72,9 +53,6 @@
             border-radius: 30px;
         }
 
-        /* ============================================================ */
-        /* 1. HERO (image 1) */
-        /* ============================================================ */
         .hero {
             display: flex;
             flex-wrap: wrap;
@@ -116,9 +94,6 @@
             font-weight: 600;
         }
 
-        /* ============================================================ */
-        /* 2. FORMULAIRE (simulateur) */
-        /* ============================================================ */
         .form-section {
             background: #f9fbfe;
             border-radius: 24px;
@@ -211,13 +186,14 @@
             width: 100%;
         }
 
+        /* Nouveau : recherche + sélecteur séparés */
         .phone-wrapper {
             display: flex;
             flex-direction: column;
             gap: 0.3rem;
             width: 100%;
         }
-        .phone-wrapper input[type="text"] {
+        .phone-wrapper .country-search {
             padding: 0.8rem 1rem;
             border: 1.5px solid #dce3ed;
             border-radius: 14px;
@@ -226,8 +202,25 @@
             outline: none;
             width: 100%;
         }
-        .phone-wrapper input[type="text"]:focus {
+        .phone-wrapper .country-search:focus {
             border-color: #2a7de1;
+            box-shadow: 0 0 0 3px rgba(42, 125, 225, 0.12);
+        }
+        .phone-wrapper select {
+            padding: 0.8rem 1rem;
+            border: 1.5px solid #dce3ed;
+            border-radius: 14px;
+            font-size: 1rem;
+            background: #ffffff;
+            outline: none;
+            width: 100%;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .phone-wrapper select:focus {
+            border-color: #2a7de1;
+            box-shadow: 0 0 0 3px rgba(42, 125, 225, 0.12);
         }
         .phone-wrapper input[type="tel"] {
             padding: 0.8rem 1rem;
@@ -240,15 +233,6 @@
         }
         .phone-wrapper input[type="tel"]:focus {
             border-color: #2a7de1;
-        }
-        .phone-hint {
-            font-size: 0.8rem;
-            color: #8ba0b9;
-            margin-top: 0.2rem;
-        }
-        .phone-hint.active {
-            color: #1f5fbd;
-            font-weight: 500;
         }
 
         .form-actions {
@@ -379,9 +363,6 @@
             border-top: 1px solid #e9edf4;
         }
 
-        /* ============================================================ */
-        /* 3. DEMANDE DE CRÉDIT ENTIÈREMENT EN LIGNE (3 étapes) */
-        /* ============================================================ */
         .steps-after-form {
             margin: 2rem 0 2rem;
             padding-top: 1.5rem;
@@ -413,9 +394,6 @@
             line-height: 1.6;
         }
 
-        /* ============================================================ */
-        /* 4. FINI LA PAPERASSE (image 2) */
-        /* ============================================================ */
         .promo-banner {
             background: #eaf2ff;
             border-radius: 16px;
@@ -448,9 +426,6 @@
             display: block;
         }
 
-        /* ============================================================ */
-        /* 5. POURQUOI CHOISIR FINANCIO (image 3) */
-        /* ============================================================ */
         .trust-section {
             margin-top: 2rem;
             padding-top: 2rem;
@@ -494,7 +469,6 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
-        /* FLOATING BUTTONS */
         .floating-btn {
             position: fixed;
             width: 60px;
@@ -657,54 +631,105 @@
             .trust-content h2 { font-size: 1.6rem; }
         }
         @media (max-width: 450px) {
-            .phone-wrapper input[type="text"] { font-size: 0.9rem; padding: 0.7rem 0.8rem; }
+            .phone-wrapper select,
+            .phone-wrapper .country-search {
+                font-size: 0.9rem;
+                padding: 0.7rem 0.8rem;
+            }
         }
 
-        /* IDENTITÉ PROFESSIONNELLE / EUROPE */
         .brand-meta { display:flex; flex-direction:column; gap:.15rem; }
         .brand-subtitle { font-size:.72rem; color:#7b8da3; letter-spacing:.03em; }
-        .legal-footer { 
-            margin-top: 1.2rem; 
-            padding-top: 1rem; 
-            border-top: 1px solid #e9edf4; 
+        .legal-footer {
+            margin-top: 1.2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9edf4;
         }
-        .legal-footer nav { 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: .7rem 1.2rem; 
-            margin-bottom: .5rem; 
+        .legal-footer nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .7rem 1.2rem;
+            margin-bottom: .5rem;
         }
-        .legal-footer nav button { 
-            border: 0; 
-            background: none; 
-            color: #315f91; 
-            cursor: pointer; 
-            padding: 0; 
-            font: inherit; 
+        .legal-footer nav button {
+            border: 0;
+            background: none;
+            color: #315f91;
+            cursor: pointer;
+            padding: 0;
+            font: inherit;
             font-size: 0.9rem;
         }
         .legal-footer nav button:hover {
             text-decoration: underline;
         }
-        .legal-footer small { 
-            color: #8ba0b9; 
-            line-height: 1.6; 
+        .legal-footer small {
+            color: #8ba0b9;
+            line-height: 1.6;
             font-size: 0.85rem;
         }
         .language-indicator { font-size:.75rem; color:#5b6f87; margin-top:.15rem; }
+
+        /* Modale Mentions légales */
+        .legal-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,43,75,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 2000;
+        }
+        .legal-modal.open {
+            display: flex;
+        }
+        .legal-card {
+            background: #fff;
+            width: min(900px, 100%);
+            max-height: 88vh;
+            overflow-y: auto;
+            border-radius: 22px;
+            padding: 2rem 2.5rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            position: relative;
+        }
+        .legal-card .legal-close {
+            position: sticky;
+            top: 0;
+            float: right;
+            border: 0;
+            background: #eef3f9;
+            color: #0f2b4b;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+        .legal-card h2 {
+            color: #0f2b4b;
+            margin-bottom: 1.2rem;
+            font-size: 1.6rem;
+        }
+        .legal-card h3 {
+            color: #0f2b4b;
+            margin: 1.2rem 0 0.4rem;
+            font-size: 1.2rem;
+        }
+        .legal-card p, .legal-card li {
+            color: #3d556e;
+            line-height: 1.7;
+            margin-bottom: 0.6rem;
+        }
+        .legal-card ul {
+            padding-left: 1.5rem;
+        }
+        @media (max-width: 600px) {
+            .legal-card { padding: 1.5rem; }
+        }
     </style>
-
-    <script type="application/ld+json">
-    {
-      "@context":"https://schema.org",
-      "@type":"FinancialService",
-      "name":"Financio",
-      "description":"Simulation de crédit et service de demande de financement pour une clientèle européenne.",
-      "areaServed":["Europe"],
-      "url":"./"
-    }
-    </script>
-
 </head>
 <body>
 
@@ -714,15 +739,13 @@
     <header class="header">
         <div class="brand-meta">
             <div class="logo">Finan<span>cio</span></div>
-            <div class="brand-subtitle" data-i18n="brandSubtitle">Solutions de financement • Europe</div>
-            <div class="language-indicator" id="languageIndicator">FR</div>
+            <div class="brand-subtitle">Solutions de financement • Europe</div>
+            <div class="language-indicator">FR</div>
         </div>
-        <div class="tagline" data-i18n="secureTag">🔒 <span data-i18n="secureTagText">Sécurité et confidentialité</span></div>
+        <div class="tagline">🔒 100% sécurisé</div>
     </header>
 
-    <!-- ============================================================ -->
-    <!-- 1. HERO (image 1) -->
-    <!-- ============================================================ -->
+    <!-- HERO -->
     <section class="hero">
         <div class="hero-image">
             <img src="1.jpg" alt="Financement" loading="lazy" />
@@ -734,9 +757,7 @@
         </div>
     </section>
 
-    <!-- ============================================================ -->
-    <!-- 2. FORMULAIRE (simulateur) -->
-    <!-- ============================================================ -->
+    <!-- FORMULAIRE -->
     <section class="form-section">
         <h2>Remplissez le formulaire suivant</h2>
         <p class="sub">Ajustez le curseur pour le montant, la durée est libre.</p>
@@ -777,7 +798,7 @@
                 <div class="taux-static">3 %</div>
             </div>
 
-            <!-- Email & Téléphone avec barre de recherche -->
+            <!-- Email & Téléphone -->
             <div class="form-grid">
                 <div class="form-group">
                     <label for="email">Adresse e-mail</label>
@@ -787,13 +808,13 @@
                 <div class="form-group">
                     <label for="telephone">Numéro de téléphone</label>
                     <div class="phone-wrapper">
-                        <!-- Champ de recherche avec datalist -->
-                        <input type="text" id="countrySearch" list="country-list" placeholder="Rechercher un pays..." autocomplete="off" />
-                        <datalist id="country-list"></datalist>
-
-                        <input type="tel" id="telephone" placeholder="6 12 34 56 78" maxlength="10">
+                        <!-- Champ de recherche -->
+                        <input type="text" class="country-search" id="countrySearch" placeholder="Rechercher un pays..." autocomplete="off" />
+                        <!-- Sélecteur -->
+                        <select id="countrySelect"></select>
+                        <!-- Champ téléphone -->
+                        <input type="tel" id="telephone" placeholder="Votre numéro" />
                     </div>
-                    <div class="phone-hint" id="phoneHint">Format : 10 chiffres</div>
                 </div>
             </div>
 
@@ -839,9 +860,7 @@
         </div>
     </section>
 
-    <!-- ============================================================ -->
-    <!-- 3. DEMANDE DE CRÉDIT ENTIÈREMENT EN LIGNE (3 étapes) -->
-    <!-- ============================================================ -->
+    <!-- 3 ÉTAPES -->
     <div class="steps-after-form">
         <h3>📋 Demande de crédit entièrement en ligne</h3>
         <div class="steps-grid">
@@ -860,9 +879,7 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- 4. FINI LA PAPERASSE (image 2) -->
-    <!-- ============================================================ -->
+    <!-- FINI LA PAPERASSE -->
     <div class="promo-banner">
         <div class="promo-image">
             <img src="2.jpg" alt="Documents" loading="lazy" />
@@ -878,9 +895,7 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- 5. POURQUOI CHOISIR FINANCIO (image 3) -->
-    <!-- ============================================================ -->
+    <!-- POURQUOI CHOISIR FINANCIO -->
     <section class="trust-section">
         <div class="trust-content">
             <h2>Pourquoi choisir Financio ?</h2>
@@ -903,18 +918,43 @@
         </div>
     </section>
 
-    <!-- ============================================================ -->
-    <!-- FOOTER ÉPURÉ (texte supprimé) -->
-    <!-- ============================================================ -->
+    <!-- FOOTER -->
     <footer class="legal-footer">
         <nav>
-            <button type="button" data-legal="mentions">Mentions légales</button>
+            <button type="button" id="legalMentionsBtn">Mentions légales</button>
             <button type="button" data-legal="privacy">Politique de confidentialité</button>
             <button type="button" data-legal="terms">Conditions d'utilisation</button>
             <button type="button" data-legal="credit">Informations crédit</button>
         </nav>
         <small>Financio © 2026 — Service de simulation et de demande de financement.</small>
     </footer>
+</div>
+
+<!-- MODALE MENTIONS LÉGALES -->
+<div class="legal-modal" id="legalModal">
+    <div class="legal-card">
+        <button class="legal-close" id="legalClose">✕</button>
+        <h2>Mentions légales — Financio</h2>
+        <p>Le site Financio est destiné à présenter les services, fonctionnalités et informations proposés par Financio.</p>
+
+        <h3>Propriété intellectuelle</h3>
+        <p>L'ensemble des contenus présents sur ce site, notamment les textes, images, éléments graphiques, logos, icônes et éléments de conception, est protégé par les dispositions applicables en matière de propriété intellectuelle.</p>
+        <p>Toute reproduction, modification, distribution ou utilisation, totale ou partielle, sans autorisation préalable est interdite.</p>
+
+        <h3>Données personnelles</h3>
+        <p>Les informations éventuellement communiquées par l'utilisateur via les moyens de contact présents sur le site sont utilisées uniquement dans le cadre du traitement de sa demande.</p>
+        <p>Financio s'engage à traiter les données personnelles conformément aux dispositions applicables en matière de protection des données.</p>
+
+        <h3>Responsabilité</h3>
+        <p>Financio s'efforce de maintenir des informations exactes et à jour sur son site. Toutefois, aucune garantie ne peut être apportée quant à l'exhaustivité ou à l'absence d'erreurs dans les informations publiées.</p>
+        <p>L'utilisateur reconnaît utiliser le site sous sa propre responsabilité.</p>
+
+        <h3>Liens externes</h3>
+        <p>Le site peut contenir des liens vers des services ou sites tiers. Financio ne peut être tenu responsable du contenu, du fonctionnement ou des pratiques de ces services externes.</p>
+
+        <h3>Contact</h3>
+        <p>Pour toute question concernant le site, ses contenus ou les services proposés, l'utilisateur peut contacter Financio via les moyens de contact disponibles sur le site.</p>
+    </div>
 </div>
 
 <!-- WHATSAPP -->
@@ -945,11 +985,11 @@
 <div id="toast" class="toast">📨 Demande envoyée avec succès !</div>
 
 <script>
-    // ----- CONSTANTES -----
+    // ===== CONSTANTES =====
     const TAUX_FIXE = 3.0;
     const CONTACT_EMAIL = 'otezaolga@gmail.com';
 
-    // ----- SLIDERS -----
+    // ===== SLIDERS =====
     const montantSlider = document.getElementById('montantSlider');
     const dureeSlider = document.getElementById('dureeSlider');
     const montantDisplay = document.getElementById('montantDisplay');
@@ -966,127 +1006,109 @@
     updateMontant();
     updateDuree();
 
-    // ----- LISTE DES PAYS (pour datalist) -----
-    const countryList = [
-        { code: "AL", dial: "+355", length: "8-9", label: "Albanie" },
-        { code: "AD", dial: "+376", length: "6", label: "Andorre" },
-        { code: "AM", dial: "+374", length: "8", label: "Arménie" },
-        { code: "AT", dial: "+43", length: "10-11", label: "Autriche" },
-        { code: "AZ", dial: "+994", length: "9", label: "Azerbaïdjan" },
-        { code: "BY", dial: "+375", length: "9", label: "Biélorussie" },
-        { code: "BE", dial: "+32", length: "9", label: "Belgique" },
-        { code: "BA", dial: "+387", length: "8", label: "Bosnie-Herzégovine" },
-        { code: "BG", dial: "+359", length: "8-9", label: "Bulgarie" },
-        { code: "CY", dial: "+357", length: "8", label: "Chypre" },
-        { code: "HR", dial: "+385", length: "8-9", label: "Croatie" },
-        { code: "CZ", dial: "+420", length: "9", label: "République tchèque" },
-        { code: "DK", dial: "+45", length: "8", label: "Danemark" },
-        { code: "EE", dial: "+372", length: "7-8", label: "Estonie" },
-        { code: "FI", dial: "+358", length: "9-10", label: "Finlande" },
-        { code: "FR", dial: "+33", length: "9", label: "France" },
-        { code: "GE", dial: "+995", length: "9", label: "Géorgie" },
-        { code: "DE", dial: "+49", length: "10-11", label: "Allemagne" },
-        { code: "GR", dial: "+30", length: "10", label: "Grèce" },
-        { code: "HU", dial: "+36", length: "9", label: "Hongrie" },
-        { code: "IS", dial: "+354", length: "7", label: "Islande" },
-        { code: "IE", dial: "+353", length: "9", label: "Irlande" },
-        { code: "IT", dial: "+39", length: "9-10", label: "Italie" },
-        { code: "KZ", dial: "+7", length: "10", label: "Kazakhstan" },
-        { code: "XK", dial: "+383", length: "8", label: "Kosovo" },
-        { code: "LV", dial: "+371", length: "8", label: "Lettonie" },
-        { code: "LI", dial: "+423", length: "7", label: "Liechtenstein" },
-        { code: "LT", dial: "+370", length: "8", label: "Lituanie" },
-        { code: "LU", dial: "+352", length: "9", label: "Luxembourg" },
-        { code: "MT", dial: "+356", length: "8", label: "Malte" },
-        { code: "MD", dial: "+373", length: "8", label: "Moldavie" },
-        { code: "MC", dial: "+377", length: "8-9", label: "Monaco" },
-        { code: "ME", dial: "+382", length: "8", label: "Monténégro" },
-        { code: "NL", dial: "+31", length: "9", label: "Pays-Bas" },
-        { code: "MK", dial: "+389", length: "8", label: "Macédoine du Nord" },
-        { code: "NO", dial: "+47", length: "8", label: "Norvège" },
-        { code: "PL", dial: "+48", length: "9", label: "Pologne" },
-        { code: "PT", dial: "+351", length: "9", label: "Portugal" },
-        { code: "RO", dial: "+40", length: "9", label: "Roumanie" },
-        { code: "RU", dial: "+7", length: "10", label: "Russie" },
-        { code: "SM", dial: "+378", length: "10", label: "Saint-Marin" },
-        { code: "RS", dial: "+381", length: "8-9", label: "Serbie" },
-        { code: "SK", dial: "+421", length: "9", label: "Slovaquie" },
-        { code: "SI", dial: "+386", length: "8", label: "Slovénie" },
-        { code: "ES", dial: "+34", length: "9", label: "Espagne" },
-        { code: "SE", dial: "+46", length: "9-10", label: "Suède" },
-        { code: "CH", dial: "+41", length: "9", label: "Suisse" },
-        { code: "TR", dial: "+90", length: "10", label: "Turquie" },
-        { code: "UA", dial: "+380", length: "9", label: "Ukraine" },
-        { code: "GB", dial: "+44", length: "10", label: "Royaume-Uni" },
-        { code: "VA", dial: "+39", length: "10", label: "Vatican" }
+    // ===== PAYS EUROPÉENS =====
+    const europeanCountries = [
+        { code: "AL", dial: "+355", label: "Albanie" },
+        { code: "AD", dial: "+376", label: "Andorre" },
+        { code: "AM", dial: "+374", label: "Arménie" },
+        { code: "AT", dial: "+43", label: "Autriche" },
+        { code: "AZ", dial: "+994", label: "Azerbaïdjan" },
+        { code: "BY", dial: "+375", label: "Biélorussie" },
+        { code: "BE", dial: "+32", label: "Belgique" },
+        { code: "BA", dial: "+387", label: "Bosnie-Herzégovine" },
+        { code: "BG", dial: "+359", label: "Bulgarie" },
+        { code: "CY", dial: "+357", label: "Chypre" },
+        { code: "HR", dial: "+385", label: "Croatie" },
+        { code: "CZ", dial: "+420", label: "République tchèque" },
+        { code: "DK", dial: "+45", label: "Danemark" },
+        { code: "EE", dial: "+372", label: "Estonie" },
+        { code: "FI", dial: "+358", label: "Finlande" },
+        { code: "FR", dial: "+33", label: "France" },
+        { code: "GE", dial: "+995", label: "Géorgie" },
+        { code: "DE", dial: "+49", label: "Allemagne" },
+        { code: "GR", dial: "+30", label: "Grèce" },
+        { code: "HU", dial: "+36", label: "Hongrie" },
+        { code: "IS", dial: "+354", label: "Islande" },
+        { code: "IE", dial: "+353", label: "Irlande" },
+        { code: "IT", dial: "+39", label: "Italie" },
+        { code: "KZ", dial: "+7", label: "Kazakhstan" },
+        { code: "XK", dial: "+383", label: "Kosovo" },
+        { code: "LV", dial: "+371", label: "Lettonie" },
+        { code: "LI", dial: "+423", label: "Liechtenstein" },
+        { code: "LT", dial: "+370", label: "Lituanie" },
+        { code: "LU", dial: "+352", label: "Luxembourg" },
+        { code: "MT", dial: "+356", label: "Malte" },
+        { code: "MD", dial: "+373", label: "Moldavie" },
+        { code: "MC", dial: "+377", label: "Monaco" },
+        { code: "ME", dial: "+382", label: "Monténégro" },
+        { code: "NL", dial: "+31", label: "Pays-Bas" },
+        { code: "MK", dial: "+389", label: "Macédoine du Nord" },
+        { code: "NO", dial: "+47", label: "Norvège" },
+        { code: "PL", dial: "+48", label: "Pologne" },
+        { code: "PT", dial: "+351", label: "Portugal" },
+        { code: "RO", dial: "+40", label: "Roumanie" },
+        { code: "RU", dial: "+7", label: "Russie" },
+        { code: "SM", dial: "+378", label: "Saint-Marin" },
+        { code: "RS", dial: "+381", label: "Serbie" },
+        { code: "SK", dial: "+421", label: "Slovaquie" },
+        { code: "SI", dial: "+386", label: "Slovénie" },
+        { code: "ES", dial: "+34", label: "Espagne" },
+        { code: "SE", dial: "+46", label: "Suède" },
+        { code: "CH", dial: "+41", label: "Suisse" },
+        { code: "TR", dial: "+90", label: "Turquie" },
+        { code: "UA", dial: "+380", label: "Ukraine" },
+        { code: "GB", dial: "+44", label: "Royaume-Uni" },
+        { code: "VA", dial: "+39", label: "Vatican" }
     ];
 
-    // ----- Remplir le datalist -----
-    const datalist = document.getElementById('country-list');
-    countryList.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.label + ' ' + c.dial;
-        opt.dataset.value = c.code + '|' + c.dial + '|' + c.length;
-        datalist.appendChild(opt);
-    });
-
-    // ----- Gestion du pays sélectionné -----
+    // ===== Remplir le sélecteur =====
+    const countrySelect = document.getElementById('countrySelect');
     const countrySearch = document.getElementById('countrySearch');
-    const phoneInput = document.getElementById('telephone');
-    const phoneHint = document.getElementById('phoneHint');
+    const allOptions = [];
 
-    let currentCountry = countryList.find(c => c.code === 'FR');
+    europeanCountries.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.code + '|' + c.dial;
+        opt.textContent = c.label + ' ' + c.dial;
+        countrySelect.appendChild(opt);
+        allOptions.push(opt);
+    });
 
-    function getLengthRule(value) {
-        const raw = String(value || '');
-        const parts = raw.split('-').map(Number);
-        return parts.length === 2 ? { min: parts[0], max: parts[1] } : { min: parts[0], max: parts[0] };
-    }
+    // Sélectionner France par défaut
+    const frIndex = europeanCountries.findIndex(c => c.code === 'FR');
+    if (frIndex !== -1) countrySelect.selectedIndex = frIndex;
 
-    function updatePhoneRules(country) {
-        if (!country) return;
-        const rule = getLengthRule(country.length);
-        phoneInput.maxLength = rule.max;
-        phoneInput.minLength = rule.min;
-        phoneInput.placeholder = rule.min === rule.max
-            ? `${rule.min} chiffres`
-            : `${rule.min} à ${rule.max} chiffres`;
-        phoneHint.textContent = `Format : ${rule.min === rule.max ? rule.min + ' chiffres' : rule.min + ' à ' + rule.max + ' chiffres'}`;
-        phoneHint.classList.add('active');
-        phoneInput.value = '';
-        countrySearch.value = country.label + ' ' + country.dial;
-        currentCountry = country;
-    }
-
+    // ===== Filtrage via la recherche =====
     countrySearch.addEventListener('input', function() {
-        const inputValue = this.value.trim();
-        const found = countryList.find(c => {
-            const full = c.label + ' ' + c.dial;
-            return full === inputValue;
+        const search = this.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        countrySelect.innerHTML = '';
+        allOptions.forEach(opt => {
+            const text = opt.textContent.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            const val = opt.value.toLowerCase();
+            if (text.includes(search) || val.includes(search)) {
+                const clone = opt.cloneNode(true);
+                countrySelect.appendChild(clone);
+            }
         });
-        if (found) {
-            updatePhoneRules(found);
+        // Si aucun résultat, on laisse vide
+        if (countrySelect.options.length === 0) {
+            const emptyOpt = document.createElement('option');
+            emptyOpt.textContent = 'Aucun pays trouvé';
+            emptyOpt.disabled = true;
+            countrySelect.appendChild(emptyOpt);
+        }
+        // Sélectionner le premier si disponible
+        if (countrySelect.options.length > 0 && !countrySelect.options[0].disabled) {
+            countrySelect.selectedIndex = 0;
         }
     });
 
-    countrySearch.addEventListener('change', function() {
-        const inputValue = this.value.trim();
-        const found = countryList.find(c => {
-            const full = c.label + ' ' + c.dial;
-            return full === inputValue;
-        });
-        if (found) {
-            updatePhoneRules(found);
-        }
-    });
+    // ===== CHAMP TÉLÉPHONE SANS CONTRAINTE =====
+    const phoneInput = document.getElementById('telephone');
+    phoneInput.removeAttribute('maxlength');
+    phoneInput.removeAttribute('minlength');
 
-    updatePhoneRules(countryList.find(c => c.code === 'FR'));
-
-    phoneInput.addEventListener('input', () => {
-        phoneInput.value = phoneInput.value.replace(/\D/g, '');
-    });
-
-    // ----- SIMULATEUR -----
+    // ===== SIMULATEUR =====
     function calculerMensualite(montant, dureeMois, tauxAnnuel) {
         const tauxMensuel = tauxAnnuel / 100 / 12;
         if (tauxMensuel === 0) return montant / dureeMois;
@@ -1121,14 +1143,13 @@
         const taux = TAUX_FIXE;
         const email = document.getElementById('email').value.trim();
         const telephone = phoneInput.value.trim();
-        const rule = getLengthRule(currentCountry.length);
 
         if (!email || !email.includes('@')) {
             alert('Veuillez entrer une adresse e-mail valide.');
             return;
         }
-        if (!telephone || !/^\d+$/.test(telephone) || telephone.length < rule.min || telephone.length > rule.max) {
-            alert(`Veuillez entrer un numéro de téléphone valide (${rule.min === rule.max ? rule.min : rule.min + ' à ' + rule.max} chiffres).`);
+        if (!telephone) {
+            alert('Veuillez entrer un numéro de téléphone.');
             return;
         }
 
@@ -1157,7 +1178,7 @@
         document.getElementById('simulationResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // ----- ENVOI PAR MAIL -----
+    // ===== ENVOI PAR MAIL =====
     function envoyerParEmail() {
         const fileId = document.getElementById('docId');
         const fileTax = document.getElementById('docTax');
@@ -1172,8 +1193,9 @@
         const duree = dureeSlider.value;
         const taux = TAUX_FIXE;
         const email = document.getElementById('email').value.trim();
-        const countryLabel = currentCountry.label;
-        const dialCode = currentCountry.dial;
+        const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+        const countryLabel = selectedOption ? selectedOption.text : 'France +33';
+        const dialCode = selectedOption ? selectedOption.value.split('|')[1] : '+33';
         const telephone = phoneInput.value.trim();
 
         const idName = fileId.files[0].name;
@@ -1234,7 +1256,7 @@
         setTimeout(() => toast.classList.remove('show'), 5000);
     }
 
-    // ----- ÉVÉNEMENTS -----
+    // ===== ÉVÉNEMENTS =====
     document.getElementById('simulerBtn').addEventListener('click', afficherSimulation);
     document.getElementById('envoyerBtn').addEventListener('click', function() {
         const resultsDiv = document.getElementById('simulationResults');
@@ -1259,129 +1281,24 @@
         });
     });
 
-    // ----- MULTILINGUE AUTOMATIQUE -----
-    const translations = {
-        fr: {
-            brandSubtitle:"Solutions de financement • Europe", secureTag:"🔒 100% sécurisé",
-            legalNotice:"Mentions légales", privacy:"Politique de confidentialité", terms:"Conditions d'utilisation",
-            creditInfo:"Informations crédit", footerText:"Service de simulation et de demande de financement.",
-            legalPlaceholder:"",
-            heroTitle:"Avez-vous besoin <br><span>d'un financement</span> ?", heroDesc:"Simulez votre crédit en quelques secondes, sans engagement.",
-            response:"✅ Réponse sous 24h", formTitle:"Remplissez le formulaire suivant",
-            formSub:"Ajustez le curseur pour le montant, la durée est libre.", simulate:"📊 Simuler mon crédit",
-            send:"📩 Envoyer ma demande", assistant:"🤖 Assistant Financio", email:"Adresse e-mail",
-            phone:"Numéro de téléphone", documents:"📎 Téléchargez vos documents"
-        },
-        en: {
-            brandSubtitle:"Financing solutions • Europe", secureTag:"🔒 100% secure",
-            legalNotice:"Legal notice", privacy:"Privacy policy", terms:"Terms of use",
-            creditInfo:"Credit information", footerText:"Financing simulation and application service.",
-            legalPlaceholder:"",
-            heroTitle:"Do you need <br><span>financing</span> ?", heroDesc:"Simulate your credit in seconds, with no obligation.",
-            response:"✅ Response within 24h", formTitle:"Complete the following form",
-            formSub:"Adjust the amount slider; the term is flexible.", simulate:"📊 Simulate my credit",
-            send:"📩 Submit my application", assistant:"🤖 Financio Assistant", email:"Email address",
-            phone:"Phone number", documents:"📎 Upload your documents"
-        },
-        de: {
-            brandSubtitle:"Finanzierungslösungen • Europa", secureTag:"🔒 100 % sicher",
-            legalNotice:"Impressum", privacy:"Datenschutzerklärung", terms:"Nutzungsbedingungen",
-            creditInfo:"Kreditinformationen", footerText:"Kreditsimulation und Finanzierungsantrag.",
-            legalPlaceholder:"",
-            heroTitle:"Benötigen Sie <br><span>eine Finanzierung</span> ?", heroDesc:"Simulieren Sie Ihren Kredit in wenigen Sekunden, unverbindlich.",
-            response:"✅ Antwort innerhalb von 24 Std.", formTitle:"Füllen Sie das folgende Formular aus",
-            formSub:"Betrag einstellen; Laufzeit frei wählbar.", simulate:"📊 Kredit simulieren",
-            send:"📩 Antrag senden", assistant:"🤖 Financio Assistent", email:"E-Mail-Adresse",
-            phone:"Telefonnummer", documents:"📎 Dokumente hochladen"
-        },
-        es: {
-            brandSubtitle:"Soluciones de financiación • Europa", secureTag:"🔒 100 % seguro",
-            legalNotice:"Aviso legal", privacy:"Política de privacidad", terms:"Condiciones de uso",
-            creditInfo:"Información de crédito", footerText:"Servicio de simulación y solicitud de financiación.",
-            legalPlaceholder:"",
-            heroTitle:"¿Necesita <br><span>financiación</span> ?", heroDesc:"Simule su crédito en segundos, sin compromiso.",
-            response:"✅ Respuesta en 24 h", formTitle:"Complete el siguiente formulario",
-            formSub:"Ajuste el importe; el plazo es flexible.", simulate:"📊 Simular mi crédito",
-            send:"📩 Enviar mi solicitud", assistant:"🤖 Asistente Financio", email:"Dirección de correo",
-            phone:"Número de teléfono", documents:"📎 Suba sus documentos"
-        },
-        it: {
-            brandSubtitle:"Soluzioni di finanziamento • Europa", secureTag:"🔒 100% sicuro",
-            legalNotice:"Note legali", privacy:"Privacy", terms:"Condizioni d'uso",
-            creditInfo:"Informazioni sul credito", footerText:"Servizio di simulazione e richiesta di finanziamento.",
-            legalPlaceholder:"",
-            heroTitle:"Hai bisogno di <br><span>un finanziamento</span> ?", heroDesc:"Simula il tuo credito in pochi secondi, senza impegno.",
-            response:"✅ Risposta entro 24 ore", formTitle:"Compila il seguente modulo",
-            formSub:"Regola l'importo; la durata è flessibile.", simulate:"📊 Simula il mio credito",
-            send:"📩 Invia la richiesta", assistant:"🤖 Assistente Financio", email:"Indirizzo e-mail",
-            phone:"Numero di telefono", documents:"📎 Carica i documenti"
-        },
-        pt: {
-            brandSubtitle:"Soluções de financiamento • Europa", secureTag:"🔒 100% seguro",
-            legalNotice:"Aviso legal", privacy:"Política de privacidade", terms:"Termos de utilização",
-            creditInfo:"Informações de crédito", footerText:"Serviço de simulação e pedido de financiamento.",
-            legalPlaceholder:"",
-            heroTitle:"Precisa de <br><span>financiamento</span> ?", heroDesc:"Simule o seu crédito em segundos, sem compromisso.",
-            response:"✅ Resposta em 24h", formTitle:"Preencha o formulário seguinte",
-            formSub:"Ajuste o montante; o prazo é flexível.", simulate:"📊 Simular o meu crédito",
-            send:"📩 Enviar o meu pedido", assistant:"🤖 Assistente Financio", email:"Endereço de e-mail",
-            phone:"Número de telefone", documents:"📎 Carregue os seus documentos"
-        },
-        nl: {
-            brandSubtitle:"Financieringsoplossingen • Europa", secureTag:"🔒 100% veilig",
-            legalNotice:"Juridische informatie", privacy:"Privacybeleid", terms:"Gebruiksvoorwaarden",
-            creditInfo:"Kredietinformatie", footerText:"Service voor kredietsimulatie en financieringsaanvragen.",
-            legalPlaceholder:"",
-            heroTitle:"Heeft u <br><span>financiering</span> nodig?", heroDesc:"Simuleer uw krediet in enkele seconden, zonder verplichting.",
-            response:"✅ Antwoord binnen 24 uur", formTitle:"Vul het volgende formulier in",
-            formSub:"Pas het bedrag aan; de looptijd is flexibel.", simulate:"📊 Mijn krediet simuleren",
-            send:"📩 Mijn aanvraag verzenden", assistant:"🤖 Financio-assistent", email:"E-mailadres",
-            phone:"Telefoonnummer", documents:"📎 Documenten uploaden"
+    // ===== MODALE MENTIONS LÉGALES =====
+    const legalModal = document.getElementById('legalModal');
+    const legalMentionsBtn = document.getElementById('legalMentionsBtn');
+    const legalClose = document.getElementById('legalClose');
+
+    legalMentionsBtn.addEventListener('click', () => {
+        legalModal.classList.add('open');
+    });
+    legalClose.addEventListener('click', () => {
+        legalModal.classList.remove('open');
+    });
+    legalModal.addEventListener('click', (e) => {
+        if (e.target === legalModal) {
+            legalModal.classList.remove('open');
         }
-    };
-
-    const browserLanguage = (navigator.language || 'fr').toLowerCase().split('-')[0];
-    const activeLanguage = translations[browserLanguage] ? browserLanguage : 'en';
-    const t = translations[activeLanguage];
-
-    document.documentElement.lang = activeLanguage;
-    document.getElementById('languageIndicator').textContent = activeLanguage.toUpperCase();
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (t[key]) el.innerHTML = t[key];
     });
 
-    const heroTitle = document.querySelector('.hero-text h1');
-    const heroDesc = document.querySelector('.hero-text p');
-    const badge = document.querySelector('.hero-text .badge');
-    const formTitle = document.querySelector('.form-section h2');
-    const formSub = document.querySelector('.form-section .sub');
-    const emailLabel = document.querySelector('label[for="email"]');
-    const phoneLabel = document.querySelector('label[for="telephone"]');
-    const simBtn = document.getElementById('simulerBtn');
-    const sendBtn = document.getElementById('envoyerBtn');
-    const docsTitle = document.querySelector('.documents-upload h4');
-
-    if (heroTitle) heroTitle.innerHTML = t.heroTitle;
-    if (heroDesc) heroDesc.textContent = t.heroDesc;
-    if (badge) badge.textContent = t.response;
-    if (formTitle) formTitle.textContent = t.formTitle;
-    if (formSub) formSub.textContent = t.formSub;
-    if (emailLabel) emailLabel.textContent = t.email;
-    if (phoneLabel) phoneLabel.textContent = t.phone;
-    if (simBtn) simBtn.textContent = t.simulate;
-    if (sendBtn) sendBtn.textContent = t.send;
-    if (docsTitle) docsTitle.textContent = t.documents;
-
-    // ----- BOUTONS LÉGAUX (simple alerte) -----
-    document.querySelectorAll('.legal-footer button[data-legal]').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const text = this.textContent.trim();
-            alert(`Informations : ${text}\n\n(Contenu à définir selon votre politique légale.)`);
-        });
-    });
-
-    // ----- CHATBOT -----
+    // ===== CHATBOT =====
     const chatToggle = document.getElementById('chatToggle');
     const chatWindow = document.getElementById('chatWindow');
     const chatClose = document.getElementById('chatClose');
