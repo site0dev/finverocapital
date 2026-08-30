@@ -53,6 +53,9 @@
             border-radius: 30px;
         }
 
+        /* ============================================================ */
+        /* 1. HERO (image 1) */
+        /* ============================================================ */
         .hero {
             display: flex;
             flex-wrap: wrap;
@@ -94,73 +97,14 @@
             font-weight: 600;
         }
 
-        .promo-banner {
-            background: #eaf2ff;
-            border-radius: 16px;
-            padding: 1.8rem 2rem;
-            margin: 1rem 0 1.8rem;
-            border-left: 5px solid #0f2b4b;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 1.5rem;
-        }
-        .promo-banner .promo-text {
-            flex: 2 1 300px;
-        }
-        .promo-banner .promo-text p {
-            font-size: 1.2rem;
-            color: #0f2b4b;
-            font-weight: 500;
-            line-height: 1.7;
-        }
-        .promo-banner .promo-text .emoji-big { font-size: 1.6rem; }
-        .promo-banner .promo-image {
-            flex: 0 0 120px;
-            text-align: center;
-        }
-        .promo-banner .promo-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 16px;
-            display: block;
-        }
-
-        .steps-before-form {
-            margin: 2rem 0 2.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px dashed #dce3ed;
-        }
-        .steps-before-form h3 {
-            font-size: 1.8rem;
-            color: #0f2b4b;
-            margin-bottom: 1.5rem;
-        }
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-        .step-item {
-            border-top: 5px solid #2a7de1;
-            padding-top: 1.2rem;
-        }
-        .step-item strong {
-            display: block;
-            font-size: 1.3rem;
-            color: #0f2b4b;
-            margin-bottom: 0.3rem;
-        }
-        .step-item p {
-            font-size: 1rem;
-            color: #3d556e;
-            line-height: 1.6;
-        }
-
+        /* ============================================================ */
+        /* 2. FORMULAIRE (simulateur) */
+        /* ============================================================ */
         .form-section {
             background: #f9fbfe;
             border-radius: 24px;
             padding: 2rem 2.5rem;
+            margin: 1.5rem 0 2rem;
         }
         .form-section h2 {
             font-size: 1.8rem;
@@ -316,6 +260,7 @@
         }
         .btn-success:hover { background: #167a3e; }
 
+        /* Résultats (intégrés au formulaire) */
         .simulation-results {
             margin-top: 2rem;
             display: none;
@@ -413,18 +358,80 @@
             border-top: 1px solid #e9edf4;
         }
 
-        .after-validation-message {
-            margin-top: 2rem;
-            padding: 0.5rem 0;
+        /* ============================================================ */
+        /* 3. DEMANDE DE CRÉDIT ENTIÈREMENT EN LIGNE (3 étapes) */
+        /* ============================================================ */
+        .steps-after-form {
+            margin: 2rem 0 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed #dce3ed;
         }
-        .after-validation-message p {
-            font-size: 1.15rem;
-            line-height: 1.8;
-            margin-bottom: 0.5rem;
+        .steps-after-form h3 {
+            font-size: 1.8rem;
+            color: #0f2b4b;
+            margin-bottom: 1.5rem;
+        }
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+        .step-item {
+            border-top: 5px solid #2a7de1;
+            padding-top: 1.2rem;
+        }
+        .step-item strong {
+            display: block;
+            font-size: 1.3rem;
+            color: #0f2b4b;
+            margin-bottom: 0.3rem;
+        }
+        .step-item p {
+            font-size: 1rem;
+            color: #3d556e;
+            line-height: 1.6;
         }
 
+        /* ============================================================ */
+        /* 4. FINI LA PAPERASSE (image 2) */
+        /* ============================================================ */
+        .promo-banner {
+            background: #eaf2ff;
+            border-radius: 16px;
+            padding: 1.8rem 2rem;
+            margin: 2rem 0;
+            border-left: 5px solid #0f2b4b;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .promo-banner .promo-text {
+            flex: 2 1 300px;
+        }
+        .promo-banner .promo-text p {
+            font-size: 1.2rem;
+            color: #0f2b4b;
+            font-weight: 500;
+            line-height: 1.7;
+        }
+        .promo-banner .promo-text .emoji-big { font-size: 1.6rem; }
+        .promo-banner .promo-image {
+            flex: 0 0 120px;
+            text-align: center;
+        }
+        .promo-banner .promo-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 16px;
+            display: block;
+        }
+
+        /* ============================================================ */
+        /* 5. POURQUOI CHOISIR FINANCIO (image 3) */
+        /* ============================================================ */
         .trust-section {
-            margin-top: 3rem;
+            margin-top: 2rem;
             padding-top: 2rem;
             border-top: 2px solid #e9edf4;
             display: flex;
@@ -643,7 +650,9 @@
         <div class="tagline">🔒 100% sécurisé</div>
     </header>
 
-    <!-- HERO avec IMAGE 1.jpg -->
+    <!-- ============================================================ -->
+    <!-- 1. HERO (image 1) -->
+    <!-- ============================================================ -->
     <section class="hero">
         <div class="hero-image">
             <img src="1.jpg" alt="Financement" loading="lazy" />
@@ -655,42 +664,9 @@
         </div>
     </section>
 
-    <!-- PROMO BANNER avec IMAGE 2.jpg -->
-    <div class="promo-banner">
-        <div class="promo-image">
-            <img src="2.jpg" alt="Documents" loading="lazy" />
-        </div>
-        <div class="promo-text">
-            <p>
-                <span class="emoji-big">📄</span> Fini la paperasse. Fini les longues files d'attente. Fini les complications !<br>
-                Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨
-            </p>
-            <p style="margin-top: 0.6rem; font-weight: 400; font-size: 1.05rem;">
-                Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.
-            </p>
-        </div>
-    </div>
-
-    <!-- DEMANDE DE CRÉDIT ENTIÈREMENT EN LIGNE -->
-    <div class="steps-before-form">
-        <h3>📋 Demande de crédit entièrement en ligne</h3>
-        <div class="steps-grid">
-            <div class="step-item">
-                <strong>Étape 1</strong>
-                <p>Calculez votre mensualité.</p>
-            </div>
-            <div class="step-item">
-                <strong>Étape 2</strong>
-                <p>Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
-            </div>
-            <div class="step-item">
-                <strong>Étape 3</strong>
-                <p>Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- FORMULAIRE -->
+    <!-- ============================================================ -->
+    <!-- 2. FORMULAIRE (simulateur) -->
+    <!-- ============================================================ -->
     <section class="form-section">
         <h2>Remplissez le formulaire suivant</h2>
         <p class="sub">Ajustez le curseur pour le montant, la durée est libre.</p>
@@ -774,7 +750,7 @@
             </div>
         </form>
 
-        <!-- RÉSULTATS SIMULATION -->
+        <!-- RÉSULTATS -->
         <div id="simulationResults" class="simulation-results">
             <div class="results-summary" id="resultsSummary"></div>
             <div class="table-wrapper">
@@ -808,17 +784,51 @@
             <div class="validation-area">
                 <button type="button" class="btn btn-success" id="envoyerBtn">📩 Envoyer ma demande</button>
             </div>
-
-            <!-- MESSAGE PROMO -->
-            <div class="after-validation-message">
-                <p>Fini la paperasse. Fini les longues files d'attente. Fini les complications !</p>
-                <p>Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨</p>
-                <p>Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.</p>
-            </div>
         </div>
     </section>
 
-    <!-- SECTION FIABLE, RAPIDE, SÛR avec IMAGE 3.jpg -->
+    <!-- ============================================================ -->
+    <!-- 3. DEMANDE DE CRÉDIT ENTIÈREMENT EN LIGNE (3 étapes) -->
+    <!-- ============================================================ -->
+    <div class="steps-after-form">
+        <h3>📋 Demande de crédit entièrement en ligne</h3>
+        <div class="steps-grid">
+            <div class="step-item">
+                <strong>Étape 1</strong>
+                <p>Calculez votre mensualité.</p>
+            </div>
+            <div class="step-item">
+                <strong>Étape 2</strong>
+                <p>Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
+            </div>
+            <div class="step-item">
+                <strong>Étape 3</strong>
+                <p>Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 4. FINI LA PAPERASSE (image 2) -->
+    <!-- ============================================================ -->
+    <div class="promo-banner">
+        <div class="promo-image">
+            <img src="2.jpg" alt="Documents" loading="lazy" />
+        </div>
+        <div class="promo-text">
+            <p>
+                <span class="emoji-big">📄</span> Fini la paperasse. Fini les longues files d'attente. Fini les complications !<br>
+                Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨
+            </p>
+            <p style="margin-top: 0.6rem; font-weight: 400; font-size: 1.05rem;">
+                Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.
+            </p>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 5. POURQUOI CHOISIR FINANCIO (image 3) -->
+    <!-- ============================================================ -->
     <section class="trust-section">
         <div class="trust-content">
             <h2>Pourquoi choisir Financio ?</h2>
