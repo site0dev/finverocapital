@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Financió — simulation de crédit en ligne pour les particuliers en Europe. Simulez votre financement, consultez vos échéances et découvrez les étapes d'une demande de crédit.">
+    <meta name="description" content="Financio — simulation de crédit en ligne pour les particuliers en Europe. Simulez votre financement, consultez vos échéances et découvrez les étapes d'une demande de crédit.">
     <meta name="keywords" content="crédit, prêt, financement, simulation crédit, prêt personnel, crédit Europe, simulation prêt, mensualité">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta name="author" content="Financió">
+    <meta name="author" content="Financio">
     <meta name="theme-color" content="#0f2b4b">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Financió — Simulation de crédit en Europe">
+    <meta property="og:title" content="Financio — Simulation de crédit en Europe">
     <meta property="og:description" content="Simulez votre crédit en ligne et consultez une estimation de vos mensualités.">
     <meta property="og:locale" content="fr_FR">
     <meta name="twitter:card" content="summary">
@@ -22,7 +22,7 @@
     <link rel="alternate" hreflang="nl" href="./">
     <link rel="alternate" hreflang="x-default" href="./">
 
-    <title>Financió – Simulation de crédit</title>
+    <title>Financio – Simulation de crédit</title>
     <style>
         * {
             margin: 0;
@@ -217,17 +217,17 @@
             gap: 0.3rem;
             width: 100%;
         }
-        .phone-wrapper select {
+        .phone-wrapper input[type="text"] {
             padding: 0.8rem 1rem;
             border: 1.5px solid #dce3ed;
             border-radius: 14px;
             font-size: 1rem;
-            background: #f4f7fc;
-            font-weight: 500;
-            color: #0f2b4b;
+            background: #ffffff;
             outline: none;
-            cursor: pointer;
             width: 100%;
+        }
+        .phone-wrapper input[type="text"]:focus {
+            border-color: #2a7de1;
         }
         .phone-wrapper input[type="tel"] {
             padding: 0.8rem 1rem;
@@ -237,6 +237,9 @@
             background: #ffffff;
             outline: none;
             width: 100%;
+        }
+        .phone-wrapper input[type="tel"]:focus {
+            border-color: #2a7de1;
         }
         .phone-hint {
             font-size: 0.8rem;
@@ -279,7 +282,6 @@
         }
         .btn-success:hover { background: #167a3e; }
 
-        /* Résultats (intégrés au formulaire) */
         .simulation-results {
             margin-top: 2rem;
             display: none;
@@ -655,33 +657,48 @@
             .trust-content h2 { font-size: 1.6rem; }
         }
         @media (max-width: 450px) {
-            .phone-wrapper select { font-size: 0.9rem; padding: 0.7rem 0.8rem; }
+            .phone-wrapper input[type="text"] { font-size: 0.9rem; padding: 0.7rem 0.8rem; }
         }
 
         /* IDENTITÉ PROFESSIONNELLE / EUROPE */
         .brand-meta { display:flex; flex-direction:column; gap:.15rem; }
         .brand-subtitle { font-size:.72rem; color:#7b8da3; letter-spacing:.03em; }
-        .legal-footer { margin-top:1.2rem; padding-top:1rem; border-top:1px solid #e9edf4; }
-        .legal-footer nav { display:flex; flex-wrap:wrap; gap:.7rem 1.2rem; margin-bottom:.7rem; }
-        .legal-footer button { border:0; background:none; color:#315f91; cursor:pointer; padding:0; font:inherit; }
-        .legal-footer small { color:#8ba0b9; line-height:1.6; }
-        .legal-modal { position:fixed; inset:0; background:rgba(15,43,75,.55); display:none; align-items:center; justify-content:center; padding:1rem; z-index:2000; }
-        .legal-modal.open { display:flex; }
-        .legal-card { background:#fff; width:min(900px,100%); max-height:88vh; overflow:auto; border-radius:22px; padding:2rem; box-shadow:0 20px 60px rgba(0,0,0,.25); }
-        .legal-card h2 { color:#0f2b4b; margin-bottom:1rem; }
-        .legal-card h3 { color:#0f2b4b; margin:1.2rem 0 .4rem; }
-        .legal-card p, .legal-card li { color:#3d556e; line-height:1.65; margin-bottom:.55rem; }
-        .legal-close { float:right; border:0; background:#eef3f9; color:#0f2b4b; border-radius:50%; width:36px; height:36px; cursor:pointer; font-size:1.1rem; }
+        .legal-footer { 
+            margin-top: 1.2rem; 
+            padding-top: 1rem; 
+            border-top: 1px solid #e9edf4; 
+        }
+        .legal-footer nav { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: .7rem 1.2rem; 
+            margin-bottom: .5rem; 
+        }
+        .legal-footer nav button { 
+            border: 0; 
+            background: none; 
+            color: #315f91; 
+            cursor: pointer; 
+            padding: 0; 
+            font: inherit; 
+            font-size: 0.9rem;
+        }
+        .legal-footer nav button:hover {
+            text-decoration: underline;
+        }
+        .legal-footer small { 
+            color: #8ba0b9; 
+            line-height: 1.6; 
+            font-size: 0.85rem;
+        }
         .language-indicator { font-size:.75rem; color:#5b6f87; margin-top:.15rem; }
-        @media(max-width:600px){ .legal-card{padding:1.3rem;} .legal-footer nav{gap:.6rem .9rem;} }
-
     </style>
 
     <script type="application/ld+json">
     {
       "@context":"https://schema.org",
       "@type":"FinancialService",
-      "name":"Financió",
+      "name":"Financio",
       "description":"Simulation de crédit et service de demande de financement pour une clientèle européenne.",
       "areaServed":["Europe"],
       "url":"./"
@@ -696,7 +713,7 @@
     <!-- HEADER -->
     <header class="header">
         <div class="brand-meta">
-            <div class="logo">Finan<span>ció</span></div>
+            <div class="logo">Finan<span>cio</span></div>
             <div class="brand-subtitle" data-i18n="brandSubtitle">Solutions de financement • Europe</div>
             <div class="language-indicator" id="languageIndicator">FR</div>
         </div>
@@ -760,7 +777,7 @@
                 <div class="taux-static">3 %</div>
             </div>
 
-            <!-- Email & Téléphone -->
+            <!-- Email & Téléphone avec barre de recherche -->
             <div class="form-grid">
                 <div class="form-group">
                     <label for="email">Adresse e-mail</label>
@@ -770,62 +787,13 @@
                 <div class="form-group">
                     <label for="telephone">Numéro de téléphone</label>
                     <div class="phone-wrapper">
-                        <select id="countrySelect" aria-label="Indicatif téléphonique">
-                            <option value="AL|+355|8-9">🇦🇱 Albanie (+355)</option>
-                            <option value="AD|+376|6">🇦🇩 Andorre (+376)</option>
-                            <option value="AM|+374|8">🇦🇲 Arménie (+374)</option>
-                            <option value="AT|+43|10-11">🇦🇹 Autriche (+43)</option>
-                            <option value="AZ|+994|9">🇦🇿 Azerbaïdjan (+994)</option>
-                            <option value="BY|+375|9">🇧🇾 Biélorussie (+375)</option>
-                            <option value="BE|+32|9">🇧🇪 Belgique (+32)</option>
-                            <option value="BA|+387|8">🇧🇦 Bosnie-Herzégovine (+387)</option>
-                            <option value="BG|+359|8-9">🇧🇬 Bulgarie (+359)</option>
-                            <option value="CY|+357|8">🇨🇾 Chypre (+357)</option>
-                            <option value="HR|+385|8-9">🇭🇷 Croatie (+385)</option>
-                            <option value="CZ|+420|9">🇨🇿 République tchèque (+420)</option>
-                            <option value="DK|+45|8">🇩🇰 Danemark (+45)</option>
-                            <option value="EE|+372|7-8">🇪🇪 Estonie (+372)</option>
-                            <option value="FI|+358|9-10">🇫🇮 Finlande (+358)</option>
-                            <option value="FR|+33|9">🇫🇷 France (+33)</option>
-                            <option value="GE|+995|9">🇬🇪 Géorgie (+995)</option>
-                            <option value="DE|+49|10-11">🇩🇪 Allemagne (+49)</option>
-                            <option value="GR|+30|10">🇬🇷 Grèce (+30)</option>
-                            <option value="HU|+36|9">🇭🇺 Hongrie (+36)</option>
-                            <option value="IS|+354|7">🇮🇸 Islande (+354)</option>
-                            <option value="IE|+353|9">🇮🇪 Irlande (+353)</option>
-                            <option value="IT|+39|9-10">🇮🇹 Italie (+39)</option>
-                            <option value="KZ|+7|10">🇰🇿 Kazakhstan (+7)</option>
-                            <option value="XK|+383|8">🇽🇰 Kosovo (+383)</option>
-                            <option value="LV|+371|8">🇱🇻 Lettonie (+371)</option>
-                            <option value="LI|+423|7">🇱🇮 Liechtenstein (+423)</option>
-                            <option value="LT|+370|8">🇱🇹 Lituanie (+370)</option>
-                            <option value="LU|+352|9">🇱🇺 Luxembourg (+352)</option>
-                            <option value="MT|+356|8">🇲🇹 Malte (+356)</option>
-                            <option value="MD|+373|8">🇲🇩 Moldavie (+373)</option>
-                            <option value="MC|+377|8-9">🇲🇨 Monaco (+377)</option>
-                            <option value="ME|+382|8">🇲🇪 Monténégro (+382)</option>
-                            <option value="NL|+31|9">🇳🇱 Pays-Bas (+31)</option>
-                            <option value="MK|+389|8">🇲🇰 Macédoine du Nord (+389)</option>
-                            <option value="NO|+47|8">🇳🇴 Norvège (+47)</option>
-                            <option value="PL|+48|9">🇵🇱 Pologne (+48)</option>
-                            <option value="PT|+351|9">🇵🇹 Portugal (+351)</option>
-                            <option value="RO|+40|9">🇷🇴 Roumanie (+40)</option>
-                            <option value="RU|+7|10">🇷🇺 Russie (+7)</option>
-                            <option value="SM|+378|10">🇸🇲 Saint-Marin (+378)</option>
-                            <option value="RS|+381|8-9">🇷🇸 Serbie (+381)</option>
-                            <option value="SK|+421|9">🇸🇰 Slovaquie (+421)</option>
-                            <option value="SI|+386|8">🇸🇮 Slovénie (+386)</option>
-                            <option value="ES|+34|9">🇪🇸 Espagne (+34)</option>
-                            <option value="SE|+46|9-10">🇸🇪 Suède (+46)</option>
-                            <option value="CH|+41|9">🇨🇭 Suisse (+41)</option>
-                            <option value="TR|+90|10">🇹🇷 Turquie (+90)</option>
-                            <option value="UA|+380|9">🇺🇦 Ukraine (+380)</option>
-                            <option value="GB|+44|10">🇬🇧 Royaume-Uni (+44)</option>
-                            <option value="VA|+39|10">🇻🇦 Vatican (+39)</option>
-                        </select>
+                        <!-- Champ de recherche avec datalist -->
+                        <input type="text" id="countrySearch" list="country-list" placeholder="Rechercher un pays..." autocomplete="off" />
+                        <datalist id="country-list"></datalist>
+
                         <input type="tel" id="telephone" placeholder="6 12 34 56 78" maxlength="10">
                     </div>
-                    <div class="phone-hint" id="phoneHint">Format : 10 chiffres (indicatif exclu)</div>
+                    <div class="phone-hint" id="phoneHint">Format : 10 chiffres</div>
                 </div>
             </div>
 
@@ -935,25 +903,18 @@
         </div>
     </section>
 
+    <!-- ============================================================ -->
+    <!-- FOOTER ÉPURÉ (texte supprimé) -->
+    <!-- ============================================================ -->
     <footer class="legal-footer">
-        <nav aria-label="Informations légales">
-            <button type="button" data-legal="mentions" data-i18n="legalNotice">Mentions légales</button>
-            <button type="button" data-legal="privacy" data-i18n="privacy">Politique de confidentialité</button>
-            <button type="button" data-legal="terms" data-i18n="terms">Conditions d'utilisation</button>
-            <button type="button" data-legal="credit" data-i18n="creditInfo">Informations crédit</button>
+        <nav>
+            <button type="button" data-legal="mentions">Mentions légales</button>
+            <button type="button" data-legal="privacy">Politique de confidentialité</button>
+            <button type="button" data-legal="terms">Conditions d'utilisation</button>
+            <button type="button" data-legal="credit">Informations crédit</button>
         </nav>
-        <small>Financió © 2026 — <span data-i18n="footerText">Service de simulation et de demande de financement.</span><br>
-        <span data-i18n="legalPlaceholder">Les informations légales et réglementaires applicables à l'opérateur sont présentées conformément au cadre juridique en vigueur.</span></small>
+        <small>Financio © 2026 — Service de simulation et de demande de financement.</small>
     </footer>
-</div>
-
-<!-- INFORMATIONS LÉGALES -->
-<div class="legal-modal" id="legalModal" role="dialog" aria-modal="true" aria-labelledby="legalTitle">
-    <div class="legal-card">
-        <button class="legal-close" id="legalClose" aria-label="Fermer">✕</button>
-        <h2 id="legalTitle">Informations légales</h2>
-        <div id="legalContent"></div>
-    </div>
 </div>
 
 <!-- WHATSAPP -->
@@ -970,7 +931,7 @@
 
 <div class="chat-window" id="chatWindow">
     <div class="chat-header">
-        <span>🤖 Assistant Financió</span>
+        <span>🤖 Assistant Financio</span>
         <button class="close-chat" id="chatClose">✕</button>
     </div>
     <div class="chat-messages" id="chatMessages"></div>
@@ -1005,10 +966,76 @@
     updateMontant();
     updateDuree();
 
-    // ----- PAYS TÉLÉPHONE -----
-    const countrySelect = document.getElementById('countrySelect');
+    // ----- LISTE DES PAYS (pour datalist) -----
+    const countryList = [
+        { code: "AL", dial: "+355", length: "8-9", label: "Albanie" },
+        { code: "AD", dial: "+376", length: "6", label: "Andorre" },
+        { code: "AM", dial: "+374", length: "8", label: "Arménie" },
+        { code: "AT", dial: "+43", length: "10-11", label: "Autriche" },
+        { code: "AZ", dial: "+994", length: "9", label: "Azerbaïdjan" },
+        { code: "BY", dial: "+375", length: "9", label: "Biélorussie" },
+        { code: "BE", dial: "+32", length: "9", label: "Belgique" },
+        { code: "BA", dial: "+387", length: "8", label: "Bosnie-Herzégovine" },
+        { code: "BG", dial: "+359", length: "8-9", label: "Bulgarie" },
+        { code: "CY", dial: "+357", length: "8", label: "Chypre" },
+        { code: "HR", dial: "+385", length: "8-9", label: "Croatie" },
+        { code: "CZ", dial: "+420", length: "9", label: "République tchèque" },
+        { code: "DK", dial: "+45", length: "8", label: "Danemark" },
+        { code: "EE", dial: "+372", length: "7-8", label: "Estonie" },
+        { code: "FI", dial: "+358", length: "9-10", label: "Finlande" },
+        { code: "FR", dial: "+33", length: "9", label: "France" },
+        { code: "GE", dial: "+995", length: "9", label: "Géorgie" },
+        { code: "DE", dial: "+49", length: "10-11", label: "Allemagne" },
+        { code: "GR", dial: "+30", length: "10", label: "Grèce" },
+        { code: "HU", dial: "+36", length: "9", label: "Hongrie" },
+        { code: "IS", dial: "+354", length: "7", label: "Islande" },
+        { code: "IE", dial: "+353", length: "9", label: "Irlande" },
+        { code: "IT", dial: "+39", length: "9-10", label: "Italie" },
+        { code: "KZ", dial: "+7", length: "10", label: "Kazakhstan" },
+        { code: "XK", dial: "+383", length: "8", label: "Kosovo" },
+        { code: "LV", dial: "+371", length: "8", label: "Lettonie" },
+        { code: "LI", dial: "+423", length: "7", label: "Liechtenstein" },
+        { code: "LT", dial: "+370", length: "8", label: "Lituanie" },
+        { code: "LU", dial: "+352", length: "9", label: "Luxembourg" },
+        { code: "MT", dial: "+356", length: "8", label: "Malte" },
+        { code: "MD", dial: "+373", length: "8", label: "Moldavie" },
+        { code: "MC", dial: "+377", length: "8-9", label: "Monaco" },
+        { code: "ME", dial: "+382", length: "8", label: "Monténégro" },
+        { code: "NL", dial: "+31", length: "9", label: "Pays-Bas" },
+        { code: "MK", dial: "+389", length: "8", label: "Macédoine du Nord" },
+        { code: "NO", dial: "+47", length: "8", label: "Norvège" },
+        { code: "PL", dial: "+48", length: "9", label: "Pologne" },
+        { code: "PT", dial: "+351", length: "9", label: "Portugal" },
+        { code: "RO", dial: "+40", length: "9", label: "Roumanie" },
+        { code: "RU", dial: "+7", length: "10", label: "Russie" },
+        { code: "SM", dial: "+378", length: "10", label: "Saint-Marin" },
+        { code: "RS", dial: "+381", length: "8-9", label: "Serbie" },
+        { code: "SK", dial: "+421", length: "9", label: "Slovaquie" },
+        { code: "SI", dial: "+386", length: "8", label: "Slovénie" },
+        { code: "ES", dial: "+34", length: "9", label: "Espagne" },
+        { code: "SE", dial: "+46", length: "9-10", label: "Suède" },
+        { code: "CH", dial: "+41", length: "9", label: "Suisse" },
+        { code: "TR", dial: "+90", length: "10", label: "Turquie" },
+        { code: "UA", dial: "+380", length: "9", label: "Ukraine" },
+        { code: "GB", dial: "+44", length: "10", label: "Royaume-Uni" },
+        { code: "VA", dial: "+39", length: "10", label: "Vatican" }
+    ];
+
+    // ----- Remplir le datalist -----
+    const datalist = document.getElementById('country-list');
+    countryList.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.label + ' ' + c.dial;
+        opt.dataset.value = c.code + '|' + c.dial + '|' + c.length;
+        datalist.appendChild(opt);
+    });
+
+    // ----- Gestion du pays sélectionné -----
+    const countrySearch = document.getElementById('countrySearch');
     const phoneInput = document.getElementById('telephone');
     const phoneHint = document.getElementById('phoneHint');
+
+    let currentCountry = countryList.find(c => c.code === 'FR');
 
     function getLengthRule(value) {
         const raw = String(value || '');
@@ -1016,26 +1043,48 @@
         return parts.length === 2 ? { min: parts[0], max: parts[1] } : { min: parts[0], max: parts[0] };
     }
 
-    function updatePhoneRules() {
-        const parts = countrySelect.value.split('|');
-        const dialCode = parts[1];
-        const rule = getLengthRule(parts[2]);
+    function updatePhoneRules(country) {
+        if (!country) return;
+        const rule = getLengthRule(country.length);
         phoneInput.maxLength = rule.max;
         phoneInput.minLength = rule.min;
-        phoneInput.inputMode = 'numeric';
         phoneInput.placeholder = rule.min === rule.max
             ? `${rule.min} chiffres`
             : `${rule.min} à ${rule.max} chiffres`;
-        phoneHint.textContent = `Indicatif ${dialCode} séparé — ${rule.min === rule.max ? rule.min + ' chiffres' : rule.min + ' à ' + rule.max + ' chiffres'} (hors indicatif)`;
+        phoneHint.textContent = `Format : ${rule.min === rule.max ? rule.min + ' chiffres' : rule.min + ' à ' + rule.max + ' chiffres'}`;
         phoneHint.classList.add('active');
         phoneInput.value = '';
+        countrySearch.value = country.label + ' ' + country.dial;
+        currentCountry = country;
     }
+
+    countrySearch.addEventListener('input', function() {
+        const inputValue = this.value.trim();
+        const found = countryList.find(c => {
+            const full = c.label + ' ' + c.dial;
+            return full === inputValue;
+        });
+        if (found) {
+            updatePhoneRules(found);
+        }
+    });
+
+    countrySearch.addEventListener('change', function() {
+        const inputValue = this.value.trim();
+        const found = countryList.find(c => {
+            const full = c.label + ' ' + c.dial;
+            return full === inputValue;
+        });
+        if (found) {
+            updatePhoneRules(found);
+        }
+    });
+
+    updatePhoneRules(countryList.find(c => c.code === 'FR'));
 
     phoneInput.addEventListener('input', () => {
         phoneInput.value = phoneInput.value.replace(/\D/g, '');
     });
-    countrySelect.addEventListener('change', updatePhoneRules);
-    updatePhoneRules();
 
     // ----- SIMULATEUR -----
     function calculerMensualite(montant, dureeMois, tauxAnnuel) {
@@ -1072,14 +1121,14 @@
         const taux = TAUX_FIXE;
         const email = document.getElementById('email').value.trim();
         const telephone = phoneInput.value.trim();
-        const rule = getLengthRule(countrySelect.value.split('|')[2]);
+        const rule = getLengthRule(currentCountry.length);
 
         if (!email || !email.includes('@')) {
             alert('Veuillez entrer une adresse e-mail valide.');
             return;
         }
         if (!telephone || !/^\d+$/.test(telephone) || telephone.length < rule.min || telephone.length > rule.max) {
-            alert(`Veuillez entrer un numéro de téléphone valide (${rule.min === rule.max ? rule.min : rule.min + ' à ' + rule.max} chiffres, indicatif exclu).`);
+            alert(`Veuillez entrer un numéro de téléphone valide (${rule.min === rule.max ? rule.min : rule.min + ' à ' + rule.max} chiffres).`);
             return;
         }
 
@@ -1123,9 +1172,9 @@
         const duree = dureeSlider.value;
         const taux = TAUX_FIXE;
         const email = document.getElementById('email').value.trim();
-        const countryName = countrySelect.options[countrySelect.selectedIndex].text;
+        const countryLabel = currentCountry.label;
+        const dialCode = currentCountry.dial;
         const telephone = phoneInput.value.trim();
-        const dialCode = countrySelect.value.split('|')[1];
 
         const idName = fileId.files[0].name;
         const taxName = fileTax.files[0].name;
@@ -1135,12 +1184,12 @@
         const total = document.querySelectorAll('.result-item .value')[1]?.textContent || 'Non calculé';
         const interets = document.querySelectorAll('.result-item .value')[2]?.textContent || 'Non calculé';
 
-        let corps = `Demande de prêt – Financió\n\n`;
+        let corps = `Demande de prêt – Financio\n\n`;
         corps += `Montant souhaité : ${montant} €\n`;
         corps += `Durée de remboursement : ${duree} mois\n`;
         corps += `Taux annuel : ${taux} % (fixe)\n`;
         corps += `E-mail : ${email}\n`;
-        corps += `Téléphone : ${countryName} (${dialCode}) ${telephone}\n\n`;
+        corps += `Téléphone : ${countryLabel} (${dialCode}) ${telephone}\n\n`;
         corps += `--- DOCUMENTS TÉLÉCHARGÉS ---\n`;
         corps += `Carte d'identité : ${idName}\n`;
         corps += `Code fiscal : ${taxName}\n`;
@@ -1176,7 +1225,7 @@
             corps += `(Aucune échéance détaillée)`;
         }
 
-        const sujet = encodeURIComponent('Demande de prêt – Simulation Financió');
+        const sujet = encodeURIComponent('Demande de prêt – Simulation Financio');
         const corpsEncoded = encodeURIComponent(corps);
         window.location.href = `mailto:${CONTACT_EMAIL}?subject=${sujet}&body=${corpsEncoded}`;
 
@@ -1210,84 +1259,83 @@
         });
     });
 
-
-    // ----- MULTILINGUE AUTOMATIQUE SELON LE NAVIGATEUR -----
+    // ----- MULTILINGUE AUTOMATIQUE -----
     const translations = {
         fr: {
             brandSubtitle:"Solutions de financement • Europe", secureTag:"🔒 100% sécurisé",
             legalNotice:"Mentions légales", privacy:"Politique de confidentialité", terms:"Conditions d'utilisation",
             creditInfo:"Informations crédit", footerText:"Service de simulation et de demande de financement.",
-            legalPlaceholder:"Les informations légales et réglementaires applicables à l'opérateur sont présentées conformément au cadre juridique en vigueur.",
+            legalPlaceholder:"",
             heroTitle:"Avez-vous besoin <br><span>d'un financement</span> ?", heroDesc:"Simulez votre crédit en quelques secondes, sans engagement.",
             response:"✅ Réponse sous 24h", formTitle:"Remplissez le formulaire suivant",
             formSub:"Ajustez le curseur pour le montant, la durée est libre.", simulate:"📊 Simuler mon crédit",
-            send:"📩 Envoyer ma demande", assistant:"🤖 Assistant Financió", email:"Adresse e-mail",
+            send:"📩 Envoyer ma demande", assistant:"🤖 Assistant Financio", email:"Adresse e-mail",
             phone:"Numéro de téléphone", documents:"📎 Téléchargez vos documents"
         },
         en: {
             brandSubtitle:"Financing solutions • Europe", secureTag:"🔒 100% secure",
             legalNotice:"Legal notice", privacy:"Privacy policy", terms:"Terms of use",
             creditInfo:"Credit information", footerText:"Financing simulation and application service.",
-            legalPlaceholder:"The operator's legal identity, registered office, regulatory status and data-protection contact details must be completed before launch.",
+            legalPlaceholder:"",
             heroTitle:"Do you need <br><span>financing</span> ?", heroDesc:"Simulate your credit in seconds, with no obligation.",
             response:"✅ Response within 24h", formTitle:"Complete the following form",
             formSub:"Adjust the amount slider; the term is flexible.", simulate:"📊 Simulate my credit",
-            send:"📩 Submit my application", assistant:"🤖 Financió Assistant", email:"Email address",
+            send:"📩 Submit my application", assistant:"🤖 Financio Assistant", email:"Email address",
             phone:"Phone number", documents:"📎 Upload your documents"
         },
         de: {
             brandSubtitle:"Finanzierungslösungen • Europa", secureTag:"🔒 100 % sicher",
             legalNotice:"Impressum", privacy:"Datenschutzerklärung", terms:"Nutzungsbedingungen",
             creditInfo:"Kreditinformationen", footerText:"Kreditsimulation und Finanzierungsantrag.",
-            legalPlaceholder:"Rechtliche Identität, Sitz, regulatorischer Status und Datenschutzkontakt des Betreibers müssen vor der Veröffentlichung ergänzt werden.",
+            legalPlaceholder:"",
             heroTitle:"Benötigen Sie <br><span>eine Finanzierung</span> ?", heroDesc:"Simulieren Sie Ihren Kredit in wenigen Sekunden, unverbindlich.",
             response:"✅ Antwort innerhalb von 24 Std.", formTitle:"Füllen Sie das folgende Formular aus",
             formSub:"Betrag einstellen; Laufzeit frei wählbar.", simulate:"📊 Kredit simulieren",
-            send:"📩 Antrag senden", assistant:"🤖 Financió Assistent", email:"E-Mail-Adresse",
+            send:"📩 Antrag senden", assistant:"🤖 Financio Assistent", email:"E-Mail-Adresse",
             phone:"Telefonnummer", documents:"📎 Dokumente hochladen"
         },
         es: {
             brandSubtitle:"Soluciones de financiación • Europa", secureTag:"🔒 100 % seguro",
             legalNotice:"Aviso legal", privacy:"Política de privacidad", terms:"Condiciones de uso",
             creditInfo:"Información de crédito", footerText:"Servicio de simulación y solicitud de financiación.",
-            legalPlaceholder:"La identidad legal, domicilio, estado regulatorio y contacto de protección de datos del operador deben completarse antes de la publicación.",
+            legalPlaceholder:"",
             heroTitle:"¿Necesita <br><span>financiación</span> ?", heroDesc:"Simule su crédito en segundos, sin compromiso.",
             response:"✅ Respuesta en 24 h", formTitle:"Complete el siguiente formulario",
             formSub:"Ajuste el importe; el plazo es flexible.", simulate:"📊 Simular mi crédito",
-            send:"📩 Enviar mi solicitud", assistant:"🤖 Asistente Financió", email:"Dirección de correo",
+            send:"📩 Enviar mi solicitud", assistant:"🤖 Asistente Financio", email:"Dirección de correo",
             phone:"Número de teléfono", documents:"📎 Suba sus documentos"
         },
         it: {
             brandSubtitle:"Soluzioni di finanziamento • Europa", secureTag:"🔒 100% sicuro",
             legalNotice:"Note legali", privacy:"Privacy", terms:"Condizioni d'uso",
             creditInfo:"Informazioni sul credito", footerText:"Servizio di simulazione e richiesta di finanziamento.",
-            legalPlaceholder:"Identità legale, sede, status regolamentare e contatto per la protezione dei dati devono essere completati prima della pubblicazione.",
+            legalPlaceholder:"",
             heroTitle:"Hai bisogno di <br><span>un finanziamento</span> ?", heroDesc:"Simula il tuo credito in pochi secondi, senza impegno.",
             response:"✅ Risposta entro 24 ore", formTitle:"Compila il seguente modulo",
             formSub:"Regola l'importo; la durata è flessibile.", simulate:"📊 Simula il mio credito",
-            send:"📩 Invia la richiesta", assistant:"🤖 Assistente Financió", email:"Indirizzo e-mail",
+            send:"📩 Invia la richiesta", assistant:"🤖 Assistente Financio", email:"Indirizzo e-mail",
             phone:"Numero di telefono", documents:"📎 Carica i documenti"
         },
         pt: {
             brandSubtitle:"Soluções de financiamento • Europa", secureTag:"🔒 100% seguro",
             legalNotice:"Aviso legal", privacy:"Política de privacidade", terms:"Termos de utilização",
             creditInfo:"Informações de crédito", footerText:"Serviço de simulação e pedido de financiamento.",
-            legalPlaceholder:"A identidade legal, sede, estatuto regulamentar e contacto de proteção de dados do operador devem ser preenchidos antes da publicação.",
+            legalPlaceholder:"",
             heroTitle:"Precisa de <br><span>financiamento</span> ?", heroDesc:"Simule o seu crédito em segundos, sem compromisso.",
             response:"✅ Resposta em 24h", formTitle:"Preencha o formulário seguinte",
             formSub:"Ajuste o montante; o prazo é flexível.", simulate:"📊 Simular o meu crédito",
-            send:"📩 Enviar o meu pedido", assistant:"🤖 Assistente Financió", email:"Endereço de e-mail",
+            send:"📩 Enviar o meu pedido", assistant:"🤖 Assistente Financio", email:"Endereço de e-mail",
             phone:"Número de telefone", documents:"📎 Carregue os seus documentos"
         },
         nl: {
             brandSubtitle:"Financieringsoplossingen • Europa", secureTag:"🔒 100% veilig",
             legalNotice:"Juridische informatie", privacy:"Privacybeleid", terms:"Gebruiksvoorwaarden",
             creditInfo:"Kredietinformatie", footerText:"Service voor kredietsimulatie en financieringsaanvragen.",
-            legalPlaceholder:"De wettelijke identiteit, vestigingsadres, regelgevende status en privacycontactgegevens van de exploitant moeten vóór publicatie worden ingevuld.",
+            legalPlaceholder:"",
             heroTitle:"Heeft u <br><span>financiering</span> nodig?", heroDesc:"Simuleer uw krediet in enkele seconden, zonder verplichting.",
             response:"✅ Antwoord binnen 24 uur", formTitle:"Vul het volgende formulier in",
             formSub:"Pas het bedrag aan; de looptijd is flexibel.", simulate:"📊 Mijn krediet simuleren",
-            send:"📩 Mijn aanvraag verzenden", assistant:"🤖 Financió-assistent", email:"E-mailadres",
+            send:"📩 Mijn aanvraag verzenden", assistant:"🤖 Financio-assistent", email:"E-mailadres",
             phone:"Telefoonnummer", documents:"📎 Documenten uploaden"
         }
     };
@@ -1325,9 +1373,15 @@
     if (sendBtn) sendBtn.textContent = t.send;
     if (docsTitle) docsTitle.textContent = t.documents;
 
+    // ----- BOUTONS LÉGAUX (simple alerte) -----
+    document.querySelectorAll('.legal-footer button[data-legal]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const text = this.textContent.trim();
+            alert(`Informations : ${text}\n\n(Contenu à définir selon votre politique légale.)`);
+        });
+    });
 
-    // ----- INFORMATIONS LÉGALES -----
-
+    // ----- CHATBOT -----
     const chatToggle = document.getElementById('chatToggle');
     const chatWindow = document.getElementById('chatWindow');
     const chatClose = document.getElementById('chatClose');
