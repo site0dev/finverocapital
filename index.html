@@ -604,6 +604,84 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* ===== MODALE NUMÉRO DE SUIVI ===== */
+        .tracking-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15,43,75,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 3000;
+            backdrop-filter: blur(4px);
+        }
+        .tracking-modal.open {
+            display: flex;
+        }
+        .tracking-modal .tracking-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 2.5rem 3rem;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            animation: fadeUp 0.4s ease;
+        }
+        @keyframes fadeUp {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .tracking-modal .tracking-card h2 {
+            font-size: 1.6rem;
+            color: #0f2b4b;
+            margin-bottom: 0.5rem;
+        }
+        .tracking-modal .tracking-card .tracking-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2a7de1;
+            background: #eaf2ff;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            letter-spacing: 1px;
+            word-break: break-all;
+        }
+        .tracking-modal .tracking-card .info-text {
+            color: #5b6f87;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+        .tracking-modal .tracking-card .copy-btn {
+            background: #0f2b4b;
+            color: white;
+            border: none;
+            padding: 0.8rem 2.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .tracking-modal .tracking-card .copy-btn:hover {
+            background: #1a3a62;
+            transform: scale(1.02);
+        }
+        .tracking-modal .tracking-card .copy-btn.copied {
+            background: #1f8b4c;
+        }
+
+        @media (max-width: 600px) {
+            .tracking-modal .tracking-card {
+                padding: 2rem 1.5rem;
+            }
+            .tracking-modal .tracking-card .tracking-number {
+                font-size: 1.6rem;
+            }
+        }
+
         @media (max-width: 900px) {
             .steps-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
             .trust-section { flex-direction: column; text-align: center; }
@@ -670,7 +748,7 @@
         }
         .language-indicator { font-size:.75rem; color:#5b6f87; margin-top:.15rem; }
 
-        /* Modale Mentions légales */
+        /* Modale générique */
         .legal-modal {
             position: fixed;
             inset: 0;
@@ -808,11 +886,8 @@
                 <div class="form-group">
                     <label for="telephone">Numéro de téléphone</label>
                     <div class="phone-wrapper">
-                        <!-- Champ de recherche -->
                         <input type="text" class="country-search" id="countrySearch" placeholder="Rechercher un pays..." autocomplete="off" />
-                        <!-- Sélecteur -->
                         <select id="countrySelect"></select>
-                        <!-- Champ téléphone -->
                         <input type="tel" id="telephone" placeholder="Votre numéro" />
                     </div>
                 </div>
@@ -921,7 +996,7 @@
     <!-- FOOTER -->
     <footer class="legal-footer">
         <nav>
-            <button type="button" id="legalMentionsBtn">Mentions légales</button>
+            <button type="button" data-legal="mentions">Mentions légales</button>
             <button type="button" data-legal="privacy">Politique de confidentialité</button>
             <button type="button" data-legal="terms">Conditions d'utilisation</button>
             <button type="button" data-legal="credit">Informations crédit</button>
@@ -930,30 +1005,23 @@
     </footer>
 </div>
 
-<!-- MODALE MENTIONS LÉGALES -->
+<!-- ===== MODALE NUMÉRO DE SUIVI ===== -->
+<div class="tracking-modal" id="trackingModal">
+    <div class="tracking-card">
+        <h2>📋 Numéro de suivi</h2>
+        <p class="info-text">Conservez ce numéro pour le suivi de votre demande :</p>
+        <div class="tracking-number" id="trackingNumberDisplay">---</div>
+        <p class="info-text" style="font-size:0.85rem;">Cliquez sur le bouton ci-dessous pour le copier.</p>
+        <button class="copy-btn" id="copyTrackingBtn">📋 Copier</button>
+    </div>
+</div>
+
+<!-- ===== MODALE LÉGALE ===== -->
 <div class="legal-modal" id="legalModal">
     <div class="legal-card">
         <button class="legal-close" id="legalClose">✕</button>
-        <h2>Mentions légales — Financio</h2>
-        <p>Le site Financio est destiné à présenter les services, fonctionnalités et informations proposés par Financio.</p>
-
-        <h3>Propriété intellectuelle</h3>
-        <p>L'ensemble des contenus présents sur ce site, notamment les textes, images, éléments graphiques, logos, icônes et éléments de conception, est protégé par les dispositions applicables en matière de propriété intellectuelle.</p>
-        <p>Toute reproduction, modification, distribution ou utilisation, totale ou partielle, sans autorisation préalable est interdite.</p>
-
-        <h3>Données personnelles</h3>
-        <p>Les informations éventuellement communiquées par l'utilisateur via les moyens de contact présents sur le site sont utilisées uniquement dans le cadre du traitement de sa demande.</p>
-        <p>Financio s'engage à traiter les données personnelles conformément aux dispositions applicables en matière de protection des données.</p>
-
-        <h3>Responsabilité</h3>
-        <p>Financio s'efforce de maintenir des informations exactes et à jour sur son site. Toutefois, aucune garantie ne peut être apportée quant à l'exhaustivité ou à l'absence d'erreurs dans les informations publiées.</p>
-        <p>L'utilisateur reconnaît utiliser le site sous sa propre responsabilité.</p>
-
-        <h3>Liens externes</h3>
-        <p>Le site peut contenir des liens vers des services ou sites tiers. Financio ne peut être tenu responsable du contenu, du fonctionnement ou des pratiques de ces services externes.</p>
-
-        <h3>Contact</h3>
-        <p>Pour toute question concernant le site, ses contenus ou les services proposés, l'utilisateur peut contacter Financio via les moyens de contact disponibles sur le site.</p>
+        <h2 id="legalTitle">Informations légales</h2>
+        <div id="legalContent"></div>
     </div>
 </div>
 
@@ -965,15 +1033,9 @@
 </a>
 
 <!-- CHATBOT -->
-<button class="floating-btn chat" id="chatToggle" title="Assistant virtuel">
-    💬
-</button>
-
+<button class="floating-btn chat" id="chatToggle" title="Assistant virtuel">💬</button>
 <div class="chat-window" id="chatWindow">
-    <div class="chat-header">
-        <span>🤖 Assistant Financio</span>
-        <button class="close-chat" id="chatClose">✕</button>
-    </div>
+    <div class="chat-header"><span>🤖 Assistant Financio</span><button class="close-chat" id="chatClose">✕</button></div>
     <div class="chat-messages" id="chatMessages"></div>
     <div class="chat-input-area">
         <input type="text" id="chatInput" placeholder="Votre question..." />
@@ -1074,11 +1136,9 @@
         allOptions.push(opt);
     });
 
-    // Sélectionner France par défaut
     const frIndex = europeanCountries.findIndex(c => c.code === 'FR');
     if (frIndex !== -1) countrySelect.selectedIndex = frIndex;
 
-    // ===== Filtrage via la recherche =====
     countrySearch.addEventListener('input', function() {
         const search = this.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         countrySelect.innerHTML = '';
@@ -1090,23 +1150,66 @@
                 countrySelect.appendChild(clone);
             }
         });
-        // Si aucun résultat, on laisse vide
         if (countrySelect.options.length === 0) {
             const emptyOpt = document.createElement('option');
             emptyOpt.textContent = 'Aucun pays trouvé';
             emptyOpt.disabled = true;
             countrySelect.appendChild(emptyOpt);
         }
-        // Sélectionner le premier si disponible
         if (countrySelect.options.length > 0 && !countrySelect.options[0].disabled) {
             countrySelect.selectedIndex = 0;
         }
     });
 
-    // ===== CHAMP TÉLÉPHONE SANS CONTRAINTE =====
     const phoneInput = document.getElementById('telephone');
     phoneInput.removeAttribute('maxlength');
     phoneInput.removeAttribute('minlength');
+
+    // ===== GÉNÉRATION DU NUMÉRO DE SUIVI =====
+    function generateTrackingNumber(email, phone) {
+        const now = new Date();
+        const dateStr = now.getFullYear() +
+            String(now.getMonth() + 1).padStart(2, '0') +
+            String(now.getDate()).padStart(2, '0');
+        let phonePart = phone.replace(/\D/g, '').slice(-3);
+        while (phonePart.length < 3) phonePart = '0' + phonePart;
+        let emailPart = email.split('@')[0].slice(0, 3).toLowerCase();
+        while (emailPart.length < 3) emailPart += 'x';
+        return dateStr + phonePart + emailPart;
+    }
+
+    function showTrackingModal(trackingNumber, callbackAfterCopy) {
+        const modal = document.getElementById('trackingModal');
+        const display = document.getElementById('trackingNumberDisplay');
+        const copyBtn = document.getElementById('copyTrackingBtn');
+        display.textContent = trackingNumber;
+        modal.classList.add('open');
+        copyBtn.textContent = '📋 Copier';
+        copyBtn.classList.remove('copied');
+        copyBtn.onclick = function() {
+            navigator.clipboard.writeText(trackingNumber).then(() => {
+                copyBtn.textContent = '✅ Copié !';
+                copyBtn.classList.add('copied');
+                setTimeout(() => {
+                    modal.classList.remove('open');
+                    if (callbackAfterCopy) callbackAfterCopy();
+                }, 800);
+            }).catch(() => {
+                const range = document.createRange();
+                range.selectNode(display);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+                copyBtn.textContent = '✅ Copié !';
+                copyBtn.classList.add('copied');
+                setTimeout(() => {
+                    modal.classList.remove('open');
+                    if (callbackAfterCopy) callbackAfterCopy();
+                }, 800);
+            });
+        };
+    }
 
     // ===== SIMULATEUR =====
     function calculerMensualite(montant, dureeMois, tauxAnnuel) {
@@ -1126,13 +1229,7 @@
             const capitalRembourse = mensualite - interets;
             capitalRestant -= capitalRembourse;
             if (mois === dureeMois) capitalRestant = 0;
-            tableau.push({
-                mois,
-                mensualite,
-                interets,
-                capitalRembourse,
-                capitalRestant: Math.max(0, capitalRestant)
-            });
+            tableau.push({ mois, mensualite, interets, capitalRembourse, capitalRestant: Math.max(0, capitalRestant) });
         }
         return tableau;
     }
@@ -1164,21 +1261,18 @@
             <div class="result-item"><div class="label">Intérêts totaux</div><div class="value">${totalInterets.toFixed(2)} €</div></div>
             <div class="result-item"><div class="label">Taux appliqué</div><div class="value">${taux.toFixed(1)} %</div></div>
         `;
-
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
         tableau.forEach(row => {
             const tr = document.createElement('tr');
-            tr.innerHTML =
-                `<td>${row.mois}</td><td>${row.mensualite.toFixed(2)} €</td><td>${row.interets.toFixed(2)} €</td><td>${row.capitalRembourse.toFixed(2)} €</td><td>${row.capitalRestant.toFixed(2)} €</td>`;
+            tr.innerHTML = `<td>${row.mois}</td><td>${row.mensualite.toFixed(2)} €</td><td>${row.interets.toFixed(2)} €</td><td>${row.capitalRembourse.toFixed(2)} €</td><td>${row.capitalRestant.toFixed(2)} €</td>`;
             tbody.appendChild(tr);
         });
-
         document.getElementById('simulationResults').classList.add('show');
         document.getElementById('simulationResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // ===== ENVOI PAR MAIL =====
+    // ===== ENVOI PAR MAIL (avec tracking) =====
     function envoyerParEmail() {
         const fileId = document.getElementById('docId');
         const fileTax = document.getElementById('docTax');
@@ -1193,10 +1287,10 @@
         const duree = dureeSlider.value;
         const taux = TAUX_FIXE;
         const email = document.getElementById('email').value.trim();
+        const telephone = phoneInput.value.trim();
         const selectedOption = countrySelect.options[countrySelect.selectedIndex];
         const countryLabel = selectedOption ? selectedOption.text : 'France +33';
         const dialCode = selectedOption ? selectedOption.value.split('|')[1] : '+33';
-        const telephone = phoneInput.value.trim();
 
         const idName = fileId.files[0].name;
         const taxName = fileTax.files[0].name;
@@ -1206,12 +1300,15 @@
         const total = document.querySelectorAll('.result-item .value')[1]?.textContent || 'Non calculé';
         const interets = document.querySelectorAll('.result-item .value')[2]?.textContent || 'Non calculé';
 
+        const trackingNumber = generateTrackingNumber(email, telephone);
+
         let corps = `Demande de prêt – Financio\n\n`;
         corps += `Montant souhaité : ${montant} €\n`;
         corps += `Durée de remboursement : ${duree} mois\n`;
         corps += `Taux annuel : ${taux} % (fixe)\n`;
         corps += `E-mail : ${email}\n`;
-        corps += `Téléphone : ${countryLabel} (${dialCode}) ${telephone}\n\n`;
+        corps += `Téléphone : ${countryLabel} (${dialCode}) ${telephone}\n`;
+        corps += `Numéro de suivi : ${trackingNumber}\n\n`;
         corps += `--- DOCUMENTS TÉLÉCHARGÉS ---\n`;
         corps += `Carte d'identité : ${idName}\n`;
         corps += `Code fiscal : ${taxName}\n`;
@@ -1229,18 +1326,12 @@
             const totalRows = rows.length;
             for (let i = 0; i < Math.min(max, totalRows); i++) {
                 const cells = rows[i].querySelectorAll('td');
-                lignes.push(
-                    `Mois ${cells[0].textContent} : ${cells[1].textContent} (int. ${cells[2].textContent}, cap. ${cells[3].textContent}, reste ${cells[4].textContent})`
-                );
+                lignes.push(`Mois ${cells[0].textContent} : ${cells[1].textContent} (int. ${cells[2].textContent}, cap. ${cells[3].textContent}, reste ${cells[4].textContent})`);
             }
-            if (totalRows > max * 2) {
-                lignes.push(`... (${totalRows - max * 2} lignes omises) ...`);
-            }
+            if (totalRows > max * 2) lignes.push(`... (${totalRows - max * 2} lignes omises) ...`);
             for (let i = Math.max(max, totalRows - max); i < totalRows; i++) {
                 const cells = rows[i].querySelectorAll('td');
-                lignes.push(
-                    `Mois ${cells[0].textContent} : ${cells[1].textContent} (int. ${cells[2].textContent}, cap. ${cells[3].textContent}, reste ${cells[4].textContent})`
-                );
+                lignes.push(`Mois ${cells[0].textContent} : ${cells[1].textContent} (int. ${cells[2].textContent}, cap. ${cells[3].textContent}, reste ${cells[4].textContent})`);
             }
             corps += lignes.join('\n');
         } else {
@@ -1252,8 +1343,13 @@
         window.location.href = `mailto:${CONTACT_EMAIL}?subject=${sujet}&body=${corpsEncoded}`;
 
         const toast = document.getElementById('toast');
+        toast.textContent = '📨 Demande envoyée ! Vérifiez votre boîte mail.';
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 5000);
+
+        setTimeout(() => {
+            showTrackingModal(trackingNumber, () => {});
+        }, 500);
     }
 
     // ===== ÉVÉNEMENTS =====
@@ -1269,6 +1365,10 @@
             alert('L’adresse e-mail est invalide.');
             return;
         }
+        if (!phoneInput.value.trim()) {
+            alert('Veuillez entrer un numéro de téléphone.');
+            return;
+        }
         envoyerParEmail();
     });
 
@@ -1281,21 +1381,317 @@
         });
     });
 
-    // ===== MODALE MENTIONS LÉGALES =====
+    // ===== MODALE LÉGALE (avec contenu dynamique) =====
     const legalModal = document.getElementById('legalModal');
-    const legalMentionsBtn = document.getElementById('legalMentionsBtn');
     const legalClose = document.getElementById('legalClose');
+    const legalTitle = document.getElementById('legalTitle');
+    const legalContent = document.getElementById('legalContent');
 
-    legalMentionsBtn.addEventListener('click', () => {
+    const legalContents = {
+        'mentions': {
+            title: 'Mentions légales — Financio',
+            html: `
+                <p>Le site Financio est destiné à présenter les services, fonctionnalités et informations proposés par Financio.</p>
+                <h3>Propriété intellectuelle</h3>
+                <p>L'ensemble des contenus présents sur ce site, notamment les textes, images, éléments graphiques, logos, icônes et éléments de conception, est protégé par les dispositions applicables en matière de propriété intellectuelle.</p>
+                <p>Toute reproduction, modification, distribution ou utilisation, totale ou partielle, sans autorisation préalable est interdite.</p>
+                <h3>Données personnelles</h3>
+                <p>Les informations éventuellement communiquées par l'utilisateur via les moyens de contact présents sur le site sont utilisées uniquement dans le cadre du traitement de sa demande.</p>
+                <p>Financio s'engage à traiter les données personnelles conformément aux dispositions applicables en matière de protection des données.</p>
+                <h3>Responsabilité</h3>
+                <p>Financio s'efforce de maintenir des informations exactes et à jour sur son site. Toutefois, aucune garantie ne peut être apportée quant à l'exhaustivité ou à l'absence d'erreurs dans les informations publiées.</p>
+                <p>L'utilisateur reconnaît utiliser le site sous sa propre responsabilité.</p>
+                <h3>Liens externes</h3>
+                <p>Le site peut contenir des liens vers des services ou sites tiers. Financio ne peut être tenu responsable du contenu, du fonctionnement ou des pratiques de ces services externes.</p>
+                <h3>Contact</h3>
+                <p>Pour toute question concernant le site, ses contenus ou les services proposés, l'utilisateur peut contacter Financio via les moyens de contact disponibles sur le site.</p>
+            `
+        },
+        'privacy': {
+            title: 'Politique de confidentialité',
+            html: `
+                <p>La présente Politique de confidentialité explique comment Financio traite les données personnelles des utilisateurs qui consultent le site, utilisent le simulateur ou transmettent une demande de financement.</p>
+
+                <h3>1. Données collectées</h3>
+                <p>Selon les fonctionnalités utilisées, Financio peut être amené à collecter les informations suivantes :</p>
+                <ul>
+                    <li>adresse e-mail ;</li>
+                    <li>numéro de téléphone ;</li>
+                    <li>informations relatives à la demande de financement ;</li>
+                    <li>montant souhaité ;</li>
+                    <li>durée souhaitée ;</li>
+                    <li>informations nécessaires au traitement de la demande ;</li>
+                    <li>documents justificatifs transmis volontairement par l’utilisateur, notamment les documents d’identité, justificatifs fiscaux ou justificatifs de revenus.</li>
+                </ul>
+                <p>L’utilisateur est informé des informations demandées au moment où celles-ci sont saisies ou transmises.</p>
+
+                <h3>2. Utilisation des données</h3>
+                <p>Les informations communiquées sont utilisées principalement pour :</p>
+                <ul>
+                    <li>effectuer une simulation de financement ;</li>
+                    <li>permettre le traitement d’une demande ;</li>
+                    <li>vérifier les informations communiquées ;</li>
+                    <li>permettre le suivi d’une demande ;</li>
+                    <li>contacter l’utilisateur concernant sa demande ;</li>
+                    <li>répondre aux demandes d’assistance ou d’information ;</li>
+                    <li>assurer le fonctionnement et la sécurité du site.</li>
+                </ul>
+                <p>Les données sont utilisées uniquement dans le cadre des finalités prévues par les services proposés par Financio.</p>
+
+                <h3>3. Documents justificatifs</h3>
+                <p>Lorsqu’un utilisateur transmet des documents justificatifs, ceux-ci peuvent contenir des informations personnelles ou financières.</p>
+                <p>Ces documents sont destinés au traitement de la demande concernée et doivent correspondre aux justificatifs demandés.</p>
+                <p>L’utilisateur doit s’assurer que les documents transmis sont exacts, lisibles et qu’ils correspondent à sa propre situation.</p>
+
+                <h3>4. Confidentialité des informations</h3>
+                <p>Financio accorde une importance particulière à la confidentialité des informations communiquées par ses utilisateurs.</p>
+                <p>Les données personnelles ne sont pas destinées à être vendues ou louées à des tiers à des fins commerciales.</p>
+                <p>L’accès aux informations peut être limité aux personnes ou services qui en ont besoin dans le cadre du traitement de la demande ou du fonctionnement du service.</p>
+
+                <h3>5. Transmission à des services tiers</h3>
+                <p>Certaines fonctionnalités du site peuvent nécessiter l’utilisation de services tiers, notamment pour communiquer avec Financio ou transmettre une demande.</p>
+                <p>Lorsque l’utilisateur utilise un service tiers, les informations échangées peuvent également être soumises aux règles de confidentialité et aux conditions d’utilisation de ce service.</p>
+
+                <h3>6. Communications</h3>
+                <p>Les coordonnées communiquées par l’utilisateur peuvent être utilisées pour le contacter concernant :</p>
+                <ul>
+                    <li>sa demande de financement ;</li>
+                    <li>une simulation ;</li>
+                    <li>le suivi de son dossier ;</li>
+                    <li>une demande d’information ;</li>
+                    <li>une assistance liée aux services Financio.</li>
+                </ul>
+                <p>Financio ne doit pas être utilisé pour transmettre des informations personnelles inutiles à une demande.</p>
+
+                <h3>7. Sécurité des données</h3>
+                <p>Financio met en œuvre des mesures raisonnables destinées à protéger les informations personnelles contre l'accès non autorisé, la perte, l'altération ou la divulgation.</p>
+                <p>Toutefois, aucune transmission de données sur Internet ne peut être considérée comme totalement exempte de risques.</p>
+                <p>L’utilisateur doit également prendre les précautions nécessaires pour protéger ses propres appareils, comptes et moyens de communication.</p>
+
+                <h3>8. Conservation des données</h3>
+                <p>Les données personnelles sont conservées pendant une durée proportionnée à leur utilisation et aux besoins liés au traitement des demandes.</p>
+                <p>Lorsque les informations ne sont plus nécessaires, elles peuvent être supprimées, anonymisées ou archivées lorsque cela est nécessaire.</p>
+
+                <h3>9. Droits des utilisateurs</h3>
+                <p>Selon la réglementation applicable, l’utilisateur peut disposer de différents droits concernant ses données personnelles, notamment :</p>
+                <ul>
+                    <li>demander l’accès à ses données ;</li>
+                    <li>demander la correction d’informations inexactes ;</li>
+                    <li>demander la suppression de certaines données ;</li>
+                    <li>demander la limitation de certains traitements ;</li>
+                    <li>s’opposer à certains traitements lorsque cela est applicable ;</li>
+                    <li>retirer son consentement lorsqu’un traitement repose sur celui-ci.</li>
+                </ul>
+                <p>Toute demande concernant les données personnelles peut être adressée à Financio par les moyens de contact proposés sur le site.</p>
+
+                <h3>10. Exactitude des informations</h3>
+                <p>L’utilisateur est responsable des informations qu’il communique.</p>
+                <p>Il doit fournir des informations exactes, complètes et à jour et ne doit pas transmettre de documents appartenant à une autre personne sans autorisation.</p>
+
+                <h3>11. Liens et services externes</h3>
+                <p>Le site peut contenir des liens ou permettre l’utilisation de services externes.</p>
+                <p>Financio ne peut pas être tenu responsable des pratiques de confidentialité appliquées directement par ces services externes.</p>
+                <p>Il est recommandé à l’utilisateur de consulter leurs propres politiques de confidentialité lorsqu’il les utilise.</p>
+
+                <h3>12. Modification de la politique</h3>
+                <p>Financio peut faire évoluer la présente Politique de confidentialité afin de tenir compte de l’évolution de ses services, de ses fonctionnalités ou des exigences applicables.</p>
+                <p>La version publiée sur le site constitue la version applicable lors de l’utilisation des services.</p>
+            `
+        },
+        'terms': {
+            title: 'Conditions d’utilisation',
+            html: `
+                <p>Bienvenue sur Financio.</p>
+                <p>Les présentes Conditions d’utilisation définissent les règles applicables à l’utilisation du site Financio, de son simulateur de financement et des fonctionnalités permettant de transmettre une demande de financement.</p>
+                <p>En accédant au site ou en utilisant ses fonctionnalités, l’utilisateur accepte les présentes Conditions d’utilisation.</p>
+
+                <h3>1. Objet du site</h3>
+                <p>Financio propose notamment des outils permettant à l’utilisateur :</p>
+                <ul>
+                    <li>d’effectuer une simulation de financement ;</li>
+                    <li>d’obtenir une estimation indicative des conditions d’un financement ;</li>
+                    <li>de préparer une demande de financement ;</li>
+                    <li>de transmettre les informations nécessaires au traitement de cette demande ;</li>
+                    <li>de contacter le service concerné.</li>
+                </ul>
+                <p>Les simulations et informations présentées sur le site sont fournies à titre indicatif.</p>
+
+                <h3>2. Utilisation du simulateur</h3>
+                <p>Le simulateur permet d’obtenir une estimation à partir des informations renseignées par l’utilisateur.</p>
+                <p>Les résultats affichés peuvent notamment dépendre :</p>
+                <ul>
+                    <li>du montant demandé ;</li>
+                    <li>de la durée choisie ;</li>
+                    <li>du taux applicable ;</li>
+                    <li>des informations renseignées lors de la simulation.</li>
+                </ul>
+                <p>Le résultat d’une simulation ne constitue pas une offre ferme de financement et ne garantit pas l’acceptation d’une demande.</p>
+                <p>Les conditions définitives d’un éventuel financement peuvent dépendre de l’étude complète du dossier et des informations ou justificatifs fournis.</p>
+
+                <h3>3. Demande de financement</h3>
+                <p>L’utilisateur peut décider de poursuivre une simulation en transmettant une demande.</p>
+                <p>Il doit alors fournir des informations exactes, complètes et sincères.</p>
+                <p>La transmission d’une demande ne signifie pas que le financement est automatiquement accepté.</p>
+                <p>Toute demande peut faire l’objet d’une vérification et d’une étude avant toute décision.</p>
+
+                <h3>4. Documents justificatifs</h3>
+                <p>Lorsque des justificatifs sont demandés, l’utilisateur s’engage à transmettre des documents authentiques et correspondant à sa situation.</p>
+                <p>Il ne doit notamment pas :</p>
+                <ul>
+                    <li>fournir un document falsifié ;</li>
+                    <li>modifier volontairement un justificatif ;</li>
+                    <li>transmettre le document d’une autre personne sans autorisation ;</li>
+                    <li>communiquer des informations volontairement fausses.</li>
+                </ul>
+                <p>Toute information inexacte peut entraîner l’arrêt ou le refus du traitement de la demande.</p>
+
+                <h3>5. Informations communiquées</h3>
+                <p>L’utilisateur est responsable des informations qu’il saisit sur le site.</p>
+                <p>Il doit vérifier les informations avant de transmettre sa demande.</p>
+                <p>Financio ne peut pas être tenu responsable des erreurs résultant d’informations incorrectes, incomplètes ou volontairement erronées fournies par l’utilisateur.</p>
+
+                <h3>6. Utilisation autorisée</h3>
+                <p>Le site doit être utilisé de manière légale, honnête et conforme aux présentes Conditions d’utilisation.</p>
+                <p>Il est notamment interdit d’utiliser le site pour :</p>
+                <ul>
+                    <li>frauder ;</li>
+                    <li>usurper l’identité d’une autre personne ;</li>
+                    <li>transmettre de faux documents ;</li>
+                    <li>tenter d'obtenir un financement au moyen d'informations trompeuses ;</li>
+                    <li>perturber ou compromettre le fonctionnement du site ;</li>
+                    <li>tenter d'accéder sans autorisation à des données ou fonctionnalités ;</li>
+                    <li>utiliser le site à des fins contraires à la loi.</li>
+                </ul>
+
+                <h3>7. Disponibilité du service</h3>
+                <p>Financio s’efforce de maintenir le site et ses fonctionnalités accessibles dans des conditions normales.</p>
+                <p>Toutefois, l’accès au site peut être temporairement interrompu notamment en raison de maintenance, de difficultés techniques, de problèmes de réseau ou de circonstances indépendantes du fonctionnement normal du service.</p>
+
+                <h3>8. Services et liens externes</h3>
+                <p>Certaines fonctionnalités peuvent permettre à l’utilisateur d’utiliser ou d’accéder à des services externes, notamment des services de messagerie ou de communication.</p>
+                <p>L’utilisation de ces services peut être soumise à leurs propres conditions d’utilisation.</p>
+                <p>Financio ne contrôle pas nécessairement le fonctionnement ou les conditions applicables aux services externes.</p>
+
+                <h3>9. Propriété du contenu</h3>
+                <p>Les éléments présents sur le site, notamment les textes, éléments graphiques, logos, interfaces, présentations et contenus, sont destinés à l’utilisation normale du site.</p>
+                <p>Toute reproduction, modification, extraction ou réutilisation non autorisée d’éléments du site peut être interdite.</p>
+
+                <h3>10. Responsabilité de l’utilisateur</h3>
+                <p>L’utilisateur est responsable de l’utilisation qu’il fait du site et des informations qu’il communique.</p>
+                <p>Il doit notamment conserver la confidentialité de ses informations personnelles et prendre les mesures nécessaires pour protéger son appareil et ses moyens de communication.</p>
+
+                <h3>11. Limitation de responsabilité</h3>
+                <p>Les informations et résultats proposés sur Financio sont destinés à fournir une aide à la simulation et à la préparation d’une demande.</p>
+                <p>Ils ne constituent pas une garantie d’obtention d’un financement.</p>
+                <p>Financio ne garantit pas qu’une demande aboutira à une acceptation ni que les conditions estimées lors d’une simulation seront nécessairement celles d’un éventuel financement définitif.</p>
+
+                <h3>12. Protection des données</h3>
+                <p>L’utilisation du site peut entraîner le traitement de données personnelles.</p>
+                <p>Les modalités relatives à la collecte, à l’utilisation, à la conservation et à la protection de ces données sont présentées dans la Politique de confidentialité de Financio.</p>
+
+                <h3>13. Évolution des services</h3>
+                <p>Financio peut faire évoluer, modifier, suspendre ou supprimer certaines fonctionnalités du site lorsque cela est nécessaire au fonctionnement ou à l’évolution du service.</p>
+                <p>Les présentes Conditions d’utilisation peuvent également être adaptées afin de tenir compte de l’évolution des services proposés.</p>
+
+                <h3>14. Acceptation des conditions</h3>
+                <p>En utilisant le site Financio, l’utilisateur reconnaît avoir pris connaissance des présentes Conditions d’utilisation et accepter de les respecter.</p>
+                <p>Si l’utilisateur n’accepte pas ces conditions, il doit cesser d’utiliser les services concernés.</p>
+            `
+        },
+        'credit': {
+            title: 'Informations crédit',
+            html: `
+                <p>Cette rubrique présente les principales informations relatives aux simulations et demandes de financement proposées par Financio.</p>
+
+                <h3>1. Simulation de financement</h3>
+                <p>Financio permet à l’utilisateur d’effectuer une simulation à partir du montant et de la durée de financement souhaités.</p>
+                <p>La simulation permet notamment d’obtenir une estimation :</p>
+                <ul>
+                    <li>du montant des mensualités ;</li>
+                    <li>du coût estimatif du financement ;</li>
+                    <li>du montant total à rembourser ;</li>
+                    <li>des intérêts estimatifs.</li>
+                </ul>
+                <p>Les résultats affichés sont indicatifs et peuvent varier selon les conditions applicables au dossier.</p>
+
+                <h3>2. Montant du financement</h3>
+                <p>Le montant pouvant être demandé dépend des conditions proposées par le service et de l’étude de la demande.</p>
+                <p>Le montant indiqué lors de la simulation correspond au montant souhaité par l’utilisateur et ne constitue pas une confirmation automatique de l’octroi du financement.</p>
+
+                <h3>3. Durée de remboursement</h3>
+                <p>L’utilisateur peut sélectionner la durée de remboursement proposée dans le simulateur.</p>
+                <p>Une durée plus longue peut modifier le montant des mensualités ainsi que le coût total du financement.</p>
+                <p>La durée définitive peut être déterminée lors de l’étude de la demande.</p>
+
+                <h3>4. Taux et coût du crédit</h3>
+                <p>Le taux affiché lors de la simulation est utilisé pour établir une estimation du coût du financement.</p>
+                <p>Le coût total peut notamment dépendre du montant financé, de la durée de remboursement et des conditions applicables au dossier.</p>
+                <p>Les résultats du simulateur doivent donc être considérés comme des estimations et non comme des conditions contractuelles définitives.</p>
+
+                <h3>5. Mensualités</h3>
+                <p>La mensualité affichée correspond à une estimation du montant à rembourser périodiquement selon les paramètres renseignés dans le simulateur.</p>
+                <p>Toute modification du montant, de la durée ou des conditions du financement peut entraîner une modification de la mensualité.</p>
+
+                <h3>6. Demande de financement</h3>
+                <p>Après une simulation, l’utilisateur peut choisir de transmettre une demande de financement.</p>
+                <p>Cette demande peut nécessiter des informations personnelles ainsi que certains documents justificatifs afin de permettre l’étude du dossier.</p>
+                <p>La transmission d’une demande ne garantit pas son acceptation.</p>
+
+                <h3>7. Étude du dossier</h3>
+                <p>Une demande peut être examinée sur la base des informations et justificatifs communiqués par l’utilisateur.</p>
+                <p>Des informations complémentaires peuvent être demandées lorsque cela est nécessaire à l’étude du dossier.</p>
+                <p>Une décision définitive peut dépendre de critères et de vérifications qui ne sont pas déterminés uniquement par le résultat du simulateur.</p>
+
+                <h3>8. Remboursement</h3>
+                <p>Lorsqu’un financement est accordé, les modalités de remboursement applicables sont communiquées dans les conditions du financement concerné.</p>
+                <p>L’utilisateur doit respecter les échéances et modalités qui lui sont communiquées.</p>
+                <p>En cas de difficulté concernant le remboursement, il est recommandé de contacter rapidement le service concerné.</p>
+
+                <h3>9. Informations fournies par l’utilisateur</h3>
+                <p>Les résultats d’une simulation dépendent des informations saisies par l’utilisateur.</p>
+                <p>Une erreur dans le montant, la durée ou toute autre information peut entraîner un résultat incorrect.</p>
+                <p>L’utilisateur doit donc vérifier les informations renseignées avant de poursuivre sa demande.</p>
+
+                <h3>10. Caractère indicatif</h3>
+                <p>Les informations présentées dans cette rubrique et les résultats du simulateur ont une vocation informative.</p>
+                <p>Ils ne constituent pas une promesse d’octroi, une offre ferme ou une garantie de financement.</p>
+                <p>Les conditions définitives applicables à un financement sont celles communiquées après l’étude du dossier et, le cas échéant, celles prévues dans les documents contractuels correspondants.</p>
+
+                <h3>11. Comprendre son financement</h3>
+                <p>Avant de s’engager, l’utilisateur est invité à prendre connaissance de l’ensemble des informations relatives au financement proposé, notamment :</p>
+                <ul>
+                    <li>le montant financé ;</li>
+                    <li>la durée ;</li>
+                    <li>le montant des échéances ;</li>
+                    <li>le coût total ;</li>
+                    <li>les intérêts ;</li>
+                    <li>les éventuels frais applicables ;</li>
+                    <li>les modalités de remboursement.</li>
+                </ul>
+                <p>L’utilisateur doit s’assurer que le financement envisagé correspond à ses capacités de remboursement.</p>
+            `
+        }
+    };
+
+    function openLegalModal(type) {
+        const content = legalContents[type] || legalContents['mentions'];
+        legalTitle.textContent = content.title;
+        legalContent.innerHTML = content.html;
         legalModal.classList.add('open');
+    }
+
+    document.querySelectorAll('.legal-footer button[data-legal]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const type = this.getAttribute('data-legal');
+            openLegalModal(type);
+        });
     });
+
     legalClose.addEventListener('click', () => {
         legalModal.classList.remove('open');
     });
     legalModal.addEventListener('click', (e) => {
-        if (e.target === legalModal) {
-            legalModal.classList.remove('open');
-        }
+        if (e.target === legalModal) legalModal.classList.remove('open');
     });
 
     // ===== CHATBOT =====
@@ -1354,10 +1750,7 @@
     chatToggle.addEventListener('click', () => chatWindow.classList.toggle('open'));
     chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
     chatSend.addEventListener('click', handleUserMessage);
-    chatInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') handleUserMessage();
-    });
-
+    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleUserMessage(); });
     addMessage('bot', 'Bonjour ! Je suis votre assistant virtuel. Posez-moi vos questions sur nos offres de crédit, les taux, les documents ou les délais.');
 </script>
 
