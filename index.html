@@ -1583,9 +1583,9 @@
 
         // Vérification taille/type côté navigateur (à renforcer également par les règles Storage).
         const files = [
-            { input: fileId, type: 'identite' },
-            { input: fileTax, type: 'fiscal' },
-            { input: fileIncome, type: 'revenu' }
+            { input: fileId, type: 'identity' },
+            { input: fileTax, type: 'tax' },
+            { input: fileIncome, type: 'income' }
         ];
         const maxSize = 10 * 1024 * 1024;
         const allowed = ['application/pdf','image/jpeg','image/png','image/gif','image/bmp','image/tiff','image/heic'];
@@ -1625,7 +1625,7 @@
                 email: email,
                 phone: telephone,
                 country: countryLabel,
-                status: 'Demande envoyée'
+                status: 'Application submitted'
             };
 
             const { data: application, error: applicationError } = await supabaseClient
@@ -2087,15 +2087,33 @@
     const accountPanel = document.getElementById('accountPanel');
     const clientDashboard = document.getElementById('clientDashboard');
 
+    // Server/database status values are kept in English.
+    // The client-facing interface translates them to French.
     const statusOrder = [
-        'Demande envoyée',
-        'Documents en vérification',
-        'Dossier en cours d’étude',
-        'Dossier accepté',
-        'Contrat à signer',
-        'Financement en préparation',
-        'Financement accordé'
+        'Application submitted',
+        'Documents under review',
+        'Application under assessment',
+        'Application approved',
+        'Contract to sign',
+        'Funding in preparation',
+        'Funding granted'
     ];
+
+    const statusLabelsFr = {
+        'Application submitted': 'Demande envoyée',
+        'Documents under review': 'Documents en vérification',
+        'Application under assessment': 'Dossier en cours d’étude',
+        'Application approved': 'Dossier accepté',
+        'Contract to sign': 'Contrat à signer',
+        'Funding in preparation': 'Financement en préparation',
+        'Funding granted': 'Financement accordé'
+    };
+
+    const documentLabelsFr = {
+        identity: 'Carte d’identité',
+        tax: 'Document fiscal',
+        income: 'Justificatif de revenu'
+    };
 
     function showAuthMessage(message, type='success') {
         authMessage.textContent = message;
@@ -2205,13 +2223,13 @@
         document.getElementById('dashAmount').textContent = `${Number(app.amount_requested).toLocaleString('fr-FR')} €`;
         document.getElementById('dashDuration').textContent = `${app.duration_months} mois`;
         document.getElementById('dashMonthly').textContent = `${Number(app.monthly_payment).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
-        document.getElementById('dashStatus').textContent = app.status || 'Demande envoyée';
+        document.getElementById('dashStatus').textContent = statusLabelsFr[app.status] || app.status || 'Demande envoyée';
         document.getElementById('dashUpdated').textContent = app.updated_at ? new Date(app.updated_at).toLocaleString('fr-FR') : '—';
 
         const currentIndex = Math.max(0, statusOrder.indexOf(app.status));
         document.getElementById('statusTrack').innerHTML = statusOrder.map((s, i) => {
             const cls = i < currentIndex ? 'done' : i === currentIndex ? 'active' : '';
-            return `<div class="status-step ${cls}"><span class="status-dot"></span><span>${s}</span></div>`;
+            return `<div class="status-step ${cls}"><span class="status-dot"></span><span>${statusLabelsFr[s] || s}</span></div>`;
         }).join('');
 
         const { data: docs } = await supabaseClient
@@ -2220,7 +2238,7 @@
             .eq('application_id', app.id)
             .order('created_at', { ascending:true });
 
-        const labels = { identite:'Carte d’identité', fiscal:'Document fiscal', revenu:'Justificatif de revenu' };
+        const labels = documentLabelsFr;
         document.getElementById('dashDocuments').innerHTML = docs?.length
             ? `<h3 style="color:#0f2b4b;">Documents transmis</h3><ul style="padding-left:1.2rem;color:#5b6f87;">${docs.map(d => `<li>${labels[d.document_type] || d.document_type} — ${d.original_name}</li>`).join('')}</ul>`
             : '<p class="doc-note">Aucun document enregistré.</p>';
