@@ -801,12 +801,135 @@
             line-height: 1.7;
             margin-bottom: 0.6rem;
         }
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0 2rem;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e5ebf2;
+            border-radius: 16px;
+            padding: 1.25rem 1rem;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(35, 61, 89, 0.07);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 9px 24px rgba(35, 61, 89, 0.11);
+        }
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            margin: 0 auto .55rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #eef5e9;
+            color: #3d556e;
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+        .stat-value {
+            color: #20364d;
+            font-size: clamp(1.55rem, 3vw, 2.1rem);
+            line-height: 1.1;
+            font-weight: 800;
+            letter-spacing: -.02em;
+        }
+        .stat-value span { font-size: .62em; }
+        .stat-label {
+            margin-top: .4rem;
+            color: #687d95;
+            font-size: .88rem;
+            line-height: 1.35;
+        }
+        @media (max-width: 700px) {
+            .stats-section { grid-template-columns: 1fr; gap: .8rem; }
+            .stat-card { padding: 1rem; }
+        }
+
         .legal-card ul {
             padding-left: 1.5rem;
         }
         @media (max-width: 600px) {
             .legal-card { padding: 1.5rem; }
         }
+
+        /* ===== ESPACE CLIENT / AUTH SUPABASE ===== */
+        .account-actions { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
+        .account-btn {
+            border:1px solid #dce3ed; background:#fff; color:#0f2b4b; padding:.65rem 1rem;
+            border-radius:30px; cursor:pointer; font-weight:600;
+        }
+        .account-btn.primary { background:#0f2b4b; color:#fff; border-color:#0f2b4b; }
+        .account-btn:hover { transform:translateY(-1px); }
+        .account-panel {
+            margin:1.2rem 0 1.5rem; padding:1.4rem; background:#f7faff;
+            border:1px solid #e2eaf4; border-radius:20px; display:none;
+        }
+        .account-panel.show { display:block; }
+        .account-panel-header { display:flex; justify-content:space-between; gap:1rem; align-items:center; flex-wrap:wrap; }
+        .account-panel h3 { color:#0f2b4b; margin:0; }
+        .account-status { color:#5b6f87; font-size:.9rem; }
+        .dashboard {
+            display:none; margin:1.2rem 0 2rem; padding:1.7rem; background:#fff;
+            border:1px solid #e3eaf3; border-radius:24px; box-shadow:0 5px 18px rgba(15,43,75,.05);
+        }
+        .dashboard.show { display:block; }
+        .dashboard-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:1rem 0 1.5rem; }
+        .dash-card { background:#f7faff; border:1px solid #e5ebf3; border-radius:16px; padding:1rem; }
+        .dash-card .label { color:#71839a; font-size:.78rem; text-transform:uppercase; font-weight:700; }
+        .dash-card .value { color:#0f2b4b; font-size:1.15rem; font-weight:700; margin-top:.25rem; }
+        .status-track { display:grid; gap:.55rem; margin-top:1rem; }
+        .status-step { display:flex; gap:.75rem; align-items:center; padding:.75rem 1rem; border-radius:12px; background:#f3f6fa; color:#71839a; }
+        .status-step.active { background:#eaf2ff; color:#0f2b4b; font-weight:700; }
+        .status-step.done { background:#eef8f1; color:#1f8b4c; font-weight:600; }
+        .status-dot { width:12px; height:12px; border-radius:50%; background:#c8d2df; flex:0 0 12px; }
+        .status-step.active .status-dot { background:#2a7de1; }
+        .status-step.done .status-dot { background:#1f8b4c; }
+        .dash-actions { display:flex; gap:.7rem; flex-wrap:wrap; margin-top:1rem; }
+        .auth-modal {
+            position:fixed; inset:0; background:rgba(15,43,75,.72); display:none; align-items:center;
+            justify-content:center; padding:1rem; z-index:4000; backdrop-filter:blur(5px);
+        }
+        .auth-modal.open { display:flex; }
+        .auth-card {
+            width:min(520px,100%); background:#fff; border-radius:24px; padding:2rem;
+            box-shadow:0 20px 70px rgba(0,0,0,.28); max-height:90vh; overflow:auto;
+        }
+        .auth-card h2 { color:#0f2b4b; margin-bottom:.4rem; }
+        .auth-card .auth-sub { color:#71839a; margin-bottom:1.2rem; }
+        .auth-tabs { display:flex; gap:.4rem; background:#f2f5f9; padding:.35rem; border-radius:14px; margin-bottom:1.2rem; }
+        .auth-tab { flex:1; border:0; background:transparent; padding:.65rem; border-radius:10px; cursor:pointer; font-weight:700; color:#71839a; }
+        .auth-tab.active { background:#fff; color:#0f2b4b; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+        .auth-form { display:none; }
+        .auth-form.active { display:block; }
+        .auth-form .form-group { margin-bottom:1rem; }
+        .auth-form input {
+            padding:.8rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; width:100%;
+            font-size:1rem; outline:none;
+        }
+        .auth-form input:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
+        .auth-submit { width:100%; margin-top:.4rem; }
+        .auth-link { border:0; background:none; color:#2a7de1; cursor:pointer; padding:.6rem 0; font-weight:600; }
+        .auth-message { margin-top:1rem; padding:.75rem 1rem; border-radius:12px; display:none; font-size:.9rem; }
+        .auth-message.show { display:block; }
+        .auth-message.error { background:#fff0f0; color:#a12b2b; }
+        .auth-message.success { background:#eef8f1; color:#176d3c; }
+        .password-row { position:relative; }
+        .password-toggle { position:absolute; right:.75rem; top:50%; transform:translateY(-50%); border:0; background:none; cursor:pointer; }
+        .doc-note { font-size:.82rem; color:#71839a; margin-top:.35rem; }
+        @media(max-width:800px) { .dashboard-grid { grid-template-columns:1fr; } }
+        @media(max-width:600px) {
+            .account-actions { width:100%; }
+            .account-btn { flex:1; }
+            .auth-card { padding:1.4rem; }
+        }
+
     </style>
 </head>
 <body>
@@ -820,8 +943,22 @@
             <div class="brand-subtitle">Solutions de financement • Europe</div>
             <div class="language-indicator">FR</div>
         </div>
-        <div class="tagline">🔒 100% sécurisé</div>
+        <div class="account-actions">
+            <button type="button" class="account-btn" id="loginBtn">🔐 Se connecter</button>
+            <button type="button" class="account-btn primary" id="registerBtn">👤 Créer un compte</button>
+            <button type="button" class="account-btn" id="dashboardBtn" style="display:none;">📊 Mon espace</button>
+        </div>
     </header>
+
+    <section class="account-panel" id="accountPanel">
+        <div class="account-panel-header">
+            <div>
+                <h3>👤 Espace client</h3>
+                <div class="account-status" id="accountStatus">Connexion...</div>
+            </div>
+            <button type="button" class="account-btn" id="logoutBtn">Se déconnecter</button>
+        </div>
+    </section>
 
     <!-- HERO -->
     <section class="hero">
@@ -832,6 +969,55 @@
             <h1>Avez-vous besoin <br><span>d'un financement</span> ?</h1>
             <p>Simulez votre crédit en quelques secondes, sans engagement.</p>
             <span class="badge">✅ Réponse sous 24h</span>
+        </div>
+    </section>
+
+    <!-- STATISTIQUES -->
+    <section class="stats-section" aria-label="Statistiques Financio">
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-value">5 690<span>+</span></div>
+            <div class="stat-label">dossiers reçus par semaine</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+            <div class="stat-value">85<span>%</span></div>
+            <div class="stat-label">taux d’acceptation</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">€</div>
+            <div class="stat-value">750 652<span> €+</span></div>
+            <div class="stat-label">de financements accordés par mois</div>
+        </div>
+    </section>
+
+
+    <!-- ===== ESPACE CLIENT ===== -->
+    <section class="dashboard" id="clientDashboard">
+        <div class="account-panel-header">
+            <div>
+                <h2 style="color:#0f2b4b;margin:0;">Mon dossier de financement</h2>
+                <p class="account-status" id="dashboardWelcome">Bienvenue.</p>
+            </div>
+            <button type="button" class="account-btn" id="refreshDashboardBtn">↻ Actualiser</button>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dash-card"><div class="label">N° de dossier</div><div class="value" id="dashTracking">—</div></div>
+            <div class="dash-card"><div class="label">Montant demandé</div><div class="value" id="dashAmount">—</div></div>
+            <div class="dash-card"><div class="label">Durée</div><div class="value" id="dashDuration">—</div></div>
+            <div class="dash-card"><div class="label">Mensualité estimée</div><div class="value" id="dashMonthly">—</div></div>
+            <div class="dash-card"><div class="label">Statut</div><div class="value" id="dashStatus">Aucun dossier</div></div>
+            <div class="dash-card"><div class="label">Dernière mise à jour</div><div class="value" id="dashUpdated">—</div></div>
+        </div>
+
+        <h3 style="color:#0f2b4b;">Suivi de votre demande</h3>
+        <div class="status-track" id="statusTrack"></div>
+
+        <div id="dashDocuments" style="margin-top:1.5rem;"></div>
+        <div class="dash-actions">
+            <button type="button" class="account-btn" id="changePasswordBtn">🔑 Modifier mon mot de passe</button>
+            <button type="button" class="account-btn" id="closeDashboardBtn">Fermer l'espace</button>
         </div>
     </section>
 
@@ -925,6 +1111,7 @@
                 <div class="doc-upload-group">
                     <label for="docIncome">Document de revenu mensuel</label>
                     <input type="file" id="docIncome" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
+                    <div class="doc-note">Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.</div>
                 </div>
             </div>
 
@@ -1005,6 +1192,87 @@
     </footer>
 </div>
 
+
+<!-- ===== MODALE AUTHENTIFICATION ===== -->
+<div class="auth-modal" id="authModal">
+    <div class="auth-card">
+        <button class="legal-close" id="authClose" style="float:right;">✕</button>
+        <h2 id="authTitle">Votre espace client</h2>
+        <p class="auth-sub" id="authSubtitle">Créez votre compte pour suivre votre dossier.</p>
+
+        <div class="auth-tabs" id="authTabs">
+            <button class="auth-tab active" data-auth-tab="login">Connexion</button>
+            <button class="auth-tab" data-auth-tab="register">Inscription</button>
+        </div>
+
+        <form class="auth-form active" id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">Adresse e-mail</label>
+                <input type="email" id="loginEmail" autocomplete="email" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Mot de passe</label>
+                <div class="password-row">
+                    <input type="password" id="loginPassword" autocomplete="current-password" required>
+                    <button type="button" class="password-toggle" data-target="loginPassword">👁️</button>
+                </div>
+            </div>
+            <button class="btn btn-primary auth-submit" type="submit">🔐 Se connecter</button>
+            <button class="auth-link" type="button" id="forgotPasswordBtn">Mot de passe oublié ?</button>
+        </form>
+
+        <form class="auth-form" id="registerForm">
+            <div class="form-group">
+                <label for="registerName">Nom complet</label>
+                <input type="text" id="registerName" autocomplete="name" required>
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">Adresse e-mail</label>
+                <input type="email" id="registerEmail" autocomplete="email" required>
+            </div>
+            <div class="form-group">
+                <label for="registerPhone">Téléphone</label>
+                <input type="tel" id="registerPhone" autocomplete="tel" required>
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Mot de passe</label>
+                <div class="password-row">
+                    <input type="password" id="registerPassword" autocomplete="new-password" minlength="8" required>
+                    <button type="button" class="password-toggle" data-target="registerPassword">👁️</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="registerPassword2">Confirmer le mot de passe</label>
+                <input type="password" id="registerPassword2" autocomplete="new-password" minlength="8" required>
+            </div>
+            <button class="btn btn-primary auth-submit" type="submit">👤 Créer mon compte</button>
+        </form>
+
+        <form class="auth-form" id="forgotForm">
+            <div class="form-group">
+                <label for="forgotEmail">Adresse e-mail du compte</label>
+                <input type="email" id="forgotEmail" autocomplete="email" required>
+            </div>
+            <button class="btn btn-primary auth-submit" type="submit">📧 Envoyer le lien de réinitialisation</button>
+            <button class="auth-link" type="button" id="backToLoginBtn">← Retour à la connexion</button>
+        </form>
+
+        <form class="auth-form" id="resetForm">
+            <div class="form-group">
+                <label for="newPassword">Nouveau mot de passe</label>
+                <input type="password" id="newPassword" autocomplete="new-password" minlength="8" required>
+            </div>
+            <div class="form-group">
+                <label for="newPassword2">Confirmer le nouveau mot de passe</label>
+                <input type="password" id="newPassword2" autocomplete="new-password" minlength="8" required>
+            </div>
+            <button class="btn btn-primary auth-submit" type="submit">🔑 Enregistrer le nouveau mot de passe</button>
+        </form>
+
+        <div class="auth-message" id="authMessage"></div>
+    </div>
+</div>
+
 <!-- ===== MODALE NUMÉRO DE SUIVI ===== -->
 <div class="tracking-modal" id="trackingModal">
     <div class="tracking-card">
@@ -1046,7 +1314,15 @@
 <!-- TOAST -->
 <div id="toast" class="toast">📨 Demande envoyée avec succès !</div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+    // ===== SUPABASE =====
+    // Remplacez ces deux valeurs par celles de votre projet Supabase.
+    const SUPABASE_URL = "https://VOTRE-PROJET.supabase.co";
+    const SUPABASE_ANON_KEY = "VOTRE_CLE_ANON_OU_PUBLISHABLE";
+    const { createClient } = window.supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     // ===== CONSTANTES =====
     const TAUX_FIXE = 3.0;
     const CONTACT_EMAIL = 'otezaolga@gmail.com';
@@ -1272,84 +1548,134 @@
         document.getElementById('simulationResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    // ===== ENVOI PAR MAIL (avec tracking) =====
-    function envoyerParEmail() {
+    // ===== ENVOI DE LA DEMANDE VERS SUPABASE =====
+    async function envoyerParEmail() {
+        const userResult = await supabaseClient.auth.getUser();
+        const user = userResult.data.user;
+        if (!user) {
+            openAuthModal('login');
+            showAuthMessage('Connectez-vous ou créez un compte avant d’envoyer votre demande.', 'error');
+            return;
+        }
+
         const fileId = document.getElementById('docId');
         const fileTax = document.getElementById('docTax');
         const fileIncome = document.getElementById('docIncome');
 
-        if (fileId.files.length === 0 || fileTax.files.length === 0 || fileIncome.files.length === 0) {
-            alert('Veuillez télécharger les trois documents (carte d’identité, code fiscal, justificatif de revenu).');
+        if (!fileId.files.length || !fileTax.files.length || !fileIncome.files.length) {
+            alert('Veuillez télécharger les trois documents demandés.');
             return;
         }
 
-        const montant = montantSlider.value;
-        const duree = dureeSlider.value;
-        const taux = TAUX_FIXE;
-        const email = document.getElementById('email').value.trim();
-        const telephone = phoneInput.value.trim();
         const selectedOption = countrySelect.options[countrySelect.selectedIndex];
         const countryLabel = selectedOption ? selectedOption.text : 'France +33';
         const dialCode = selectedOption ? selectedOption.value.split('|')[1] : '+33';
 
-        const idName = fileId.files[0].name;
-        const taxName = fileTax.files[0].name;
-        const incomeName = fileIncome.files[0].name;
-
-        const mensualite = document.querySelector('.result-item .value')?.textContent || 'Non calculé';
-        const total = document.querySelectorAll('.result-item .value')[1]?.textContent || 'Non calculé';
-        const interets = document.querySelectorAll('.result-item .value')[2]?.textContent || 'Non calculé';
-
+        const montant = Number(montantSlider.value);
+        const duree = Number(dureeSlider.value);
+        const taux = TAUX_FIXE;
+        const email = document.getElementById('email').value.trim();
+        const telephone = phoneInput.value.trim();
+        const mensualite = calculerMensualite(montant, duree, taux);
+        const totalRembourse = mensualite * duree;
+        const totalInterets = totalRembourse - montant;
         const trackingNumber = generateTrackingNumber(email, telephone);
 
-        let corps = `Demande de prêt – Financio\n\n`;
-        corps += `Montant souhaité : ${montant} €\n`;
-        corps += `Durée de remboursement : ${duree} mois\n`;
-        corps += `Taux annuel : ${taux} % (fixe)\n`;
-        corps += `E-mail : ${email}\n`;
-        corps += `Téléphone : ${countryLabel} (${dialCode}) ${telephone}\n`;
-        corps += `Numéro de suivi : ${trackingNumber}\n\n`;
-        corps += `--- DOCUMENTS TÉLÉCHARGÉS ---\n`;
-        corps += `Carte d'identité : ${idName}\n`;
-        corps += `Code fiscal : ${taxName}\n`;
-        corps += `Justificatif de revenu : ${incomeName}\n\n`;
-        corps += `--- RÉSULTATS DE LA SIMULATION ---\n`;
-        corps += `Mensualité estimée : ${mensualite}\n`;
-        corps += `Total à rembourser : ${total}\n`;
-        corps += `Intérêts totaux : ${interets}\n\n`;
-        corps += `Détail des échéances (extrait) :\n`;
+        // Vérification taille/type côté navigateur (à renforcer également par les règles Storage).
+        const files = [
+            { input: fileId, type: 'identite' },
+            { input: fileTax, type: 'fiscal' },
+            { input: fileIncome, type: 'revenu' }
+        ];
+        const maxSize = 10 * 1024 * 1024;
+        const allowed = ['application/pdf','image/jpeg','image/png','image/gif','image/bmp','image/tiff','image/heic'];
 
-        const rows = document.querySelectorAll('#tableBody tr');
-        if (rows.length > 0) {
-            const lignes = [];
-            const max = 5;
-            const totalRows = rows.length;
-            for (let i = 0; i < Math.min(max, totalRows); i++) {
-                const cells = rows[i].querySelectorAll('td');
-                lignes.push(`Mois ${cells[0].textContent} : ${cells[1].textContent} (int. ${cells[2].textContent}, cap. ${cells[3].textContent}, reste ${cells[4].textContent})`);
+        for (const item of files) {
+            const f = item.input.files[0];
+            if (f.size > maxSize) {
+                alert(`Le fichier "${f.name}" dépasse 10 Mo.`);
+                return;
             }
-            if (totalRows > max * 2) lignes.push(`... (${totalRows - max * 2} lignes omises) ...`);
-            for (let i = Math.max(max, totalRows - max); i < totalRows; i++) {
-                const cells = rows[i].querySelectorAll('td');
-                lignes.push(`Mois ${cells[0].textContent} : ${cells[1].textContent} (int. ${cells[2].textContent}, cap. ${cells[3].textContent}, reste ${cells[4].textContent})`);
+            if (f.type && !allowed.includes(f.type)) {
+                alert(`Format non autorisé pour "${f.name}".`);
+                return;
             }
-            corps += lignes.join('\n');
-        } else {
-            corps += `(Aucune échéance détaillée)`;
         }
 
-        const sujet = encodeURIComponent('Demande de prêt – Simulation Financio');
-        const corpsEncoded = encodeURIComponent(corps);
-        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${sujet}&body=${corpsEncoded}`;
-
         const toast = document.getElementById('toast');
-        toast.textContent = '📨 Demande envoyée ! Vérifiez votre boîte mail.';
+        toast.textContent = '⏳ Envoi sécurisé de votre dossier...';
         toast.classList.add('show');
-        setTimeout(() => toast.classList.remove('show'), 5000);
 
-        setTimeout(() => {
-            showTrackingModal(trackingNumber, () => {});
-        }, 500);
+        try {
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('full_name, phone')
+                .eq('id', user.id)
+                .maybeSingle();
+
+            const dossier = {
+                user_id: user.id,
+                tracking_number: trackingNumber,
+                amount_requested: montant,
+                duration_months: duree,
+                annual_rate: taux,
+                monthly_payment: Number(mensualite.toFixed(2)),
+                total_repayment: Number(totalRembourse.toFixed(2)),
+                total_interest: Number(totalInterets.toFixed(2)),
+                email: email,
+                phone: telephone,
+                country: countryLabel,
+                status: 'Demande envoyée'
+            };
+
+            const { data: application, error: applicationError } = await supabaseClient
+                .from('applications')
+                .insert(dossier)
+                .select()
+                .single();
+
+            if (applicationError) throw applicationError;
+
+            for (const item of files) {
+                const f = item.input.files[0];
+                const safeName = f.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                const path = `${user.id}/${application.id}/${item.type}-${Date.now()}-${safeName}`;
+
+                const { error: uploadError } = await supabaseClient.storage
+                    .from('documents')
+                    .upload(path, f, { upsert:false, contentType:f.type || undefined });
+
+                if (uploadError) throw uploadError;
+
+                const { error: docError } = await supabaseClient
+                    .from('application_documents')
+                    .insert({
+                        application_id: application.id,
+                        user_id: user.id,
+                        document_type: item.type,
+                        file_path: path,
+                        original_name: f.name,
+                        mime_type: f.type || null,
+                        file_size: f.size
+                    });
+
+                if (docError) throw docError;
+            }
+
+            toast.textContent = '📨 Demande enregistrée avec succès !';
+            setTimeout(() => toast.classList.remove('show'), 5000);
+
+            showTrackingModal(trackingNumber, async () => {
+                await loadClientDashboard();
+            });
+
+            await loadClientDashboard();
+
+        } catch (error) {
+            console.error(error);
+            toast.classList.remove('show');
+            alert('Impossible d’enregistrer la demande pour le moment. Vérifiez votre connexion puis réessayez.');
+        }
     }
 
     // ===== ÉVÉNEMENTS =====
@@ -1752,6 +2078,283 @@
     chatSend.addEventListener('click', handleUserMessage);
     chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleUserMessage(); });
     addMessage('bot', 'Bonjour ! Je suis votre assistant virtuel. Posez-moi vos questions sur nos offres de crédit, les taux, les documents ou les délais.');
+
+    // ===== AUTHENTIFICATION + ESPACE CLIENT SUPABASE =====
+    const authModal = document.getElementById('authModal');
+    const authMessage = document.getElementById('authMessage');
+    const authTitle = document.getElementById('authTitle');
+    const authSubtitle = document.getElementById('authSubtitle');
+    const accountPanel = document.getElementById('accountPanel');
+    const clientDashboard = document.getElementById('clientDashboard');
+
+    const statusOrder = [
+        'Demande envoyée',
+        'Documents en vérification',
+        'Dossier en cours d’étude',
+        'Dossier accepté',
+        'Contrat à signer',
+        'Financement en préparation',
+        'Financement accordé'
+    ];
+
+    function showAuthMessage(message, type='success') {
+        authMessage.textContent = message;
+        authMessage.className = `auth-message show ${type}`;
+    }
+
+    function clearAuthMessage() {
+        authMessage.textContent = '';
+        authMessage.className = 'auth-message';
+    }
+
+    function openAuthModal(tab='login') {
+        authModal.classList.add('open');
+        clearAuthMessage();
+        switchAuthTab(tab);
+    }
+
+    function closeAuthModal() {
+        authModal.classList.remove('open');
+        clearAuthMessage();
+    }
+
+    function switchAuthTab(tab) {
+        document.querySelectorAll('.auth-tab').forEach(b => b.classList.toggle('active', b.dataset.authTab === tab));
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+        const form = document.getElementById(tab === 'login' ? 'loginForm' : tab === 'register' ? 'registerForm' : tab + 'Form');
+        if (form) form.classList.add('active');
+
+        if (tab === 'register') {
+            authTitle.textContent = 'Créer votre espace client';
+            authSubtitle.textContent = 'Votre espace vous permettra de suivre votre demande en temps réel.';
+        } else if (tab === 'forgot') {
+            authTitle.textContent = 'Réinitialiser le mot de passe';
+            authSubtitle.textContent = 'Nous vous enverrons un lien sécurisé par e-mail.';
+        } else if (tab === 'reset') {
+            authTitle.textContent = 'Nouveau mot de passe';
+            authSubtitle.textContent = 'Choisissez un nouveau mot de passe sécurisé.';
+        } else {
+            authTitle.textContent = 'Votre espace client';
+            authSubtitle.textContent = 'Connectez-vous pour suivre votre dossier.';
+        }
+    }
+
+    async function updateAuthUI(user) {
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const dashboardBtn = document.getElementById('dashboardBtn');
+
+        if (user) {
+            loginBtn.style.display = 'none';
+            registerBtn.style.display = 'none';
+            dashboardBtn.style.display = 'inline-flex';
+            accountPanel.classList.add('show');
+            const name = user.user_metadata?.full_name || user.email || 'Client';
+            document.getElementById('accountStatus').textContent = `Connecté en tant que ${name}`;
+            await loadClientDashboard();
+        } else {
+            loginBtn.style.display = 'inline-flex';
+            registerBtn.style.display = 'inline-flex';
+            dashboardBtn.style.display = 'none';
+            accountPanel.classList.remove('show');
+            clientDashboard.classList.remove('show');
+        }
+    }
+
+    async function loadClientDashboard() {
+        const { data: userData } = await supabaseClient.auth.getUser();
+        const user = userData.user;
+        if (!user) return;
+
+        const { data: profile } = await supabaseClient
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .maybeSingle();
+
+        const { data: apps, error } = await supabaseClient
+            .from('applications')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending:false })
+            .limit(1);
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+
+        clientDashboard.classList.add('show');
+        const displayName = profile?.full_name || user.user_metadata?.full_name || user.email;
+        document.getElementById('dashboardWelcome').textContent = `Bonjour ${displayName}. Les changements de statut apparaissent automatiquement.`;
+
+        const app = apps?.[0];
+        if (!app) {
+            document.getElementById('dashTracking').textContent = 'Aucun dossier';
+            document.getElementById('dashAmount').textContent = '—';
+            document.getElementById('dashDuration').textContent = '—';
+            document.getElementById('dashMonthly').textContent = '—';
+            document.getElementById('dashStatus').textContent = 'Aucun dossier';
+            document.getElementById('dashUpdated').textContent = '—';
+            document.getElementById('statusTrack').innerHTML = '<div class="status-step active"><span class="status-dot"></span><span>Vous n’avez pas encore envoyé de demande.</span></div>';
+            document.getElementById('dashDocuments').innerHTML = '';
+            return;
+        }
+
+        document.getElementById('dashTracking').textContent = app.tracking_number || '—';
+        document.getElementById('dashAmount').textContent = `${Number(app.amount_requested).toLocaleString('fr-FR')} €`;
+        document.getElementById('dashDuration').textContent = `${app.duration_months} mois`;
+        document.getElementById('dashMonthly').textContent = `${Number(app.monthly_payment).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
+        document.getElementById('dashStatus').textContent = app.status || 'Demande envoyée';
+        document.getElementById('dashUpdated').textContent = app.updated_at ? new Date(app.updated_at).toLocaleString('fr-FR') : '—';
+
+        const currentIndex = Math.max(0, statusOrder.indexOf(app.status));
+        document.getElementById('statusTrack').innerHTML = statusOrder.map((s, i) => {
+            const cls = i < currentIndex ? 'done' : i === currentIndex ? 'active' : '';
+            return `<div class="status-step ${cls}"><span class="status-dot"></span><span>${s}</span></div>`;
+        }).join('');
+
+        const { data: docs } = await supabaseClient
+            .from('application_documents')
+            .select('document_type, original_name, created_at')
+            .eq('application_id', app.id)
+            .order('created_at', { ascending:true });
+
+        const labels = { identite:'Carte d’identité', fiscal:'Document fiscal', revenu:'Justificatif de revenu' };
+        document.getElementById('dashDocuments').innerHTML = docs?.length
+            ? `<h3 style="color:#0f2b4b;">Documents transmis</h3><ul style="padding-left:1.2rem;color:#5b6f87;">${docs.map(d => `<li>${labels[d.document_type] || d.document_type} — ${d.original_name}</li>`).join('')}</ul>`
+            : '<p class="doc-note">Aucun document enregistré.</p>';
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', () => openAuthModal('login'));
+    document.getElementById('registerBtn').addEventListener('click', () => openAuthModal('register'));
+    document.getElementById('dashboardBtn').addEventListener('click', () => clientDashboard.classList.toggle('show'));
+    document.getElementById('closeDashboardBtn').addEventListener('click', () => clientDashboard.classList.remove('show'));
+    document.getElementById('refreshDashboardBtn').addEventListener('click', loadClientDashboard);
+    document.getElementById('authClose').addEventListener('click', closeAuthModal);
+    authModal.addEventListener('click', e => { if (e.target === authModal) closeAuthModal(); });
+
+    document.querySelectorAll('.auth-tab').forEach(btn => {
+        btn.addEventListener('click', () => switchAuthTab(btn.dataset.authTab));
+    });
+
+    document.querySelectorAll('.password-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = document.getElementById(btn.dataset.target);
+            input.type = input.type === 'password' ? 'text' : 'password';
+            btn.textContent = input.type === 'password' ? '👁️' : '🙈';
+        });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        clearAuthMessage();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) return showAuthMessage(error.message, 'error');
+        closeAuthModal();
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        clearAuthMessage();
+
+        const fullName = document.getElementById('registerName').value.trim();
+        const email = document.getElementById('registerEmail').value.trim();
+        const phone = document.getElementById('registerPhone').value.trim();
+        const password = document.getElementById('registerPassword').value;
+        const password2 = document.getElementById('registerPassword2').value;
+
+        if (password !== password2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
+        if (password.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
+
+        const { data, error } = await supabaseClient.auth.signUp({
+            email, password,
+            options: {
+                data: { full_name: fullName, phone },
+                emailRedirectTo: window.location.origin + window.location.pathname
+            }
+        });
+
+        if (error) return showAuthMessage(error.message, 'error');
+
+        if (data.session) {
+            closeAuthModal();
+        } else {
+            showAuthMessage('Compte créé. Consultez votre e-mail pour confirmer votre adresse avant de vous connecter.', 'success');
+        }
+    });
+
+    document.getElementById('forgotPasswordBtn').addEventListener('click', () => switchAuthTab('forgot'));
+    document.getElementById('backToLoginBtn').addEventListener('click', () => switchAuthTab('login'));
+
+    document.getElementById('forgotForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        clearAuthMessage();
+        const email = document.getElementById('forgotEmail').value.trim();
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + window.location.pathname
+        });
+        if (error) return showAuthMessage(error.message, 'error');
+        showAuthMessage('Si un compte correspond à cette adresse, un e-mail de réinitialisation a été envoyé.', 'success');
+    });
+
+    document.getElementById('resetForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        clearAuthMessage();
+        const p1 = document.getElementById('newPassword').value;
+        const p2 = document.getElementById('newPassword2').value;
+        if (p1 !== p2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
+        if (p1.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
+
+        const { error } = await supabaseClient.auth.updateUser({ password:p1 });
+        if (error) return showAuthMessage(error.message, 'error');
+        showAuthMessage('Mot de passe modifié avec succès. Vous pouvez fermer cette fenêtre.', 'success');
+    });
+
+    document.getElementById('changePasswordBtn').addEventListener('click', () => {
+        openAuthModal('reset');
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await supabaseClient.auth.signOut();
+        clientDashboard.classList.remove('show');
+    });
+
+    // Ouverture automatique de l’écran de nouveau mot de passe après le lien e-mail.
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+        await updateAuthUI(session?.user || null);
+        if (event === 'PASSWORD_RECOVERY') openAuthModal('reset');
+    });
+
+    (async () => {
+        const { data } = await supabaseClient.auth.getSession();
+        await updateAuthUI(data.session?.user || null);
+    })();
+
+    // Mise à jour en temps réel du dossier du client connecté.
+    let realtimeChannel = null;
+    async function subscribeToOwnApplications() {
+        if (realtimeChannel) await supabaseClient.removeChannel(realtimeChannel);
+        const { data } = await supabaseClient.auth.getUser();
+        if (!data.user) return;
+
+        realtimeChannel = supabaseClient
+            .channel('financio-own-application')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'applications',
+                filter: `user_id=eq.${data.user.id}`
+            }, () => loadClientDashboard())
+            .subscribe();
+    }
+    supabaseClient.auth.onAuthStateChange(async () => {
+        await subscribeToOwnApplications();
+    });
+    subscribeToOwnApplications();
+
 </script>
 
 </body>
