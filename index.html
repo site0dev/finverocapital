@@ -940,23 +940,23 @@
     <header class="header">
         <div class="brand-meta">
             <div class="logo">Finan<span>cio</span></div>
-            <div class="brand-subtitle">Solutions de financement • Europe</div>
-            <div class="language-indicator">FR</div>
+            <div class="brand-subtitle" data-i18n="brandSubtitle">Solutions de financement • Europe</div>
+            <div class="language-indicator" id="languageIndicator">FR</div>
         </div>
         <div class="account-actions">
-            <button type="button" class="account-btn" id="loginBtn">🔐 Se connecter</button>
-            <button type="button" class="account-btn primary" id="registerBtn">👤 Créer un compte</button>
-            <button type="button" class="account-btn" id="dashboardBtn" style="display:none;">📊 Mon espace</button>
+            <button type="button" class="account-btn" id="loginBtn" data-i18n="loginBtn">🔐 Se connecter</button>
+            <button type="button" class="account-btn primary" id="registerBtn" data-i18n="registerBtn">👤 Créer un compte</button>
+            <button type="button" class="account-btn" id="dashboardBtn" style="display:none;" data-i18n="dashboardBtn">📊 Mon espace</button>
         </div>
     </header>
 
     <section class="account-panel" id="accountPanel">
         <div class="account-panel-header">
             <div>
-                <h3>👤 Espace client</h3>
+                <h3 data-i18n="accountPanelTitle">👤 Espace client</h3>
                 <div class="account-status" id="accountStatus">Connexion...</div>
             </div>
-            <button type="button" class="account-btn" id="logoutBtn">Se déconnecter</button>
+            <button type="button" class="account-btn" id="logoutBtn" data-i18n="logoutBtn">Se déconnecter</button>
         </div>
     </section>
 
@@ -966,71 +966,41 @@
             <img src="1.jpg" alt="Financement" loading="lazy" />
         </div>
         <div class="hero-text">
-            <h1>Avez-vous besoin <br><span>d'un financement</span> ?</h1>
-            <p>Simulez votre crédit en quelques secondes, sans engagement.</p>
-            <span class="badge">✅ Réponse sous 24h</span>
+            <h1 data-i18n="heroTitle">Avez-vous besoin <br><span>d'un financement</span> ?</h1>
+            <p data-i18n="heroDesc">Simulez votre crédit en quelques secondes, sans engagement.</p>
+            <span class="badge" data-i18n="response">✅ Réponse sous 24h</span>
         </div>
     </section>
 
-    <!-- STATISTIQUES -->
+    <!-- STATISTIQUES (icônes sur une ligne) -->
     <section class="stats-section" aria-label="Statistiques Financio">
         <div class="stat-card">
             <div class="stat-icon">📋</div>
-            <div class="stat-value">5 690<span>+</span></div>
-            <div class="stat-label">dossiers reçus par semaine</div>
+            <div class="stat-value" data-i18n="stat1value">5 690<span>+</span></div>
+            <div class="stat-label" data-i18n="stat1label">dossiers reçus par semaine</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon">✓</div>
-            <div class="stat-value">85<span>%</span></div>
-            <div class="stat-label">taux d’acceptation</div>
+            <div class="stat-value" data-i18n="stat2value">85<span>%</span></div>
+            <div class="stat-label" data-i18n="stat2label">taux d’acceptation</div>
         </div>
         <div class="stat-card">
             <div class="stat-icon">€</div>
-            <div class="stat-value">750 652<span> €+</span></div>
-            <div class="stat-label">de financements accordés par mois</div>
-        </div>
-    </section>
-
-
-    <!-- ===== ESPACE CLIENT ===== -->
-    <section class="dashboard" id="clientDashboard">
-        <div class="account-panel-header">
-            <div>
-                <h2 style="color:#0f2b4b;margin:0;">Mon dossier de financement</h2>
-                <p class="account-status" id="dashboardWelcome">Bienvenue.</p>
-            </div>
-            <button type="button" class="account-btn" id="refreshDashboardBtn">↻ Actualiser</button>
-        </div>
-
-        <div class="dashboard-grid">
-            <div class="dash-card"><div class="label">N° de dossier</div><div class="value" id="dashTracking">—</div></div>
-            <div class="dash-card"><div class="label">Montant demandé</div><div class="value" id="dashAmount">—</div></div>
-            <div class="dash-card"><div class="label">Durée</div><div class="value" id="dashDuration">—</div></div>
-            <div class="dash-card"><div class="label">Mensualité estimée</div><div class="value" id="dashMonthly">—</div></div>
-            <div class="dash-card"><div class="label">Statut</div><div class="value" id="dashStatus">Aucun dossier</div></div>
-            <div class="dash-card"><div class="label">Dernière mise à jour</div><div class="value" id="dashUpdated">—</div></div>
-        </div>
-
-        <h3 style="color:#0f2b4b;">Suivi de votre demande</h3>
-        <div class="status-track" id="statusTrack"></div>
-
-        <div id="dashDocuments" style="margin-top:1.5rem;"></div>
-        <div class="dash-actions">
-            <button type="button" class="account-btn" id="changePasswordBtn">🔑 Modifier mon mot de passe</button>
-            <button type="button" class="account-btn" id="closeDashboardBtn">Fermer l'espace</button>
+            <div class="stat-value" data-i18n="stat3value">750 652<span> €+</span></div>
+            <div class="stat-label" data-i18n="stat3label">de financements accordés par mois</div>
         </div>
     </section>
 
     <!-- FORMULAIRE -->
     <section class="form-section">
-        <h2>Remplissez le formulaire suivant</h2>
-        <p class="sub">Ajustez le curseur pour le montant, la durée est libre.</p>
+        <h2 data-i18n="formTitle">Remplissez le formulaire suivant</h2>
+        <p class="sub" data-i18n="formSub">Ajustez le curseur pour le montant, la durée est libre.</p>
 
         <form id="creditForm" novalidate>
             <!-- Montant -->
             <div class="slider-group">
                 <div class="slider-header">
-                    <span>Montant souhaité (€) – <span style="font-weight:400;color:#5b6f87;">max 350 000 €</span></span>
+                    <span data-i18n="amountLabel">Montant souhaité (€) – <span style="font-weight:400;color:#5b6f87;">max 350 000 €</span></span>
                     <span class="value" id="montantDisplay">25 000</span>
                 </div>
                 <input type="range" id="montantSlider" min="1000" max="350000" step="500" value="25000">
@@ -1043,7 +1013,7 @@
             <!-- Durée -->
             <div class="slider-group">
                 <div class="slider-header">
-                    <span>Durée du prêt (mois)</span>
+                    <span data-i18n="durationLabel">Durée du prêt (mois)</span>
                     <span class="value" id="dureeDisplay">60</span>
                 </div>
                 <input type="range" id="dureeSlider" min="3" max="360" step="1" value="60">
@@ -1056,7 +1026,7 @@
             <!-- Taux -->
             <div class="slider-group">
                 <div class="slider-header">
-                    <span>Taux d’intérêt annuel (%)</span>
+                    <span data-i18n="rateLabel">Taux d’intérêt annuel (%)</span>
                     <span class="value" style="background:#eef5e9;">3,0 %</span>
                 </div>
                 <div class="taux-static">3 %</div>
@@ -1065,12 +1035,12 @@
             <!-- Email & Téléphone -->
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="email">Adresse e-mail</label>
+                    <label for="email" data-i18n="emailLabel">Adresse e-mail</label>
                     <input type="email" id="email" placeholder="votre@email.fr" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="telephone">Numéro de téléphone</label>
+                    <label for="telephone" data-i18n="phoneLabel">Numéro de téléphone</label>
                     <div class="phone-wrapper">
                         <input type="text" class="country-search" id="countrySearch" placeholder="Rechercher un pays..." autocomplete="off" />
                         <select id="countrySelect"></select>
@@ -1080,7 +1050,7 @@
             </div>
 
             <div class="form-actions">
-                <button type="button" class="btn btn-primary" id="simulerBtn">📊 Simuler mon crédit</button>
+                <button type="button" class="btn btn-primary" id="simulerBtn" data-i18n="simulate">📊 Simuler mon crédit</button>
             </div>
         </form>
 
@@ -1090,53 +1060,53 @@
             <div class="table-wrapper">
                 <table id="amortissementTable">
                     <thead>
-                        <tr><th>Mois</th><th>Mensualité</th><th>Intérêts</th><th>Capital remboursé</th><th>Capital restant</th></tr>
+                        <tr><th data-i18n="month">Mois</th><th data-i18n="monthly">Mensualité</th><th data-i18n="interests">Intérêts</th><th data-i18n="capitalRepaid">Capital remboursé</th><th data-i18n="capitalRemaining">Capital restant</th></tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
                 </table>
-                <div style="font-size:0.8rem;color:#aab9ce;margin-top:0.3rem;">↕ Faites défiler pour voir toutes les échéances</div>
+                <div style="font-size:0.8rem;color:#aab9ce;margin-top:0.3rem;" data-i18n="scrollHint">↕ Faites défiler pour voir toutes les échéances</div>
             </div>
 
             <!-- TÉLÉCHARGEMENT -->
             <div class="documents-upload">
-                <h4>📎 Téléchargez vos documents</h4>
+                <h4 data-i18n="documentsTitle">📎 Téléchargez vos documents</h4>
                 <div class="doc-upload-group">
-                    <label for="docId">Carte d'identité</label>
+                    <label for="docId" data-i18n="docIdLabel">Carte d'identité</label>
                     <input type="file" id="docId" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
                 </div>
                 <div class="doc-upload-group">
-                    <label for="docTax">Code d'identification fiscale</label>
+                    <label for="docTax" data-i18n="docTaxLabel">Code d'identification fiscale</label>
                     <input type="file" id="docTax" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
                 </div>
                 <div class="doc-upload-group">
-                    <label for="docIncome">Document de revenu mensuel</label>
+                    <label for="docIncome" data-i18n="docIncomeLabel">Document de revenu mensuel</label>
                     <input type="file" id="docIncome" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
-                    <div class="doc-note">Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.</div>
+                    <div class="doc-note" data-i18n="docNote">Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.</div>
                 </div>
             </div>
 
             <!-- ENVOYER -->
             <div class="validation-area">
-                <button type="button" class="btn btn-success" id="envoyerBtn">📩 Envoyer ma demande</button>
+                <button type="button" class="btn btn-success" id="envoyerBtn" data-i18n="sendBtn">📩 Envoyer ma demande</button>
             </div>
         </div>
     </section>
 
     <!-- 3 ÉTAPES -->
     <div class="steps-after-form">
-        <h3>📋 Demande de crédit entièrement en ligne</h3>
+        <h3 data-i18n="stepsTitle">📋 Demande de crédit entièrement en ligne</h3>
         <div class="steps-grid">
             <div class="step-item">
-                <strong>Étape 1</strong>
-                <p>Calculez votre mensualité.</p>
+                <strong data-i18n="step1Title">Étape 1</strong>
+                <p data-i18n="step1Desc">Calculez votre mensualité.</p>
             </div>
             <div class="step-item">
-                <strong>Étape 2</strong>
-                <p>Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
+                <strong data-i18n="step2Title">Étape 2</strong>
+                <p data-i18n="step2Desc">Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
             </div>
             <div class="step-item">
-                <strong>Étape 3</strong>
-                <p>Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
+                <strong data-i18n="step3Title">Étape 3</strong>
+                <p data-i18n="step3Desc">Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
             </div>
         </div>
     </div>
@@ -1147,11 +1117,11 @@
             <img src="2.jpg" alt="Documents" loading="lazy" />
         </div>
         <div class="promo-text">
-            <p>
+            <p data-i18n="promo1">
                 <span class="emoji-big">📄</span> Fini la paperasse. Fini les longues files d'attente. Fini les complications !<br>
                 Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨
             </p>
-            <p style="margin-top: 0.6rem; font-weight: 400; font-size: 1.05rem;">
+            <p style="margin-top: 0.6rem; font-weight: 400; font-size: 1.05rem;" data-i18n="promo2">
                 Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.
             </p>
         </div>
@@ -1160,35 +1130,35 @@
     <!-- POURQUOI CHOISIR FINANCIO -->
     <section class="trust-section">
         <div class="trust-content">
-            <h2>Pourquoi choisir Financio ?</h2>
+            <h2 data-i18n="trustTitle">Pourquoi choisir Financio ?</h2>
             <div class="trust-item">
-                <strong>🔒 Fiable</strong>
-                <p>Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.</p>
+                <strong data-i18n="trust1Title">🔒 Fiable</strong>
+                <p data-i18n="trust1Desc">Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.</p>
             </div>
             <div class="trust-item">
-                <strong>⚡ Rapide</strong>
-                <p>Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.</p>
+                <strong data-i18n="trust2Title">⚡ Rapide</strong>
+                <p data-i18n="trust2Desc">Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.</p>
             </div>
             <div class="trust-item">
-                <strong>🛡️ Sûr</strong>
-                <p>Avec Financio, vos données personnelles et financières sont 100 % sécurisées.</p>
+                <strong data-i18n="trust3Title">🛡️ Sûr</strong>
+                <p data-i18n="trust3Desc">Avec Financio, vos données personnelles et financières sont 100 % sécurisées.</p>
             </div>
         </div>
         <div class="trust-image">
             <img src="3.jpg" alt="Confiance, rapidité, sécurité" loading="lazy" />
-            <p style="margin-top:0.5rem; font-size:0.85rem; color:#8ba0b9;">Votre sécurité, notre priorité</p>
+            <p style="margin-top:0.5rem; font-size:0.85rem; color:#8ba0b9;" data-i18n="trustImageCaption">Votre sécurité, notre priorité</p>
         </div>
     </section>
 
     <!-- FOOTER -->
     <footer class="legal-footer">
         <nav>
-            <button type="button" data-legal="mentions">Mentions légales</button>
-            <button type="button" data-legal="privacy">Politique de confidentialité</button>
-            <button type="button" data-legal="terms">Conditions d'utilisation</button>
-            <button type="button" data-legal="credit">Informations crédit</button>
+            <button type="button" data-legal="mentions" data-i18n="legalNotice">Mentions légales</button>
+            <button type="button" data-legal="privacy" data-i18n="privacy">Politique de confidentialité</button>
+            <button type="button" data-legal="terms" data-i18n="terms">Conditions d'utilisation</button>
+            <button type="button" data-legal="credit" data-i18n="creditInfo">Informations crédit</button>
         </nav>
-        <small>Financio © 2026 — Service de simulation et de demande de financement.</small>
+        <small data-i18n="footerText">Financio © 2026 — Service de simulation et de demande de financement.</small>
     </footer>
 </div>
 
@@ -1197,76 +1167,76 @@
 <div class="auth-modal" id="authModal">
     <div class="auth-card">
         <button class="legal-close" id="authClose" style="float:right;">✕</button>
-        <h2 id="authTitle">Votre espace client</h2>
-        <p class="auth-sub" id="authSubtitle">Créez votre compte pour suivre votre dossier.</p>
+        <h2 id="authTitle" data-i18n="authTitle">Votre espace client</h2>
+        <p class="auth-sub" id="authSubtitle" data-i18n="authSubtitle">Créez votre compte pour suivre votre dossier.</p>
 
         <div class="auth-tabs" id="authTabs">
-            <button class="auth-tab active" data-auth-tab="login">Connexion</button>
-            <button class="auth-tab" data-auth-tab="register">Inscription</button>
+            <button class="auth-tab active" data-auth-tab="login" data-i18n="loginTab">Connexion</button>
+            <button class="auth-tab" data-auth-tab="register" data-i18n="registerTab">Inscription</button>
         </div>
 
         <form class="auth-form active" id="loginForm">
             <div class="form-group">
-                <label for="loginEmail">Adresse e-mail</label>
+                <label for="loginEmail" data-i18n="emailLabel">Adresse e-mail</label>
                 <input type="email" id="loginEmail" autocomplete="email" required>
             </div>
             <div class="form-group">
-                <label for="loginPassword">Mot de passe</label>
+                <label for="loginPassword" data-i18n="passwordLabel">Mot de passe</label>
                 <div class="password-row">
                     <input type="password" id="loginPassword" autocomplete="current-password" required>
                     <button type="button" class="password-toggle" data-target="loginPassword">👁️</button>
                 </div>
             </div>
-            <button class="btn btn-primary auth-submit" type="submit">🔐 Se connecter</button>
-            <button class="auth-link" type="button" id="forgotPasswordBtn">Mot de passe oublié ?</button>
+            <button class="btn btn-primary auth-submit" type="submit" data-i18n="loginBtn">🔐 Se connecter</button>
+            <button class="auth-link" type="button" id="forgotPasswordBtn" data-i18n="forgotPassword">Mot de passe oublié ?</button>
         </form>
 
         <form class="auth-form" id="registerForm">
             <div class="form-group">
-                <label for="registerName">Nom complet</label>
+                <label for="registerName" data-i18n="nameLabel">Nom complet</label>
                 <input type="text" id="registerName" autocomplete="name" required>
             </div>
             <div class="form-group">
-                <label for="registerEmail">Adresse e-mail</label>
+                <label for="registerEmail" data-i18n="emailLabel">Adresse e-mail</label>
                 <input type="email" id="registerEmail" autocomplete="email" required>
             </div>
             <div class="form-group">
-                <label for="registerPhone">Téléphone</label>
+                <label for="registerPhone" data-i18n="phoneLabel">Téléphone</label>
                 <input type="tel" id="registerPhone" autocomplete="tel" required>
             </div>
             <div class="form-group">
-                <label for="registerPassword">Mot de passe</label>
+                <label for="registerPassword" data-i18n="passwordLabel">Mot de passe</label>
                 <div class="password-row">
                     <input type="password" id="registerPassword" autocomplete="new-password" minlength="8" required>
                     <button type="button" class="password-toggle" data-target="registerPassword">👁️</button>
                 </div>
             </div>
             <div class="form-group">
-                <label for="registerPassword2">Confirmer le mot de passe</label>
+                <label for="registerPassword2" data-i18n="confirmPassword">Confirmer le mot de passe</label>
                 <input type="password" id="registerPassword2" autocomplete="new-password" minlength="8" required>
             </div>
-            <button class="btn btn-primary auth-submit" type="submit">👤 Créer mon compte</button>
+            <button class="btn btn-primary auth-submit" type="submit" data-i18n="registerBtn">👤 Créer mon compte</button>
         </form>
 
         <form class="auth-form" id="forgotForm">
             <div class="form-group">
-                <label for="forgotEmail">Adresse e-mail du compte</label>
+                <label for="forgotEmail" data-i18n="emailLabel">Adresse e-mail du compte</label>
                 <input type="email" id="forgotEmail" autocomplete="email" required>
             </div>
-            <button class="btn btn-primary auth-submit" type="submit">📧 Envoyer le lien de réinitialisation</button>
-            <button class="auth-link" type="button" id="backToLoginBtn">← Retour à la connexion</button>
+            <button class="btn btn-primary auth-submit" type="submit" data-i18n="sendResetLink">📧 Envoyer le lien de réinitialisation</button>
+            <button class="auth-link" type="button" id="backToLoginBtn" data-i18n="backToLogin">← Retour à la connexion</button>
         </form>
 
         <form class="auth-form" id="resetForm">
             <div class="form-group">
-                <label for="newPassword">Nouveau mot de passe</label>
+                <label for="newPassword" data-i18n="newPassword">Nouveau mot de passe</label>
                 <input type="password" id="newPassword" autocomplete="new-password" minlength="8" required>
             </div>
             <div class="form-group">
-                <label for="newPassword2">Confirmer le nouveau mot de passe</label>
+                <label for="newPassword2" data-i18n="confirmNewPassword">Confirmer le nouveau mot de passe</label>
                 <input type="password" id="newPassword2" autocomplete="new-password" minlength="8" required>
             </div>
-            <button class="btn btn-primary auth-submit" type="submit">🔑 Enregistrer le nouveau mot de passe</button>
+            <button class="btn btn-primary auth-submit" type="submit" data-i18n="saveNewPassword">🔑 Enregistrer le nouveau mot de passe</button>
         </form>
 
         <div class="auth-message" id="authMessage"></div>
@@ -1276,11 +1246,11 @@
 <!-- ===== MODALE NUMÉRO DE SUIVI ===== -->
 <div class="tracking-modal" id="trackingModal">
     <div class="tracking-card">
-        <h2>📋 Numéro de suivi</h2>
-        <p class="info-text">Conservez ce numéro pour le suivi de votre demande :</p>
+        <h2 data-i18n="trackingTitle">📋 Numéro de suivi</h2>
+        <p class="info-text" data-i18n="trackingInfo">Conservez ce numéro pour le suivi de votre demande :</p>
         <div class="tracking-number" id="trackingNumberDisplay">---</div>
-        <p class="info-text" style="font-size:0.85rem;">Cliquez sur le bouton ci-dessous pour le copier.</p>
-        <button class="copy-btn" id="copyTrackingBtn">📋 Copier</button>
+        <p class="info-text" style="font-size:0.85rem;" data-i18n="trackingCopyHint">Cliquez sur le bouton ci-dessous pour le copier.</p>
+        <button class="copy-btn" id="copyTrackingBtn" data-i18n="copyBtn">📋 Copier</button>
     </div>
 </div>
 
@@ -1303,21 +1273,20 @@
 <!-- CHATBOT -->
 <button class="floating-btn chat" id="chatToggle" title="Assistant virtuel">💬</button>
 <div class="chat-window" id="chatWindow">
-    <div class="chat-header"><span>🤖 Assistant Financio</span><button class="close-chat" id="chatClose">✕</button></div>
+    <div class="chat-header"><span data-i18n="assistantTitle">🤖 Assistant Financio</span><button class="close-chat" id="chatClose">✕</button></div>
     <div class="chat-messages" id="chatMessages"></div>
     <div class="chat-input-area">
         <input type="text" id="chatInput" placeholder="Votre question..." />
-        <button id="chatSend">Envoyer</button>
+        <button id="chatSend" data-i18n="send">Envoyer</button>
     </div>
 </div>
 
 <!-- TOAST -->
-<div id="toast" class="toast">📨 Demande envoyée avec succès !</div>
+<div id="toast" class="toast" data-i18n="toastSuccess">📨 Demande envoyée avec succès !</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
     // ===== SUPABASE =====
-    // Remplacez ces deux valeurs par celles de votre projet Supabase.
     const SUPABASE_URL = "https://VOTRE-PROJET.supabase.co";
     const SUPABASE_ANON_KEY = "VOTRE_CLE_ANON_OU_PUBLISHABLE";
     const { createClient } = window.supabase;
@@ -1326,6 +1295,581 @@
     // ===== CONSTANTES =====
     const TAUX_FIXE = 3.0;
     const CONTACT_EMAIL = 'otezaolga@gmail.com';
+
+    // ===== TRADUCTIONS =====
+    const translations = {
+        fr: {
+            brandSubtitle: "Solutions de financement • Europe",
+            loginBtn: "🔐 Se connecter",
+            registerBtn: "👤 Créer un compte",
+            dashboardBtn: "📊 Mon espace",
+            accountPanelTitle: "👤 Espace client",
+            logoutBtn: "Se déconnecter",
+            heroTitle: "Avez-vous besoin <br><span>d'un financement</span> ?",
+            heroDesc: "Simulez votre crédit en quelques secondes, sans engagement.",
+            response: "✅ Réponse sous 24h",
+            stat1value: "5 690<span>+</span>",
+            stat1label: "dossiers reçus par semaine",
+            stat2value: "85<span>%</span>",
+            stat2label: "taux d’acceptation",
+            stat3value: "750 652<span> €+</span>",
+            stat3label: "de financements accordés par mois",
+            formTitle: "Remplissez le formulaire suivant",
+            formSub: "Ajustez le curseur pour le montant, la durée est libre.",
+            amountLabel: "Montant souhaité (€) – max 350 000 €",
+            durationLabel: "Durée du prêt (mois)",
+            rateLabel: "Taux d’intérêt annuel (%)",
+            emailLabel: "Adresse e-mail",
+            phoneLabel: "Numéro de téléphone",
+            simulate: "📊 Simuler mon crédit",
+            month: "Mois",
+            monthly: "Mensualité",
+            interests: "Intérêts",
+            capitalRepaid: "Capital remboursé",
+            capitalRemaining: "Capital restant",
+            scrollHint: "↕ Faites défiler pour voir toutes les échéances",
+            documentsTitle: "📎 Téléchargez vos documents",
+            docIdLabel: "Carte d'identité",
+            docTaxLabel: "Code d'identification fiscale",
+            docIncomeLabel: "Document de revenu mensuel",
+            docNote: "Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.",
+            sendBtn: "📩 Envoyer ma demande",
+            stepsTitle: "📋 Demande de crédit entièrement en ligne",
+            step1Title: "Étape 1",
+            step1Desc: "Calculez votre mensualité.",
+            step2Title: "Étape 2",
+            step2Desc: "Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.",
+            step3Title: "Étape 3",
+            step3Desc: "Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.",
+            promo1: "📄 Fini la paperasse. Fini les longues files d'attente. Fini les complications !<br>Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨",
+            promo2: "Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.",
+            trustTitle: "Pourquoi choisir Financio ?",
+            trust1Title: "🔒 Fiable",
+            trust1Desc: "Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.",
+            trust2Title: "⚡ Rapide",
+            trust2Desc: "Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.",
+            trust3Title: "🛡️ Sûr",
+            trust3Desc: "Avec Financio, vos données personnelles et financières sont 100 % sécurisées.",
+            trustImageCaption: "Votre sécurité, notre priorité",
+            legalNotice: "Mentions légales",
+            privacy: "Politique de confidentialité",
+            terms: "Conditions d'utilisation",
+            creditInfo: "Informations crédit",
+            footerText: "Financio © 2026 — Service de simulation et de demande de financement.",
+            authTitle: "Votre espace client",
+            authSubtitle: "Créez votre compte pour suivre votre dossier.",
+            loginTab: "Connexion",
+            registerTab: "Inscription",
+            passwordLabel: "Mot de passe",
+            confirmPassword: "Confirmer le mot de passe",
+            forgotPassword: "Mot de passe oublié ?",
+            nameLabel: "Nom complet",
+            sendResetLink: "📧 Envoyer le lien de réinitialisation",
+            backToLogin: "← Retour à la connexion",
+            newPassword: "Nouveau mot de passe",
+            confirmNewPassword: "Confirmer le nouveau mot de passe",
+            saveNewPassword: "🔑 Enregistrer le nouveau mot de passe",
+            trackingTitle: "📋 Numéro de suivi",
+            trackingInfo: "Conservez ce numéro pour le suivi de votre demande :",
+            trackingCopyHint: "Cliquez sur le bouton ci-dessous pour le copier.",
+            copyBtn: "📋 Copier",
+            assistantTitle: "🤖 Assistant Financio",
+            send: "Envoyer",
+            toastSuccess: "📨 Demande envoyée avec succès !"
+        },
+        en: {
+            brandSubtitle: "Financing solutions • Europe",
+            loginBtn: "🔐 Log in",
+            registerBtn: "👤 Create account",
+            dashboardBtn: "📊 My space",
+            accountPanelTitle: "👤 Client area",
+            logoutBtn: "Log out",
+            heroTitle: "Do you need <br><span>financing</span> ?",
+            heroDesc: "Simulate your credit in seconds, with no obligation.",
+            response: "✅ Response within 24h",
+            stat1value: "5,690<span>+</span>",
+            stat1label: "applications received per week",
+            stat2value: "85<span>%</span>",
+            stat2label: "acceptance rate",
+            stat3value: "750,652<span> €+</span>",
+            stat3label: "of financing granted per month",
+            formTitle: "Fill in the following form",
+            formSub: "Adjust the amount slider, the term is flexible.",
+            amountLabel: "Amount desired (€) – max 350,000 €",
+            durationLabel: "Loan duration (months)",
+            rateLabel: "Annual interest rate (%)",
+            emailLabel: "Email address",
+            phoneLabel: "Phone number",
+            simulate: "📊 Simulate my credit",
+            month: "Month",
+            monthly: "Monthly payment",
+            interests: "Interests",
+            capitalRepaid: "Capital repaid",
+            capitalRemaining: "Remaining capital",
+            scrollHint: "↕ Scroll to see all instalments",
+            documentsTitle: "📎 Upload your documents",
+            docIdLabel: "ID card",
+            docTaxLabel: "Tax identification code",
+            docIncomeLabel: "Monthly income proof",
+            docNote: "Documents are linked to your account and stored in the secure area.",
+            sendBtn: "📩 Submit my request",
+            stepsTitle: "📋 Online credit application",
+            step1Title: "Step 1",
+            step1Desc: "Calculate your monthly payment.",
+            step2Title: "Step 2",
+            step2Desc: "Fill out the form. It only takes a few minutes and a few documents to confirm your identity. If you don't have them at hand, you can upload them later.",
+            step3Title: "Step 3",
+            step3Desc: "Then sign your credit contract digitally. Once all documents have been received, we proceed with the disbursement as soon as possible.",
+            promo1: "📄 No more paperwork. No more long queues. No more complications!<br>With us, your steps become simple, fast and efficient. ⏱️✨",
+            promo2: "Because every project is unique, we offer you personalised support tailored to your needs and goals.",
+            trustTitle: "Why choose Financio?",
+            trust1Title: "🔒 Reliable",
+            trust1Desc: "We are committed to providing safe and reliable financial solutions, ensuring maximum transparency.",
+            trust2Title: "⚡ Fast",
+            trust2Desc: "Quickly calculate your monthly payment and apply for your personalised loan in a few simple steps.",
+            trust3Title: "🛡️ Secure",
+            trust3Desc: "With Financio, your personal and financial data are 100% secure.",
+            trustImageCaption: "Your security, our priority",
+            legalNotice: "Legal notice",
+            privacy: "Privacy policy",
+            terms: "Terms of use",
+            creditInfo: "Credit information",
+            footerText: "Financio © 2026 — Simulation and financing application service.",
+            authTitle: "Your client area",
+            authSubtitle: "Create your account to track your application.",
+            loginTab: "Login",
+            registerTab: "Register",
+            passwordLabel: "Password",
+            confirmPassword: "Confirm password",
+            forgotPassword: "Forgot password?",
+            nameLabel: "Full name",
+            sendResetLink: "📧 Send reset link",
+            backToLogin: "← Back to login",
+            newPassword: "New password",
+            confirmNewPassword: "Confirm new password",
+            saveNewPassword: "🔑 Save new password",
+            trackingTitle: "📋 Tracking number",
+            trackingInfo: "Keep this number to track your application:",
+            trackingCopyHint: "Click the button below to copy it.",
+            copyBtn: "📋 Copy",
+            assistantTitle: "🤖 Financio Assistant",
+            send: "Send",
+            toastSuccess: "📨 Request sent successfully!"
+        },
+        de: {
+            brandSubtitle: "Finanzierungslösungen • Europa",
+            loginBtn: "🔐 Anmelden",
+            registerBtn: "👤 Konto erstellen",
+            dashboardBtn: "📊 Mein Bereich",
+            accountPanelTitle: "👤 Kundenbereich",
+            logoutBtn: "Abmelden",
+            heroTitle: "Benötigen Sie <br><span>eine Finanzierung</span> ?",
+            heroDesc: "Simulieren Sie Ihren Kredit in wenigen Sekunden, unverbindlich.",
+            response: "✅ Antwort innerhalb von 24 Std.",
+            stat1value: "5.690<span>+</span>",
+            stat1label: "Anträge pro Woche",
+            stat2value: "85<span>%</span>",
+            stat2label: "Annahmequote",
+            stat3value: "750.652<span> €+</span>",
+            stat3label: "Finanzierungen pro Monat",
+            formTitle: "Füllen Sie das folgende Formular aus",
+            formSub: "Passen Sie den Betrag an; die Laufzeit ist frei wählbar.",
+            amountLabel: "Wunschbetrag (€) – max. 350.000 €",
+            durationLabel: "Kreditlaufzeit (Monate)",
+            rateLabel: "Jahreszinssatz (%)",
+            emailLabel: "E-Mail-Adresse",
+            phoneLabel: "Telefonnummer",
+            simulate: "📊 Kredit simulieren",
+            month: "Monat",
+            monthly: "Monatsrate",
+            interests: "Zinsen",
+            capitalRepaid: "Getilgtes Kapital",
+            capitalRemaining: "Restschuld",
+            scrollHint: "↕ Scrollen Sie, um alle Raten zu sehen",
+            documentsTitle: "📎 Dokumente hochladen",
+            docIdLabel: "Personalausweis",
+            docTaxLabel: "Steueridentifikationsnummer",
+            docIncomeLabel: "Monatlicher Einkommensnachweis",
+            docNote: "Die Dokumente werden Ihrem Konto zugeordnet und im sicheren Bereich gespeichert.",
+            sendBtn: "📩 Antrag senden",
+            stepsTitle: "📋 Online-Kreditantrag",
+            step1Title: "Schritt 1",
+            step1Desc: "Berechnen Sie Ihre monatliche Rate.",
+            step2Title: "Schritt 2",
+            step2Desc: "Füllen Sie das Formular aus. Es dauert nur wenige Minuten und erfordert einige Dokumente zur Bestätigung Ihrer Identität. Wenn Sie sie nicht zur Hand haben, können Sie sie später hochladen.",
+            step3Title: "Schritt 3",
+            step3Desc: "Unterzeichnen Sie dann Ihren Kreditvertrag digital. Sobald alle Dokumente eingegangen sind, erfolgt die Auszahlung schnellstmöglich.",
+            promo1: "📄 Schluss mit Papierkram. Schluss mit langen Warteschlangen. Schluss mit Komplikationen!<br>Mit uns werden Ihre Schritte einfach, schnell und effizient. ⏱️✨",
+            promo2: "Weil jedes Projekt einzigartig ist, bieten wir Ihnen eine persönliche Betreuung, die auf Ihre Bedürfnisse und Ziele zugeschnitten ist.",
+            trustTitle: "Warum Financio wählen?",
+            trust1Title: "🔒 Zuverlässig",
+            trust1Desc: "Wir verpflichten uns, sichere und vertrauenswürdige Finanzierungslösungen mit maximaler Transparenz anzubieten.",
+            trust2Title: "⚡ Schnell",
+            trust2Desc: "Berechnen Sie schnell Ihre monatliche Rate und beantragen Sie Ihr persönliches Darlehen in wenigen einfachen Schritten.",
+            trust3Title: "🛡️ Sicher",
+            trust3Desc: "Mit Financio sind Ihre persönlichen und finanziellen Daten zu 100 % geschützt.",
+            trustImageCaption: "Ihre Sicherheit, unsere Priorität",
+            legalNotice: "Impressum",
+            privacy: "Datenschutzerklärung",
+            terms: "Nutzungsbedingungen",
+            creditInfo: "Kreditinformationen",
+            footerText: "Financio © 2026 — Kreditsimulation und Finanzierungsantrag.",
+            authTitle: "Ihr Kundenbereich",
+            authSubtitle: "Erstellen Sie Ihr Konto, um Ihren Antrag zu verfolgen.",
+            loginTab: "Anmelden",
+            registerTab: "Registrieren",
+            passwordLabel: "Passwort",
+            confirmPassword: "Passwort bestätigen",
+            forgotPassword: "Passwort vergessen?",
+            nameLabel: "Vollständiger Name",
+            sendResetLink: "📧 Link zum Zurücksetzen senden",
+            backToLogin: "← Zurück zur Anmeldung",
+            newPassword: "Neues Passwort",
+            confirmNewPassword: "Neues Passwort bestätigen",
+            saveNewPassword: "🔑 Neues Passwort speichern",
+            trackingTitle: "📋 Verfolgungsnummer",
+            trackingInfo: "Bewahren Sie diese Nummer zur Verfolgung Ihres Antrags auf:",
+            trackingCopyHint: "Klicken Sie auf die Schaltfläche unten, um sie zu kopieren.",
+            copyBtn: "📋 Kopieren",
+            assistantTitle: "🤖 Financio-Assistent",
+            send: "Senden",
+            toastSuccess: "📨 Antrag erfolgreich gesendet!"
+        },
+        es: {
+            brandSubtitle: "Soluciones de financiación • Europa",
+            loginBtn: "🔐 Iniciar sesión",
+            registerBtn: "👤 Crear cuenta",
+            dashboardBtn: "📊 Mi espacio",
+            accountPanelTitle: "👤 Área de cliente",
+            logoutBtn: "Cerrar sesión",
+            heroTitle: "¿Necesita <br><span>financiación</span> ?",
+            heroDesc: "Simule su crédito en segundos, sin compromiso.",
+            response: "✅ Respuesta en 24 h",
+            stat1value: "5.690<span>+</span>",
+            stat1label: "solicitudes por semana",
+            stat2value: "85<span>%</span>",
+            stat2label: "tasa de aceptación",
+            stat3value: "750.652<span> €+</span>",
+            stat3label: "de financiación concedida al mes",
+            formTitle: "Rellene el siguiente formulario",
+            formSub: "Ajuste el importe; el plazo es flexible.",
+            amountLabel: "Importe deseado (€) – máx. 350.000 €",
+            durationLabel: "Duración del préstamo (meses)",
+            rateLabel: "Tasa de interés anual (%)",
+            emailLabel: "Correo electrónico",
+            phoneLabel: "Número de teléfono",
+            simulate: "📊 Simular mi crédito",
+            month: "Mes",
+            monthly: "Cuota mensual",
+            interests: "Intereses",
+            capitalRepaid: "Capital amortizado",
+            capitalRemaining: "Capital pendiente",
+            scrollHint: "↕ Desplace para ver todas las cuotas",
+            documentsTitle: "📎 Suba sus documentos",
+            docIdLabel: "Documento de identidad",
+            docTaxLabel: "Código de identificación fiscal",
+            docIncomeLabel: "Justificante de ingresos mensuales",
+            docNote: "Los documentos se vinculan a su cuenta y se almacenan en el área segura.",
+            sendBtn: "📩 Enviar mi solicitud",
+            stepsTitle: "📋 Solicitud de crédito en línea",
+            step1Title: "Paso 1",
+            step1Desc: "Calcule su cuota mensual.",
+            step2Title: "Paso 2",
+            step2Desc: "Rellene el formulario. Solo lleva unos minutos y algunos documentos para confirmar su identidad. Si no los tiene a mano, podrá subirlos más tarde.",
+            step3Title: "Paso 3",
+            step3Desc: "Firme su contrato de crédito digitalmente. Una vez recibidos todos los documentos, procedemos al desembolso lo antes posible.",
+            promo1: "📄 Fin al papeleo. Fin a las largas colas. Fin a las complicaciones.<br>Con nosotros, sus trámites se vuelven simples, rápidos y eficaces. ⏱️✨",
+            promo2: "Porque cada proyecto es único, le ofrecemos un acompañamiento personalizado adaptado a sus necesidades y objetivos.",
+            trustTitle: "¿Por qué elegir Financio?",
+            trust1Title: "🔒 Fiable",
+            trust1Desc: "Nos comprometemos a ofrecer soluciones financieras seguras y fiables, garantizando una transparencia máxima.",
+            trust2Title: "⚡ Rápido",
+            trust2Desc: "Calcule rápidamente su cuota y solicite su préstamo personalizado en unos sencillos pasos.",
+            trust3Title: "🛡️ Seguro",
+            trust3Desc: "Con Financio, sus datos personales y financieros están 100 % seguros.",
+            trustImageCaption: "Su seguridad, nuestra prioridad",
+            legalNotice: "Aviso legal",
+            privacy: "Política de privacidad",
+            terms: "Condiciones de uso",
+            creditInfo: "Información de crédito",
+            footerText: "Financio © 2026 — Simulación y solicitud de financiación.",
+            authTitle: "Su área de cliente",
+            authSubtitle: "Cree su cuenta para hacer seguimiento de su solicitud.",
+            loginTab: "Iniciar sesión",
+            registerTab: "Registrarse",
+            passwordLabel: "Contraseña",
+            confirmPassword: "Confirmar contraseña",
+            forgotPassword: "¿Olvidó su contraseña?",
+            nameLabel: "Nombre completo",
+            sendResetLink: "📧 Enviar enlace de restablecimiento",
+            backToLogin: "← Volver al inicio de sesión",
+            newPassword: "Nueva contraseña",
+            confirmNewPassword: "Confirmar nueva contraseña",
+            saveNewPassword: "🔑 Guardar nueva contraseña",
+            trackingTitle: "📋 Número de seguimiento",
+            trackingInfo: "Conserve este número para el seguimiento de su solicitud:",
+            trackingCopyHint: "Haga clic en el botón de abajo para copiarlo.",
+            copyBtn: "📋 Copiar",
+            assistantTitle: "🤖 Asistente Financio",
+            send: "Enviar",
+            toastSuccess: "📨 Solicitud enviada con éxito!"
+        },
+        it: {
+            brandSubtitle: "Soluzioni di finanziamento • Europa",
+            loginBtn: "🔐 Accedi",
+            registerBtn: "👤 Crea account",
+            dashboardBtn: "📊 Il mio spazio",
+            accountPanelTitle: "👤 Area clienti",
+            logoutBtn: "Esci",
+            heroTitle: "Hai bisogno di <br><span>un finanziamento</span> ?",
+            heroDesc: "Simula il tuo credito in pochi secondi, senza impegno.",
+            response: "✅ Risposta entro 24 ore",
+            stat1value: "5.690<span>+</span>",
+            stat1label: "richieste ricevute a settimana",
+            stat2value: "85<span>%</span>",
+            stat2label: "tasso di accettazione",
+            stat3value: "750.652<span> €+</span>",
+            stat3label: "di finanziamenti erogati al mese",
+            formTitle: "Compila il seguente modulo",
+            formSub: "Regola l'importo; la durata è flessibile.",
+            amountLabel: "Importo desiderato (€) – max 350.000 €",
+            durationLabel: "Durata del prestito (mesi)",
+            rateLabel: "Tasso di interesse annuo (%)",
+            emailLabel: "Indirizzo e-mail",
+            phoneLabel: "Numero di telefono",
+            simulate: "📊 Simula il mio credito",
+            month: "Mese",
+            monthly: "Rata mensile",
+            interests: "Interessi",
+            capitalRepaid: "Capitale rimborsato",
+            capitalRemaining: "Capitale residuo",
+            scrollHint: "↕ Scorri per vedere tutte le rate",
+            documentsTitle: "📎 Carica i tuoi documenti",
+            docIdLabel: "Carta d'identità",
+            docTaxLabel: "Codice fiscale",
+            docIncomeLabel: "Documento di reddito mensile",
+            docNote: "I documenti sono associati al tuo account e archiviati nell'area sicura.",
+            sendBtn: "📩 Invia la richiesta",
+            stepsTitle: "📋 Richiesta di credito online",
+            step1Title: "Passo 1",
+            step1Desc: "Calcola la tua rata mensile.",
+            step2Title: "Passo 2",
+            step2Desc: "Compila il modulo. Bastano pochi minuti e alcuni documenti per confermare la tua identità. Se non li hai a portata di mano, puoi caricarli in seguito.",
+            step3Title: "Passo 3",
+            step3Desc: "Firma digitalmente il tuo contratto di credito. Ricevuti tutti i documenti, procediamo con l'erogazione nel più breve tempo possibile.",
+            promo1: "📄 Addio alla burocrazia. Addio alle lunghe code. Addio alle complicazioni!<br>Con noi, le tue pratiche diventano semplici, veloci ed efficaci. ⏱️✨",
+            promo2: "Perché ogni progetto è unico, ti offriamo un accompagnamento personalizzato, adatto alle tue esigenze e ai tuoi obiettivi.",
+            trustTitle: "Perché scegliere Financio?",
+            trust1Title: "🔒 Affidabile",
+            trust1Desc: "Ci impegniamo a fornire soluzioni finanziarie sicure e affidabili, garantendo la massima trasparenza.",
+            trust2Title: "⚡ Veloce",
+            trust2Desc: "Calcola rapidamente la tua rata mensile e richiedi il tuo prestito personalizzato in pochi semplici passi.",
+            trust3Title: "🛡️ Sicuro",
+            trust3Desc: "Con Financio, i tuoi dati personali e finanziari sono sicuri al 100 %.",
+            trustImageCaption: "La tua sicurezza, la nostra priorità",
+            legalNotice: "Note legali",
+            privacy: "Privacy",
+            terms: "Condizioni d'uso",
+            creditInfo: "Informazioni sul credito",
+            footerText: "Financio © 2026 — Simulazione e richiesta di finanziamento.",
+            authTitle: "La tua area clienti",
+            authSubtitle: "Crea il tuo account per seguire la tua richiesta.",
+            loginTab: "Accedi",
+            registerTab: "Registrati",
+            passwordLabel: "Password",
+            confirmPassword: "Conferma password",
+            forgotPassword: "Password dimenticata?",
+            nameLabel: "Nome completo",
+            sendResetLink: "📧 Invia link di reset",
+            backToLogin: "← Torna al login",
+            newPassword: "Nuova password",
+            confirmNewPassword: "Conferma nuova password",
+            saveNewPassword: "🔑 Salva nuova password",
+            trackingTitle: "📋 Numero di tracciamento",
+            trackingInfo: "Conserva questo numero per tracciare la tua richiesta:",
+            trackingCopyHint: "Clicca il pulsante qui sotto per copiarlo.",
+            copyBtn: "📋 Copia",
+            assistantTitle: "🤖 Assistente Financio",
+            send: "Invia",
+            toastSuccess: "📨 Richiesta inviata con successo!"
+        },
+        pt: {
+            brandSubtitle: "Soluções de financiamento • Europa",
+            loginBtn: "🔐 Iniciar sessão",
+            registerBtn: "👤 Criar conta",
+            dashboardBtn: "📊 Meu espaço",
+            accountPanelTitle: "👤 Área do cliente",
+            logoutBtn: "Sair",
+            heroTitle: "Precisa de <br><span>financiamento</span> ?",
+            heroDesc: "Simule o seu crédito em segundos, sem compromisso.",
+            response: "✅ Resposta em 24h",
+            stat1value: "5.690<span>+</span>",
+            stat1label: "solicitações recebidas por semana",
+            stat2value: "85<span>%</span>",
+            stat2label: "taxa de aceitação",
+            stat3value: "750.652<span> €+</span>",
+            stat3label: "de financiamentos concedidos por mês",
+            formTitle: "Preencha o formulário seguinte",
+            formSub: "Ajuste o montante; o prazo é flexível.",
+            amountLabel: "Montante desejado (€) – máx. 350.000 €",
+            durationLabel: "Duração do empréstimo (meses)",
+            rateLabel: "Taxa de juro anual (%)",
+            emailLabel: "Endereço de e-mail",
+            phoneLabel: "Número de telefone",
+            simulate: "📊 Simular o meu crédito",
+            month: "Mês",
+            monthly: "Prestação mensal",
+            interests: "Juros",
+            capitalRepaid: "Capital amortizado",
+            capitalRemaining: "Capital em dívida",
+            scrollHint: "↕ Desloque para ver todas as prestações",
+            documentsTitle: "📎 Carregue os seus documentos",
+            docIdLabel: "Cartão de cidadão",
+            docTaxLabel: "Número de identificação fiscal",
+            docIncomeLabel: "Comprovativo de rendimento mensal",
+            docNote: "Os documentos estão associados à sua conta e armazenados na área segura.",
+            sendBtn: "📩 Enviar o meu pedido",
+            stepsTitle: "📋 Pedido de crédito online",
+            step1Title: "Passo 1",
+            step1Desc: "Calcule a sua prestação mensal.",
+            step2Title: "Passo 2",
+            step2Desc: "Preencha o formulário. Demora apenas alguns minutos e alguns documentos para confirmar a sua identidade. Se não os tiver à mão, pode carregá-los posteriormente.",
+            step3Title: "Passo 3",
+            step3Desc: "Assine digitalmente o seu contrato de crédito. Assim que todos os documentos forem recebidos, procedemos ao pagamento o mais rapidamente possível.",
+            promo1: "📄 Chega de papelada. Chega de longas filas. Chega de complicações!<br>Conosco, os seus passos tornam-se simples, rápidos e eficientes. ⏱️✨",
+            promo2: "Porque cada projeto é único, oferecemos um acompanhamento personalizado, adaptado às suas necessidades e objetivos.",
+            trustTitle: "Porquê escolher a Financio?",
+            trust1Title: "🔒 Fiável",
+            trust1Desc: "Comprometemo-nos a fornecer soluções financeiras seguras e fiáveis, garantindo transparência máxima.",
+            trust2Title: "⚡ Rápido",
+            trust2Desc: "Calcule rapidamente a sua prestação e solicite o seu empréstimo personalizado em poucos passos.",
+            trust3Title: "🛡️ Seguro",
+            trust3Desc: "Com a Financio, os seus dados pessoais e financeiros estão 100 % seguros.",
+            trustImageCaption: "A sua segurança, a nossa prioridade",
+            legalNotice: "Aviso legal",
+            privacy: "Política de privacidade",
+            terms: "Termos de utilização",
+            creditInfo: "Informações de crédito",
+            footerText: "Financio © 2026 — Simulação e pedido de financiamento.",
+            authTitle: "A sua área de cliente",
+            authSubtitle: "Crie a sua conta para acompanhar o seu pedido.",
+            loginTab: "Iniciar sessão",
+            registerTab: "Registar",
+            passwordLabel: "Palavra-passe",
+            confirmPassword: "Confirmar palavra-passe",
+            forgotPassword: "Esqueceu a palavra-passe?",
+            nameLabel: "Nome completo",
+            sendResetLink: "📧 Enviar link de redefinição",
+            backToLogin: "← Voltar ao início de sessão",
+            newPassword: "Nova palavra-passe",
+            confirmNewPassword: "Confirmar nova palavra-passe",
+            saveNewPassword: "🔑 Guardar nova palavra-passe",
+            trackingTitle: "📋 Número de rastreio",
+            trackingInfo: "Guarde este número para rastrear o seu pedido:",
+            trackingCopyHint: "Clique no botão abaixo para copiá-lo.",
+            copyBtn: "📋 Copiar",
+            assistantTitle: "🤖 Assistente Financio",
+            send: "Enviar",
+            toastSuccess: "📨 Pedido enviado com sucesso!"
+        },
+        nl: {
+            brandSubtitle: "Financieringsoplossingen • Europa",
+            loginBtn: "🔐 Inloggen",
+            registerBtn: "👤 Account aanmaken",
+            dashboardBtn: "📊 Mijn ruimte",
+            accountPanelTitle: "👤 Klantruimte",
+            logoutBtn: "Uitloggen",
+            heroTitle: "Heeft u <br><span>financiering</span> nodig?",
+            heroDesc: "Simuleer uw krediet in enkele seconden, vrijblijvend.",
+            response: "✅ Antwoord binnen 24 uur",
+            stat1value: "5.690<span>+</span>",
+            stat1label: "aanvragen per week",
+            stat2value: "85<span>%</span>",
+            stat2label: "acceptatiegraad",
+            stat3value: "750.652<span> €+</span>",
+            stat3label: "aan financieringen per maand",
+            formTitle: "Vul het volgende formulier in",
+            formSub: "Pas het bedrag aan; de looptijd is flexibel.",
+            amountLabel: "Gewenst bedrag (€) – max. 350.000 €",
+            durationLabel: "Looptijd lening (maanden)",
+            rateLabel: "Jaarlijkse rente (%)",
+            emailLabel: "E-mailadres",
+            phoneLabel: "Telefoonnummer",
+            simulate: "📊 Mijn krediet simuleren",
+            month: "Maand",
+            monthly: "Maandelijkse betaling",
+            interests: "Rente",
+            capitalRepaid: "Afgelost kapitaal",
+            capitalRemaining: "Restkapitaal",
+            scrollHint: "↕ Scroll om alle termijnen te zien",
+            documentsTitle: "📎 Upload uw documenten",
+            docIdLabel: "Identiteitskaart",
+            docTaxLabel: "Fiscaal identificatienummer",
+            docIncomeLabel: "Maandelijks inkomensbewijs",
+            docNote: "Documenten worden aan uw account gekoppeld en opgeslagen in de veilige omgeving.",
+            sendBtn: "📩 Mijn aanvraag verzenden",
+            stepsTitle: "📋 Online kredietaanvraag",
+            step1Title: "Stap 1",
+            step1Desc: "Bereken uw maandelijkse betaling.",
+            step2Title: "Stap 2",
+            step2Desc: "Vul het formulier in. Het duurt slechts enkele minuten en een paar documenten om uw identiteit te bevestigen. Als u ze niet bij de hand hebt, kunt u ze later uploaden.",
+            step3Title: "Stap 3",
+            step3Desc: "Onderteken vervolgens digitaal uw kredietcontract. Zodra alle documenten zijn ontvangen, gaan we over tot de uitbetaling zo snel mogelijk.",
+            promo1: "📄 Geen papierwerk meer. Geen lange wachtrijen. Geen complicaties meer!<br>Met ons worden uw stappen eenvoudig, snel en efficiënt. ⏱️✨",
+            promo2: "Omdat elk project uniek is, bieden we u een persoonlijke begeleiding die is afgestemd op uw behoeften en doelstellingen.",
+            trustTitle: "Waarom voor Financio kiezen?",
+            trust1Title: "🔒 Betrouwbaar",
+            trust1Desc: "We verbinden ons ertoe veilige en betrouwbare financiële oplossingen te bieden met maximale transparantie.",
+            trust2Title: "⚡ Snel",
+            trust2Desc: "Bereken snel uw maandelijkse betaling en vraag uw persoonlijke lening aan in een paar eenvoudige stappen.",
+            trust3Title: "🛡️ Veilig",
+            trust3Desc: "Met Financio zijn uw persoonlijke en financiële gegevens 100 % veilig.",
+            trustImageCaption: "Uw veiligheid, onze prioriteit",
+            legalNotice: "Juridische informatie",
+            privacy: "Privacybeleid",
+            terms: "Gebruiksvoorwaarden",
+            creditInfo: "Kredietinformatie",
+            footerText: "Financio © 2026 — Simulatie en financieringsaanvraag.",
+            authTitle: "Uw klantruimte",
+            authSubtitle: "Maak uw account aan om uw aanvraag te volgen.",
+            loginTab: "Inloggen",
+            registerTab: "Registreren",
+            passwordLabel: "Wachtwoord",
+            confirmPassword: "Bevestig wachtwoord",
+            forgotPassword: "Wachtwoord vergeten?",
+            nameLabel: "Volledige naam",
+            sendResetLink: "📧 Resetlink verzenden",
+            backToLogin: "← Terug naar inloggen",
+            newPassword: "Nieuw wachtwoord",
+            confirmNewPassword: "Bevestig nieuw wachtwoord",
+            saveNewPassword: "🔑 Nieuw wachtwoord opslaan",
+            trackingTitle: "📋 Volgnummer",
+            trackingInfo: "Bewaar dit nummer om uw aanvraag te volgen:",
+            trackingCopyHint: "Klik op de knop hieronder om het te kopiëren.",
+            copyBtn: "📋 Kopiëren",
+            assistantTitle: "🤖 Financio-assistent",
+            send: "Verzenden",
+            toastSuccess: "📨 Aanvraag succesvol verzonden!"
+        }
+    };
+
+    // ===== DÉTECTION DE LA LANGUE DU NAVIGATEUR =====
+    const browserLang = (navigator.language || 'fr').toLowerCase().split('-')[0];
+    const supportedLangs = ['fr','en','de','es','it','pt','nl'];
+    const currentLang = supportedLangs.includes(browserLang) ? browserLang : 'fr';
+
+    // ===== APPLICATION DES TRADUCTIONS =====
+    const t = translations[currentLang];
+    document.documentElement.lang = currentLang;
+    document.getElementById('languageIndicator').textContent = currentLang.toUpperCase();
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (t[key]) {
+            // Remplacer le contenu HTML de manière sécurisée
+            el.innerHTML = t[key];
+        }
+    });
 
     // ===== SLIDERS =====
     const montantSlider = document.getElementById('montantSlider');
@@ -1460,7 +2004,7 @@
         const copyBtn = document.getElementById('copyTrackingBtn');
         display.textContent = trackingNumber;
         modal.classList.add('open');
-        copyBtn.textContent = '📋 Copier';
+        copyBtn.textContent = t.copyBtn || '📋 Copier';
         copyBtn.classList.remove('copied');
         copyBtn.onclick = function() {
             navigator.clipboard.writeText(trackingNumber).then(() => {
@@ -1532,10 +2076,10 @@
         const tableau = genererTableauAmortissement(montant, duree, taux);
 
         document.getElementById('resultsSummary').innerHTML = `
-            <div class="result-item"><div class="label">Mensualité estimée</div><div class="value">${mensualite.toFixed(2)} €</div></div>
-            <div class="result-item"><div class="label">Total à rembourser</div><div class="value">${totalRembourse.toFixed(2)} €</div></div>
-            <div class="result-item"><div class="label">Intérêts totaux</div><div class="value">${totalInterets.toFixed(2)} €</div></div>
-            <div class="result-item"><div class="label">Taux appliqué</div><div class="value">${taux.toFixed(1)} %</div></div>
+            <div class="result-item"><div class="label">${t.monthly || 'Mensualité estimée'}</div><div class="value">${mensualite.toFixed(2)} €</div></div>
+            <div class="result-item"><div class="label">${t.totalRepayment || 'Total à rembourser'}</div><div class="value">${totalRembourse.toFixed(2)} €</div></div>
+            <div class="result-item"><div class="label">${t.totalInterest || 'Intérêts totaux'}</div><div class="value">${totalInterets.toFixed(2)} €</div></div>
+            <div class="result-item"><div class="label">${t.rateLabel || 'Taux appliqué'}</div><div class="value">${taux.toFixed(1)} %</div></div>
         `;
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
@@ -2143,17 +2687,17 @@
         if (form) form.classList.add('active');
 
         if (tab === 'register') {
-            authTitle.textContent = 'Créer votre espace client';
-            authSubtitle.textContent = 'Votre espace vous permettra de suivre votre demande en temps réel.';
+            authTitle.textContent = t.authTitle || 'Créer votre espace client';
+            authSubtitle.textContent = t.authSubtitle || 'Votre espace vous permettra de suivre votre demande en temps réel.';
         } else if (tab === 'forgot') {
-            authTitle.textContent = 'Réinitialiser le mot de passe';
-            authSubtitle.textContent = 'Nous vous enverrons un lien sécurisé par e-mail.';
+            authTitle.textContent = t.forgotPassword || 'Réinitialiser le mot de passe';
+            authSubtitle.textContent = t.sendResetLink || 'Nous vous enverrons un lien sécurisé par e-mail.';
         } else if (tab === 'reset') {
-            authTitle.textContent = 'Nouveau mot de passe';
-            authSubtitle.textContent = 'Choisissez un nouveau mot de passe sécurisé.';
+            authTitle.textContent = t.newPassword || 'Nouveau mot de passe';
+            authSubtitle.textContent = t.confirmNewPassword || 'Choisissez un nouveau mot de passe sécurisé.';
         } else {
-            authTitle.textContent = 'Votre espace client';
-            authSubtitle.textContent = 'Connectez-vous pour suivre votre dossier.';
+            authTitle.textContent = t.authTitle || 'Votre espace client';
+            authSubtitle.textContent = t.authSubtitle || 'Connectez-vous pour suivre votre dossier.';
         }
     }
 
