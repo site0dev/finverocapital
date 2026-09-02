@@ -924,6 +924,89 @@
         .status-step.active .status-dot { background:#2a7de1; }
         .status-step.done .status-dot { background:#1f8b4c; }
         .dash-actions { display:flex; gap:.7rem; flex-wrap:wrap; margin-top:1rem; }
+        /* ===== ADMINISTRATION ===== */
+        .admin-panel {
+            display:none;
+            margin:1.2rem 0 2rem;
+            padding:1.5rem;
+            background:#fff;
+            border:1px solid #e3eaf3;
+            border-radius:24px;
+            box-shadow:0 5px 18px rgba(15,43,75,.05);
+        }
+        .admin-panel.show { display:block; }
+        .admin-toolbar { display:flex; gap:.7rem; flex-wrap:wrap; align-items:center; margin:1rem 0; }
+        .admin-search { flex:1 1 260px; padding:.75rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; font-size:1rem; outline:none; }
+        .admin-search:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
+        .admin-client-list { display:grid; gap:.8rem; }
+        .admin-client-card { border:1px solid #e5ebf3; border-radius:18px; padding:1rem; background:#f9fbfe; }
+        .admin-client-head { display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; flex-wrap:wrap; }
+        .admin-client-name { color:#0f2b4b; font-weight:800; font-size:1.05rem; }
+        .admin-client-meta { color:#71839a; font-size:.85rem; margin-top:.2rem; }
+        .admin-client-balance { font-size:1.35rem; font-weight:800; color:#1f8b4c; white-space:nowrap; }
+        .admin-client-actions { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.6rem; margin-top:.9rem; }
+        .admin-client-actions input, .admin-client-actions select { width:100%; padding:.65rem .75rem; border:1.5px solid #dce3ed; border-radius:12px; background:#fff; outline:none; }
+        .admin-client-actions button { min-height:42px; }
+        .admin-client-transactions { margin-top:.8rem; font-size:.84rem; color:#5b6f87; }
+        .admin-mini-table { width:100%; border-collapse:collapse; margin-top:.5rem; }
+        .admin-mini-table th, .admin-mini-table td { padding:.45rem; border-bottom:1px solid #e9edf4; text-align:left; }
+        .admin-status-badge { display:inline-flex; padding:.25rem .6rem; border-radius:20px; font-size:.78rem; font-weight:700; background:#eaf2ff; color:#1f5fbd; }
+        .admin-status-badge.suspended { background:#fff5df; color:#9a6a00; }
+        .admin-status-badge.blocked { background:#fff0f0; color:#a12b2b; }
+        .admin-status-badge.pending { background:#f0f4fa; color:#5b6f87; }
+        .account-balance-card { background:#eef8f1; border:1px solid #d8efdf; border-radius:16px; padding:1rem; margin-bottom:1rem; }
+        .account-balance-card .label { color:#527263; font-size:.78rem; text-transform:uppercase; font-weight:700; }
+        .account-balance-card .value { color:#176d3c; font-size:1.7rem; font-weight:800; margin-top:.2rem; }
+        .account-status-client { margin-top:.25rem; font-weight:700; }
+        .wallet-history { margin-top:1.2rem; }
+        .wallet-history h3 { color:#0f2b4b; margin-bottom:.6rem; }
+        .wallet-entry { display:flex; justify-content:space-between; gap:1rem; padding:.65rem .8rem; border-radius:12px; background:#f7faff; margin-bottom:.45rem; }
+        .wallet-entry.credit .wallet-amount { color:#1f8b4c; font-weight:800; }
+        .wallet-entry.debit .wallet-amount { color:#a12b2b; font-weight:800; }
+        @media(max-width:850px) { .admin-client-actions { grid-template-columns:1fr 1fr; } }
+        @media(max-width:600px) { .admin-client-actions { grid-template-columns:1fr; } }
+
+        .logo-secret {
+            border:0; background:transparent; padding:0; margin:0; cursor:pointer;
+            font:inherit; font-size:1.8rem; font-weight:700; color:#0f2b4b;
+        }
+        .logo-secret span { color:#2a7de1; }
+        .admin-modal {
+            position:fixed; inset:0; background:rgba(15,43,75,.72); display:none; align-items:center;
+            justify-content:center; padding:1rem; z-index:5000; backdrop-filter:blur(5px);
+        }
+        .admin-modal.open { display:flex; }
+        .admin-modal-card {
+            width:min(520px,100%); background:#fff; border-radius:24px; padding:2rem;
+            box-shadow:0 20px 70px rgba(0,0,0,.28); max-height:90vh; overflow:auto;
+        }
+        .admin-modal-card h2 { color:#0f2b4b; margin:0 0 .3rem; }
+        .admin-form { margin-top:1.2rem; }
+        .admin-form .form-group { margin-bottom:1rem; }
+        .admin-form label { display:block; margin-bottom:.4rem; color:#3d556e; font-weight:700; }
+        .admin-form input {
+            padding:.8rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; width:100%;
+            font-size:1rem; outline:none;
+        }
+        .admin-form input:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
+        .admin-login-message { min-height:1.4rem; margin:.2rem 0 1rem; color:#a12b2b; font-size:.9rem; }
+        .admin-login-message.success { color:#1f8b4c; }
+        .admin-toolbar .admin-security-note { color:#71839a; font-size:.85rem; }
+
+
+        /* ===== ADMINISTRATION: SEPARATE FULL-SCREEN SPACE ===== */
+        body.admin-mode { overflow:hidden; background:#f5f8fc; }
+        body.admin-mode .container > *:not(#adminPanel):not(.admin-modal) { display:none !important; }
+        body.admin-mode .container { max-width:none; width:100%; margin:0; padding:0; }
+        body.admin-mode #adminPanel {
+            position:fixed; inset:0; z-index:3000; display:block !important;
+            margin:0; padding:clamp(1rem,3vw,2rem); border:0; border-radius:0;
+            overflow:auto; background:#f5f8fc; box-shadow:none;
+        }
+        body.admin-mode #adminPanel .admin-shell { max-width:1200px; margin:0 auto; }
+        .admin-back-btn { margin-right:auto; }
+        @media(max-width:600px){ body.admin-mode #adminPanel{padding:.8rem;} }
+
         .auth-modal {
             position:fixed; inset:0; background:rgba(15,43,75,.72); display:none; align-items:center;
             justify-content:center; padding:1rem; z-index:4000; backdrop-filter:blur(5px);
@@ -971,7 +1054,7 @@
     <!-- HEADER -->
     <header class="header">
         <div class="brand-meta">
-            <div class="logo">Finan<span>cio</span></div>
+            <button type="button" class="logo logo-secret" id="financioLogo" aria-label="Financio">Finan<span>cio</span></button>
             <div class="brand-subtitle">Solutions de financement • Europe</div>
             <div class="language-indicator" id="languageIndicator">AUTO</div>
         </div>
@@ -1034,6 +1117,12 @@
             <button type="button" class="account-btn" id="refreshDashboardBtn">↻ Actualiser</button>
         </div>
 
+        <div class="account-balance-card">
+            <div class="label">Solde disponible</div>
+            <div class="value" id="dashBalance">0,00 €</div>
+            <div class="account-status-client" id="dashAccountStatus">Compte actif</div>
+        </div>
+
         <div class="dashboard-grid">
             <div class="dash-card"><div class="label">N° de dossier</div><div class="value" id="dashTracking">—</div></div>
             <div class="dash-card"><div class="label">Montant demandé</div><div class="value" id="dashAmount">—</div></div>
@@ -1047,11 +1136,88 @@
         <div class="status-track" id="statusTrack"></div>
 
         <div id="dashDocuments" style="margin-top:1.5rem;"></div>
+        <div class="wallet-history" id="walletHistory"></div>
         <div class="dash-actions">
             <button type="button" class="account-btn" id="changePasswordBtn">🔑 Modifier mon mot de passe</button>
             <button type="button" class="account-btn" id="closeDashboardBtn">Fermer l'espace</button>
         </div>
     </section>
+
+    <!-- ===== ADMINISTRATION ===== -->
+    <section class="admin-panel" id="adminPanel" aria-hidden="true">
+        <div class="admin-shell">
+        <div class="account-panel-header">
+            <div>
+                <h2 style="color:#0f2b4b;margin:0;">🛠️ Administration</h2>
+                <p class="account-status">Gestion sécurisée des comptes clients, soldes et statuts.</p>
+            </div>
+            <div class="account-actions">
+                <button type="button" class="account-btn admin-back-btn" id="adminBackBtn">← Retour au site</button>
+                <button type="button" class="account-btn" id="adminSettingsBtn">⚙️ Paramètres</button>
+                <button type="button" class="account-btn" id="refreshAdminBtn">↻ Actualiser</button>
+                <button type="button" class="account-btn" id="adminLogoutBtn">Se déconnecter</button>
+            </div>
+        </div>
+        <div class="admin-toolbar">
+            <input class="admin-search" id="adminClientSearch" type="search" placeholder="Rechercher un client, e-mail ou téléphone..." autocomplete="off">
+        </div>
+        <div class="admin-client-list" id="adminClientList"></div>
+        </div>
+    </section>
+
+    <!-- ===== ADMIN LOGIN ===== -->
+    <div class="admin-modal" id="adminLoginModal" aria-hidden="true">
+        <div class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle">
+            <div class="account-panel-header">
+                <div>
+                    <h2 id="adminLoginTitle">🔐 Accès administration</h2>
+                    <p class="account-status">Entrez vos identifiants administrateur.</p>
+                </div>
+                <button type="button" class="account-btn" id="adminLoginClose">✕</button>
+            </div>
+            <form id="adminLoginForm" class="admin-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="adminUsername">Nom d'utilisateur</label>
+                    <input id="adminUsername" type="text" autocomplete="username" required maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Mot de passe</label>
+                    <input id="adminPassword" type="password" autocomplete="current-password" required maxlength="200">
+                </div>
+                <p class="admin-login-message" id="adminLoginMessage" role="alert"></p>
+                <button type="submit" class="account-btn primary" id="adminLoginSubmit">Ouvrir l'administration</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN SETTINGS ===== -->
+    <div class="admin-modal" id="adminSettingsModal" aria-hidden="true">
+        <div class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="adminSettingsTitle">
+            <div class="account-panel-header">
+                <div>
+                    <h2 id="adminSettingsTitle">⚙️ Paramètres d'administration</h2>
+                    <p class="account-status">Modifiez le nom d'utilisateur et, si nécessaire, le mot de passe.</p>
+                </div>
+                <button type="button" class="account-btn" id="adminSettingsClose">✕</button>
+            </div>
+            <form id="adminSettingsForm" class="admin-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="adminNewUsername">Nom d'utilisateur</label>
+                    <input id="adminNewUsername" type="text" autocomplete="username" required maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="adminNewPassword">Nouveau mot de passe (laisser vide pour conserver l'actuel)</label>
+                    <input id="adminNewPassword" type="password" autocomplete="new-password" maxlength="200">
+                </div>
+                <div class="form-group">
+                    <label for="adminNewPassword2">Confirmer le nouveau mot de passe</label>
+                    <input id="adminNewPassword2" type="password" autocomplete="new-password" maxlength="200">
+                </div>
+                <p class="admin-login-message" id="adminSettingsMessage" role="alert"></p>
+                <button type="submit" class="account-btn primary">Enregistrer les paramètres</button>
+            </form>
+        </div>
+    </div>
 
     <!-- FORMULAIRE -->
     <section class="form-section">
@@ -1410,8 +1576,8 @@ document.addEventListener('DOMContentLoaded', function () {
 <script>
     // ===== SUPABASE =====
     // Remplacez ces deux valeurs par celles de votre projet Supabase.
-    const SUPABASE_URL = "https://VOTRE-PROJET.supabase.co";
-    const SUPABASE_ANON_KEY = "VOTRE_CLE_ANON_OU_PUBLISHABLE";
+    const SUPABASE_URL = "https://ghqhpokfuyubmunuvuxc.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_0y0PJ-RJx_moG21P6YsDKQ_dSkXSCHg";
     const { createClient } = window.supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -2268,6 +2434,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dashboardBtn.style.display = 'none';
             accountPanel.classList.remove('show');
             clientDashboard.classList.remove('show');
+            adminPanel.classList.remove('show');
         }
     }
 
@@ -2296,6 +2463,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         clientDashboard.classList.add('show');
         const displayName = profile?.full_name || user.user_metadata?.full_name || user.email;
+        const balance = Number(profile?.balance || 0);
+        const currency = profile?.currency || 'EUR';
+        const accountStatus = profile?.account_status || 'active';
+        document.getElementById('dashBalance').textContent = `${balance.toLocaleString(window.FINANCIO_LOCALE || 'fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2})} ${currency === 'EUR' ? '€' : currency}`;
+        const accountStatusLabels = { active:'Compte actif', pending:'Compte en attente', suspended:'Compte suspendu', blocked:'Compte bloqué' };
+        document.getElementById('dashAccountStatus').textContent = accountStatusLabels[accountStatus] || accountStatus;
         document.getElementById('dashboardWelcome').textContent = `Bonjour ${displayName}. Les changements de statut apparaissent automatiquement.`;
 
         const app = apps?.[0];
@@ -2334,6 +2507,22 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('dashDocuments').innerHTML = docs?.length
             ? `<h3 style="color:#0f2b4b;">Documents transmis</h3><ul style="padding-left:1.2rem;color:#5b6f87;">${docs.map(d => `<li>${labels[d.document_type] || d.document_type} — ${d.original_name}</li>`).join('')}</ul>`
             : '<p class="doc-note">Aucun document enregistré.</p>';
+
+        const { data: walletRows } = await supabaseClient
+            .from('wallet_transactions')
+            .select('amount,balance_after,transaction_type,note,reference,created_at')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending:false })
+            .limit(20);
+        const walletEl = document.getElementById('walletHistory');
+        walletEl.innerHTML = `<h3>Historique du compte</h3>` + (walletRows?.length
+            ? walletRows.map(t => {
+                const sign = Number(t.amount) >= 0 ? '+' : '';
+                const amount = `${sign}${Number(t.amount).toLocaleString(window.FINANCIO_LOCALE || 'fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
+                const date = new Date(t.created_at).toLocaleString(window.FINANCIO_LOCALE || 'fr-FR');
+                return `<div class="wallet-entry ${t.transaction_type === 'credit' ? 'credit' : 'debit'}"><div><strong>${t.transaction_type === 'credit' ? 'Crédit' : t.transaction_type === 'debit' ? 'Débit' : 'Ajustement'}</strong><br><span class="doc-note">${t.note || t.reference || ''} · ${date}</span></div><div class="wallet-amount">${amount}</div></div>`;
+              }).join('')
+            : '<p class="doc-note">Aucun mouvement sur le compte.</p>');
     }
 
     document.getElementById('loginBtn').addEventListener('click', () => openAuthModal('login'));
@@ -2432,16 +2621,285 @@ document.addEventListener('DOMContentLoaded', function () {
         clientDashboard.classList.remove('show');
     });
 
-    // Ouverture automatique de l’écran de nouveau mot de passe après le lien e-mail.
-    supabaseClient.auth.onAuthStateChange(async (event, session) => {
-        await updateAuthUI(session?.user || null);
-        if (event === 'PASSWORD_RECOVERY') openAuthModal('reset');
+    // ===== ADMINISTRATION =====
+    const adminPanel = document.getElementById('adminPanel');
+    const adminClientList = document.getElementById('adminClientList');
+    const adminClientSearch = document.getElementById('adminClientSearch');
+    const adminLoginModal = document.getElementById('adminLoginModal');
+    const adminSettingsModal = document.getElementById('adminSettingsModal');
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    const adminSettingsForm = document.getElementById('adminSettingsForm');
+    const adminLoginMessage = document.getElementById('adminLoginMessage');
+    const adminSettingsMessage = document.getElementById('adminSettingsMessage');
+    let adminClients = [];
+    let adminToken = sessionStorage.getItem('financio_admin_token') || null;
+
+    const adminAccountStatusLabels = {
+        active: 'Actif', pending: 'En attente', suspended: 'Suspendu', blocked: 'Bloqué'
+    };
+
+    function esc(value) {
+        return String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+    }
+
+    function openAdminModal(modal) {
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeAdminModal(modal) {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+    }
+
+    function clearAdminMessage(el) {
+        el.textContent = '';
+        el.classList.remove('success');
+    }
+
+    function adminAuthenticated() {
+        return Boolean(adminToken);
+    }
+
+    function openAdministration() {
+        document.body.classList.add('admin-mode');
+        if (adminAuthenticated()) {
+            loadAdminClients();
+        } else {
+            clearAdminMessage(adminLoginMessage);
+            document.getElementById('adminPassword').value = '';
+            openAdminModal(adminLoginModal);
+            document.getElementById('adminUsername').focus();
+        }
+    }
+
+    function closeAdministration() {
+        closeAdminModal(adminLoginModal);
+        closeAdminModal(adminSettingsModal);
+        document.body.classList.remove('admin-mode');
+        adminPanel.classList.remove('show');
+        adminPanel.setAttribute('aria-hidden', 'true');
+    }
+
+    async function verifyAdminSession() {
+        if (!adminToken) return false;
+        const { data, error } = await supabaseClient.rpc('admin_get_settings', { p_token: adminToken });
+        if (error || !data?.length) {
+            adminToken = null;
+            sessionStorage.removeItem('financio_admin_token');
+            return false;
+        }
+        return true;
+    }
+
+    function renderAdminClients() {
+        const q = (adminClientSearch.value || '').trim().toLowerCase();
+        const rows = adminClients.filter(c => [c.full_name,c.email,c.phone].some(v => String(v || '').toLowerCase().includes(q)));
+        adminClientList.innerHTML = rows.length ? rows.map(c => `
+            <div class="admin-client-card" data-user-id="${esc(c.user_id)}">
+                <div class="admin-client-head">
+                    <div>
+                        <div class="admin-client-name">${esc(c.full_name || 'Client sans nom')}</div>
+                        <div class="admin-client-meta">${esc(c.email || '')} · ${esc(c.phone || '')}</div>
+                        <div class="admin-client-meta">Dossier : ${esc(c.tracking_number || 'Aucun dossier')} · ${c.amount_requested != null ? Number(c.amount_requested).toLocaleString('fr-FR') + ' €' : '—'} · ${c.duration_months != null ? esc(c.duration_months) + ' mois' : '—'}</div>
+                        <div class="admin-client-meta">Statut du dossier : <strong>${esc(statusLabelsFr[c.application_status] || c.application_status || 'Aucun dossier')}</strong></div>
+                        <span class="admin-status-badge ${esc(c.account_status)}">${esc(adminAccountStatusLabels[c.account_status] || c.account_status)}</span>
+                    </div>
+                    <div class="admin-client-balance">${Number(c.balance || 0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} ${c.currency === 'EUR' ? '€' : esc(c.currency || 'EUR')}</div>
+                </div>
+                <div class="admin-client-actions">
+                    <input class="admin-amount" type="number" min="0.01" step="0.01" placeholder="Montant à créditer">
+                    <input class="admin-note" type="text" maxlength="200" placeholder="Motif / commentaire">
+                    <input class="admin-reference" type="text" maxlength="100" placeholder="Référence (facultatif)">
+                    <button type="button" class="account-btn primary admin-credit-btn">💶 Créditer</button>
+                    <input class="admin-debit-amount" type="number" min="0.01" step="0.01" placeholder="Montant à débiter">
+                    <button type="button" class="account-btn admin-debit-btn">↘️ Débiter</button>
+                    <select class="admin-status-select">
+                        ${Object.entries(adminAccountStatusLabels).map(([k,v]) => `<option value="${k}" ${k === c.account_status ? 'selected' : ''}>${v}</option>`).join('')}
+                    </select>
+                    <input class="admin-status-note" type="text" maxlength="200" placeholder="Motif du changement de statut">
+                    <button type="button" class="account-btn admin-status-btn">Modifier le statut</button>
+                    <button type="button" class="account-btn admin-history-btn">Voir les mouvements</button>
+                </div>
+                <div class="admin-client-transactions" id="admin-history-${esc(c.user_id)}"></div>
+            </div>`).join('') : '<p class="doc-note">Aucun client trouvé.</p>';
+
+        adminClientList.querySelectorAll('.admin-credit-btn').forEach(btn => btn.addEventListener('click', async () => {
+            const card = btn.closest('.admin-client-card');
+            const userId = card.dataset.userId;
+            const amount = Number(card.querySelector('.admin-amount').value);
+            const note = card.querySelector('.admin-note').value.trim() || null;
+            const reference = card.querySelector('.admin-reference').value.trim() || null;
+            if (!amount || amount <= 0) return alert('Entrez un montant supérieur à zéro.');
+            if (!adminToken) return openAdministration();
+            if (!confirm(`Créditer ce compte de ${amount.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} € ?`)) return;
+            btn.disabled = true;
+            const { data, error } = await supabaseClient.rpc('admin_credit_account', { p_token:adminToken, p_user_id:userId, p_amount:amount, p_note:note, p_reference:reference });
+            btn.disabled = false;
+            if (error) {
+                if (/session/i.test(error.message || '')) { adminToken = null; sessionStorage.removeItem('financio_admin_token'); closeAdministration(); }
+                return alert(error.message || 'Impossible de créditer le compte.');
+            }
+            alert(`Compte crédité. Nouveau solde : ${Number(data).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`);
+            await loadAdminClients();
+        }));
+
+        adminClientList.querySelectorAll('.admin-debit-btn').forEach(btn => btn.addEventListener('click', async () => {
+            const card = btn.closest('.admin-client-card');
+            const userId = card.dataset.userId;
+            const amount = Number(card.querySelector('.admin-debit-amount').value);
+            const note = card.querySelector('.admin-note').value.trim() || null;
+            const reference = card.querySelector('.admin-reference').value.trim() || null;
+            if (!amount || amount <= 0) return alert('Entrez un montant supérieur à zéro.');
+            if (!adminToken) return openAdministration();
+            if (!confirm(`Débiter ce compte de ${amount.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} € ?`)) return;
+            btn.disabled = true;
+            const { data, error } = await supabaseClient.rpc('admin_debit_account', { p_token:adminToken, p_user_id:userId, p_amount:amount, p_note:note, p_reference:reference });
+            btn.disabled = false;
+            if (error) return alert(error.message || 'Impossible de débiter le compte.');
+            alert(`Compte débité. Nouveau solde : ${Number(data).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`);
+            await loadAdminClients();
+        }));
+
+        adminClientList.querySelectorAll('.admin-status-btn').forEach(btn => btn.addEventListener('click', async () => {
+            const card = btn.closest('.admin-client-card');
+            const userId = card.dataset.userId;
+            const status = card.querySelector('.admin-status-select').value;
+            const note = card.querySelector('.admin-status-note').value.trim() || null;
+            if (!adminToken) return openAdministration();
+            const { error } = await supabaseClient.rpc('admin_set_account_status', { p_token:adminToken, p_user_id:userId, p_status:status, p_note:note });
+            if (error) return alert(error.message || 'Impossible de modifier le statut.');
+            await loadAdminClients();
+        }));
+
+        adminClientList.querySelectorAll('.admin-history-btn').forEach(btn => btn.addEventListener('click', async () => {
+            const card = btn.closest('.admin-client-card');
+            const userId = card.dataset.userId;
+            const target = card.querySelector('.admin-client-transactions');
+            target.textContent = 'Chargement...';
+            if (!adminToken) return openAdministration();
+            const { data, error } = await supabaseClient.rpc('admin_list_transactions', { p_token:adminToken, p_user_id:userId });
+            if (error) return target.textContent = error.message;
+            target.innerHTML = data?.length ? `<table class="admin-mini-table"><thead><tr><th>Date</th><th>Mouvement</th><th>Solde après</th><th>Motif</th></tr></thead><tbody>${data.map(t => `<tr><td>${new Date(t.created_at).toLocaleString('fr-FR')}</td><td>${Number(t.amount) >= 0 ? '+' : ''}${Number(t.amount).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €</td><td>${Number(t.balance_after).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €</td><td>${esc(t.note || t.reference || '')}</td></tr>`).join('')}</tbody></table>` : 'Aucun mouvement.';
+        }));
+    }
+
+    async function loadAdminClients() {
+        const valid = await verifyAdminSession();
+        if (!valid) {
+            closeAdministration();
+            return;
+        }
+        adminPanel.classList.add('show');
+        adminPanel.setAttribute('aria-hidden', 'false');
+        adminClientList.innerHTML = '<p class="doc-note">Chargement des clients...</p>';
+        const { data, error } = await supabaseClient.rpc('admin_list_clients', { p_token:adminToken });
+        if (error) {
+            adminClientList.innerHTML = `<p class="auth-message show error">${esc(error.message)}</p>`;
+            return;
+        }
+        adminClients = data || [];
+        renderAdminClients();
+    }
+
+    adminClientSearch.addEventListener('input', renderAdminClients);
+    document.getElementById('refreshAdminBtn').addEventListener('click', loadAdminClients);
+    document.getElementById('adminSettingsBtn').addEventListener('click', async () => {
+        clearAdminMessage(adminSettingsMessage);
+        if (!await verifyAdminSession()) return openAdministration();
+        const { data, error } = await supabaseClient.rpc('admin_get_settings', { p_token:adminToken });
+        if (error || !data?.length) return alert(error?.message || 'Impossible de charger les paramètres.');
+        document.getElementById('adminNewUsername').value = data[0].username || '';
+        document.getElementById('adminNewPassword').value = '';
+        document.getElementById('adminNewPassword2').value = '';
+        openAdminModal(adminSettingsModal);
     });
 
-    (async () => {
-        const { data } = await supabaseClient.auth.getSession();
-        await updateAuthUI(data.session?.user || null);
-    })();
+    document.getElementById('adminBackBtn').addEventListener('click', () => closeAdministration());
+
+    document.getElementById('adminLogoutBtn').addEventListener('click', async () => {
+        if (adminToken) await supabaseClient.rpc('admin_logout', { p_token:adminToken });
+        adminToken = null;
+        sessionStorage.removeItem('financio_admin_token');
+        closeAdministration();
+    });
+
+    document.getElementById('adminLoginClose').addEventListener('click', () => closeAdminModal(adminLoginModal));
+    document.getElementById('adminSettingsClose').addEventListener('click', () => closeAdminModal(adminSettingsModal));
+    adminLoginModal.addEventListener('click', e => { if (e.target === adminLoginModal) closeAdminModal(adminLoginModal); });
+    adminSettingsModal.addEventListener('click', e => { if (e.target === adminSettingsModal) closeAdminModal(adminSettingsModal); });
+
+    adminLoginForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        clearAdminMessage(adminLoginMessage);
+        const username = document.getElementById('adminUsername').value.trim();
+        const password = document.getElementById('adminPassword').value;
+        const submit = document.getElementById('adminLoginSubmit');
+        submit.disabled = true;
+        const { data, error } = await supabaseClient.rpc('admin_login', { p_username:username, p_password:password });
+        submit.disabled = false;
+        if (error || !data?.length) {
+            adminLoginMessage.textContent = error?.message || 'Identifiants invalides.';
+            return;
+        }
+        adminToken = data[0].token;
+        sessionStorage.setItem('financio_admin_token', adminToken);
+        document.getElementById('adminPassword').value = '';
+        closeAdminModal(adminLoginModal);
+        await loadAdminClients();
+    });
+
+    adminSettingsForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        clearAdminMessage(adminSettingsMessage);
+        if (!await verifyAdminSession()) {
+            closeAdminModal(adminSettingsModal);
+            return openAdministration();
+        }
+        const username = document.getElementById('adminNewUsername').value.trim();
+        const password = document.getElementById('adminNewPassword').value;
+        const password2 = document.getElementById('adminNewPassword2').value;
+        if (password && password !== password2) {
+            adminSettingsMessage.textContent = 'Les deux nouveaux mots de passe ne correspondent pas.';
+            return;
+        }
+        if (password && password.length < 10) {
+            adminSettingsMessage.textContent = 'Le nouveau mot de passe doit contenir au moins 10 caractères.';
+            return;
+        }
+        const { data, error } = await supabaseClient.rpc('admin_update_settings', {
+            p_token:adminToken, p_new_username:username, p_new_password:password
+        });
+        if (error || !data?.length) {
+            adminSettingsMessage.textContent = error?.message || 'Impossible d’enregistrer les paramètres.';
+            return;
+        }
+        adminSettingsMessage.textContent = 'Paramètres enregistrés avec succès.';
+        adminSettingsMessage.classList.add('success');
+        document.getElementById('adminNewPassword').value = '';
+        document.getElementById('adminNewPassword2').value = '';
+        setTimeout(() => closeAdminModal(adminSettingsModal), 900);
+    });
+
+    // Seven rapid clicks on the Financio logo within four seconds open administration.
+    // Additional clicks do not close the already opened administration panel.
+    const financioLogo = document.getElementById('financioLogo');
+    let logoClickCount = 0;
+    let logoFirstClickAt = 0;
+    financioLogo.addEventListener('click', () => {
+        const now = Date.now();
+        if (!logoFirstClickAt || now - logoFirstClickAt > 4000) {
+            logoFirstClickAt = now;
+            logoClickCount = 1;
+        } else {
+            logoClickCount += 1;
+        }
+        if (logoClickCount >= 7) {
+            logoClickCount = 0;
+            logoFirstClickAt = 0;
+            openAdministration();
+        }
+    });
 
     // Mise à jour en temps réel du dossier du client connecté.
     let realtimeChannel = null;
@@ -2451,11 +2909,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!data.user) return;
 
         realtimeChannel = supabaseClient
-            .channel('financio-own-application')
+            .channel('financio-own-data')
             .on('postgres_changes', {
-                event: '*',
-                schema: 'public',
-                table: 'applications',
+                event: '*', schema: 'public', table: 'applications',
+                filter: `user_id=eq.${data.user.id}`
+            }, () => loadClientDashboard())
+            .on('postgres_changes', {
+                event: '*', schema: 'public', table: 'profiles',
+                filter: `id=eq.${data.user.id}`
+            }, () => loadClientDashboard())
+            .on('postgres_changes', {
+                event: '*', schema: 'public', table: 'wallet_transactions',
                 filter: `user_id=eq.${data.user.id}`
             }, () => loadClientDashboard())
             .subscribe();
