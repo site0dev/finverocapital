@@ -135,6 +135,9 @@
         .legal-footer nav button:hover { text-decoration: underline; }
         .legal-footer small { color: #8ba0b9; line-height: 1.6; font-size: 0.85rem; }
         .language-indicator { font-size:.75rem; color:#5b6f87; margin-top:.15rem; }
+        .language-picker { display:inline-flex; align-items:center; gap:.35rem; margin-top:.25rem; color:#5b6f87; font-size:.8rem; }
+        .language-picker select { border:1px solid #dce3ed; background:#fff; color:#1e2b3c; border-radius:10px; padding:.3rem .5rem; font-size:.8rem; cursor:pointer; outline:none; }
+        .language-picker select:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
         #google_translate_element, .goog-te-banner-frame, .goog-te-balloon-frame, .goog-tooltip, .goog-tooltip:hover, .skiptranslate { display: none !important; }
         body { top: 0 !important; }
         .goog-text-highlight { background: transparent !important; box-shadow: none !important; }
@@ -147,14 +150,19 @@
         .legal-card p, .legal-card li { color: #3d556e; line-height: 1.7; margin-bottom: 0.6rem; }
         .legal-card ul { padding-left: 1.5rem; }
         .stats-section { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); direction: rtl; gap: 1rem; margin: 1.5rem 0 2rem; width: 100%; align-items: stretch; }
-        .stats-section .stat-card { width: 100%; min-width: 0; direction: ltr; }
+        .stats-section .stat-card { width: 100%; min-width: 0; direction: ltr; box-sizing: border-box; }
         .stat-card { background: #fff; border: 1px solid #e5ebf2; border-radius: 16px; padding: 1.25rem 1rem; text-align: center; box-shadow: 0 6px 20px rgba(35, 61, 89, 0.07); transition: transform .2s ease, box-shadow .2s ease; }
         .stat-card:hover { transform: translateY(-2px); box-shadow: 0 9px 24px rgba(35, 61, 89, 0.11); }
         .stat-icon { width: 42px; height: 42px; margin: 0 auto .55rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #eef5e9; color: #3d556e; font-weight: 700; font-size: 1.15rem; }
         .stat-value { color: #20364d; font-size: clamp(1.55rem, 3vw, 2.1rem); line-height: 1.1; font-weight: 800; letter-spacing: -.02em; }
         .stat-value span { font-size: .62em; }
         .stat-label { margin-top: .4rem; color: #687d95; font-size: .88rem; line-height: 1.35; }
-        @media (max-width: 700px) { .stats-section { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; } .stat-card { padding: 1rem .55rem; } .stat-value { font-size: clamp(1.15rem, 5vw, 1.7rem); } .stat-label { font-size: .72rem; } }
+        @media (max-width: 700px) {
+  .stats-section { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .35rem; }
+  .stats-section .stat-card { padding: .7rem .25rem; min-width: 0; }
+  .stat-value { font-size: clamp(.85rem, 4vw, 1.35rem); white-space: nowrap; }
+  .stat-label { font-size: clamp(.55rem, 2.3vw, .72rem); line-height: 1.2; }
+}
         .account-actions { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
         .account-btn { border:1px solid #dce3ed; background:#fff; color:#0f2b4b; padding:.65rem 1rem; border-radius:30px; cursor:pointer; font-weight:600; }
         .account-btn.primary { background:#0f2b4b; color:#fff; border-color:#0f2b4b; }
@@ -266,7 +274,31 @@
         <div class="brand-meta">
             <button type="button" class="logo logo-secret" id="financioLogo" aria-label="Financio">Finan<span>cio</span></button>
             <div class="brand-subtitle">Solutions de financement • Europe</div>
-            <div class="language-indicator" id="languageIndicator">AUTO</div>
+            <label class="language-picker" title="Choisir la langue">
+                <span>🌐</span>
+                <select id="languageSelect" aria-label="Choisir la langue">
+                    <option value="fr">Français</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="pt">Português</option>
+                    <option value="de">Deutsch</option>
+                    <option value="it">Italiano</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="pl">Polski</option>
+                    <option value="ro">Română</option>
+                    <option value="cs">Čeština</option>
+                    <option value="el">Ελληνικά</option>
+                    <option value="sv">Svenska</option>
+                    <option value="da">Dansk</option>
+                    <option value="fi">Suomi</option>
+                    <option value="no">Norsk</option>
+                    <option value="hu">Magyar</option>
+                    <option value="bg">Български</option>
+                    <option value="sk">Slovenčina</option>
+                    <option value="uk">Українська</option>
+                    <option value="tr">Türkçe</option>
+                </select>
+            </label>
         </div>
         <div class="account-actions">
             <button type="button" class="account-btn" id="loginBtn">🔐 Se connecter</button>
@@ -745,35 +777,7 @@
 <!-- TOAST -->
 <div id="toast" class="toast">📨 Demande envoyée avec succès !</div>
 
-<!-- ===== TRADUCTION AUTOMATIQUE ===== -->
-<script>
-(function () {
-    const supported = ['fr','en','es','pt','de','it','nl','pl','ro','cs','el','sv','da','fi','no','hu','bg','sk','uk','tr'];
-    const browserLanguages = Array.isArray(navigator.languages) && navigator.languages.length
-        ? navigator.languages
-        : [navigator.language || 'fr'];
-
-    let target = 'en';
-    for (const value of browserLanguages) {
-        const lang = String(value || '').toLowerCase().split('-')[0];
-        if (supported.includes(lang)) {
-            target = lang;
-            break;
-        }
-    }
-
-    if (target !== 'fr') {
-        document.cookie = 'googtrans=/fr/' + target + ';path=/;SameSite=Lax';
-    } else {
-        document.cookie = 'googtrans=/fr/fr;path=/;SameSite=Lax';
-    }
-
-    window.FINANCIO_LANGUAGE = target;
-    document.documentElement.lang = target;
-    window.FINANCIO_LOCALE = target === 'fr' ? 'fr-FR' : target;
-})();
-</script>
-
+<!-- ===== TRADUCTION MANUELLE ===== -->
 <div id="google_translate_element" aria-hidden="true"></div>
 <script>
 function googleTranslateElementInit() {
@@ -790,10 +794,23 @@ function googleTranslateElementInit() {
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const el = document.getElementById('languageIndicator');
-    if (el && window.FINANCIO_LANGUAGE) {
-        el.textContent = window.FINANCIO_LANGUAGE.toUpperCase();
-        el.setAttribute('title', 'Langue détectée automatiquement');
+    const select = document.getElementById('languageSelect');
+    const supported = ['fr','en','es','pt','de','it','nl','pl','ro','cs','el','sv','da','fi','no','hu','bg','sk','uk','tr'];
+    const match = document.cookie.match(/(?:^|;\s*)googtrans=\/fr\/([^;]+)/);
+    const current = match && supported.includes(match[1]) ? match[1] : 'fr';
+    window.FINANCIO_LANGUAGE = current;
+    window.FINANCIO_LOCALE = current === 'fr' ? 'fr-FR' : current;
+    document.documentElement.lang = current;
+    if (select) {
+        select.value = current;
+        select.addEventListener('change', function () {
+            const target = this.value;
+            document.cookie = 'googtrans=/fr/' + target + ';path=/;SameSite=Lax';
+            window.FINANCIO_LANGUAGE = target;
+            window.FINANCIO_LOCALE = target === 'fr' ? 'fr-FR' : target;
+            document.documentElement.lang = target;
+            window.location.reload();
+        });
     }
 });
 </script>
@@ -1629,9 +1646,10 @@ document.addEventListener('DOMContentLoaded', function () {
         clearAuthMessage();
         const email = document.getElementById('loginEmail').value.trim();
         const password = document.getElementById('loginPassword').value;
-        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
         if (error) return showAuthMessage(error.message, 'error');
         closeAuthModal();
+        await updateAuthUI(data.user);
     });
 
     document.getElementById('registerForm').addEventListener('submit', async e => {
@@ -1652,7 +1670,7 @@ document.addEventListener('DOMContentLoaded', function () {
             email, password,
             options: {
                 data: { full_name: fullName, phone, gender },
-                emailRedirectTo: window.location.origin + window.location.pathname
+                emailRedirectTo: 'https://sohabank.vercel.app/'
             }
         });
 
@@ -1681,7 +1699,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearAuthMessage();
         const email = document.getElementById('forgotEmail').value.trim();
         const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + window.location.pathname
+            redirectTo: 'https://sohabank.vercel.app/'
         });
         if (error) return showAuthMessage(error.message, 'error');
         showAuthMessage('Si un compte correspond à cette adresse, un e-mail de réinitialisation a été envoyé.', 'success');
@@ -2011,10 +2029,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }, () => loadClientDashboard())
             .subscribe();
     }
-    supabaseClient.auth.onAuthStateChange(async () => {
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+        // Met à jour immédiatement l'interface après connexion, déconnexion ou restauration de session.
+        await updateAuthUI(session?.user || null);
         await subscribeToOwnApplications();
     });
-    subscribeToOwnApplications();
+    (async function restoreClientSession() {
+        const { data: sessionData } = await supabaseClient.auth.getSession();
+        await updateAuthUI(sessionData.session?.user || null);
+        await subscribeToOwnApplications();
+    })();
 
 </script>
 
