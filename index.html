@@ -186,7 +186,6 @@
             width: 100%;
         }
 
-        /* Nouveau : recherche + sélecteur séparés */
         .phone-wrapper {
             display: flex;
             flex-direction: column;
@@ -604,151 +603,56 @@
             transform: translateX(-50%) translateY(0);
         }
 
-        /* ===== MODALE NUMÉRO DE SUIVI ===== */
-        .tracking-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(15,43,75,0.7);
-            display: none;
+        /* ===== STATISTIQUES : TOUJOURS VERTICALES ===== */
+        .stats-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0 2rem;
+            width: 100%;
+        }
+        .stat-card {
+            background: #fff;
+            border: 1px solid #e5ebf2;
+            border-radius: 16px;
+            padding: 1.25rem 1rem;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(35, 61, 89, 0.07);
+            transition: transform .2s ease, box-shadow .2s ease;
+            width: 100%;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 9px 24px rgba(35, 61, 89, 0.11);
+        }
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            margin: 0 auto .55rem;
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
-            z-index: 3000;
-            backdrop-filter: blur(4px);
-        }
-        .tracking-modal.open {
-            display: flex;
-        }
-        .tracking-modal .tracking-card {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 2.5rem 3rem;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            animation: fadeUp 0.4s ease;
-        }
-        @keyframes fadeUp {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        .tracking-modal .tracking-card h2 {
-            font-size: 1.6rem;
-            color: #0f2b4b;
-            margin-bottom: 0.5rem;
-        }
-        .tracking-modal .tracking-card .tracking-number {
-            font-size: 2.2rem;
+            border-radius: 50%;
+            background: #eef5e9;
+            color: #3d556e;
             font-weight: 700;
-            color: #2a7de1;
-            background: #eaf2ff;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            margin: 1rem 0;
-            letter-spacing: 1px;
-            word-break: break-all;
+            font-size: 1.15rem;
         }
-        .tracking-modal .tracking-card .info-text {
-            color: #5b6f87;
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
+        .stat-value {
+            color: #20364d;
+            font-size: clamp(1.55rem, 3vw, 2.1rem);
+            line-height: 1.1;
+            font-weight: 800;
+            letter-spacing: -.02em;
         }
-        .tracking-modal .tracking-card .copy-btn {
-            background: #0f2b4b;
-            color: white;
-            border: none;
-            padding: 0.8rem 2.5rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
-        .tracking-modal .tracking-card .copy-btn:hover {
-            background: #1a3a62;
-            transform: scale(1.02);
-        }
-        .tracking-modal .tracking-card .copy-btn.copied {
-            background: #1f8b4c;
+        .stat-value span { font-size: .62em; }
+        .stat-label {
+            margin-top: .4rem;
+            color: #687d95;
+            font-size: .88rem;
+            line-height: 1.35;
         }
 
-        @media (max-width: 600px) {
-            .tracking-modal .tracking-card {
-                padding: 2rem 1.5rem;
-            }
-            .tracking-modal .tracking-card .tracking-number {
-                font-size: 1.6rem;
-            }
-        }
-
-        @media (max-width: 900px) {
-            .steps-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-            .trust-section { flex-direction: column; text-align: center; }
-            .trust-content .trust-item { text-align: center; }
-            .promo-banner { flex-direction: column; text-align: center; }
-            .promo-banner .promo-image { flex: 0 0 auto; }
-        }
-        @media (max-width: 700px) {
-            body { padding: 0.5rem; }
-            .container { padding: 1.2rem; }
-            .hero-text h1 { font-size: 2rem; }
-            .form-grid { grid-template-columns: 1fr; gap: 1rem; }
-            .form-actions { flex-direction: column; align-items: stretch; }
-            .btn { justify-content: center; }
-            .promo-banner { padding: 1.2rem; }
-            .promo-banner .promo-text p { font-size: 1rem; }
-            .form-section { padding: 1.5rem; }
-            .steps-grid { grid-template-columns: 1fr; gap: 1.2rem; }
-            .step-item { padding-top: 0.8rem; }
-            .floating-btn { width: 50px; height: 50px; font-size: 1.6rem; }
-            .floating-btn.whatsapp { bottom: 5.5rem; right: 1.2rem; }
-            .floating-btn.chat { bottom: 1.2rem; right: 1.2rem; }
-            .chat-window { width: calc(100vw - 1.5rem); right: 0.75rem; bottom: 6.5rem; max-height: 50vh; }
-            .trust-section { gap: 1.5rem; }
-            .trust-content h2 { font-size: 1.6rem; }
-        }
-        @media (max-width: 450px) {
-            .phone-wrapper select,
-            .phone-wrapper .country-search {
-                font-size: 0.9rem;
-                padding: 0.7rem 0.8rem;
-            }
-        }
-
-        .brand-meta { display:flex; flex-direction:column; gap:.15rem; }
-        .brand-subtitle { font-size:.72rem; color:#7b8da3; letter-spacing:.03em; }
-        .legal-footer {
-            margin-top: 1.2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #e9edf4;
-        }
-        .legal-footer nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .7rem 1.2rem;
-            margin-bottom: .5rem;
-        }
-        .legal-footer nav button {
-            border: 0;
-            background: none;
-            color: #315f91;
-            cursor: pointer;
-            padding: 0;
-            font: inherit;
-            font-size: 0.9rem;
-        }
-        .legal-footer nav button:hover {
-            text-decoration: underline;
-        }
-        .legal-footer small {
-            color: #8ba0b9;
-            line-height: 1.6;
-            font-size: 0.85rem;
-        }
-        .language-indicator { font-size:.75rem; color:#5b6f87; margin-top:.15rem; }
-
-        /* Modale générique */
         .legal-modal {
             position: fixed;
             inset: 0;
@@ -801,63 +705,44 @@
             line-height: 1.7;
             margin-bottom: 0.6rem;
         }
-        .stats-section {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin: 1.5rem 0 2rem;
-        }
-        .stat-card {
-            background: #fff;
-            border: 1px solid #e5ebf2;
-            border-radius: 16px;
-            padding: 1.25rem 1rem;
-            text-align: center;
-            box-shadow: 0 6px 20px rgba(35, 61, 89, 0.07);
-            transition: transform .2s ease, box-shadow .2s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 9px 24px rgba(35, 61, 89, 0.11);
-        }
-        .stat-icon {
-            width: 42px;
-            height: 42px;
-            margin: 0 auto .55rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: #eef5e9;
-            color: #3d556e;
-            font-weight: 700;
-            font-size: 1.15rem;
-        }
-        .stat-value {
-            color: #20364d;
-            font-size: clamp(1.55rem, 3vw, 2.1rem);
-            line-height: 1.1;
-            font-weight: 800;
-            letter-spacing: -.02em;
-        }
-        .stat-value span { font-size: .62em; }
-        .stat-label {
-            margin-top: .4rem;
-            color: #687d95;
-            font-size: .88rem;
-            line-height: 1.35;
-        }
-        @media (max-width: 700px) {
-            .stats-section { grid-template-columns: 1fr; gap: .8rem; }
-            .stat-card { padding: 1rem; }
-        }
-
         .legal-card ul {
             padding-left: 1.5rem;
         }
         @media (max-width: 600px) {
             .legal-card { padding: 1.5rem; }
         }
+
+        .brand-meta { display:flex; flex-direction:column; gap:.15rem; }
+        .brand-subtitle { font-size:.72rem; color:#7b8da3; letter-spacing:.03em; }
+        .legal-footer {
+            margin-top: 1.2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e9edf4;
+        }
+        .legal-footer nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .7rem 1.2rem;
+            margin-bottom: .5rem;
+        }
+        .legal-footer nav button {
+            border: 0;
+            background: none;
+            color: #315f91;
+            cursor: pointer;
+            padding: 0;
+            font: inherit;
+            font-size: 0.9rem;
+        }
+        .legal-footer nav button:hover {
+            text-decoration: underline;
+        }
+        .legal-footer small {
+            color: #8ba0b9;
+            line-height: 1.6;
+            font-size: 0.85rem;
+        }
+        .language-indicator { font-size:.75rem; color:#5b6f87; margin-top:.15rem; }
 
         /* ===== ESPACE CLIENT / AUTH SUPABASE ===== */
         .account-actions { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
@@ -929,7 +814,6 @@
             .account-btn { flex:1; }
             .auth-card { padding:1.4rem; }
         }
-
     </style>
 </head>
 <body>
@@ -972,7 +856,7 @@
         </div>
     </section>
 
-    <!-- STATISTIQUES (icônes sur une ligne) -->
+    <!-- ===== STATISTIQUES : VERTICALES (TOUJOURS) ===== -->
     <section class="stats-section" aria-label="Statistiques Financio">
         <div class="stat-card">
             <div class="stat-icon">📋</div>
@@ -1161,7 +1045,6 @@
         <small data-i18n="footerText">Financio © 2026 — Service de simulation et de demande de financement.</small>
     </footer>
 </div>
-
 
 <!-- ===== MODALE AUTHENTIFICATION ===== -->
 <div class="auth-modal" id="authModal">
@@ -1866,7 +1749,6 @@
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (t[key]) {
-            // Remplacer le contenu HTML de manière sécurisée
             el.innerHTML = t[key];
         }
     });
@@ -2653,271 +2535,4 @@
         'Funding granted': 'Financement accordé'
     };
 
-    const documentLabelsFr = {
-        identity: 'Carte d’identité',
-        tax: 'Document fiscal',
-        income: 'Justificatif de revenu'
-    };
-
-    function showAuthMessage(message, type='success') {
-        authMessage.textContent = message;
-        authMessage.className = `auth-message show ${type}`;
-    }
-
-    function clearAuthMessage() {
-        authMessage.textContent = '';
-        authMessage.className = 'auth-message';
-    }
-
-    function openAuthModal(tab='login') {
-        authModal.classList.add('open');
-        clearAuthMessage();
-        switchAuthTab(tab);
-    }
-
-    function closeAuthModal() {
-        authModal.classList.remove('open');
-        clearAuthMessage();
-    }
-
-    function switchAuthTab(tab) {
-        document.querySelectorAll('.auth-tab').forEach(b => b.classList.toggle('active', b.dataset.authTab === tab));
-        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-        const form = document.getElementById(tab === 'login' ? 'loginForm' : tab === 'register' ? 'registerForm' : tab + 'Form');
-        if (form) form.classList.add('active');
-
-        if (tab === 'register') {
-            authTitle.textContent = t.authTitle || 'Créer votre espace client';
-            authSubtitle.textContent = t.authSubtitle || 'Votre espace vous permettra de suivre votre demande en temps réel.';
-        } else if (tab === 'forgot') {
-            authTitle.textContent = t.forgotPassword || 'Réinitialiser le mot de passe';
-            authSubtitle.textContent = t.sendResetLink || 'Nous vous enverrons un lien sécurisé par e-mail.';
-        } else if (tab === 'reset') {
-            authTitle.textContent = t.newPassword || 'Nouveau mot de passe';
-            authSubtitle.textContent = t.confirmNewPassword || 'Choisissez un nouveau mot de passe sécurisé.';
-        } else {
-            authTitle.textContent = t.authTitle || 'Votre espace client';
-            authSubtitle.textContent = t.authSubtitle || 'Connectez-vous pour suivre votre dossier.';
-        }
-    }
-
-    async function updateAuthUI(user) {
-        const loginBtn = document.getElementById('loginBtn');
-        const registerBtn = document.getElementById('registerBtn');
-        const dashboardBtn = document.getElementById('dashboardBtn');
-
-        if (user) {
-            loginBtn.style.display = 'none';
-            registerBtn.style.display = 'none';
-            dashboardBtn.style.display = 'inline-flex';
-            accountPanel.classList.add('show');
-            const name = user.user_metadata?.full_name || user.email || 'Client';
-            document.getElementById('accountStatus').textContent = `Connecté en tant que ${name}`;
-            await loadClientDashboard();
-        } else {
-            loginBtn.style.display = 'inline-flex';
-            registerBtn.style.display = 'inline-flex';
-            dashboardBtn.style.display = 'none';
-            accountPanel.classList.remove('show');
-            clientDashboard.classList.remove('show');
-        }
-    }
-
-    async function loadClientDashboard() {
-        const { data: userData } = await supabaseClient.auth.getUser();
-        const user = userData.user;
-        if (!user) return;
-
-        const { data: profile } = await supabaseClient
-            .from('profiles')
-            .select('*')
-            .eq('id', user.id)
-            .maybeSingle();
-
-        const { data: apps, error } = await supabaseClient
-            .from('applications')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending:false })
-            .limit(1);
-
-        if (error) {
-            console.error(error);
-            return;
-        }
-
-        clientDashboard.classList.add('show');
-        const displayName = profile?.full_name || user.user_metadata?.full_name || user.email;
-        document.getElementById('dashboardWelcome').textContent = `Bonjour ${displayName}. Les changements de statut apparaissent automatiquement.`;
-
-        const app = apps?.[0];
-        if (!app) {
-            document.getElementById('dashTracking').textContent = 'Aucun dossier';
-            document.getElementById('dashAmount').textContent = '—';
-            document.getElementById('dashDuration').textContent = '—';
-            document.getElementById('dashMonthly').textContent = '—';
-            document.getElementById('dashStatus').textContent = 'Aucun dossier';
-            document.getElementById('dashUpdated').textContent = '—';
-            document.getElementById('statusTrack').innerHTML = '<div class="status-step active"><span class="status-dot"></span><span>Vous n’avez pas encore envoyé de demande.</span></div>';
-            document.getElementById('dashDocuments').innerHTML = '';
-            return;
-        }
-
-        document.getElementById('dashTracking').textContent = app.tracking_number || '—';
-        document.getElementById('dashAmount').textContent = `${Number(app.amount_requested).toLocaleString('fr-FR')} €`;
-        document.getElementById('dashDuration').textContent = `${app.duration_months} mois`;
-        document.getElementById('dashMonthly').textContent = `${Number(app.monthly_payment).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
-        document.getElementById('dashStatus').textContent = statusLabelsFr[app.status] || app.status || 'Demande envoyée';
-        document.getElementById('dashUpdated').textContent = app.updated_at ? new Date(app.updated_at).toLocaleString('fr-FR') : '—';
-
-        const currentIndex = Math.max(0, statusOrder.indexOf(app.status));
-        document.getElementById('statusTrack').innerHTML = statusOrder.map((s, i) => {
-            const cls = i < currentIndex ? 'done' : i === currentIndex ? 'active' : '';
-            return `<div class="status-step ${cls}"><span class="status-dot"></span><span>${statusLabelsFr[s] || s}</span></div>`;
-        }).join('');
-
-        const { data: docs } = await supabaseClient
-            .from('application_documents')
-            .select('document_type, original_name, created_at')
-            .eq('application_id', app.id)
-            .order('created_at', { ascending:true });
-
-        const labels = documentLabelsFr;
-        document.getElementById('dashDocuments').innerHTML = docs?.length
-            ? `<h3 style="color:#0f2b4b;">Documents transmis</h3><ul style="padding-left:1.2rem;color:#5b6f87;">${docs.map(d => `<li>${labels[d.document_type] || d.document_type} — ${d.original_name}</li>`).join('')}</ul>`
-            : '<p class="doc-note">Aucun document enregistré.</p>';
-    }
-
-    document.getElementById('loginBtn').addEventListener('click', () => openAuthModal('login'));
-    document.getElementById('registerBtn').addEventListener('click', () => openAuthModal('register'));
-    document.getElementById('dashboardBtn').addEventListener('click', () => clientDashboard.classList.toggle('show'));
-    document.getElementById('closeDashboardBtn').addEventListener('click', () => clientDashboard.classList.remove('show'));
-    document.getElementById('refreshDashboardBtn').addEventListener('click', loadClientDashboard);
-    document.getElementById('authClose').addEventListener('click', closeAuthModal);
-    authModal.addEventListener('click', e => { if (e.target === authModal) closeAuthModal(); });
-
-    document.querySelectorAll('.auth-tab').forEach(btn => {
-        btn.addEventListener('click', () => switchAuthTab(btn.dataset.authTab));
-    });
-
-    document.querySelectorAll('.password-toggle').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const input = document.getElementById(btn.dataset.target);
-            input.type = input.type === 'password' ? 'text' : 'password';
-            btn.textContent = input.type === 'password' ? '👁️' : '🙈';
-        });
-    });
-
-    document.getElementById('loginForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        clearAuthMessage();
-        const email = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPassword').value;
-        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-        if (error) return showAuthMessage(error.message, 'error');
-        closeAuthModal();
-    });
-
-    document.getElementById('registerForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        clearAuthMessage();
-
-        const fullName = document.getElementById('registerName').value.trim();
-        const email = document.getElementById('registerEmail').value.trim();
-        const phone = document.getElementById('registerPhone').value.trim();
-        const password = document.getElementById('registerPassword').value;
-        const password2 = document.getElementById('registerPassword2').value;
-
-        if (password !== password2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
-        if (password.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
-
-        const { data, error } = await supabaseClient.auth.signUp({
-            email, password,
-            options: {
-                data: { full_name: fullName, phone },
-                emailRedirectTo: window.location.origin + window.location.pathname
-            }
-        });
-
-        if (error) return showAuthMessage(error.message, 'error');
-
-        if (data.session) {
-            closeAuthModal();
-        } else {
-            showAuthMessage('Compte créé. Consultez votre e-mail pour confirmer votre adresse avant de vous connecter.', 'success');
-        }
-    });
-
-    document.getElementById('forgotPasswordBtn').addEventListener('click', () => switchAuthTab('forgot'));
-    document.getElementById('backToLoginBtn').addEventListener('click', () => switchAuthTab('login'));
-
-    document.getElementById('forgotForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        clearAuthMessage();
-        const email = document.getElementById('forgotEmail').value.trim();
-        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + window.location.pathname
-        });
-        if (error) return showAuthMessage(error.message, 'error');
-        showAuthMessage('Si un compte correspond à cette adresse, un e-mail de réinitialisation a été envoyé.', 'success');
-    });
-
-    document.getElementById('resetForm').addEventListener('submit', async e => {
-        e.preventDefault();
-        clearAuthMessage();
-        const p1 = document.getElementById('newPassword').value;
-        const p2 = document.getElementById('newPassword2').value;
-        if (p1 !== p2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
-        if (p1.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
-
-        const { error } = await supabaseClient.auth.updateUser({ password:p1 });
-        if (error) return showAuthMessage(error.message, 'error');
-        showAuthMessage('Mot de passe modifié avec succès. Vous pouvez fermer cette fenêtre.', 'success');
-    });
-
-    document.getElementById('changePasswordBtn').addEventListener('click', () => {
-        openAuthModal('reset');
-    });
-
-    document.getElementById('logoutBtn').addEventListener('click', async () => {
-        await supabaseClient.auth.signOut();
-        clientDashboard.classList.remove('show');
-    });
-
-    // Ouverture automatique de l’écran de nouveau mot de passe après le lien e-mail.
-    supabaseClient.auth.onAuthStateChange(async (event, session) => {
-        await updateAuthUI(session?.user || null);
-        if (event === 'PASSWORD_RECOVERY') openAuthModal('reset');
-    });
-
-    (async () => {
-        const { data } = await supabaseClient.auth.getSession();
-        await updateAuthUI(data.session?.user || null);
-    })();
-
-    // Mise à jour en temps réel du dossier du client connecté.
-    let realtimeChannel = null;
-    async function subscribeToOwnApplications() {
-        if (realtimeChannel) await supabaseClient.removeChannel(realtimeChannel);
-        const { data } = await supabaseClient.auth.getUser();
-        if (!data.user) return;
-
-        realtimeChannel = supabaseClient
-            .channel('financio-own-application')
-            .on('postgres_changes', {
-                event: '*',
-                schema: 'public',
-                table: 'applications',
-                filter: `user_id=eq.${data.user.id}`
-            }, () => loadClientDashboard())
-            .subscribe();
-    }
-    supabaseClient.auth.onAuthStateChange(async () => {
-        await subscribeToOwnApplications();
-    });
-    subscribeToOwnApplications();
-
-</script>
-
-</body>
-</html>
+    const documentLabels
