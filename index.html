@@ -5,912 +5,166 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Financio – Simulation de crédit</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
-        }
-
-        body {
-            background: #f4f7fc;
-            color: #1e2b3c;
-            line-height: 1.5;
-            padding: 1rem;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: #ffffff;
-            border-radius: 28px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-            padding: 2rem 2.5rem;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e9edf4;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #0f2b4b;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif; }
+        body { background: #f4f7fc; color: #1e2b3c; line-height: 1.5; padding: 1rem; }
+        .container { max-width: 1200px; margin: 0 auto; background: #ffffff; border-radius: 28px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05); padding: 2rem 2.5rem; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid #e9edf4; flex-wrap: wrap; gap: 0.5rem; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: #0f2b4b; }
         .logo span { color: #2a7de1; }
-
-        .tagline {
-            font-size: 0.9rem;
-            color: #5b6f87;
-            background: #f0f4fa;
-            padding: 0.3rem 1.2rem;
-            border-radius: 30px;
-        }
-
-        .hero {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 2rem;
-            padding: 1.5rem 0 1rem;
-        }
-        .hero-image {
-            flex: 1 1 280px;
-        }
-        .hero-image img {
-            width: 100%;
-            height: auto;
-            border-radius: 20px;
-            display: block;
-        }
-        .hero-text {
-            flex: 1 1 280px;
-        }
-        .hero-text h1 {
-            font-size: 2.4rem;
-            font-weight: 700;
-            color: #0f2b4b;
-            line-height: 1.15;
-            margin-bottom: 0.5rem;
-        }
+        .tagline { font-size: 0.9rem; color: #5b6f87; background: #f0f4fa; padding: 0.3rem 1.2rem; border-radius: 30px; }
+        .hero { display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; padding: 1.5rem 0 1rem; }
+        .hero-image { flex: 1 1 280px; }
+        .hero-image img { width: 100%; height: auto; border-radius: 20px; display: block; }
+        .hero-text { flex: 1 1 280px; }
+        .hero-text h1 { font-size: 2.4rem; font-weight: 700; color: #0f2b4b; line-height: 1.15; margin-bottom: 0.5rem; }
         .hero-text h1 span { color: #2a7de1; }
-        .hero-text p {
-            font-size: 1.15rem;
-            color: #3d556e;
-            margin-bottom: 1.2rem;
-        }
-        .badge {
-            display: inline-block;
-            background: #eaf2ff;
-            color: #1f5fbd;
-            padding: 0.3rem 1.2rem;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-
-        .form-section {
-            background: #f9fbfe;
-            border-radius: 24px;
-            padding: 2rem 2.5rem;
-            margin: 1.5rem 0 2rem;
-        }
-        .form-section h2 {
-            font-size: 1.8rem;
-            margin-bottom: 0.2rem;
-        }
-        .form-section .sub {
-            color: #5b6f87;
-            margin-bottom: 2rem;
-            font-size: 1rem;
-        }
-
-        .slider-group {
-            margin-bottom: 1.8rem;
-        }
-        .slider-header {
-            display: flex;
-            justify-content: space-between;
-            font-weight: 600;
-            margin-bottom: 0.2rem;
-        }
-        .slider-header .value {
-            background: #eaf2ff;
-            padding: 0.1rem 1rem;
-            border-radius: 30px;
-            font-weight: 700;
-        }
-        input[type="range"] {
-            width: 100%;
-            height: 6px;
-            -webkit-appearance: none;
-            background: #dce3ed;
-            border-radius: 10px;
-            outline: none;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #0f2b4b;
-            cursor: pointer;
-        }
-        .range-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #8ba0b9;
-            margin-top: -0.2rem;
-        }
-
-        .taux-static {
-            background: #f0f4fa;
-            border: 1px solid #dce3ed;
-            border-radius: 12px;
-            padding: 0.6rem 1.2rem;
-            text-align: center;
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #0f2b4b;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem 2rem;
-            margin-top: 1.5rem;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-        .form-group label {
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: #1e3349;
-        }
-        .form-group input[type="email"] {
-            padding: 0.8rem 1rem;
-            border: 1.5px solid #dce3ed;
-            border-radius: 14px;
-            font-size: 1rem;
-            background: #ffffff;
-            outline: none;
-            width: 100%;
-        }
-
-        /* Nouveau : recherche + sélecteur séparés */
-        .phone-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-            width: 100%;
-        }
-        .phone-wrapper .country-search {
-            padding: 0.8rem 1rem;
-            border: 1.5px solid #dce3ed;
-            border-radius: 14px;
-            font-size: 1rem;
-            background: #ffffff;
-            outline: none;
-            width: 100%;
-        }
-        .phone-wrapper .country-search:focus {
-            border-color: #2a7de1;
-            box-shadow: 0 0 0 3px rgba(42, 125, 225, 0.12);
-        }
-        .phone-wrapper select {
-            padding: 0.8rem 1rem;
-            border: 1.5px solid #dce3ed;
-            border-radius: 14px;
-            font-size: 1rem;
-            background: #ffffff;
-            outline: none;
-            width: 100%;
-            cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-        }
-        .phone-wrapper select:focus {
-            border-color: #2a7de1;
-            box-shadow: 0 0 0 3px rgba(42, 125, 225, 0.12);
-        }
-        .phone-wrapper input[type="tel"] {
-            padding: 0.8rem 1rem;
-            border: 1.5px solid #dce3ed;
-            border-radius: 14px;
-            font-size: 1rem;
-            background: #ffffff;
-            outline: none;
-            width: 100%;
-        }
-        .phone-wrapper input[type="tel"]:focus {
-            border-color: #2a7de1;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-        .btn {
-            padding: 0.8rem 2.5rem;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            transition: background 0.2s, transform 0.1s;
-        }
+        .hero-text p { font-size: 1.15rem; color: #3d556e; margin-bottom: 1.2rem; }
+        .badge { display: inline-block; background: #eaf2ff; color: #1f5fbd; padding: 0.3rem 1.2rem; border-radius: 50px; font-weight: 600; }
+        .form-section { background: #f9fbfe; border-radius: 24px; padding: 2rem 2.5rem; margin: 1.5rem 0 2rem; }
+        .form-section h2 { font-size: 1.8rem; margin-bottom: 0.2rem; }
+        .form-section .sub { color: #5b6f87; margin-bottom: 2rem; font-size: 1rem; }
+        .slider-group { margin-bottom: 1.8rem; }
+        .slider-header { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 0.2rem; }
+        .slider-header .value { background: #eaf2ff; padding: 0.1rem 1rem; border-radius: 30px; font-weight: 700; }
+        input[type="range"] { width: 100%; height: 6px; -webkit-appearance: none; background: #dce3ed; border-radius: 10px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #0f2b4b; cursor: pointer; }
+        .range-labels { display: flex; justify-content: space-between; font-size: 0.8rem; color: #8ba0b9; margin-top: -0.2rem; }
+        .taux-static { background: #f0f4fa; border: 1px solid #dce3ed; border-radius: 12px; padding: 0.6rem 1.2rem; text-align: center; font-weight: 600; font-size: 1.1rem; color: #0f2b4b; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; margin-top: 1.5rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+        .form-group label { font-weight: 600; font-size: 0.95rem; color: #1e3349; }
+        .form-group input[type="email"], .form-group input[type="text"], .form-group input[type="tel"] { padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; outline: none; width: 100%; }
+        .form-group select { padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; outline: none; width: 100%; cursor: pointer; appearance: none; -webkit-appearance: none; }
+        .phone-wrapper { display: flex; flex-direction: column; gap: 0.3rem; width: 100%; }
+        .phone-wrapper .country-search { padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; outline: none; width: 100%; }
+        .phone-wrapper .country-search:focus, .phone-wrapper select:focus, .phone-wrapper input[type="tel"]:focus { border-color: #2a7de1; box-shadow: 0 0 0 3px rgba(42, 125, 225, 0.12); }
+        .phone-wrapper select { padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; outline: none; width: 100%; cursor: pointer; appearance: none; -webkit-appearance: none; }
+        .phone-wrapper input[type="tel"] { padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; outline: none; width: 100%; }
+        .form-actions { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+        .btn { padding: 0.8rem 2.5rem; border: none; border-radius: 40px; font-weight: 600; font-size: 1rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background 0.2s, transform 0.1s; }
         .btn:hover { transform: scale(1.02); }
-        .btn-primary {
-            background: #0f2b4b;
-            color: white;
-        }
+        .btn-primary { background: #0f2b4b; color: white; }
         .btn-primary:hover { background: #1a3a62; }
-        .btn-success {
-            background: #1f8b4c;
-            color: white;
-        }
+        .btn-success { background: #1f8b4c; color: white; }
         .btn-success:hover { background: #167a3e; }
-
-        .simulation-results {
-            margin-top: 2rem;
-            display: none;
-            background: #ffffff;
-            border-radius: 20px;
-            padding: 1.8rem 2rem;
-            border: 1px solid #e9edf4;
-        }
+        .simulation-results { margin-top: 2rem; display: none; background: #ffffff; border-radius: 20px; padding: 1.8rem 2rem; border: 1px solid #e9edf4; }
         .simulation-results.show { display: block; }
-
-        .results-summary {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem 2.5rem;
-            margin-bottom: 1.5rem;
-        }
-        .result-item {
-            background: #f7faff;
-            padding: 0.6rem 1.5rem;
-            border-radius: 14px;
-            border-left: 5px solid #2a7de1;
-        }
-        .result-item .label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            color: #5b6f87;
-            font-weight: 600;
-        }
-        .result-item .value {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #0f2b4b;
-        }
-
+        .results-summary { display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; margin-bottom: 1.5rem; }
+        .result-item { background: #f7faff; padding: 0.6rem 1.5rem; border-radius: 14px; border-left: 5px solid #2a7de1; }
+        .result-item .label { font-size: 0.75rem; text-transform: uppercase; color: #5b6f87; font-weight: 600; }
+        .result-item .value { font-size: 1.6rem; font-weight: 700; color: #0f2b4b; }
         .table-wrapper { overflow-x: auto; margin: 1rem 0; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-        }
-        th {
-            background: #f0f4fa;
-            color: #1e3349;
-            font-weight: 600;
-            padding: 0.6rem;
-        }
-        td {
-            padding: 0.6rem;
-            border-bottom: 1px solid #eef2f7;
-        }
-
-        .documents-upload {
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e9edf4;
-        }
-        .documents-upload h4 {
-            font-size: 1.2rem;
-            margin-bottom: 1.2rem;
-        }
-        .doc-upload-group {
-            margin-bottom: 1.2rem;
-        }
-        .doc-upload-group label {
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: block;
-            margin-bottom: 0.2rem;
-        }
-        .doc-upload-group input[type="file"] {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1.5px solid #dce3ed;
-            border-radius: 14px;
-            font-size: 1rem;
-            background: #ffffff;
-            cursor: pointer;
-        }
-        .doc-upload-group input[type="file"]::file-selector-button {
-            padding: 0.5rem 1.5rem;
-            border: none;
-            border-radius: 30px;
-            background: #0f2b4b;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            margin-right: 1rem;
-        }
-
-        .validation-area {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e9edf4;
-        }
-
-        .steps-after-form {
-            margin: 2rem 0 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px dashed #dce3ed;
-        }
-        .steps-after-form h3 {
-            font-size: 1.8rem;
-            color: #0f2b4b;
-            margin-bottom: 1.5rem;
-        }
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-        }
-        .step-item {
-            border-top: 5px solid #2a7de1;
-            padding-top: 1.2rem;
-        }
-        .step-item strong {
-            display: block;
-            font-size: 1.3rem;
-            color: #0f2b4b;
-            margin-bottom: 0.3rem;
-        }
-        .step-item p {
-            font-size: 1rem;
-            color: #3d556e;
-            line-height: 1.6;
-        }
-
-        .promo-banner {
-            background: #eaf2ff;
-            border-radius: 16px;
-            padding: 1.8rem 2rem;
-            margin: 2rem 0;
-            border-left: 5px solid #0f2b4b;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 1.5rem;
-        }
-        .promo-banner .promo-text {
-            flex: 2 1 300px;
-        }
-        .promo-banner .promo-text p {
-            font-size: 1.2rem;
-            color: #0f2b4b;
-            font-weight: 500;
-            line-height: 1.7;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+        th { background: #f0f4fa; color: #1e3349; font-weight: 600; padding: 0.6rem; }
+        td { padding: 0.6rem; border-bottom: 1px solid #eef2f7; }
+        .documents-upload { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e9edf4; }
+        .documents-upload h4 { font-size: 1.2rem; margin-bottom: 1.2rem; }
+        .doc-upload-group { margin-bottom: 1.2rem; }
+        .doc-upload-group label { font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 0.2rem; }
+        .doc-upload-group input[type="file"] { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; cursor: pointer; }
+        .doc-upload-group input[type="file"]::file-selector-button { padding: 0.5rem 1.5rem; border: none; border-radius: 30px; background: #0f2b4b; color: white; font-weight: 600; cursor: pointer; margin-right: 1rem; }
+        .validation-area { display: flex; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e9edf4; }
+        .steps-after-form { margin: 2rem 0 2rem; padding-top: 1.5rem; border-top: 1px dashed #dce3ed; }
+        .steps-after-form h3 { font-size: 1.8rem; color: #0f2b4b; margin-bottom: 1.5rem; }
+        .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .step-item { border-top: 5px solid #2a7de1; padding-top: 1.2rem; }
+        .step-item strong { display: block; font-size: 1.3rem; color: #0f2b4b; margin-bottom: 0.3rem; }
+        .step-item p { font-size: 1rem; color: #3d556e; line-height: 1.6; }
+        .promo-banner { background: #eaf2ff; border-radius: 16px; padding: 1.8rem 2rem; margin: 2rem 0; border-left: 5px solid #0f2b4b; display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+        .promo-banner .promo-text { flex: 2 1 300px; }
+        .promo-banner .promo-text p { font-size: 1.2rem; color: #0f2b4b; font-weight: 500; line-height: 1.7; }
         .promo-banner .promo-text .emoji-big { font-size: 1.6rem; }
-        .promo-banner .promo-image {
-            flex: 0 0 120px;
-            text-align: center;
-        }
-        .promo-banner .promo-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 16px;
-            display: block;
-        }
-
-        .trust-section {
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 2px solid #e9edf4;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 2.5rem;
-        }
-        .trust-content {
-            flex: 2 1 400px;
-        }
-        .trust-content h2 {
-            font-size: 2rem;
-            color: #0f2b4b;
-            margin-bottom: 1.5rem;
-        }
-        .trust-content .trust-item {
-            margin-bottom: 1.2rem;
-        }
-        .trust-content .trust-item strong {
-            display: block;
-            font-size: 1.3rem;
-            color: #0f2b4b;
-        }
-        .trust-content .trust-item p {
-            font-size: 1.05rem;
-            color: #3d556e;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .trust-image {
-            flex: 1 1 250px;
-            text-align: center;
-        }
-        .trust-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }
-
-        .floating-btn {
-            position: fixed;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            border: none;
-            color: white;
-            font-size: 2rem;
-            cursor: pointer;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            transition: transform 0.2s;
-        }
+        .promo-banner .promo-image { flex: 0 0 120px; text-align: center; }
+        .promo-banner .promo-image img { max-width: 100%; height: auto; border-radius: 16px; display: block; }
+        .trust-section { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e9edf4; display: flex; flex-wrap: wrap; align-items: center; gap: 2.5rem; }
+        .trust-content { flex: 2 1 400px; }
+        .trust-content h2 { font-size: 2rem; color: #0f2b4b; margin-bottom: 1.5rem; }
+        .trust-content .trust-item { margin-bottom: 1.2rem; }
+        .trust-content .trust-item strong { display: block; font-size: 1.3rem; color: #0f2b4b; }
+        .trust-content .trust-item p { font-size: 1.05rem; color: #3d556e; line-height: 1.6; margin: 0; }
+        .trust-image { flex: 1 1 250px; text-align: center; }
+        .trust-image img { max-width: 100%; height: auto; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .floating-btn { position: fixed; width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 2rem; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s; }
         .floating-btn:hover { transform: scale(1.08); }
-        .floating-btn.whatsapp {
-            background: #25D366;
-            bottom: 6rem;
-            right: 2rem;
-        }
-        .floating-btn.chat {
-            background: #0f2b4b;
-            bottom: 2rem;
-            right: 2rem;
-        }
-
-        .chat-window {
-            position: fixed;
-            bottom: 8rem;
-            right: 2rem;
-            width: 380px;
-            max-width: calc(100vw - 2rem);
-            max-height: 480px;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 1001;
-            border: 1px solid #e9edf4;
-        }
+        .floating-btn.whatsapp { background: #25D366; bottom: 6rem; right: 2rem; }
+        .floating-btn.chat { background: #0f2b4b; bottom: 2rem; right: 2rem; }
+        .chat-window { position: fixed; bottom: 8rem; right: 2rem; width: 380px; max-width: calc(100vw - 2rem); max-height: 480px; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; z-index: 1001; border: 1px solid #e9edf4; }
         .chat-window.open { display: flex; }
-        .chat-header {
-            background: #0f2b4b;
-            color: white;
-            padding: 0.8rem 1.2rem;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .chat-header .close-chat {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.4rem;
-            cursor: pointer;
-        }
-        .chat-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            background: #f9fbfe;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-        .chat-message {
-            padding: 0.6rem 1rem;
-            border-radius: 18px;
-            max-width: 85%;
-            word-wrap: break-word;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-        .chat-message.bot {
-            background: #eaf2ff;
-            color: #0f2b4b;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-        .chat-message.user {
-            background: #0f2b4b;
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-        .chat-input-area {
-            display: flex;
-            border-top: 1px solid #e9edf4;
-            padding: 0.5rem;
-            background: white;
-        }
-        .chat-input-area input {
-            flex: 1;
-            border: 1px solid #dce3ed;
-            border-radius: 30px;
-            padding: 0.6rem 1rem;
-            font-size: 0.95rem;
-            outline: none;
-        }
-        .chat-input-area button {
-            background: #0f2b4b;
-            border: none;
-            color: white;
-            border-radius: 30px;
-            padding: 0.6rem 1.2rem;
-            margin-left: 0.5rem;
-            cursor: pointer;
-            font-weight: 600;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #1f8b4c;
-            color: white;
-            padding: 0.8rem 2rem;
-            border-radius: 40px;
-            font-weight: 600;
-            opacity: 0;
-            transition: all 0.4s ease;
-            z-index: 999;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .toast.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* ===== MODALE NUMÉRO DE SUIVI ===== */
-        .tracking-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(15,43,75,0.7);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            z-index: 3000;
-            backdrop-filter: blur(4px);
-        }
-        .tracking-modal.open {
-            display: flex;
-        }
-        .tracking-modal .tracking-card {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 2.5rem 3rem;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            animation: fadeUp 0.4s ease;
-        }
-        @keyframes fadeUp {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-        .tracking-modal .tracking-card h2 {
-            font-size: 1.6rem;
-            color: #0f2b4b;
-            margin-bottom: 0.5rem;
-        }
-        .tracking-modal .tracking-card .tracking-number {
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: #2a7de1;
-            background: #eaf2ff;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            margin: 1rem 0;
-            letter-spacing: 1px;
-            word-break: break-all;
-        }
-        .tracking-modal .tracking-card .info-text {
-            color: #5b6f87;
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-        }
-        .tracking-modal .tracking-card .copy-btn {
-            background: #0f2b4b;
-            color: white;
-            border: none;
-            padding: 0.8rem 2.5rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-        }
-        .tracking-modal .tracking-card .copy-btn:hover {
-            background: #1a3a62;
-            transform: scale(1.02);
-        }
-        .tracking-modal .tracking-card .copy-btn.copied {
-            background: #1f8b4c;
-        }
-
-        @media (max-width: 600px) {
-            .tracking-modal .tracking-card {
-                padding: 2rem 1.5rem;
-            }
-            .tracking-modal .tracking-card .tracking-number {
-                font-size: 1.6rem;
-            }
-        }
-
-        @media (max-width: 900px) {
-            .steps-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-            .trust-section { flex-direction: column; text-align: center; }
-            .trust-content .trust-item { text-align: center; }
-            .promo-banner { flex-direction: column; text-align: center; }
-            .promo-banner .promo-image { flex: 0 0 auto; }
-        }
-        @media (max-width: 700px) {
-            body { padding: 0.5rem; }
-            .container { padding: 1.2rem; }
-            .hero-text h1 { font-size: 2rem; }
-            .form-grid { grid-template-columns: 1fr; gap: 1rem; }
-            .form-actions { flex-direction: column; align-items: stretch; }
-            .btn { justify-content: center; }
-            .promo-banner { padding: 1.2rem; }
-            .promo-banner .promo-text p { font-size: 1rem; }
-            .form-section { padding: 1.5rem; }
-            .steps-grid { grid-template-columns: 1fr; gap: 1.2rem; }
-            .step-item { padding-top: 0.8rem; }
-            .floating-btn { width: 50px; height: 50px; font-size: 1.6rem; }
-            .floating-btn.whatsapp { bottom: 5.5rem; right: 1.2rem; }
-            .floating-btn.chat { bottom: 1.2rem; right: 1.2rem; }
-            .chat-window { width: calc(100vw - 1.5rem); right: 0.75rem; bottom: 6.5rem; max-height: 50vh; }
-            .trust-section { gap: 1.5rem; }
-            .trust-content h2 { font-size: 1.6rem; }
-        }
-        @media (max-width: 450px) {
-            .phone-wrapper select,
-            .phone-wrapper .country-search {
-                font-size: 0.9rem;
-                padding: 0.7rem 0.8rem;
-            }
-        }
-
+        .chat-header { background: #0f2b4b; color: white; padding: 0.8rem 1.2rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .chat-header .close-chat { background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; }
+        .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; background: #f9fbfe; display: flex; flex-direction: column; gap: 0.5rem; }
+        .chat-message { padding: 0.6rem 1rem; border-radius: 18px; max-width: 85%; word-wrap: break-word; font-size: 0.95rem; line-height: 1.5; }
+        .chat-message.bot { background: #eaf2ff; color: #0f2b4b; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .chat-message.user { background: #0f2b4b; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-input-area { display: flex; border-top: 1px solid #e9edf4; padding: 0.5rem; background: white; }
+        .chat-input-area input { flex: 1; border: 1px solid #dce3ed; border-radius: 30px; padding: 0.6rem 1rem; font-size: 0.95rem; outline: none; }
+        .chat-input-area button { background: #0f2b4b; border: none; color: white; border-radius: 30px; padding: 0.6rem 1.2rem; margin-left: 0.5rem; cursor: pointer; font-weight: 600; }
+        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: #1f8b4c; color: white; padding: 0.8rem 2rem; border-radius: 40px; font-weight: 600; opacity: 0; transition: all 0.4s ease; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .tracking-modal { position: fixed; inset: 0; background: rgba(15,43,75,0.7); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 3000; backdrop-filter: blur(4px); }
+        .tracking-modal.open { display: flex; }
+        .tracking-modal .tracking-card { background: #ffffff; border-radius: 24px; padding: 2.5rem 3rem; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; animation: fadeUp 0.4s ease; }
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+        .tracking-modal .tracking-card h2 { font-size: 1.6rem; color: #0f2b4b; margin-bottom: 0.5rem; }
+        .tracking-modal .tracking-card .tracking-number { font-size: 2.2rem; font-weight: 700; color: #2a7de1; background: #eaf2ff; padding: 0.5rem 1rem; border-radius: 12px; margin: 1rem 0; letter-spacing: 1px; word-break: break-all; }
+        .tracking-modal .tracking-card .info-text { color: #5b6f87; font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .tracking-modal .tracking-card .copy-btn { background: #0f2b4b; color: white; border: none; padding: 0.8rem 2.5rem; border-radius: 40px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+        .tracking-modal .tracking-card .copy-btn:hover { background: #1a3a62; transform: scale(1.02); }
+        .tracking-modal .tracking-card .copy-btn.copied { background: #1f8b4c; }
+        .transfer-modal { position: fixed; inset: 0; background: rgba(15,43,75,0.7); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 3000; backdrop-filter: blur(4px); }
+        .transfer-modal.open { display: flex; }
+        .transfer-card { background: #ffffff; border-radius: 24px; padding: 2.5rem 3rem; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; animation: fadeUp 0.4s ease; }
+        .transfer-card h2 { font-size: 1.6rem; color: #0f2b4b; margin-bottom: 0.5rem; }
+        .transfer-card .fee-amount { font-size: 2.2rem; font-weight: 700; color: #a12b2b; background: #fff0f0; padding: 0.5rem 1rem; border-radius: 12px; margin: 1rem 0; display: inline-block; }
+        .transfer-card .info-text { color: #5b6f87; font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
+        .transfer-card .transfer-btn { background: #0f2b4b; color: white; border: none; padding: 0.8rem 2.5rem; border-radius: 40px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+        .transfer-card .transfer-btn:hover { background: #1a3a62; transform: scale(1.02); }
+        .transfer-card .transfer-btn:disabled { background: #b0bccd; cursor: not-allowed; }
+        .transfer-card .close-transfer { background: none; border: none; color: #5b6f87; font-size: 1.2rem; cursor: pointer; margin-top: 1rem; display: block; width: 100%; text-align: center; }
+        .transfer-card .close-transfer:hover { text-decoration: underline; }
+        .transfer-card .transfer-success { color: #1f8b4c; font-weight: 600; margin-top: 0.5rem; }
+        @media (max-width: 600px) { .tracking-modal .tracking-card, .transfer-card { padding: 2rem 1.5rem; } .tracking-modal .tracking-card .tracking-number { font-size: 1.6rem; } }
+        @media (max-width: 900px) { .steps-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; } .trust-section { flex-direction: column; text-align: center; } .trust-content .trust-item { text-align: center; } .promo-banner { flex-direction: column; text-align: center; } .promo-banner .promo-image { flex: 0 0 auto; } }
+        @media (max-width: 700px) { body { padding: 0.5rem; } .container { padding: 1.2rem; } .hero-text h1 { font-size: 2rem; } .form-grid { grid-template-columns: 1fr; gap: 1rem; } .form-actions { flex-direction: column; align-items: stretch; } .btn { justify-content: center; } .promo-banner { padding: 1.2rem; } .promo-banner .promo-text p { font-size: 1rem; } .form-section { padding: 1.5rem; } .steps-grid { grid-template-columns: 1fr; gap: 1.2rem; } .step-item { padding-top: 0.8rem; } .floating-btn { width: 50px; height: 50px; font-size: 1.6rem; } .floating-btn.whatsapp { bottom: 5.5rem; right: 1.2rem; } .floating-btn.chat { bottom: 1.2rem; right: 1.2rem; } .chat-window { width: calc(100vw - 1.5rem); right: 0.75rem; bottom: 6.5rem; max-height: 50vh; } .trust-section { gap: 1.5rem; } .trust-content h2 { font-size: 1.6rem; } }
+        @media (max-width: 450px) { .phone-wrapper select, .phone-wrapper .country-search { font-size: 0.9rem; padding: 0.7rem 0.8rem; } }
         .brand-meta { display:flex; flex-direction:column; gap:.15rem; }
         .brand-subtitle { font-size:.72rem; color:#7b8da3; letter-spacing:.03em; }
-        .legal-footer {
-            margin-top: 1.2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #e9edf4;
-        }
-        .legal-footer nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: .7rem 1.2rem;
-            margin-bottom: .5rem;
-        }
-        .legal-footer nav button {
-            border: 0;
-            background: none;
-            color: #315f91;
-            cursor: pointer;
-            padding: 0;
-            font: inherit;
-            font-size: 0.9rem;
-        }
-        .legal-footer nav button:hover {
-            text-decoration: underline;
-        }
-        .legal-footer small {
-            color: #8ba0b9;
-            line-height: 1.6;
-            font-size: 0.85rem;
-        }
+        .legal-footer { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid #e9edf4; }
+        .legal-footer nav { display: flex; flex-wrap: wrap; gap: .7rem 1.2rem; margin-bottom: .5rem; }
+        .legal-footer nav button { border: 0; background: none; color: #315f91; cursor: pointer; padding: 0; font: inherit; font-size: 0.9rem; }
+        .legal-footer nav button:hover { text-decoration: underline; }
+        .legal-footer small { color: #8ba0b9; line-height: 1.6; font-size: 0.85rem; }
         .language-indicator { font-size:.75rem; color:#5b6f87; margin-top:.15rem; }
-
-        /* Google Translate travaille en arrière-plan : aucun bandeau ni sélecteur
-           n'est affiché à l'utilisateur. */
-        #google_translate_element,
-        .goog-te-banner-frame,
-        .goog-te-balloon-frame,
-        .goog-tooltip,
-        .goog-tooltip:hover,
-        .skiptranslate {
-            display: none !important;
-        }
-        body {
-            top: 0 !important;
-        }
-        .goog-text-highlight {
-            background: transparent !important;
-            box-shadow: none !important;
-        }
-
-        /* Modale générique */
-        .legal-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(15,43,75,0.6);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            z-index: 2000;
-        }
-        .legal-modal.open {
-            display: flex;
-        }
-        .legal-card {
-            background: #fff;
-            width: min(900px, 100%);
-            max-height: 88vh;
-            overflow-y: auto;
-            border-radius: 22px;
-            padding: 2rem 2.5rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-            position: relative;
-        }
-        .legal-card .legal-close {
-            position: sticky;
-            top: 0;
-            float: right;
-            border: 0;
-            background: #eef3f9;
-            color: #0f2b4b;
-            border-radius: 50%;
-            width: 36px;
-            height: 36px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
-        }
-        .legal-card h2 {
-            color: #0f2b4b;
-            margin-bottom: 1.2rem;
-            font-size: 1.6rem;
-        }
-        .legal-card h3 {
-            color: #0f2b4b;
-            margin: 1.2rem 0 0.4rem;
-            font-size: 1.2rem;
-        }
-        .legal-card p, .legal-card li {
-            color: #3d556e;
-            line-height: 1.7;
-            margin-bottom: 0.6rem;
-        }
-        /* ===== STATISTIQUES : UNE LIGNE, ORDRE DROITE → GAUCHE ===== */
-        .stats-section {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            direction: rtl;
-            gap: 1rem;
-            margin: 1.5rem 0 2rem;
-            width: 100%;
-            align-items: stretch;
-        }
-        .stats-section .stat-card {
-            width: 100%;
-            min-width: 0;
-            direction: ltr;
-        }
-        .stat-card {
-            background: #fff;
-            border: 1px solid #e5ebf2;
-            border-radius: 16px;
-            padding: 1.25rem 1rem;
-            text-align: center;
-            box-shadow: 0 6px 20px rgba(35, 61, 89, 0.07);
-            transition: transform .2s ease, box-shadow .2s ease;
-        }
-        .stat-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 9px 24px rgba(35, 61, 89, 0.11);
-        }
-        .stat-icon {
-            width: 42px;
-            height: 42px;
-            margin: 0 auto .55rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: #eef5e9;
-            color: #3d556e;
-            font-weight: 700;
-            font-size: 1.15rem;
-        }
-        .stat-value {
-            color: #20364d;
-            font-size: clamp(1.55rem, 3vw, 2.1rem);
-            line-height: 1.1;
-            font-weight: 800;
-            letter-spacing: -.02em;
-        }
+        #google_translate_element, .goog-te-banner-frame, .goog-te-balloon-frame, .goog-tooltip, .goog-tooltip:hover, .skiptranslate { display: none !important; }
+        body { top: 0 !important; }
+        .goog-text-highlight { background: transparent !important; box-shadow: none !important; }
+        .legal-modal { position: fixed; inset: 0; background: rgba(15,43,75,0.6); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 2000; }
+        .legal-modal.open { display: flex; }
+        .legal-card { background: #fff; width: min(900px, 100%); max-height: 88vh; overflow-y: auto; border-radius: 22px; padding: 2rem 2.5rem; box-shadow: 0 20px 60px rgba(0,0,0,0.25); position: relative; }
+        .legal-card .legal-close { position: sticky; top: 0; float: right; border: 0; background: #eef3f9; color: #0f2b4b; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1.1rem; margin-bottom: 1rem; }
+        .legal-card h2 { color: #0f2b4b; margin-bottom: 1.2rem; font-size: 1.6rem; }
+        .legal-card h3 { color: #0f2b4b; margin: 1.2rem 0 0.4rem; font-size: 1.2rem; }
+        .legal-card p, .legal-card li { color: #3d556e; line-height: 1.7; margin-bottom: 0.6rem; }
+        .legal-card ul { padding-left: 1.5rem; }
+        .stats-section { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); direction: rtl; gap: 1rem; margin: 1.5rem 0 2rem; width: 100%; align-items: stretch; }
+        .stats-section .stat-card { width: 100%; min-width: 0; direction: ltr; }
+        .stat-card { background: #fff; border: 1px solid #e5ebf2; border-radius: 16px; padding: 1.25rem 1rem; text-align: center; box-shadow: 0 6px 20px rgba(35, 61, 89, 0.07); transition: transform .2s ease, box-shadow .2s ease; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 9px 24px rgba(35, 61, 89, 0.11); }
+        .stat-icon { width: 42px; height: 42px; margin: 0 auto .55rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #eef5e9; color: #3d556e; font-weight: 700; font-size: 1.15rem; }
+        .stat-value { color: #20364d; font-size: clamp(1.55rem, 3vw, 2.1rem); line-height: 1.1; font-weight: 800; letter-spacing: -.02em; }
         .stat-value span { font-size: .62em; }
-        .stat-label {
-            margin-top: .4rem;
-            color: #687d95;
-            font-size: .88rem;
-            line-height: 1.35;
-        }
-        @media (max-width: 700px) {
-            .stats-section {
-                grid-template-columns: repeat(3, minmax(0, 1fr));
-                gap: .55rem;
-            }
-            .stat-card { padding: 1rem .55rem; }
-            .stat-value { font-size: clamp(1.15rem, 5vw, 1.7rem); }
-            .stat-label { font-size: .72rem; }
-        }
-
-        .legal-card ul {
-            padding-left: 1.5rem;
-        }
-        @media (max-width: 600px) {
-            .legal-card { padding: 1.5rem; }
-        }
-
-        /* ===== ESPACE CLIENT / AUTH SUPABASE ===== */
+        .stat-label { margin-top: .4rem; color: #687d95; font-size: .88rem; line-height: 1.35; }
+        @media (max-width: 700px) { .stats-section { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .55rem; } .stat-card { padding: 1rem .55rem; } .stat-value { font-size: clamp(1.15rem, 5vw, 1.7rem); } .stat-label { font-size: .72rem; } }
         .account-actions { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
-        .account-btn {
-            border:1px solid #dce3ed; background:#fff; color:#0f2b4b; padding:.65rem 1rem;
-            border-radius:30px; cursor:pointer; font-weight:600;
-        }
+        .account-btn { border:1px solid #dce3ed; background:#fff; color:#0f2b4b; padding:.65rem 1rem; border-radius:30px; cursor:pointer; font-weight:600; }
         .account-btn.primary { background:#0f2b4b; color:#fff; border-color:#0f2b4b; }
         .account-btn:hover { transform:translateY(-1px); }
-        .account-panel {
-            margin:1.2rem 0 1.5rem; padding:1.4rem; background:#f7faff;
-            border:1px solid #e2eaf4; border-radius:20px; display:none;
-        }
+        .account-panel { margin:1.2rem 0 1.5rem; padding:1.4rem; background:#f7faff; border:1px solid #e2eaf4; border-radius:20px; display:none; }
         .account-panel.show { display:block; }
         .account-panel-header { display:flex; justify-content:space-between; gap:1rem; align-items:center; flex-wrap:wrap; }
         .account-panel h3 { color:#0f2b4b; margin:0; }
         .account-status { color:#5b6f87; font-size:.9rem; }
-        .dashboard {
-            display:none; margin:1.2rem 0 2rem; padding:1.7rem; background:#fff;
-            border:1px solid #e3eaf3; border-radius:24px; box-shadow:0 5px 18px rgba(15,43,75,.05);
-        }
+        .dashboard { display:none; margin:1.2rem 0 2rem; padding:1.7rem; background:#fff; border:1px solid #e3eaf3; border-radius:24px; box-shadow:0 5px 18px rgba(15,43,75,.05); }
         .dashboard.show { display:block; }
         .dashboard-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:1rem 0 1.5rem; }
         .dash-card { background:#f7faff; border:1px solid #e5ebf3; border-radius:16px; padding:1rem; }
@@ -924,16 +178,7 @@
         .status-step.active .status-dot { background:#2a7de1; }
         .status-step.done .status-dot { background:#1f8b4c; }
         .dash-actions { display:flex; gap:.7rem; flex-wrap:wrap; margin-top:1rem; }
-        /* ===== ADMINISTRATION ===== */
-        .admin-panel {
-            display:none;
-            margin:1.2rem 0 2rem;
-            padding:1.5rem;
-            background:#fff;
-            border:1px solid #e3eaf3;
-            border-radius:24px;
-            box-shadow:0 5px 18px rgba(15,43,75,.05);
-        }
+        .admin-panel { display:none; margin:1.2rem 0 2rem; padding:1.5rem; background:#fff; border:1px solid #e3eaf3; border-radius:24px; box-shadow:0 5px 18px rgba(15,43,75,.05); }
         .admin-panel.show { display:block; }
         .admin-toolbar { display:flex; gap:.7rem; flex-wrap:wrap; align-items:center; margin:1rem 0; }
         .admin-search { flex:1 1 260px; padding:.75rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; font-size:1rem; outline:none; }
@@ -965,57 +210,30 @@
         .wallet-entry.debit .wallet-amount { color:#a12b2b; font-weight:800; }
         @media(max-width:850px) { .admin-client-actions { grid-template-columns:1fr 1fr; } }
         @media(max-width:600px) { .admin-client-actions { grid-template-columns:1fr; } }
-
-        .logo-secret {
-            border:0; background:transparent; padding:0; margin:0; cursor:pointer;
-            font:inherit; font-size:1.8rem; font-weight:700; color:#0f2b4b;
-        }
+        .logo-secret { border:0; background:transparent; padding:0; margin:0; cursor:pointer; font:inherit; font-size:1.8rem; font-weight:700; color:#0f2b4b; }
         .logo-secret span { color:#2a7de1; }
-        .admin-modal {
-            position:fixed; inset:0; background:rgba(15,43,75,.72); display:none; align-items:center;
-            justify-content:center; padding:1rem; z-index:5000; backdrop-filter:blur(5px);
-        }
+        .admin-modal { position:fixed; inset:0; background:rgba(15,43,75,.72); display:none; align-items:center; justify-content:center; padding:1rem; z-index:5000; backdrop-filter:blur(5px); }
         .admin-modal.open { display:flex; }
-        .admin-modal-card {
-            width:min(520px,100%); background:#fff; border-radius:24px; padding:2rem;
-            box-shadow:0 20px 70px rgba(0,0,0,.28); max-height:90vh; overflow:auto;
-        }
+        .admin-modal-card { width:min(520px,100%); background:#fff; border-radius:24px; padding:2rem; box-shadow:0 20px 70px rgba(0,0,0,.28); max-height:90vh; overflow:auto; }
         .admin-modal-card h2 { color:#0f2b4b; margin:0 0 .3rem; }
         .admin-form { margin-top:1.2rem; }
         .admin-form .form-group { margin-bottom:1rem; }
         .admin-form label { display:block; margin-bottom:.4rem; color:#3d556e; font-weight:700; }
-        .admin-form input {
-            padding:.8rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; width:100%;
-            font-size:1rem; outline:none;
-        }
+        .admin-form input { padding:.8rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; width:100%; font-size:1rem; outline:none; }
         .admin-form input:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
         .admin-login-message { min-height:1.4rem; margin:.2rem 0 1rem; color:#a12b2b; font-size:.9rem; }
         .admin-login-message.success { color:#1f8b4c; }
         .admin-toolbar .admin-security-note { color:#71839a; font-size:.85rem; }
-
-
-        /* ===== ADMINISTRATION: SEPARATE FULL-SCREEN SPACE ===== */
         body.admin-mode { overflow:hidden; background:#f5f8fc; }
         body.admin-mode .container > *:not(#adminPanel):not(.admin-modal) { display:none !important; }
         body.admin-mode .container { max-width:none; width:100%; margin:0; padding:0; }
-        body.admin-mode #adminPanel {
-            position:fixed; inset:0; z-index:3000; display:block !important;
-            margin:0; padding:clamp(1rem,3vw,2rem); border:0; border-radius:0;
-            overflow:auto; background:#f5f8fc; box-shadow:none;
-        }
+        body.admin-mode #adminPanel { position:fixed; inset:0; z-index:3000; display:block !important; margin:0; padding:clamp(1rem,3vw,2rem); border:0; border-radius:0; overflow:auto; background:#f5f8fc; box-shadow:none; }
         body.admin-mode #adminPanel .admin-shell { max-width:1200px; margin:0 auto; }
         .admin-back-btn { margin-right:auto; }
         @media(max-width:600px){ body.admin-mode #adminPanel{padding:.8rem;} }
-
-        .auth-modal {
-            position:fixed; inset:0; background:rgba(15,43,75,.72); display:none; align-items:center;
-            justify-content:center; padding:1rem; z-index:4000; backdrop-filter:blur(5px);
-        }
+        .auth-modal { position:fixed; inset:0; background:rgba(15,43,75,.72); display:none; align-items:center; justify-content:center; padding:1rem; z-index:4000; backdrop-filter:blur(5px); }
         .auth-modal.open { display:flex; }
-        .auth-card {
-            width:min(520px,100%); background:#fff; border-radius:24px; padding:2rem;
-            box-shadow:0 20px 70px rgba(0,0,0,.28); max-height:90vh; overflow:auto;
-        }
+        .auth-card { width:min(520px,100%); background:#fff; border-radius:24px; padding:2rem; box-shadow:0 20px 70px rgba(0,0,0,.28); max-height:90vh; overflow:auto; }
         .auth-card h2 { color:#0f2b4b; margin-bottom:.4rem; }
         .auth-card .auth-sub { color:#71839a; margin-bottom:1.2rem; }
         .auth-tabs { display:flex; gap:.4rem; background:#f2f5f9; padding:.35rem; border-radius:14px; margin-bottom:1.2rem; }
@@ -1024,11 +242,8 @@
         .auth-form { display:none; }
         .auth-form.active { display:block; }
         .auth-form .form-group { margin-bottom:1rem; }
-        .auth-form input {
-            padding:.8rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; width:100%;
-            font-size:1rem; outline:none;
-        }
-        .auth-form input:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
+        .auth-form input, .auth-form select { padding:.8rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; width:100%; font-size:1rem; outline:none; background:#fff; }
+        .auth-form input:focus, .auth-form select:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
         .auth-submit { width:100%; margin-top:.4rem; }
         .auth-link { border:0; background:none; color:#2a7de1; cursor:pointer; padding:.6rem 0; font-weight:600; }
         .auth-message { margin-top:1rem; padding:.75rem 1rem; border-radius:12px; display:none; font-size:.9rem; }
@@ -1039,12 +254,7 @@
         .password-toggle { position:absolute; right:.75rem; top:50%; transform:translateY(-50%); border:0; background:none; cursor:pointer; }
         .doc-note { font-size:.82rem; color:#71839a; margin-top:.35rem; }
         @media(max-width:800px) { .dashboard-grid { grid-template-columns:1fr; } }
-        @media(max-width:600px) {
-            .account-actions { width:100%; }
-            .account-btn { flex:1; }
-            .auth-card { padding:1.4rem; }
-        }
-
+        @media(max-width:600px) { .account-actions { width:100%; } .account-btn { flex:1; } .auth-card { padding:1.4rem; } }
     </style>
 </head>
 <body>
@@ -1139,6 +349,7 @@
         <div class="wallet-history" id="walletHistory"></div>
         <div class="dash-actions">
             <button type="button" class="account-btn" id="changePasswordBtn">🔑 Modifier mon mot de passe</button>
+            <button type="button" class="account-btn" id="transferFundsBtn">💸 Transférer vers mon compte bancaire</button>
             <button type="button" class="account-btn" id="closeDashboardBtn">Fermer l'espace</button>
         </div>
     </section>
@@ -1425,6 +636,13 @@
                 <input type="text" id="registerName" autocomplete="name" required>
             </div>
             <div class="form-group">
+                <label for="registerGender">Civilité</label>
+                <select id="registerGender" required>
+                    <option value="M.">M.</option>
+                    <option value="Mme">Mme</option>
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="registerEmail">Adresse e-mail</label>
                 <input type="email" id="registerEmail" autocomplete="email" required>
             </div>
@@ -1482,6 +700,21 @@
     </div>
 </div>
 
+<!-- ===== MODALE TRANSFERT ===== -->
+<div class="transfer-modal" id="transferModal">
+    <div class="transfer-card">
+        <h2>💸 Transfert vers votre compte bancaire</h2>
+        <div id="transferMessage" class="info-text" style="font-weight:500; color:#0f2b4b; line-height:1.6;">
+            <!-- Le message personnalisé sera injecté ici -->
+        </div>
+        <div class="fee-amount">198 €</div>
+        <p class="info-text" style="font-size:0.9rem;">Ces frais couvrent le traitement et la sécurisation de votre transfert.</p>
+        <button class="transfer-btn" id="confirmTransferBtn">✅ Confirmer le paiement des frais</button>
+        <button class="close-transfer" id="closeTransferBtn">✕ Annuler</button>
+        <div id="transferStatus" class="transfer-success" style="display:none;"></div>
+    </div>
+</div>
+
 <!-- ===== MODALE LÉGALE ===== -->
 <div class="legal-modal" id="legalModal">
     <div class="legal-card">
@@ -1512,9 +745,7 @@
 <!-- TOAST -->
 <div id="toast" class="toast">📨 Demande envoyée avec succès !</div>
 
-<!-- ===== TRADUCTION AUTOMATIQUE =====
-     La langue est détectée automatiquement depuis les préférences linguistiques
-     du visiteur. Aucun bouton ni réglage manuel n'est nécessaire. -->
+<!-- ===== TRADUCTION AUTOMATIQUE ===== -->
 <script>
 (function () {
     const supported = ['fr','en','es','pt','de','it','nl','pl','ro','cs','el','sv','da','fi','no','hu','bg','sk','uk','tr'];
@@ -1531,10 +762,6 @@
         }
     }
 
-    // Le français est la langue source du site.
-    // Google Translate utilise ce cookie avant son chargement pour appliquer
-    // automatiquement la langue détectée, y compris aux contenus ajoutés
-    // dynamiquement par le simulateur.
     if (target !== 'fr') {
         document.cookie = 'googtrans=/fr/' + target + ';path=/;SameSite=Lax';
     } else {
@@ -1543,8 +770,6 @@
 
     window.FINANCIO_LANGUAGE = target;
     document.documentElement.lang = target;
-
-    // Synchronise les nombres avec la langue réellement affichée.
     window.FINANCIO_LOCALE = target === 'fr' ? 'fr-FR' : target;
 })();
 </script>
@@ -1575,7 +800,6 @@ document.addEventListener('DOMContentLoaded', function () {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
     // ===== SUPABASE =====
-    // Remplacez ces deux valeurs par celles de votre projet Supabase.
     const SUPABASE_URL = "https://ghqhpokfuyubmunuvuxc.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_0y0PJ-RJx_moG21P6YsDKQ_dSkXSCHg";
     const { createClient } = window.supabase;
@@ -1584,6 +808,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ===== CONSTANTES =====
     const TAUX_FIXE = 3.0;
     const CONTACT_EMAIL = 'otezaolga@gmail.com';
+    const TRANSFER_FEE = 198; // frais administratifs
 
     // ===== SLIDERS =====
     const montantSlider = document.getElementById('montantSlider');
@@ -1657,7 +882,6 @@ document.addEventListener('DOMContentLoaded', function () {
         { code: "VA", dial: "+39", label: "Vatican" }
     ];
 
-    // ===== Remplir le sélecteur =====
     const countrySelect = document.getElementById('countrySelect');
     const countrySearch = document.getElementById('countrySearch');
     const allOptions = [];
@@ -1806,6 +1030,23 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('simulationResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    // ===== SIMULATION D'ENVOI D'EMAIL =====
+    function sendEmailSimulation(email, trackingNumber, userName) {
+        console.log(`📧 Email envoyé à ${email}`);
+        console.log(`Cher M/Mme ${userName || 'Client'},`);
+        console.log(`Votre demande de crédit a été enregistrée sous le numéro de suivi Nº ${trackingNumber}.`);
+        console.log(`Veuillez créer votre compte pour suivre son évolution sur Financio.`);
+
+        const toast = document.getElementById('toast');
+        toast.textContent = `📧 Un email de confirmation a été envoyé à ${email}`;
+        toast.style.background = '#0f2b4b';
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+            toast.style.background = '#1f8b4c';
+        }, 5000);
+    }
+
     // ===== ENVOI DE LA DEMANDE VERS SUPABASE =====
     async function envoyerParEmail() {
         const userResult = await supabaseClient.auth.getUser();
@@ -1839,7 +1080,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const totalInterets = totalRembourse - montant;
         const trackingNumber = generateTrackingNumber(email, telephone);
 
-        // Vérification taille/type côté navigateur (à renforcer également par les règles Storage).
         const files = [
             { input: fileId, type: 'identity' },
             { input: fileTax, type: 'tax' },
@@ -1867,7 +1107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const { data: profile } = await supabaseClient
                 .from('profiles')
-                .select('full_name, phone')
+                .select('full_name, phone, gender')
                 .eq('id', user.id)
                 .maybeSingle();
 
@@ -1923,6 +1163,9 @@ document.addEventListener('DOMContentLoaded', function () {
             toast.textContent = '📨 Demande enregistrée avec succès !';
             setTimeout(() => toast.classList.remove('show'), 5000);
 
+            const userName = profile?.full_name || user.user_metadata?.full_name || 'Client';
+            sendEmailSimulation(email, trackingNumber, userName);
+
             showTrackingModal(trackingNumber, async () => {
                 await loadClientDashboard();
             });
@@ -1933,6 +1176,105 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error(error);
             toast.classList.remove('show');
             alert('Impossible d’enregistrer la demande pour le moment. Vérifiez votre connexion puis réessayez.');
+        }
+    }
+
+    // ===== TRANSFERT VERS COMPTE BANCAIRE =====
+    async function transferFunds() {
+        const userResult = await supabaseClient.auth.getUser();
+        const user = userResult.data.user;
+        if (!user) {
+            openAuthModal('login');
+            showAuthMessage('Connectez-vous pour accéder à cette fonction.', 'error');
+            return;
+        }
+
+        // Récupérer le profil pour le nom et la civilité
+        const { data: profile, error: profileError } = await supabaseClient
+            .from('profiles')
+            .select('full_name, gender, balance')
+            .eq('id', user.id)
+            .maybeSingle();
+
+        if (profileError) {
+            alert('Impossible de récupérer votre profil.');
+            return;
+        }
+
+        const balance = Number(profile?.balance || 0);
+        if (balance < TRANSFER_FEE) {
+            alert(`Solde insuffisant. Vous devez avoir au moins ${TRANSFER_FEE} € sur votre compte pour régler les frais de transfert.`);
+            return;
+        }
+
+        const name = profile?.full_name || 'Client';
+        const gender = profile?.gender || 'M.'; // par défaut M.
+        const fullName = name.trim() || 'Client';
+
+        // Construction du message personnalisé
+        const message = `Cher ${gender} ${fullName},<br>Pour démarrer le transfert vous devez vous acquitter des frais lié au traitement administratif de votre demande qui sont de 198 euro.`;
+
+        const messageDiv = document.getElementById('transferMessage');
+        messageDiv.innerHTML = message;
+
+        // Ouvrir la modale
+        const modal = document.getElementById('transferModal');
+        modal.classList.add('open');
+        document.getElementById('transferStatus').style.display = 'none';
+        document.getElementById('confirmTransferBtn').disabled = false;
+    }
+
+    async function confirmTransfer() {
+        const userResult = await supabaseClient.auth.getUser();
+        const user = userResult.data.user;
+        if (!user) return;
+
+        const btn = document.getElementById('confirmTransferBtn');
+        btn.disabled = true;
+        const statusDiv = document.getElementById('transferStatus');
+        statusDiv.style.display = 'block';
+        statusDiv.textContent = '⏳ Traitement en cours...';
+
+        try {
+            const { data: profile } = await supabaseClient
+                .from('profiles')
+                .select('balance')
+                .eq('id', user.id)
+                .single();
+
+            const newBalance = (profile.balance || 0) - TRANSFER_FEE;
+            const { error: updateError } = await supabaseClient
+                .from('profiles')
+                .update({ balance: newBalance })
+                .eq('id', user.id);
+
+            if (updateError) throw updateError;
+
+            await supabaseClient
+                .from('wallet_transactions')
+                .insert({
+                    user_id: user.id,
+                    amount: -TRANSFER_FEE,
+                    balance_after: newBalance,
+                    transaction_type: 'debit',
+                    note: 'Frais administratifs pour transfert bancaire',
+                    reference: 'TRANSFER_FEE'
+                });
+
+            statusDiv.textContent = '✅ Frais réglés avec succès ! Un virement de vos fonds vers votre compte bancaire va être initié.';
+            statusDiv.style.color = '#1f8b4c';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                document.getElementById('transferModal').classList.remove('open');
+                loadClientDashboard();
+            }, 3000);
+
+        } catch (error) {
+            console.error(error);
+            statusDiv.textContent = '❌ Erreur lors du paiement. Veuillez réessayer.';
+            statusDiv.style.color = '#a12b2b';
+            btn.disabled = false;
         }
     }
 
@@ -1965,7 +1307,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // ===== MODALE LÉGALE (avec contenu dynamique) =====
+    // ===== MODALE TRANSFERT =====
+    document.getElementById('transferFundsBtn').addEventListener('click', transferFunds);
+    document.getElementById('confirmTransferBtn').addEventListener('click', confirmTransfer);
+    document.getElementById('closeTransferBtn').addEventListener('click', function() {
+        document.getElementById('transferModal').classList.remove('open');
+    });
+    document.getElementById('transferModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('open');
+    });
+
+    // ===== MODALE LÉGALE =====
     const legalModal = document.getElementById('legalModal');
     const legalClose = document.getElementById('legalClose');
     const legalTitle = document.getElementById('legalTitle');
@@ -1974,286 +1326,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const legalContents = {
         'mentions': {
             title: 'Mentions légales — Financio',
-            html: `
-                <p>Le site Financio est destiné à présenter les services, fonctionnalités et informations proposés par Financio.</p>
-                <h3>Propriété intellectuelle</h3>
-                <p>L'ensemble des contenus présents sur ce site, notamment les textes, images, éléments graphiques, logos, icônes et éléments de conception, est protégé par les dispositions applicables en matière de propriété intellectuelle.</p>
-                <p>Toute reproduction, modification, distribution ou utilisation, totale ou partielle, sans autorisation préalable est interdite.</p>
-                <h3>Données personnelles</h3>
-                <p>Les informations éventuellement communiquées par l'utilisateur via les moyens de contact présents sur le site sont utilisées uniquement dans le cadre du traitement de sa demande.</p>
-                <p>Financio s'engage à traiter les données personnelles conformément aux dispositions applicables en matière de protection des données.</p>
-                <h3>Responsabilité</h3>
-                <p>Financio s'efforce de maintenir des informations exactes et à jour sur son site. Toutefois, aucune garantie ne peut être apportée quant à l'exhaustivité ou à l'absence d'erreurs dans les informations publiées.</p>
-                <p>L'utilisateur reconnaît utiliser le site sous sa propre responsabilité.</p>
-                <h3>Liens externes</h3>
-                <p>Le site peut contenir des liens vers des services ou sites tiers. Financio ne peut être tenu responsable du contenu, du fonctionnement ou des pratiques de ces services externes.</p>
-                <h3>Contact</h3>
-                <p>Pour toute question concernant le site, ses contenus ou les services proposés, l'utilisateur peut contacter Financio via les moyens de contact disponibles sur le site.</p>
-            `
+            html: `<p>Le site Financio est destiné à présenter les services, fonctionnalités et informations proposés par Financio.</p><h3>Propriété intellectuelle</h3><p>L'ensemble des contenus présents sur ce site, notamment les textes, images, éléments graphiques, logos, icônes et éléments de conception, est protégé par les dispositions applicables en matière de propriété intellectuelle.</p><p>Toute reproduction, modification, distribution ou utilisation, totale ou partielle, sans autorisation préalable est interdite.</p><h3>Données personnelles</h3><p>Les informations éventuellement communiquées par l'utilisateur via les moyens de contact présents sur le site sont utilisées uniquement dans le cadre du traitement de sa demande.</p><p>Financio s'engage à traiter les données personnelles conformément aux dispositions applicables en matière de protection des données.</p><h3>Responsabilité</h3><p>Financio s'efforce de maintenir des informations exactes et à jour sur son site. Toutefois, aucune garantie ne peut être apportée quant à l'exhaustivité ou à l'absence d'erreurs dans les informations publiées.</p><p>L'utilisateur reconnaît utiliser le site sous sa propre responsabilité.</p><h3>Liens externes</h3><p>Le site peut contenir des liens vers des services ou sites tiers. Financio ne peut être tenu responsable du contenu, du fonctionnement ou des pratiques de ces services externes.</p><h3>Contact</h3><p>Pour toute question concernant le site, ses contenus ou les services proposés, l'utilisateur peut contacter Financio via les moyens de contact disponibles sur le site.</p>`
         },
         'privacy': {
             title: 'Politique de confidentialité',
-            html: `
-                <p>La présente Politique de confidentialité explique comment Financio traite les données personnelles des utilisateurs qui consultent le site, utilisent le simulateur ou transmettent une demande de financement.</p>
-
-                <h3>1. Données collectées</h3>
-                <p>Selon les fonctionnalités utilisées, Financio peut être amené à collecter les informations suivantes :</p>
-                <ul>
-                    <li>adresse e-mail ;</li>
-                    <li>numéro de téléphone ;</li>
-                    <li>informations relatives à la demande de financement ;</li>
-                    <li>montant souhaité ;</li>
-                    <li>durée souhaitée ;</li>
-                    <li>informations nécessaires au traitement de la demande ;</li>
-                    <li>documents justificatifs transmis volontairement par l’utilisateur, notamment les documents d’identité, justificatifs fiscaux ou justificatifs de revenus.</li>
-                </ul>
-                <p>L’utilisateur est informé des informations demandées au moment où celles-ci sont saisies ou transmises.</p>
-
-                <h3>2. Utilisation des données</h3>
-                <p>Les informations communiquées sont utilisées principalement pour :</p>
-                <ul>
-                    <li>effectuer une simulation de financement ;</li>
-                    <li>permettre le traitement d’une demande ;</li>
-                    <li>vérifier les informations communiquées ;</li>
-                    <li>permettre le suivi d’une demande ;</li>
-                    <li>contacter l’utilisateur concernant sa demande ;</li>
-                    <li>répondre aux demandes d’assistance ou d’information ;</li>
-                    <li>assurer le fonctionnement et la sécurité du site.</li>
-                </ul>
-                <p>Les données sont utilisées uniquement dans le cadre des finalités prévues par les services proposés par Financio.</p>
-
-                <h3>3. Documents justificatifs</h3>
-                <p>Lorsqu’un utilisateur transmet des documents justificatifs, ceux-ci peuvent contenir des informations personnelles ou financières.</p>
-                <p>Ces documents sont destinés au traitement de la demande concernée et doivent correspondre aux justificatifs demandés.</p>
-                <p>L’utilisateur doit s’assurer que les documents transmis sont exacts, lisibles et qu’ils correspondent à sa propre situation.</p>
-
-                <h3>4. Confidentialité des informations</h3>
-                <p>Financio accorde une importance particulière à la confidentialité des informations communiquées par ses utilisateurs.</p>
-                <p>Les données personnelles ne sont pas destinées à être vendues ou louées à des tiers à des fins commerciales.</p>
-                <p>L’accès aux informations peut être limité aux personnes ou services qui en ont besoin dans le cadre du traitement de la demande ou du fonctionnement du service.</p>
-
-                <h3>5. Transmission à des services tiers</h3>
-                <p>Certaines fonctionnalités du site peuvent nécessiter l’utilisation de services tiers, notamment pour communiquer avec Financio ou transmettre une demande.</p>
-                <p>Lorsque l’utilisateur utilise un service tiers, les informations échangées peuvent également être soumises aux règles de confidentialité et aux conditions d’utilisation de ce service.</p>
-
-                <h3>6. Communications</h3>
-                <p>Les coordonnées communiquées par l’utilisateur peuvent être utilisées pour le contacter concernant :</p>
-                <ul>
-                    <li>sa demande de financement ;</li>
-                    <li>une simulation ;</li>
-                    <li>le suivi de son dossier ;</li>
-                    <li>une demande d’information ;</li>
-                    <li>une assistance liée aux services Financio.</li>
-                </ul>
-                <p>Financio ne doit pas être utilisé pour transmettre des informations personnelles inutiles à une demande.</p>
-
-                <h3>7. Sécurité des données</h3>
-                <p>Financio met en œuvre des mesures raisonnables destinées à protéger les informations personnelles contre l'accès non autorisé, la perte, l'altération ou la divulgation.</p>
-                <p>Toutefois, aucune transmission de données sur Internet ne peut être considérée comme totalement exempte de risques.</p>
-                <p>L’utilisateur doit également prendre les précautions nécessaires pour protéger ses propres appareils, comptes et moyens de communication.</p>
-
-                <h3>8. Conservation des données</h3>
-                <p>Les données personnelles sont conservées pendant une durée proportionnée à leur utilisation et aux besoins liés au traitement des demandes.</p>
-                <p>Lorsque les informations ne sont plus nécessaires, elles peuvent être supprimées, anonymisées ou archivées lorsque cela est nécessaire.</p>
-
-                <h3>9. Droits des utilisateurs</h3>
-                <p>Selon la réglementation applicable, l’utilisateur peut disposer de différents droits concernant ses données personnelles, notamment :</p>
-                <ul>
-                    <li>demander l’accès à ses données ;</li>
-                    <li>demander la correction d’informations inexactes ;</li>
-                    <li>demander la suppression de certaines données ;</li>
-                    <li>demander la limitation de certains traitements ;</li>
-                    <li>s’opposer à certains traitements lorsque cela est applicable ;</li>
-                    <li>retirer son consentement lorsqu’un traitement repose sur celui-ci.</li>
-                </ul>
-                <p>Toute demande concernant les données personnelles peut être adressée à Financio par les moyens de contact proposés sur le site.</p>
-
-                <h3>10. Exactitude des informations</h3>
-                <p>L’utilisateur est responsable des informations qu’il communique.</p>
-                <p>Il doit fournir des informations exactes, complètes et à jour et ne doit pas transmettre de documents appartenant à une autre personne sans autorisation.</p>
-
-                <h3>11. Liens et services externes</h3>
-                <p>Le site peut contenir des liens ou permettre l’utilisation de services externes.</p>
-                <p>Financio ne peut pas être tenu responsable des pratiques de confidentialité appliquées directement par ces services externes.</p>
-                <p>Il est recommandé à l’utilisateur de consulter leurs propres politiques de confidentialité lorsqu’il les utilise.</p>
-
-                <h3>12. Modification de la politique</h3>
-                <p>Financio peut faire évoluer la présente Politique de confidentialité afin de tenir compte de l’évolution de ses services, de ses fonctionnalités ou des exigences applicables.</p>
-                <p>La version publiée sur le site constitue la version applicable lors de l’utilisation des services.</p>
-            `
+            html: `<p>La présente Politique de confidentialité explique comment Financio traite les données personnelles des utilisateurs qui consultent le site, utilisent le simulateur ou transmettent une demande de financement.</p><h3>1. Données collectées</h3><p>Selon les fonctionnalités utilisées, Financio peut être amené à collecter les informations suivantes :</p><ul><li>adresse e-mail ;</li><li>numéro de téléphone ;</li><li>informations relatives à la demande de financement ;</li><li>montant souhaité ;</li><li>durée souhaitée ;</li><li>informations nécessaires au traitement de la demande ;</li><li>documents justificatifs transmis volontairement par l’utilisateur, notamment les documents d’identité, justificatifs fiscaux ou justificatifs de revenus.</li></ul><p>L’utilisateur est informé des informations demandées au moment où celles-ci sont saisies ou transmises.</p><h3>2. Utilisation des données</h3><p>Les informations communiquées sont utilisées principalement pour :</p><ul><li>effectuer une simulation de financement ;</li><li>permettre le traitement d’une demande ;</li><li>vérifier les informations communiquées ;</li><li>permettre le suivi d’une demande ;</li><li>contacter l’utilisateur concernant sa demande ;</li><li>répondre aux demandes d’assistance ou d’information ;</li><li>assurer le fonctionnement et la sécurité du site.</li></ul><p>Les données sont utilisées uniquement dans le cadre des finalités prévues par les services proposés par Financio.</p><h3>3. Documents justificatifs</h3><p>Lorsqu’un utilisateur transmet des documents justificatifs, ceux-ci peuvent contenir des informations personnelles ou financières.</p><p>Ces documents sont destinés au traitement de la demande concernée et doivent correspondre aux justificatifs demandés.</p><p>L’utilisateur doit s’assurer que les documents transmis sont exacts, lisibles et qu’ils correspondent à sa propre situation.</p><h3>4. Confidentialité des informations</h3><p>Financio accorde une importance particulière à la confidentialité des informations communiquées par ses utilisateurs.</p><p>Les données personnelles ne sont pas destinées à être vendues ou louées à des tiers à des fins commerciales.</p><p>L’accès aux informations peut être limité aux personnes ou services qui en ont besoin dans le cadre du traitement de la demande ou du fonctionnement du service.</p><h3>5. Transmission à des services tiers</h3><p>Certaines fonctionnalités du site peuvent nécessiter l’utilisation de services tiers, notamment pour communiquer avec Financio ou transmettre une demande.</p><p>Lorsque l’utilisateur utilise un service tiers, les informations échangées peuvent également être soumises aux règles de confidentialité et aux conditions d’utilisation de ce service.</p><h3>6. Communications</h3><p>Les coordonnées communiquées par l’utilisateur peuvent être utilisées pour le contacter concernant :</p><ul><li>sa demande de financement ;</li><li>une simulation ;</li><li>le suivi de son dossier ;</li><li>une demande d’information ;</li><li>une assistance liée aux services Financio.</li></ul><p>Financio ne doit pas être utilisé pour transmettre des informations personnelles inutiles à une demande.</p><h3>7. Sécurité des données</h3><p>Financio met en œuvre des mesures raisonnables destinées à protéger les informations personnelles contre l'accès non autorisé, la perte, l'altération ou la divulgation.</p><p>Toutefois, aucune transmission de données sur Internet ne peut être considérée comme totalement exempte de risques.</p><p>L’utilisateur doit également prendre les précautions nécessaires pour protéger ses propres appareils, comptes et moyens de communication.</p><h3>8. Conservation des données</h3><p>Les données personnelles sont conservées pendant une durée proportionnée à leur utilisation et aux besoins liés au traitement des demandes.</p><p>Lorsque les informations ne sont plus nécessaires, elles peuvent être supprimées, anonymisées ou archivées lorsque cela est nécessaire.</p><h3>9. Droits des utilisateurs</h3><p>Selon la réglementation applicable, l’utilisateur peut disposer de différents droits concernant ses données personnelles, notamment :</p><ul><li>demander l’accès à ses données ;</li><li>demander la correction d’informations inexactes ;</li><li>demander la suppression de certaines données ;</li><li>demander la limitation de certains traitements ;</li><li>s’opposer à certains traitements lorsque cela est applicable ;</li><li>retirer son consentement lorsqu’un traitement repose sur celui-ci.</li></ul><p>Toute demande concernant les données personnelles peut être adressée à Financio par les moyens de contact proposés sur le site.</p><h3>10. Exactitude des informations</h3><p>L’utilisateur est responsable des informations qu’il communique.</p><p>Il doit fournir des informations exactes, complètes et à jour et ne doit pas transmettre de documents appartenant à une autre personne sans autorisation.</p><h3>11. Liens et services externes</h3><p>Le site peut contenir des liens ou permettre l’utilisation de services externes.</p><p>Financio ne peut pas être tenu responsable des pratiques de confidentialité appliquées directement par ces services externes.</p><p>Il est recommandé à l’utilisateur de consulter leurs propres politiques de confidentialité lorsqu’il les utilise.</p><h3>12. Modification de la politique</h3><p>Financio peut faire évoluer la présente Politique de confidentialité afin de tenir compte de l’évolution de ses services, de ses fonctionnalités ou des exigences applicables.</p><p>La version publiée sur le site constitue la version applicable lors de l’utilisation des services.</p>`
         },
         'terms': {
             title: 'Conditions d’utilisation',
-            html: `
-                <p>Bienvenue sur Financio.</p>
-                <p>Les présentes Conditions d’utilisation définissent les règles applicables à l’utilisation du site Financio, de son simulateur de financement et des fonctionnalités permettant de transmettre une demande de financement.</p>
-                <p>En accédant au site ou en utilisant ses fonctionnalités, l’utilisateur accepte les présentes Conditions d’utilisation.</p>
-
-                <h3>1. Objet du site</h3>
-                <p>Financio propose notamment des outils permettant à l’utilisateur :</p>
-                <ul>
-                    <li>d’effectuer une simulation de financement ;</li>
-                    <li>d’obtenir une estimation indicative des conditions d’un financement ;</li>
-                    <li>de préparer une demande de financement ;</li>
-                    <li>de transmettre les informations nécessaires au traitement de cette demande ;</li>
-                    <li>de contacter le service concerné.</li>
-                </ul>
-                <p>Les simulations et informations présentées sur le site sont fournies à titre indicatif.</p>
-
-                <h3>2. Utilisation du simulateur</h3>
-                <p>Le simulateur permet d’obtenir une estimation à partir des informations renseignées par l’utilisateur.</p>
-                <p>Les résultats affichés peuvent notamment dépendre :</p>
-                <ul>
-                    <li>du montant demandé ;</li>
-                    <li>de la durée choisie ;</li>
-                    <li>du taux applicable ;</li>
-                    <li>des informations renseignées lors de la simulation.</li>
-                </ul>
-                <p>Le résultat d’une simulation ne constitue pas une offre ferme de financement et ne garantit pas l’acceptation d’une demande.</p>
-                <p>Les conditions définitives d’un éventuel financement peuvent dépendre de l’étude complète du dossier et des informations ou justificatifs fournis.</p>
-
-                <h3>3. Demande de financement</h3>
-                <p>L’utilisateur peut décider de poursuivre une simulation en transmettant une demande.</p>
-                <p>Il doit alors fournir des informations exactes, complètes et sincères.</p>
-                <p>La transmission d’une demande ne signifie pas que le financement est automatiquement accepté.</p>
-                <p>Toute demande peut faire l’objet d’une vérification et d’une étude avant toute décision.</p>
-
-                <h3>4. Documents justificatifs</h3>
-                <p>Lorsque des justificatifs sont demandés, l’utilisateur s’engage à transmettre des documents authentiques et correspondant à sa situation.</p>
-                <p>Il ne doit notamment pas :</p>
-                <ul>
-                    <li>fournir un document falsifié ;</li>
-                    <li>modifier volontairement un justificatif ;</li>
-                    <li>transmettre le document d’une autre personne sans autorisation ;</li>
-                    <li>communiquer des informations volontairement fausses.</li>
-                </ul>
-                <p>Toute information inexacte peut entraîner l’arrêt ou le refus du traitement de la demande.</p>
-
-                <h3>5. Informations communiquées</h3>
-                <p>L’utilisateur est responsable des informations qu’il saisit sur le site.</p>
-                <p>Il doit vérifier les informations avant de transmettre sa demande.</p>
-                <p>Financio ne peut pas être tenu responsable des erreurs résultant d’informations incorrectes, incomplètes ou volontairement erronées fournies par l’utilisateur.</p>
-
-                <h3>6. Utilisation autorisée</h3>
-                <p>Le site doit être utilisé de manière légale, honnête et conforme aux présentes Conditions d’utilisation.</p>
-                <p>Il est notamment interdit d’utiliser le site pour :</p>
-                <ul>
-                    <li>frauder ;</li>
-                    <li>usurper l’identité d’une autre personne ;</li>
-                    <li>transmettre de faux documents ;</li>
-                    <li>tenter d'obtenir un financement au moyen d'informations trompeuses ;</li>
-                    <li>perturber ou compromettre le fonctionnement du site ;</li>
-                    <li>tenter d'accéder sans autorisation à des données ou fonctionnalités ;</li>
-                    <li>utiliser le site à des fins contraires à la loi.</li>
-                </ul>
-
-                <h3>7. Disponibilité du service</h3>
-                <p>Financio s’efforce de maintenir le site et ses fonctionnalités accessibles dans des conditions normales.</p>
-                <p>Toutefois, l’accès au site peut être temporairement interrompu notamment en raison de maintenance, de difficultés techniques, de problèmes de réseau ou de circonstances indépendantes du fonctionnement normal du service.</p>
-
-                <h3>8. Services et liens externes</h3>
-                <p>Certaines fonctionnalités peuvent permettre à l’utilisateur d’utiliser ou d’accéder à des services externes, notamment des services de messagerie ou de communication.</p>
-                <p>L’utilisation de ces services peut être soumise à leurs propres conditions d’utilisation.</p>
-                <p>Financio ne contrôle pas nécessairement le fonctionnement ou les conditions applicables aux services externes.</p>
-
-                <h3>9. Propriété du contenu</h3>
-                <p>Les éléments présents sur le site, notamment les textes, éléments graphiques, logos, interfaces, présentations et contenus, sont destinés à l’utilisation normale du site.</p>
-                <p>Toute reproduction, modification, extraction ou réutilisation non autorisée d’éléments du site peut être interdite.</p>
-
-                <h3>10. Responsabilité de l’utilisateur</h3>
-                <p>L’utilisateur est responsable de l’utilisation qu’il fait du site et des informations qu’il communique.</p>
-                <p>Il doit notamment conserver la confidentialité de ses informations personnelles et prendre les mesures nécessaires pour protéger son appareil et ses moyens de communication.</p>
-
-                <h3>11. Limitation de responsabilité</h3>
-                <p>Les informations et résultats proposés sur Financio sont destinés à fournir une aide à la simulation et à la préparation d’une demande.</p>
-                <p>Ils ne constituent pas une garantie d’obtention d’un financement.</p>
-                <p>Financio ne garantit pas qu’une demande aboutira à une acceptation ni que les conditions estimées lors d’une simulation seront nécessairement celles d’un éventuel financement définitif.</p>
-
-                <h3>12. Protection des données</h3>
-                <p>L’utilisation du site peut entraîner le traitement de données personnelles.</p>
-                <p>Les modalités relatives à la collecte, à l’utilisation, à la conservation et à la protection de ces données sont présentées dans la Politique de confidentialité de Financio.</p>
-
-                <h3>13. Évolution des services</h3>
-                <p>Financio peut faire évoluer, modifier, suspendre ou supprimer certaines fonctionnalités du site lorsque cela est nécessaire au fonctionnement ou à l’évolution du service.</p>
-                <p>Les présentes Conditions d’utilisation peuvent également être adaptées afin de tenir compte de l’évolution des services proposés.</p>
-
-                <h3>14. Acceptation des conditions</h3>
-                <p>En utilisant le site Financio, l’utilisateur reconnaît avoir pris connaissance des présentes Conditions d’utilisation et accepter de les respecter.</p>
-                <p>Si l’utilisateur n’accepte pas ces conditions, il doit cesser d’utiliser les services concernés.</p>
-            `
+            html: `<p>Bienvenue sur Financio.</p><p>Les présentes Conditions d’utilisation définissent les règles applicables à l’utilisation du site Financio, de son simulateur de financement et des fonctionnalités permettant de transmettre une demande de financement.</p><p>En accédant au site ou en utilisant ses fonctionnalités, l’utilisateur accepte les présentes Conditions d’utilisation.</p><h3>1. Objet du site</h3><p>Financio propose notamment des outils permettant à l’utilisateur :</p><ul><li>d’effectuer une simulation de financement ;</li><li>d’obtenir une estimation indicative des conditions d’un financement ;</li><li>de préparer une demande de financement ;</li><li>de transmettre les informations nécessaires au traitement de cette demande ;</li><li>de contacter le service concerné.</li></ul><p>Les simulations et informations présentées sur le site sont fournies à titre indicatif.</p><h3>2. Utilisation du simulateur</h3><p>Le simulateur permet d’obtenir une estimation à partir des informations renseignées par l’utilisateur.</p><p>Les résultats affichés peuvent notamment dépendre :</p><ul><li>du montant demandé ;</li><li>de la durée choisie ;</li><li>du taux applicable ;</li><li>des informations renseignées lors de la simulation.</li></ul><p>Le résultat d’une simulation ne constitue pas une offre ferme de financement et ne garantit pas l’acceptation d’une demande.</p><p>Les conditions définitives d’un éventuel financement peuvent dépendre de l’étude complète du dossier et des informations ou justificatifs fournis.</p><h3>3. Demande de financement</h3><p>L’utilisateur peut décider de poursuivre une simulation en transmettant une demande.</p><p>Il doit alors fournir des informations exactes, complètes et sincères.</p><p>La transmission d’une demande ne signifie pas que le financement est automatiquement accepté.</p><p>Toute demande peut faire l’objet d’une vérification et d’une étude avant toute décision.</p><h3>4. Documents justificatifs</h3><p>Lorsque des justificatifs sont demandés, l’utilisateur s’engage à transmettre des documents authentiques et correspondant à sa situation.</p><p>Il ne doit notamment pas :</p><ul><li>fournir un document falsifié ;</li><li>modifier volontairement un justificatif ;</li><li>transmettre le document d’une autre personne sans autorisation ;</li><li>communiquer des informations volontairement fausses.</li></ul><p>Toute information inexacte peut entraîner l’arrêt ou le refus du traitement de la demande.</p><h3>5. Informations communiquées</h3><p>L’utilisateur est responsable des informations qu’il saisit sur le site.</p><p>Il doit vérifier les informations avant de transmettre sa demande.</p><p>Financio ne peut pas être tenu responsable des erreurs résultant d’informations incorrectes, incomplètes ou volontairement erronées fournies par l’utilisateur.</p><h3>6. Utilisation autorisée</h3><p>Le site doit être utilisé de manière légale, honnête et conforme aux présentes Conditions d’utilisation.</p><p>Il est notamment interdit d’utiliser le site pour :</p><ul><li>frauder ;</li><li>usurper l’identité d’une autre personne ;</li><li>transmettre de faux documents ;</li><li>tenter d'obtenir un financement au moyen d'informations trompeuses ;</li><li>perturber ou compromettre le fonctionnement du site ;</li><li>tenter d'accéder sans autorisation à des données ou fonctionnalités ;</li><li>utiliser le site à des fins contraires à la loi.</li></ul><h3>7. Disponibilité du service</h3><p>Financio s’efforce de maintenir le site et ses fonctionnalités accessibles dans des conditions normales.</p><p>Toutefois, l’accès au site peut être temporairement interrompu notamment en raison de maintenance, de difficultés techniques, de problèmes de réseau ou de circonstances indépendantes du fonctionnement normal du service.</p><h3>8. Services et liens externes</h3><p>Certaines fonctionnalités peuvent permettre à l’utilisateur d’utiliser ou d’accéder à des services externes, notamment des services de messagerie ou de communication.</p><p>L’utilisation de ces services peut être soumise à leurs propres conditions d’utilisation.</p><p>Financio ne contrôle pas nécessairement le fonctionnement ou les conditions applicables aux services externes.</p><h3>9. Propriété du contenu</h3><p>Les éléments présents sur le site, notamment les textes, éléments graphiques, logos, interfaces, présentations et contenus, sont destinés à l’utilisation normale du site.</p><p>Toute reproduction, modification, extraction ou réutilisation non autorisée d’éléments du site peut être interdite.</p><h3>10. Responsabilité de l’utilisateur</h3><p>L’utilisateur est responsable de l’utilisation qu’il fait du site et des informations qu’il communique.</p><p>Il doit notamment conserver la confidentialité de ses informations personnelles et prendre les mesures nécessaires pour protéger son appareil et ses moyens de communication.</p><h3>11. Limitation de responsabilité</h3><p>Les informations et résultats proposés sur Financio sont destinés à fournir une aide à la simulation et à la préparation d’une demande.</p><p>Ils ne constituent pas une garantie d’obtention d’un financement.</p><p>Financio ne garantit pas qu’une demande aboutira à une acceptation ni que les conditions estimées lors d’une simulation seront nécessairement celles d’un éventuel financement définitif.</p><h3>12. Protection des données</h3><p>L’utilisation du site peut entraîner le traitement de données personnelles.</p><p>Les modalités relatives à la collecte, à l’utilisation, à la conservation et à la protection de ces données sont présentées dans la Politique de confidentialité de Financio.</p><h3>13. Évolution des services</h3><p>Financio peut faire évoluer, modifier, suspendre ou supprimer certaines fonctionnalités du site lorsque cela est nécessaire au fonctionnement ou à l’évolution du service.</p><p>Les présentes Conditions d’utilisation peuvent également être adaptées afin de tenir compte de l’évolution des services proposés.</p><h3>14. Acceptation des conditions</h3><p>En utilisant le site Financio, l’utilisateur reconnaît avoir pris connaissance des présentes Conditions d’utilisation et accepter de les respecter.</p><p>Si l’utilisateur n’accepte pas ces conditions, il doit cesser d’utiliser les services concernés.</p>`
         },
         'credit': {
             title: 'Informations crédit',
-            html: `
-                <p>Cette rubrique présente les principales informations relatives aux simulations et demandes de financement proposées par Financio.</p>
-
-                <h3>1. Simulation de financement</h3>
-                <p>Financio permet à l’utilisateur d’effectuer une simulation à partir du montant et de la durée de financement souhaités.</p>
-                <p>La simulation permet notamment d’obtenir une estimation :</p>
-                <ul>
-                    <li>du montant des mensualités ;</li>
-                    <li>du coût estimatif du financement ;</li>
-                    <li>du montant total à rembourser ;</li>
-                    <li>des intérêts estimatifs.</li>
-                </ul>
-                <p>Les résultats affichés sont indicatifs et peuvent varier selon les conditions applicables au dossier.</p>
-
-                <h3>2. Montant du financement</h3>
-                <p>Le montant pouvant être demandé dépend des conditions proposées par le service et de l’étude de la demande.</p>
-                <p>Le montant indiqué lors de la simulation correspond au montant souhaité par l’utilisateur et ne constitue pas une confirmation automatique de l’octroi du financement.</p>
-
-                <h3>3. Durée de remboursement</h3>
-                <p>L’utilisateur peut sélectionner la durée de remboursement proposée dans le simulateur.</p>
-                <p>Une durée plus longue peut modifier le montant des mensualités ainsi que le coût total du financement.</p>
-                <p>La durée définitive peut être déterminée lors de l’étude de la demande.</p>
-
-                <h3>4. Taux et coût du crédit</h3>
-                <p>Le taux affiché lors de la simulation est utilisé pour établir une estimation du coût du financement.</p>
-                <p>Le coût total peut notamment dépendre du montant financé, de la durée de remboursement et des conditions applicables au dossier.</p>
-                <p>Les résultats du simulateur doivent donc être considérés comme des estimations et non comme des conditions contractuelles définitives.</p>
-
-                <h3>5. Mensualités</h3>
-                <p>La mensualité affichée correspond à une estimation du montant à rembourser périodiquement selon les paramètres renseignés dans le simulateur.</p>
-                <p>Toute modification du montant, de la durée ou des conditions du financement peut entraîner une modification de la mensualité.</p>
-
-                <h3>6. Demande de financement</h3>
-                <p>Après une simulation, l’utilisateur peut choisir de transmettre une demande de financement.</p>
-                <p>Cette demande peut nécessiter des informations personnelles ainsi que certains documents justificatifs afin de permettre l’étude du dossier.</p>
-                <p>La transmission d’une demande ne garantit pas son acceptation.</p>
-
-                <h3>7. Étude du dossier</h3>
-                <p>Une demande peut être examinée sur la base des informations et justificatifs communiqués par l’utilisateur.</p>
-                <p>Des informations complémentaires peuvent être demandées lorsque cela est nécessaire à l’étude du dossier.</p>
-                <p>Une décision définitive peut dépendre de critères et de vérifications qui ne sont pas déterminés uniquement par le résultat du simulateur.</p>
-
-                <h3>8. Remboursement</h3>
-                <p>Lorsqu’un financement est accordé, les modalités de remboursement applicables sont communiquées dans les conditions du financement concerné.</p>
-                <p>L’utilisateur doit respecter les échéances et modalités qui lui sont communiquées.</p>
-                <p>En cas de difficulté concernant le remboursement, il est recommandé de contacter rapidement le service concerné.</p>
-
-                <h3>9. Informations fournies par l’utilisateur</h3>
-                <p>Les résultats d’une simulation dépendent des informations saisies par l’utilisateur.</p>
-                <p>Une erreur dans le montant, la durée ou toute autre information peut entraîner un résultat incorrect.</p>
-                <p>L’utilisateur doit donc vérifier les informations renseignées avant de poursuivre sa demande.</p>
-
-                <h3>10. Caractère indicatif</h3>
-                <p>Les informations présentées dans cette rubrique et les résultats du simulateur ont une vocation informative.</p>
-                <p>Ils ne constituent pas une promesse d’octroi, une offre ferme ou une garantie de financement.</p>
-                <p>Les conditions définitives applicables à un financement sont celles communiquées après l’étude du dossier et, le cas échéant, celles prévues dans les documents contractuels correspondants.</p>
-
-                <h3>11. Comprendre son financement</h3>
-                <p>Avant de s’engager, l’utilisateur est invité à prendre connaissance de l’ensemble des informations relatives au financement proposé, notamment :</p>
-                <ul>
-                    <li>le montant financé ;</li>
-                    <li>la durée ;</li>
-                    <li>le montant des échéances ;</li>
-                    <li>le coût total ;</li>
-                    <li>les intérêts ;</li>
-                    <li>les éventuels frais applicables ;</li>
-                    <li>les modalités de remboursement.</li>
-                </ul>
-                <p>L’utilisateur doit s’assurer que le financement envisagé correspond à ses capacités de remboursement.</p>
-            `
+            html: `<p>Cette rubrique présente les principales informations relatives aux simulations et demandes de financement proposées par Financio.</p><h3>1. Simulation de financement</h3><p>Financio permet à l’utilisateur d’effectuer une simulation à partir du montant et de la durée de financement souhaités.</p><p>La simulation permet notamment d’obtenir une estimation :</p><ul><li>du montant des mensualités ;</li><li>du coût estimatif du financement ;</li><li>du montant total à rembourser ;</li><li>des intérêts estimatifs.</li></ul><p>Les résultats affichés sont indicatifs et peuvent varier selon les conditions applicables au dossier.</p><h3>2. Montant du financement</h3><p>Le montant pouvant être demandé dépend des conditions proposées par le service et de l’étude de la demande.</p><p>Le montant indiqué lors de la simulation correspond au montant souhaité par l’utilisateur et ne constitue pas une confirmation automatique de l’octroi du financement.</p><h3>3. Durée de remboursement</h3><p>L’utilisateur peut sélectionner la durée de remboursement proposée dans le simulateur.</p><p>Une durée plus longue peut modifier le montant des mensualités ainsi que le coût total du financement.</p><p>La durée définitive peut être déterminée lors de l’étude de la demande.</p><h3>4. Taux et coût du crédit</h3><p>Le taux affiché lors de la simulation est utilisé pour établir une estimation du coût du financement.</p><p>Le coût total peut notamment dépendre du montant financé, de la durée de remboursement et des conditions applicables au dossier.</p><p>Les résultats du simulateur doivent donc être considérés comme des estimations et non comme des conditions contractuelles définitives.</p><h3>5. Mensualités</h3><p>La mensualité affichée correspond à une estimation du montant à rembourser périodiquement selon les paramètres renseignés dans le simulateur.</p><p>Toute modification du montant, de la durée ou des conditions du financement peut entraîner une modification de la mensualité.</p><h3>6. Demande de financement</h3><p>Après une simulation, l’utilisateur peut choisir de transmettre une demande de financement.</p><p>Cette demande peut nécessiter des informations personnelles ainsi que certains documents justificatifs afin de permettre l’étude du dossier.</p><p>La transmission d’une demande ne garantit pas son acceptation.</p><h3>7. Étude du dossier</h3><p>Une demande peut être examinée sur la base des informations et justificatifs communiqués par l’utilisateur.</p><p>Des informations complémentaires peuvent être demandées lorsque cela est nécessaire à l’étude du dossier.</p><p>Une décision définitive peut dépendre de critères et de vérifications qui ne sont pas déterminés uniquement par le résultat du simulateur.</p><h3>8. Remboursement</h3><p>Lorsqu’un financement est accordé, les modalités de remboursement applicables sont communiquées dans les conditions du financement concerné.</p><p>L’utilisateur doit respecter les échéances et modalités qui lui sont communiquées.</p><p>En cas de difficulté concernant le remboursement, il est recommandé de contacter rapidement le service concerné.</p><h3>9. Informations fournies par l’utilisateur</h3><p>Les résultats d’une simulation dépendent des informations saisies par l’utilisateur.</p><p>Une erreur dans le montant, la durée ou toute autre information peut entraîner un résultat incorrect.</p><p>L’utilisateur doit donc vérifier les informations renseignées avant de poursuivre sa demande.</p><h3>10. Caractère indicatif</h3><p>Les informations présentées dans cette rubrique et les résultats du simulateur ont une vocation informative.</p><p>Ils ne constituent pas une promesse d’octroi, une offre ferme ou une garantie de financement.</p><p>Les conditions définitives applicables à un financement sont celles communiquées après l’étude du dossier et, le cas échéant, celles prévues dans les documents contractuels correspondants.</p><h3>11. Comprendre son financement</h3><p>Avant de s’engager, l’utilisateur est invité à prendre connaissance de l’ensemble des informations relatives au financement proposé, notamment :</p><ul><li>le montant financé ;</li><li>la durée ;</li><li>le montant des échéances ;</li><li>le coût total ;</li><li>les intérêts ;</li><li>les éventuels frais applicables ;</li><li>les modalités de remboursement.</li></ul><p>L’utilisateur doit s’assurer que le financement envisagé correspond à ses capacités de remboursement.</p>`
         }
     };
 
@@ -2271,12 +1356,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    legalClose.addEventListener('click', () => {
-        legalModal.classList.remove('open');
-    });
-    legalModal.addEventListener('click', (e) => {
-        if (e.target === legalModal) legalModal.classList.remove('open');
-    });
+    legalClose.addEventListener('click', () => legalModal.classList.remove('open'));
+    legalModal.addEventListener('click', (e) => { if (e.target === legalModal) legalModal.classList.remove('open'); });
 
     // ===== CHATBOT =====
     const chatToggle = document.getElementById('chatToggle');
@@ -2345,8 +1426,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const accountPanel = document.getElementById('accountPanel');
     const clientDashboard = document.getElementById('clientDashboard');
 
-    // Server/database status values are kept in English.
-    // The client-facing interface translates them to French.
     const statusOrder = [
         'Application submitted',
         'Documents under review',
@@ -2560,6 +1639,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearAuthMessage();
 
         const fullName = document.getElementById('registerName').value.trim();
+        const gender = document.getElementById('registerGender').value;
         const email = document.getElementById('registerEmail').value.trim();
         const phone = document.getElementById('registerPhone').value.trim();
         const password = document.getElementById('registerPassword').value;
@@ -2571,12 +1651,20 @@ document.addEventListener('DOMContentLoaded', function () {
         const { data, error } = await supabaseClient.auth.signUp({
             email, password,
             options: {
-                data: { full_name: fullName, phone },
+                data: { full_name: fullName, phone, gender },
                 emailRedirectTo: window.location.origin + window.location.pathname
             }
         });
 
         if (error) return showAuthMessage(error.message, 'error');
+
+        // Créer ou mettre à jour le profil avec le genre
+        if (data.user) {
+            const { error: profileError } = await supabaseClient
+                .from('profiles')
+                .upsert({ id: data.user.id, full_name: fullName, phone, gender, currency: 'EUR', balance: 0 }, { onConflict: 'id' });
+            if (profileError) console.error(profileError);
+        }
 
         if (data.session) {
             closeAuthModal();
@@ -2621,7 +1709,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clientDashboard.classList.remove('show');
     });
 
-    // ===== ADMINISTRATION =====
+    // ===== ADMINISTRATION (inchangée) =====
     const adminPanel = document.getElementById('adminPanel');
     const adminClientList = document.getElementById('adminClientList');
     const adminClientSearch = document.getElementById('adminClientSearch');
@@ -2881,8 +1969,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => closeAdminModal(adminSettingsModal), 900);
     });
 
-    // Seven rapid clicks on the Financio logo within four seconds open administration.
-    // Additional clicks do not close the already opened administration panel.
+    // Logo click secret pour admin
     const financioLogo = document.getElementById('financioLogo');
     let logoClickCount = 0;
     let logoFirstClickAt = 0;
@@ -2901,7 +1988,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Mise à jour en temps réel du dossier du client connecté.
+    // Mise à jour en temps réel
     let realtimeChannel = null;
     async function subscribeToOwnApplications() {
         if (realtimeChannel) await supabaseClient.removeChannel(realtimeChannel);
