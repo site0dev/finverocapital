@@ -1,0 +1,23 @@
+{
+  "name": "finverocapital-cloud",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Finvero Capital full-stack Node.js backend and web server",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "nodemailer": "^7.0.6",
+    "dotenv": "^17.2.2"
+  }
+}
