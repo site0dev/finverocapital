@@ -168,7 +168,7 @@
         .legal-card h3 { color: #0f2b4b; margin: 1.2rem 0 0.4rem; font-size: 1.2rem; }
         .legal-card p, .legal-card li { color: #3d556e; line-height: 1.7; margin-bottom: 0.6rem; }
         .legal-card ul { padding-left: 1.5rem; }
-        .stats-section { display: grid; grid-template-columns: 1fr; direction: ltr; gap: 1rem; margin: 1.5rem 0 2rem; width: 100%; align-items: stretch; }
+        .stats-section { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); direction: ltr; gap: 1rem; margin: 1.5rem 0 2rem; width: 100%; align-items: stretch; }
         .stats-section .stat-card { width: 100%; min-width: 0; direction: ltr; box-sizing: border-box; min-height: 150px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .stat-card { background: #fff; border: 1px solid #e5ebf2; border-radius: 16px; padding: 1.25rem 1rem; text-align: center; box-shadow: 0 6px 20px rgba(35, 61, 89, 0.07); transition: transform .2s ease, box-shadow .2s ease; }
         .stat-card:hover { transform: translateY(-2px); box-shadow: 0 9px 24px rgba(35, 61, 89, 0.11); }
@@ -178,7 +178,7 @@
         .stat-label { margin-top: .4rem; color: #687d95; font-size: .88rem; line-height: 1.35; }
         /* Statistiques verticales sur toutes les tailles d’écran */
         @media (max-width: 700px) {
-            .stats-section { grid-template-columns: 1fr; gap: .75rem; }
+            .stats-section { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .5rem; }
             .stat-card { padding: 0.8rem .4rem; }
             .stat-value { font-size: clamp(1rem, 4vw, 1.4rem); }
             .stat-label { font-size: .65rem; }
