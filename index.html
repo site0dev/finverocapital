@@ -2026,6 +2026,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="admin-client-balance">${Number(c.balance || 0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} ${c.currency === 'EUR' ? '€' : esc(c.currency || 'EUR')}</div>
                 </div>
                 <div class="admin-client-actions">
+                    <input class="admin-client-full-name" type="text" maxlength="150" value="${esc(c.full_name || '')}" placeholder="Nom complet">
+                    <input class="admin-client-email" type="email" maxlength="254" value="${esc(c.email || '')}" placeholder="E-mail">
+                    <input class="admin-client-phone" type="tel" maxlength="50" value="${esc(c.phone || '')}" placeholder="Téléphone">
+                    <button type="button" class="account-btn primary admin-client-save-btn">💾 Enregistrer les informations</button>
                     <input class="admin-amount" type="number" min="0.01" step="0.01" placeholder="Montant à créditer">
                     <input class="admin-note" type="text" maxlength="200" placeholder="Motif / commentaire">
                     <input class="admin-reference" type="text" maxlength="100" placeholder="Référence (facultatif)">
@@ -2047,6 +2051,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 <div class="admin-client-transactions" id="admin-history-${esc(c.user_id)}"></div>
             </div>`).join('') : '<p class="doc-note">Aucun client trouvé.</p>';
+
+        adminClientList.querySelectorAll('.admin-client-save-btn').forEach(btn => btn.addEventListener('click', async () => {
+            const card = btn.closest('.admin-client-card');
+            const userId = card.dataset.userId;
+            const fullName = card.querySelector('.admin-client-full-name').value.trim();
+            const email = card.querySelector('.admin-client-email').value.trim();
+            const phone = card.querySelector('.admin-client-phone').value.trim();
+            if (!fullName) return alert('Le nom complet est obligatoire.');
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return alert('Entrez une adresse e-mail valide.');
+            if (!phone) return alert('Le numéro de téléphone est obligatoire.');
+            if (!adminToken) return openAdministration();
+            if (!confirm('Enregistrer les informations de ce client ?')) return;
+            btn.disabled = true;
+            const { error } = await supabaseClient.rpc('admin_update_client_profile', {
+                p_token: adminToken,
+                p_user_id: userId,
+                p_full_name: fullName,
+                p_email: email,
+                p_phone: phone
+            });
+            btn.disabled = false;
+            if (error) {
+                if (/session/i.test(error.message || '')) { adminToken = null; sessionStorage.removeItem('finverocapital_admin_token'); closeAdministration(); }
+                return alert(error.message || 'Impossible de modifier les informations du client.');
+            }
+            alert('Informations du client mises à jour.');
+            await loadAdminClients();
+        }));
 
         adminClientList.querySelectorAll('.admin-credit-btn').forEach(btn => btn.addEventListener('click', async () => {
             const card = btn.closest('.admin-client-card');
@@ -2152,10 +2184,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         adminClients = data || [];
         renderAdminClients();
+        adminPanel.classList.add('show');
+        adminPanel.setAttribute('aria-hidden', 'false');
     }
 
     adminClientSearch.addEventListener('input', renderAdminClients);
-    document.getElementById('refreshAdminBtn').addEventListener('click', loadAdminClients);
+    document.getElementById('refreshAdminBtn').addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const btn = e.currentTarget;
+        btn.disabled = true;
+        try {
+            await loadAdminClients();
+        } finally {
+            btn.disabled = false;
+        }
+    });
     document.getElementById('adminSettingsBtn').addEventListener('click', async () => {
         clearAdminMessage(adminSettingsMessage);
         if (!await verifyAdminSession()) return openAdministration();
