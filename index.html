@@ -1190,7 +1190,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const userName = profile?.full_name || user.user_metadata?.full_name || 'Client';
             const gender = profile?.gender || 'Mr';
-            sendEmailSimulation(email, trackingNumber, userName, gender);
+            try {
+                const { data: sessionData } = await supabaseClient.auth.getSession();
+                const accessToken = sessionData?.session?.access_token;
+                if (accessToken && application?.id) {
+                    const emailResponse = await fetch('/api/emails/application-confirmation', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${accessToken}`
+                        },
+                        body: JSON.stringify({ applicationId: application.id })
+                    });
+                    if (!emailResponse.ok) {
+                        console.error('Erreur envoi email:', await emailResponse.text());
+                    }
+                }
+            } catch (emailError) {
+                console.error('Erreur service email:', emailError);
+            }
 
             showTrackingModal(trackingNumber, async () => {
                 await loadClientDashboard();
@@ -1821,7 +1839,7 @@ document.addEventListener('DOMContentLoaded', function () {
             email, password,
             options: {
                 data: { full_name: fullName, phone, gender },
-                emailRedirectTo: 'https://sohabank.vercel.app/'
+                emailRedirectTo: 'https://finverocapital.de/'
             }
         });
 
@@ -1850,7 +1868,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearAuthMessage();
         const email = document.getElementById('forgotEmail').value.trim();
         const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://sohabank.vercel.app/'
+            redirectTo: 'https://finverocapital.de/'
         });
         if (error) return showAuthMessage(error.message, 'error');
         showAuthMessage('Si un compte correspond à cette adresse, un e-mail de réinitialisation a été envoyé.', 'success');
