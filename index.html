@@ -222,6 +222,8 @@
         .admin-client-actions { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.6rem; margin-top:.9rem; }
         .admin-client-actions input, .admin-client-actions select { width:100%; padding:.65rem .75rem; border:1.5px solid #dce3ed; border-radius:12px; background:#fff; outline:none; }
         .admin-client-actions button { min-height:42px; }
+        .admin-approve-btn { background:#0f6b3d; color:#fff; }
+        .admin-reject-btn { border-color:#d9a6a6; color:#a12b2b; }
         .admin-client-transactions { margin-top:.8rem; font-size:.84rem; color:#5b6f87; }
         .admin-mini-table { width:100%; border-collapse:collapse; margin-top:.5rem; }
         .admin-mini-table th, .admin-mini-table td { padding:.45rem; border-bottom:1px solid #e9edf4; text-align:left; }
@@ -1647,7 +1649,8 @@ document.addEventListener('DOMContentLoaded', function () {
         'Application approved',
         'Contract to sign',
         'Funding in preparation',
-        'Funding granted'
+        'Funding granted',
+        'Application rejected'
     ];
 
     const statusLabelsFr = {
@@ -1657,6 +1660,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'Application approved': 'Dossier accepté',
         'Contract to sign': 'Contrat à signer',
         'Funding in preparation': 'Financement en préparation',
+        'Application rejected': 'Dossier rejeté',
         'Funding granted': 'Financement accordé'
     };
 
@@ -1999,7 +2003,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const q = (adminClientSearch.value || '').trim().toLowerCase();
         const rows = adminClients.filter(c => [c.full_name,c.email,c.phone].some(v => String(v || '').toLowerCase().includes(q)));
         adminClientList.innerHTML = rows.length ? rows.map(c => `
-            <div class="admin-client-card" data-user-id="${esc(c.user_id)}">
+            <div class="admin-client-card" data-user-id="${esc(c.user_id)}" data-application-id="${esc(c.application_id || '')}">
                 <div class="admin-client-head">
                     <div>
                         <div class="admin-client-name">${esc(c.full_name || 'Client sans nom')}</div>
@@ -2022,6 +2026,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     </select>
                     <input class="admin-status-note" type="text" maxlength="200" placeholder="Motif du changement de statut">
                     <button type="button" class="account-btn admin-status-btn">Modifier le statut</button>
+                    <select class="admin-application-status-select" ${c.application_id ? '' : 'disabled'}>
+                        ${['Application submitted','Documents under review','Application under assessment','Application approved','Contract to sign','Funding in preparation','Funding granted','Application rejected'].map(k => `<option value="${k}" ${k === c.application_status ? 'selected' : ''}>${statusLabelsFr[k] || k}</option>`).join('')}
+                    </select>
+                    <button type="button" class="account-btn primary admin-approve-btn" ${c.application_id ? '' : 'disabled'}>✓ Approuver la demande</button>
+                    <button type="button" class="account-btn admin-reject-btn" ${c.application_id ? '' : 'disabled'}>✕ Rejeter la demande</button>
+                    <button type="button" class="account-btn admin-application-status-btn" ${c.application_id ? '' : 'disabled'}>Modifier le statut du dossier</button>
                     <button type="button" class="account-btn admin-history-btn">Voir les mouvements</button>
                 </div>
                 <div class="admin-client-transactions" id="admin-history-${esc(c.user_id)}"></div>
@@ -2073,6 +2083,34 @@ document.addEventListener('DOMContentLoaded', function () {
             const { error } = await supabaseClient.rpc('admin_set_account_status', { p_token:adminToken, p_user_id:userId, p_status:status, p_note:note });
             if (error) return alert(error.message || 'Impossible de modifier le statut.');
             await loadAdminClients();
+        }));
+
+        async function updateAdminApplicationStatus(card, status, confirmationText) {
+            const applicationId = card.dataset.applicationId;
+            if (!applicationId) return alert('Aucun dossier pour ce client.');
+            if (!adminToken) return openAdministration();
+            if (confirmationText && !confirm(confirmationText)) return;
+            const { error } = await supabaseClient.rpc('admin_set_application_status', {
+                p_token:adminToken, p_application_id:applicationId, p_status:status
+            });
+            if (error) return alert(error.message || 'Impossible de modifier le statut du dossier.');
+            await loadAdminClients();
+        }
+
+        adminClientList.querySelectorAll('.admin-approve-btn').forEach(btn => btn.addEventListener('click', async () => {
+            const card = btn.closest('.admin-client-card');
+            await updateAdminApplicationStatus(card, 'Application approved', 'Approuver cette demande de financement ?');
+        }));
+
+        adminClientList.querySelectorAll('.admin-reject-btn').forEach(btn => btn.addEventListener('click', async () => {
+            const card = btn.closest('.admin-client-card');
+            await updateAdminApplicationStatus(card, 'Application rejected', 'Rejeter cette demande de financement ?');
+        }));
+
+        adminClientList.querySelectorAll('.admin-application-status-btn').forEach(btn => btn.addEventListener('click', async () => {
+            const card = btn.closest('.admin-client-card');
+            const status = card.querySelector('.admin-application-status-select').value;
+            await updateAdminApplicationStatus(card, status, null);
         }));
 
         adminClientList.querySelectorAll('.admin-history-btn').forEach(btn => btn.addEventListener('click', async () => {
