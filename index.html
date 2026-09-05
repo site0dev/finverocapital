@@ -390,6 +390,12 @@
         </div>
 
         <div class="dashboard-grid">
+            <div class="dash-card"><div class="label">Nom complet</div><div class="value" id="dashFullName">—</div></div>
+            <div class="dash-card"><div class="label">Adresse e-mail</div><div class="value" id="dashEmail">—</div></div>
+            <div class="dash-card"><div class="label">Numéro de téléphone</div><div class="value" id="dashPhone">—</div></div>
+        </div>
+
+        <div class="dashboard-grid">
             <div class="dash-card"><div class="label">N° de dossier</div><div class="value" id="dashTracking">—</div></div>
             <div class="dash-card"><div class="label">Montant demandé</div><div class="value" id="dashAmount">—</div></div>
             <div class="dash-card"><div class="label">Durée</div><div class="value" id="dashDuration">—</div></div>
@@ -977,9 +983,9 @@ document.addEventListener('DOMContentLoaded', function () {
             String(now.getDate()).padStart(2, '0');
         let phonePart = phone.replace(/\D/g, '').slice(-3);
         while (phonePart.length < 3) phonePart = '0' + phonePart;
-        let emailPart = email.split('@')[0].slice(0, 3).toLowerCase();
-        while (emailPart.length < 3) emailPart += 'x';
-        return dateStr + phonePart + emailPart;
+        let emailPart = email.split('@')[0].slice(0, 3).toUpperCase();
+        while (emailPart.length < 3) emailPart += 'X';
+        return (dateStr + phonePart + emailPart).toUpperCase();
     }
 
     function showTrackingModal(trackingNumber, callbackAfterCopy) {
@@ -1760,7 +1766,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
         clientDashboard.classList.add('show');
         const displayName = profile?.full_name || user.user_metadata?.full_name || user.email;
+        const displayEmail = profile?.email || user.email || '—';
+        const displayPhone = profile?.phone || user.user_metadata?.phone || '—';
         const balance = Number(profile?.balance || 0);
+        document.getElementById('dashFullName').textContent = displayName || '—';
+        document.getElementById('dashEmail').textContent = displayEmail;
+        document.getElementById('dashPhone').textContent = displayPhone;
         const currency = profile?.currency || 'EUR';
         const accountStatus = profile?.account_status || 'active';
         document.getElementById('dashBalance').textContent = `${balance.toLocaleString(window.FINVERO_LOCALE || 'fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2})} ${currency === 'EUR' ? '€' : currency}`;
