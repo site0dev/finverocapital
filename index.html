@@ -800,25 +800,79 @@ function googleTranslateElementInit() {
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
+/* ===== LANGUE AUTOMATIQUE =====
+   La langue du navigateur devient la langue du site.
+   Si la langue exacte n'est pas disponible, on utilise sa langue principale.
+   Le changement de langue du navigateur est recontrôlé au retour sur la page
+   et périodiquement lorsque le navigateur expose la nouvelle valeur.
+*/
 document.addEventListener('DOMContentLoaded', function () {
     const select = document.getElementById('languageSelect');
     const supported = ['fr','en','es','pt','de','it','nl','pl','ro','cs','el','sv','da','fi','no','hu','bg','sk','uk','tr'];
-    const match = document.cookie.match(/(?:^|;\s*)googtrans=\/fr\/([^;]+)/);
-    const current = match && supported.includes(match[1]) ? match[1] : 'fr';
-    window.FINANCIO_LANGUAGE = current;
-    window.FINANCIO_LOCALE = current === 'fr' ? 'fr-FR' : current;
-    document.documentElement.lang = current;
+
+    function getBrowserLanguage() {
+        const languages = Array.isArray(navigator.languages) && navigator.languages.length
+            ? navigator.languages
+            : [navigator.language || navigator.userLanguage || 'fr'];
+
+        for (const value of languages) {
+            const code = String(value || '').toLowerCase().split('-')[0].split('_')[0];
+            if (supported.includes(code)) return code;
+        }
+        return 'fr';
+    }
+
+    function getGoogleLanguageCookie() {
+        const match = document.cookie.match(/(?:^|;\s*)googtrans=\/fr\/([^;]+)/);
+        return match && supported.includes(match[1]) ? match[1] : null;
+    }
+
+    function applyLanguage(language, reload) {
+        const target = supported.includes(language) ? language : 'fr';
+        document.cookie = 'googtrans=/fr/' + target + ';path=/;SameSite=Lax';
+        window.FINANCIO_LANGUAGE = target;
+        window.FINANCIO_LOCALE = target === 'fr' ? 'fr-FR' : target;
+        document.documentElement.lang = target;
+        if (select) select.value = target;
+        if (reload) window.location.reload();
+        return target;
+    }
+
+    const browserLanguage = getBrowserLanguage();
+    const savedLanguage = getGoogleLanguageCookie();
+
+    // Au premier passage, ou lorsque la langue du navigateur a changé,
+    // la langue du navigateur est prioritaire.
+    const currentLanguage = savedLanguage || 'fr';
+    if (!savedLanguage || savedLanguage !== browserLanguage) {
+        applyLanguage(browserLanguage, true);
+        return;
+    }
+    applyLanguage(currentLanguage, false);
+
     if (select) {
-        select.value = current;
         select.addEventListener('change', function () {
-            const target = this.value;
-            document.cookie = 'googtrans=/fr/' + target + ';path=/;SameSite=Lax';
-            window.FINANCIO_LANGUAGE = target;
-            window.FINANCIO_LOCALE = target === 'fr' ? 'fr-FR' : target;
-            document.documentElement.lang = target;
-            window.location.reload();
+            applyLanguage(this.value, true);
         });
     }
+
+    // Vérifie les changements effectués dans les paramètres du navigateur
+    // sans attendre une nouvelle visite.
+    let lastBrowserLanguage = browserLanguage;
+    function checkBrowserLanguage() {
+        const detected = getBrowserLanguage();
+        if (detected !== lastBrowserLanguage) {
+            lastBrowserLanguage = detected;
+            const active = getGoogleLanguageCookie();
+            if (active !== detected) applyLanguage(detected, true);
+        }
+    }
+
+    window.addEventListener('focus', checkBrowserLanguage);
+    document.addEventListener('visibilitychange', function () {
+        if (!document.hidden) checkBrowserLanguage();
+    });
+    setInterval(checkBrowserLanguage, 2000);
 });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
