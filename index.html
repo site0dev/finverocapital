@@ -1085,6 +1085,12 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('simulationResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    // Le bouton de simulation doit fonctionner indépendamment de Supabase.
+    const simulerBtn = document.getElementById('simulerBtn');
+    if (simulerBtn) {
+        simulerBtn.addEventListener('click', afficherSimulation);
+    }
+
     // ===== ENVOI RÉEL DE L'E-MAIL DE CONFIRMATION =====
     // L'e-mail est envoyé par le serveur via /api/emails/application-confirmation.
 
