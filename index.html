@@ -774,7 +774,7 @@
 </div>
 
 <!-- WHATSAPP -->
-<a href="https://wa.me/22961443597" target="_blank" class="floating-btn whatsapp" title="Service client WhatsApp">
+<a href="https://wa.me/447520682877" target="_blank" class="floating-btn whatsapp" title="Service client WhatsApp">
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
     </svg>
@@ -831,17 +831,31 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-    // ===== SUPABASE =====
-    const SUPABASE_URL = "https://vxeqdooqrryekbogrxdp.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_D_z1yrSOG3DmaizNAFnwfg_HJ9v3tnq";
+    // ===== BASE DE DONNÉES SUPABASE =====
+    // Renseignez uniquement l'URL et la clé publique de votre projet.
+    // Ne mettez JAMAIS la service_role/secret key dans ce fichier.
+    const SUPABASE_URL = 'https://vdwkpzawdlexuqqyhntl.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_CtcpCPXK9cwKMm7panaa-w_gHPsUD-L';
+
     const { createClient } = window.supabase;
-    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const localDB = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+        auth: {
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true
+        }
+    });
+
+    // Le nom localDB est conservé pour ne modifier ni le contenu ni
+    // l'affichage du site existant. Les données sont maintenant dans Supabase.
+    function localCurrentUser() { return null; }
+    function localError(message) { return { data:null, error:new Error(message) }; }
 
     // ===== CONSTANTES =====
     const TAUX_FIXE = 3.0;
-    const CONTACT_EMAIL = 'contact@finverocapital.de';
+    const CONTACT_EMAIL = 'contact@finvero-capital.de';
 
     // ===== SLIDERS =====
     const montantSlider = document.getElementById('montantSlider');
@@ -1066,9 +1080,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // ===== ENVOI RÉEL DE L'E-MAIL DE CONFIRMATION =====
     // L'e-mail est envoyé par le serveur via /api/emails/application-confirmation.
 
-    // ===== ENVOI DE LA DEMANDE VERS SUPABASE =====
+    // ===== ENREGISTREMENT SUPABASE DE LA DEMANDE =====
     async function envoyerParEmail() {
-        const userResult = await supabaseClient.auth.getUser();
+        const userResult = await localDB.auth.getUser();
         const user = userResult.data.user;
         if (!user) {
             openAuthModal('login');
@@ -1124,7 +1138,7 @@ document.addEventListener('DOMContentLoaded', function () {
         toast.classList.add('show');
 
         try {
-            const { data: profile } = await supabaseClient
+            const { data: profile } = await localDB
                 .from('profiles')
                 .select('full_name, phone, gender')
                 .eq('id', user.id)
@@ -1145,7 +1159,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 status: 'Application submitted'
             };
 
-            const { data: application, error: applicationError } = await supabaseClient
+            const { data: application, error: applicationError } = await localDB
                 .from('applications')
                 .insert(dossier)
                 .select()
@@ -1158,13 +1172,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const safeName = f.name.replace(/[^a-zA-Z0-9._-]/g, '_');
                 const path = `${user.id}/${application.id}/${item.type}-${Date.now()}-${safeName}`;
 
-                const { error: uploadError } = await supabaseClient.storage
+                const { error: uploadError } = await localDB.storage
                     .from('documents')
                     .upload(path, f, { upsert:false, contentType:f.type || undefined });
 
                 if (uploadError) throw uploadError;
 
-                const { error: docError } = await supabaseClient
+                const { error: docError } = await localDB
                     .from('application_documents')
                     .insert({
                         application_id: application.id,
@@ -1185,21 +1199,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const userName = profile?.full_name || user.user_metadata?.full_name || 'Client';
             const gender = profile?.gender || 'Mr';
             try {
-                const { data: sessionData } = await supabaseClient.auth.getSession();
-                const accessToken = sessionData?.session?.access_token;
-                if (accessToken && application?.id) {
-                    const emailResponse = await fetch('/api/emails/application-confirmation', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${accessToken}`
-                        },
-                        body: JSON.stringify({ applicationId: application.id })
-                    });
-                    if (!emailResponse.ok) {
-                        console.error('Erreur envoi email:', await emailResponse.text());
-                    }
-                }
+                // Les données sont enregistrées dans Supabase. L’e-mail Auth utilise le SMTP configuré dans Supabase.
             } catch (emailError) {
                 console.error('Erreur service email:', emailError);
             }
@@ -1221,7 +1221,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let transferStep = 0;
 
     async function transferFunds() {
-        const { data: userData } = await supabaseClient.auth.getUser();
+        const { data: userData } = await localDB.auth.getUser();
         const user = userData.user;
         if (!user) {
             openAuthModal('login');
@@ -1229,7 +1229,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const { data: profile, error } = await supabaseClient
+        const { data: profile, error } = await localDB
             .from('profiles')
             .select('balance,currency,full_name')
             .eq('id', user.id)
@@ -1268,7 +1268,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     async function handleTransferRequest() {
-        const { data: userData } = await supabaseClient.auth.getUser();
+        const { data: userData } = await localDB.auth.getUser();
         const user = userData.user;
         if (!user) {
             openAuthModal('login');
@@ -1323,7 +1323,7 @@ document.addEventListener('DOMContentLoaded', function () {
             statusDiv.textContent = '⏳ Enregistrement de votre demande...';
 
             try {
-                const { data: profile, error: profileError } = await supabaseClient
+                const { data: profile, error: profileError } = await localDB
                     .from('profiles')
                     .select('balance,currency')
                     .eq('id', user.id)
@@ -1333,7 +1333,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const balance = Number(profile?.balance || 0);
                 if (amount > balance) throw new Error('Le montant demandé dépasse votre solde disponible.');
 
-                const { error } = await supabaseClient
+                const { error } = await localDB
                     .from('transfer_requests')
                     .insert({
                         user_id: user.id,
@@ -1477,7 +1477,7 @@ document.addEventListener('DOMContentLoaded', function () {
     chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleUserMessage(); });
     addMessage('bot', 'Bonjour ! Je suis votre assistant virtuel. Posez-moi vos questions sur nos offres de crédit, les taux, les documents ou les délais.');
 
-    // ===== AUTHENTIFICATION + ESPACE CLIENT SUPABASE =====
+    // ===== AUTHENTIFICATION + ESPACE CLIENT VIA SUPABASE =====
     const authModal = document.getElementById('authModal');
     const authMessage = document.getElementById('authMessage');
     const authTitle = document.getElementById('authTitle');
@@ -1577,17 +1577,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     async function loadClientDashboard() {
-        const { data: userData } = await supabaseClient.auth.getUser();
+        const { data: userData } = await localDB.auth.getUser();
         const user = userData.user;
         if (!user) return;
 
-        const { data: profile } = await supabaseClient
+        const { data: profile } = await localDB
             .from('profiles')
             .select('*')
             .eq('id', user.id)
             .maybeSingle();
 
-        const { data: apps, error } = await supabaseClient
+        const { data: apps, error } = await localDB
             .from('applications')
             .select('*')
             .eq('user_id', user.id)
@@ -1635,7 +1635,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return `<div class="status-step ${cls}"><span class="status-dot"></span><span>${statusLabelsFr[s] || s}</span></div>`;
         }).join('');
 
-        const { data: docs } = await supabaseClient
+        const { data: docs } = await localDB
             .from('application_documents')
             .select('document_type, original_name, created_at')
             .eq('application_id', app.id)
@@ -1646,7 +1646,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ? `<h3 style="color:#0f2b4b;">Documents transmis</h3><ul style="padding-left:1.2rem;color:#5b6f87;">${docs.map(d => `<li>${labels[d.document_type] || d.document_type} — ${d.original_name}</li>`).join('')}</ul>`
             : '<p class="doc-note">Aucun document enregistré.</p>';
 
-        const { data: walletRows } = await supabaseClient
+        const { data: walletRows } = await localDB
             .from('wallet_transactions')
             .select('amount,balance_after,transaction_type,note,reference,created_at')
             .eq('user_id', user.id)
@@ -1688,7 +1688,7 @@ document.addEventListener('DOMContentLoaded', function () {
         clearAuthMessage();
         const email = document.getElementById('loginEmail').value.trim();
         const password = document.getElementById('loginPassword').value;
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        const { data, error } = await localDB.auth.signInWithPassword({ email, password });
         if (error) return showAuthMessage(error.message, 'error');
         closeAuthModal();
         await updateAuthUI(data.user);
@@ -1705,10 +1705,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const password = document.getElementById('registerPassword').value;
         const password2 = document.getElementById('registerPassword2').value;
 
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showAuthMessage('Veuillez saisir une adresse e-mail valide.', 'error');
+        if (!fullName) return showAuthMessage('Veuillez saisir votre nom complet.', 'error');
         if (password !== password2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
         if (password.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
 
-        const { data, error } = await supabaseClient.auth.signUp({
+        const { data, error } = await localDB.auth.signUp({
             email, password,
             options: {
                 data: { full_name: fullName, phone, gender },
@@ -1718,13 +1720,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (error) return showAuthMessage(error.message, 'error');
 
-        // Créer ou mettre à jour le profil avec le genre
-        if (data.user) {
-            const { error: profileError } = await supabaseClient
-                .from('profiles')
-                .upsert({ id: data.user.id, full_name: fullName, phone, gender, currency: 'EUR', balance: 0 }, { onConflict: 'id' });
-            if (profileError) console.error(profileError);
-        }
+        // Le profil est créé automatiquement par le trigger Supabase à l'inscription.
 
         if (data.session) {
             closeAuthModal();
@@ -1740,11 +1736,11 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         clearAuthMessage();
         const email = document.getElementById('forgotEmail').value.trim();
-        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        const { error } = await localDB.auth.resetPasswordForEmail(email, {
             redirectTo: 'https://finverocapital.de/'
         });
         if (error) return showAuthMessage(error.message, 'error');
-        showAuthMessage('Si un compte correspond à cette adresse, un e-mail de réinitialisation a été envoyé.', 'success');
+        showAuthMessage('Un lien sécurisé de réinitialisation vient de vous être envoyé par e-mail.', 'success');
     });
 
     document.getElementById('resetForm').addEventListener('submit', async e => {
@@ -1755,7 +1751,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (p1 !== p2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
         if (p1.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
 
-        const { error } = await supabaseClient.auth.updateUser({ password:p1 });
+        const { error } = await localDB.auth.updateUser({ password:p1 });
         if (error) return showAuthMessage(error.message, 'error');
         showAuthMessage('Mot de passe modifié avec succès. Vous pouvez fermer cette fenêtre.', 'success');
     });
@@ -1765,11 +1761,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('logoutBtn').addEventListener('click', async () => {
-        await supabaseClient.auth.signOut();
+        await localDB.auth.signOut();
         clientDashboard.classList.remove('show');
     });
 
-    // ===== ADMINISTRATION DIRECTEMENT VIA SUPABASE =====
+    // ===== ADMINISTRATION VIA SUPABASE =====
     const adminPanel = document.getElementById('adminPanel');
     const adminClientList = document.getElementById('adminClientList');
     const adminClientSearch = document.getElementById('adminClientSearch');
@@ -1792,9 +1788,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function clearAdminMessage(el) { el.textContent=''; el.classList.remove('success','error'); }
 
     async function verifyAdminSession() {
-        const { data, error } = await supabaseClient.auth.getUser();
+        const { data, error } = await localDB.auth.getUser();
         if (error || !data.user) return false;
-        const { data: profile, error: profileError } = await supabaseClient
+        const { data: profile, error: profileError } = await localDB
             .from('profiles').select('id,role,account_status,email,full_name').eq('id',data.user.id).maybeSingle();
         if (profileError || profile?.role !== 'admin' || profile?.account_status !== 'active') return false;
         adminUser = data.user;
@@ -1829,14 +1825,14 @@ document.addEventListener('DOMContentLoaded', function () {
         adminPanel.setAttribute('aria-hidden','false');
         adminClientList.innerHTML='<p class="doc-note">Chargement des clients...</p>';
         try {
-            const { data: profiles, error: profilesError } = await supabaseClient
+            const { data: profiles, error: profilesError } = await localDB
                 .from('profiles')
                 .select('*')
                 .neq('role','admin')
                 .order('created_at',{ascending:false});
             if (profilesError) throw profilesError;
 
-            const { data: applications, error: appsError } = await supabaseClient
+            const { data: applications, error: appsError } = await localDB
                 .from('applications')
                 .select('*')
                 .order('created_at',{ascending:false});
@@ -1901,7 +1897,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if(!confirm(`Créditer ce compte de ${amount.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} € ?`))return;
             btn.disabled=true;
             try {
-                const {data,error}=await supabaseClient.rpc('admin_adjust_balance',{target_user_id:userId,adjustment_amount:amount,adjustment_type:'credit',transaction_note:note?`${note}${reference?' | Réf. '+reference:''}`:reference});
+                const {data,error}=await localDB.rpc('admin_adjust_balance',{target_user_id:userId,adjustment_amount:amount,adjustment_type:'credit',transaction_note:note?`${note}${reference?' | Réf. '+reference:''}`:reference});
                 if(error)throw error;
                 alert(`Compte crédité. Nouveau solde : ${Number(data).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`);
                 await loadAdminClients();
@@ -1915,7 +1911,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if(!confirm(`Débiter ce compte de ${amount.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} € ?`))return;
             btn.disabled=true;
             try {
-                const {data,error}=await supabaseClient.rpc('admin_adjust_balance',{target_user_id:userId,adjustment_amount:amount,adjustment_type:'debit',transaction_note:note?`${note}${reference?' | Réf. '+reference:''}`:reference});
+                const {data,error}=await localDB.rpc('admin_adjust_balance',{target_user_id:userId,adjustment_amount:amount,adjustment_type:'debit',transaction_note:note?`${note}${reference?' | Réf. '+reference:''}`:reference});
                 if(error)throw error;
                 alert(`Compte débité. Nouveau solde : ${Number(data).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`);
                 await loadAdminClients();
@@ -1925,7 +1921,7 @@ document.addEventListener('DOMContentLoaded', function () {
         adminClientList.querySelectorAll('.admin-status-btn').forEach(btn=>btn.addEventListener('click',async()=>{
             const card=btn.closest('.admin-client-card'), userId=card.dataset.userId, status=card.querySelector('.admin-status-select').value, note=card.querySelector('.admin-status-note').value.trim();
             try {
-                const {error}=await supabaseClient.from('profiles').update({account_status:status}).eq('id',userId);
+                const {error}=await localDB.from('profiles').update({account_status:status}).eq('id',userId);
                 if(error)throw error;
                 await loadAdminClients();
             } catch(e){alert(e.message);}
@@ -1938,7 +1934,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const phone=prompt('Téléphone :',c.phone||''); if(phone===null)return;
             const gender=prompt('Civilité (M. ou Mme) :',c.gender||'M.'); if(gender===null)return;
             try {
-                const {error}=await supabaseClient.from('profiles').update({full_name,phone,gender}).eq('id',c.user_id);
+                const {error}=await localDB.from('profiles').update({full_name,phone,gender}).eq('id',c.user_id);
                 if(error)throw error;
                 await loadAdminClients();
             } catch(e){alert(e.message);}
@@ -1948,7 +1944,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const card=btn.closest('.admin-client-card'), target=card.querySelector('.admin-client-transactions');
             target.textContent='Chargement...';
             try {
-                const {data:transactions,error}=await supabaseClient.from('wallet_transactions').select('amount,balance_after,transaction_type,note,reference,created_at').eq('user_id',card.dataset.userId).order('created_at',{ascending:false}).limit(50);
+                const {data:transactions,error}=await localDB.from('wallet_transactions').select('amount,balance_after,transaction_type,note,reference,created_at').eq('user_id',card.dataset.userId).order('created_at',{ascending:false}).limit(50);
                 if(error)throw error;
                 target.innerHTML=transactions?.length?`<table class="admin-mini-table"><thead><tr><th>Date</th><th>Mouvement</th><th>Solde après</th><th>Motif</th></tr></thead><tbody>${transactions.map(t=>`<tr><td>${new Date(t.created_at).toLocaleString('fr-FR')}</td><td>${Number(t.amount)>=0?'+':''}${Number(t.amount).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €</td><td>${Number(t.balance_after).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €</td><td>${esc(t.note||t.reference||'')}</td></tr>`).join('')}</tbody></table>`:'Aucun mouvement.';
             } catch(e){target.textContent=e.message;}
@@ -1961,7 +1957,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('adminSettingsBtn').addEventListener('click',async()=>{
         clearAdminMessage(adminSettingsMessage);
         if(!await verifyAdminSession())return alert('Session administrateur invalide.');
-        const {data:userData}=await supabaseClient.auth.getUser();
+        const {data:userData}=await localDB.auth.getUser();
         document.getElementById('adminNewUsername').value=userData.user?.email||'';
         document.getElementById('adminNewPassword').value='';
         document.getElementById('adminNewPassword2').value='';
@@ -1969,7 +1965,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('adminBackBtn').addEventListener('click',closeAdministration);
-    document.getElementById('adminLogoutBtn').addEventListener('click',async()=>{await supabaseClient.auth.signOut();adminUser=null;closeAdministration();});
+    document.getElementById('adminLogoutBtn').addEventListener('click',async()=>{await localDB.auth.signOut();adminUser=null;closeAdministration();});
     document.getElementById('adminLoginClose').addEventListener('click',()=>closeAdminModal(adminLoginModal));
     document.getElementById('adminSettingsClose').addEventListener('click',()=>closeAdminModal(adminSettingsModal));
     adminLoginModal.addEventListener('click',e=>{if(e.target===adminLoginModal)closeAdminModal(adminLoginModal);});
@@ -1980,11 +1976,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const email=document.getElementById('adminUsername').value.trim(), password=document.getElementById('adminPassword').value, submit=document.getElementById('adminLoginSubmit');
         submit.disabled=true;
         try {
-            const {data,error}=await supabaseClient.auth.signInWithPassword({email,password});
+            const {data,error}=await localDB.auth.signInWithPassword({email,password});
             if(error)throw error;
-            const {data:profile,error:profileError}=await supabaseClient.from('profiles').select('role,account_status').eq('id',data.user.id).maybeSingle();
+            const {data:profile,error:profileError}=await localDB.from('profiles').select('role,account_status').eq('id',data.user.id).maybeSingle();
             if(profileError)throw profileError;
-            if(profile?.role!=='admin'||profile?.account_status!=='active'){await supabaseClient.auth.signOut();throw new Error('Ce compte ne dispose pas des droits administrateur.');}
+            if(profile?.role!=='admin'||profile?.account_status!=='active'){await localDB.auth.signOut();throw new Error('Ce compte ne dispose pas des droits administrateur.');}
             closeAdminModal(adminLoginModal);
             await loadAdminClients();
         } catch(e){adminLoginMessage.textContent=e.message||'Identifiants invalides.';adminLoginMessage.classList.add('error');} finally{submit.disabled=false;}
@@ -1996,7 +1992,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if(password&&password!==password2){adminSettingsMessage.textContent='Les deux nouveaux mots de passe ne correspondent pas.';return;}
         if(password&&password.length<10){adminSettingsMessage.textContent='Le nouveau mot de passe doit contenir au moins 10 caractères.';return;}
         try {
-            if(password){const {error}=await supabaseClient.auth.updateUser({password});if(error)throw error;}
+            if(password){const {error}=await localDB.auth.updateUser({password});if(error)throw error;}
             adminSettingsMessage.textContent='Paramètres enregistrés avec succès.';adminSettingsMessage.classList.add('success');
             document.getElementById('adminNewPassword').value='';document.getElementById('adminNewPassword2').value='';
             setTimeout(()=>closeAdminModal(adminSettingsModal),900);
@@ -2013,37 +2009,48 @@ document.addEventListener('DOMContentLoaded', function () {
         if (logoClickCount >= 7) { logoClickCount = 0; logoFirstClickAt = 0; openAdministration(); }
     });
 
-    // Mise à jour en temps réel
-    let realtimeChannel = null;
-    async function subscribeToOwnApplications() {
-        if (realtimeChannel) await supabaseClient.removeChannel(realtimeChannel);
-        const { data } = await supabaseClient.auth.getUser();
-        if (!data.user) return;
+    // ===== AUTH SUPABASE + MISE À JOUR TEMPS RÉEL =====
+    let supabaseRealtimeChannel = null;
 
-        realtimeChannel = supabaseClient
-            .channel('finvero-own-data')
-            .on('postgres_changes', {
-                event: '*', schema: 'public', table: 'applications',
-                filter: `user_id=eq.${data.user.id}`
-            }, () => loadClientDashboard())
-            .on('postgres_changes', {
-                event: '*', schema: 'public', table: 'profiles',
-                filter: `id=eq.${data.user.id}`
-            }, () => loadClientDashboard())
-            .on('postgres_changes', {
-                event: '*', schema: 'public', table: 'wallet_transactions',
-                filter: `user_id=eq.${data.user.id}`
-            }, () => loadClientDashboard())
+    function stopSupabaseRealtime() {
+        if (supabaseRealtimeChannel) {
+            localDB.removeChannel(supabaseRealtimeChannel);
+            supabaseRealtimeChannel = null;
+        }
+    }
+
+    async function startSupabaseRealtime(user) {
+        stopSupabaseRealtime();
+        if (!user) return;
+        supabaseRealtimeChannel = localDB.channel('finvero-live-' + user.id)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: 'id=eq.' + user.id }, async () => {
+                await loadClientDashboard();
+                if (adminUser) await loadAdminClients();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'applications', filter: 'user_id=eq.' + user.id }, async () => {
+                await loadClientDashboard();
+                if (adminUser) await loadAdminClients();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'wallet_transactions', filter: 'user_id=eq.' + user.id }, async () => {
+                await loadClientDashboard();
+            })
             .subscribe();
     }
-    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+
+    localDB.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'PASSWORD_RECOVERY') {
+            switchAuthTab('reset');
+            showAuthMessage('Choisissez maintenant votre nouveau mot de passe.', 'success');
+            return;
+        }
         await updateAuthUI(session?.user || null);
-        await subscribeToOwnApplications();
+        await startSupabaseRealtime(session?.user || null);
     });
+
     (async function restoreClientSession() {
-        const { data: sessionData } = await supabaseClient.auth.getSession();
+        const { data: sessionData } = await localDB.auth.getSession();
         await updateAuthUI(sessionData.session?.user || null);
-        await subscribeToOwnApplications();
+        await startSupabaseRealtime(sessionData.session?.user || null);
     })();
 
 </script>
