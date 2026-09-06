@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="fr" translate="yes">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finvero Capital – Simulation de crédit</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif; }
+        body { background: #f4f7fc; color: #1e2b3c; line-height: 1.5; padding: 1rem; }
+        .container { max-width: 1200px; margin: 0 auto; background: #ffffff; border-radius: 28px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05); padding: 2rem 2.5rem; }
+        .header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid #e9edf4; flex-wrap: wrap; gap: 0.5rem; }
+        .logo { font-size: 1.8rem; font-weight: 700; color: #0f2b4b; }
+        .logo span { color: #2a7de1; }
+        .tagline { font-size: 0.9rem; color: #5b6f87; background: #f0f4fa; padding: 0.3rem 1.2rem; border-radius: 30px; }
+        .hero { display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; padding: 1.5rem 0 1rem; }
+        .hero-image { flex: 1 1 280px; }
+        .hero-image img { width: 100%; height: auto; border-radius: 20px; display: block; }
+        .hero-text { flex: 1 1 280px; }
+        .hero-text h1 { font-size: 2.4rem; font-weight: 700; color: #0f2b4b; line-height: 1.15; margin-bottom: 0.5rem; }
+        .hero-text h1 span { color: #2a7de1; }
+        .hero-text p { font-size: 1.15rem; color: #3d556e; margin-bottom: 1.2rem; }
+        .badge { display: inline-block; background: #eaf2ff; color: #1f5fbd; padding: 0.3rem 1.2rem; border-radius: 50px; font-weight: 600; }
+        .form-section { background: #f9fbfe; border-radius: 24px; padding: 2rem 2.5rem; margin: 1.5rem 0 2rem; }
+        .form-section h2 { font-size: 1.8rem; margin-bottom: 0.2rem; }
+        .form-section .sub { color: #5b6f87; margin-bottom: 2rem; font-size: 1rem; }
+        .slider-group { margin-bottom: 1.8rem; }
+        .slider-header { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 0.2rem; }
+        .slider-header .value { background: #eaf2ff; padding: 0.1rem 1rem; border-radius: 30px; font-weight: 700; }
+        input[type="range"] { width: 100%; height: 6px; -webkit-appearance: none; background: #dce3ed; border-radius: 10px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #0f2b4b; cursor: pointer; }
+        .range-labels { display: flex; justify-content: space-between; font-size: 0.8rem; color: #8ba0b9; margin-top: -0.2rem; }
+        .taux-static { background: #f0f4fa; border: 1px solid #dce3ed; border-radius: 12px; padding: 0.6rem 1.2rem; text-align: center; font-weight: 600; font-size: 1.1rem; color: #0f2b4b; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; margin-top: 1.5rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.3rem; }
+        .form-group label { font-weight: 600; font-size: 0.95rem; color: #1e3349; }
+        .form-group input[type="email"], .form-group input[type="text"], .form-group input[type="tel"] { padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; outline: none; width: 100%; }
+        .form-group select { padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; outline: none; width: 100%; cursor: pointer; appearance: none; -webkit-appearance: none; }
+        .phone-wrapper { display: flex; flex-direction: column; gap: 0.3rem; width: 100%; }
+        .phone-wrapper .country-search { padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; outline: none; width: 100%; }
+        .phone-wrapper .country-search:focus, .phone-wrapper select:focus, .phone-wrapper input[type="tel"]:focus { border-color: #2a7de1; box-shadow: 0 0 0 3px rgba(42, 125, 225, 0.12); }
+        .phone-wrapper select { padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; outline: none; width: 100%; cursor: pointer; appearance: none; -webkit-appearance: none; }
+        .phone-wrapper input[type="tel"] { padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; outline: none; width: 100%; }
+        .form-actions { display: flex; gap: 1rem; margin-top: 2rem; flex-wrap: wrap; }
+        .btn { padding: 0.8rem 2.5rem; border: none; border-radius: 40px; font-weight: 600; font-size: 1rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; transition: background 0.2s, transform 0.1s; }
+        .btn:hover { transform: scale(1.02); }
+        .btn-primary { background: #0f2b4b; color: white; }
+        .btn-primary:hover { background: #1a3a62; }
+        .btn-success { background: #1f8b4c; color: white; }
+        .btn-success:hover { background: #167a3e; }
+        .simulation-results { margin-top: 2rem; display: none; background: #ffffff; border-radius: 20px; padding: 1.8rem 2rem; border: 1px solid #e9edf4; }
+        .simulation-results.show { display: block; }
+        .results-summary { display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; margin-bottom: 1.5rem; }
+        .result-item { background: #f7faff; padding: 0.6rem 1.5rem; border-radius: 14px; border-left: 5px solid #2a7de1; }
+        .result-item .label { font-size: 0.75rem; text-transform: uppercase; color: #5b6f87; font-weight: 600; }
+        .result-item .value { font-size: 1.6rem; font-weight: 700; color: #0f2b4b; }
+        .table-wrapper { overflow-x: auto; margin: 1rem 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+        th { background: #f0f4fa; color: #1e3349; font-weight: 600; padding: 0.6rem; }
+        td { padding: 0.6rem; border-bottom: 1px solid #eef2f7; }
+        .documents-upload { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e9edf4; }
+        .documents-upload h4 { font-size: 1.2rem; margin-bottom: 1.2rem; }
+        .doc-upload-group { margin-bottom: 1.2rem; }
+        .doc-upload-group label { font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 0.2rem; }
+        .doc-upload-group input[type="file"] { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; cursor: pointer; }
+        .doc-upload-group input[type="file"]::file-selector-button { padding: 0.5rem 1.5rem; border: none; border-radius: 30px; background: #0f2b4b; color: white; font-weight: 600; cursor: pointer; margin-right: 1rem; }
+        .validation-area { display: flex; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e9edf4; }
+        .steps-after-form { margin: 2rem 0 2rem; padding-top: 1.5rem; border-top: 1px dashed #dce3ed; }
+        .steps-after-form h3 { font-size: 1.8rem; color: #0f2b4b; margin-bottom: 1.5rem; }
+        .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .step-item { border-top: 5px solid #2a7de1; padding-top: 1.2rem; }
+        .step-item strong { display: block; font-size: 1.3rem; color: #0f2b4b; margin-bottom: 0.3rem; }
+        .step-item p { font-size: 1rem; color: #3d556e; line-height: 1.6; }
+        .promo-banner { background: #eaf2ff; border-radius: 16px; padding: 1.8rem 2rem; margin: 2rem 0; border-left: 5px solid #0f2b4b; display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+        .promo-banner .promo-text { flex: 2 1 300px; }
+        .promo-banner .promo-text p { font-size: 1.2rem; color: #0f2b4b; font-weight: 500; line-height: 1.7; }
+        .promo-banner .promo-text .emoji-big { font-size: 1.6rem; }
+        .promo-banner .promo-image { flex: 0 0 120px; text-align: center; }
+        .promo-banner .promo-image img { max-width: 100%; height: auto; border-radius: 16px; display: block; }
+        .trust-section { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e9edf4; display: flex; flex-wrap: wrap; align-items: center; gap: 2.5rem; }
+        .trust-content { flex: 2 1 400px; }
+        .trust-content h2 { font-size: 2rem; color: #0f2b4b; margin-bottom: 1.5rem; }
+        .trust-content .trust-item { margin-bottom: 1.2rem; }
+        .trust-content .trust-item strong { display: block; font-size: 1.3rem; color: #0f2b4b; }
+        .trust-content .trust-item p { font-size: 1.05rem; color: #3d556e; line-height: 1.6; margin: 0; }
+        .trust-image { flex: 1 1 250px; text-align: center; }
+        .trust-image img { max-width: 100%; height: auto; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .floating-btn { position: fixed; width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 2rem; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s; }
+        .floating-btn:hover { transform: scale(1.08); }
+        .floating-btn.whatsapp { background: #25D366; bottom: 6rem; right: 2rem; }
+        .floating-btn.chat { background: #0f2b4b; bottom: 2rem; right: 2rem; }
+        .chat-window { position: fixed; bottom: 8rem; right: 2rem; width: 380px; max-width: calc(100vw - 2rem); max-height: 480px; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; z-index: 1001; border: 1px solid #e9edf4; }
+        .chat-window.open { display: flex; }
+        .chat-header { background: #0f2b4b; color: white; padding: 0.8rem 1.2rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+        .chat-header .close-chat { background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; }
+        .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; background: #f9fbfe; display: flex; flex-direction: column; gap: 0.5rem; }
+        .chat-message { padding: 0.6rem 1rem; border-radius: 18px; max-width: 85%; word-wrap: break-word; font-size: 0.95rem; line-height: 1.5; }
+        .chat-message.bot { background: #eaf2ff; color: #0f2b4b; align-self: flex-start; border-bottom-left-radius: 4px; }
+        .chat-message.user { background: #0f2b4b; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-input-area { display: flex; border-top: 1px solid #e9edf4; padding: 0.5rem; background: white; }
+        .chat-input-area input { flex: 1; border: 1px solid #dce3ed; border-radius: 30px; padding: 0.6rem 1rem; font-size: 0.95rem; outline: none; }
+        .chat-input-area button { background: #0f2b4b; border: none; color: white; border-radius: 30px; padding: 0.6rem 1.2rem; margin-left: 0.5rem; cursor: pointer; font-weight: 600; }
+        .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: #1f8b4c; color: white; padding: 0.8rem 2rem; border-radius: 40px; font-weight: 600; opacity: 0; transition: all 0.4s ease; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .tracking-modal { position: fixed; inset: 0; background: rgba(15,43,75,0.7); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 3000; backdrop-filter: blur(4px); }
+        .tracking-modal.open { display: flex; }
+        .tracking-modal .tracking-card { background: #ffffff; border-radius: 24px; padding: 2.5rem 3rem; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; animation: fadeUp 0.4s ease; }
+        @keyframes fadeUp { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+        .tracking-modal .tracking-card h2 { font-size: 1.6rem; color: #0f2b4b; margin-bottom: 0.5rem; }
+        .tracking-modal .tracking-card .tracking-number { font-size: 2.2rem; font-weight: 700; color: #2a7de1; background: #eaf2ff; padding: 0.5rem 1rem; border-radius: 12px; margin: 1rem 0; letter-spacing: 1px; word-break: break-all; }
+        .tracking-modal .tracking-card .info-text { color: #5b6f87; font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .tracking-modal .tracking-card .copy-btn { background: #0f2b4b; color: white; border: none; padding: 0.8rem 2.5rem; border-radius: 40px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+        .tracking-modal .tracking-card .copy-btn:hover { background: #1a3a62; transform: scale(1.02); }
+        .tracking-modal .tracking-card .copy-btn.copied { background: #1f8b4c; }
+        .transfer-modal { position: fixed; inset: 0; background: rgba(15,43,75,0.7); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 3000; backdrop-filter: blur(4px); }
+        .transfer-modal.open { display: flex; }
+        .transfer-card { background: #ffffff; border-radius: 24px; padding: 2.5rem 3rem; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; animation: fadeUp 0.4s ease; }
+        .transfer-card h2 { font-size: 1.6rem; color: #0f2b4b; margin-bottom: 0.5rem; }
+        .transfer-card .fee-amount { font-size: 2.2rem; font-weight: 700; color: #a12b2b; background: #fff0f0; padding: 0.5rem 1rem; border-radius: 12px; margin: 1rem 0; display: inline-block; }
+        .transfer-card .info-text { color: #5b6f87; font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
+        .transfer-card .transfer-btn { background: #0f2b4b; color: white; border: none; padding: 0.8rem 2.5rem; border-radius: 40px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: background 0.2s, transform 0.1s; }
+        .transfer-card .transfer-btn:hover { background: #1a3a62; transform: scale(1.02); }
+        .transfer-card .transfer-btn:disabled { background: #b0bccd; cursor: not-allowed; }
+        .transfer-card .close-transfer { background: none; border: none; color: #5b6f87; font-size: 1.2rem; cursor: pointer; margin-top: 1rem; display: block; width: 100%; text-align: center; }
+        .transfer-card .close-transfer:hover { text-decoration: underline; }
+        .transfer-card .transfer-success { color: #1f8b4c; font-weight: 600; margin-top: 0.5rem; }
+        @media (max-width: 600px) { .tracking-modal .tracking-card, .transfer-card { padding: 2rem 1.5rem; } .tracking-modal .tracking-card .tracking-number { font-size: 1.6rem; } }
+        @media (max-width: 900px) { .steps-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; } .trust-section { flex-direction: column; text-align: center; } .trust-content .trust-item { text-align: center; } .promo-banner { flex-direction: column; text-align: center; } .promo-banner .promo-image { flex: 0 0 auto; } }
+        @media (max-width: 700px) { body { padding: 0.5rem; } .container { padding: 1.2rem; } .hero-text h1 { font-size: 2rem; } .form-grid { grid-template-columns: 1fr; gap: 1rem; } .form-actions { flex-direction: column; align-items: stretch; } .btn { justify-content: center; } .promo-banner { padding: 1.2rem; } .promo-banner .promo-text p { font-size: 1rem; } .form-section { padding: 1.5rem; } .steps-grid { grid-template-columns: 1fr; gap: 1.2rem; } .step-item { padding-top: 0.8rem; } .floating-btn { width: 50px; height: 50px; font-size: 1.6rem; } .floating-btn.whatsapp { bottom: 5.5rem; right: 1.2rem; } .floating-btn.chat { bottom: 1.2rem; right: 1.2rem; } .chat-window { width: calc(100vw - 1.5rem); right: 0.75rem; bottom: 6.5rem; max-height: 50vh; } .trust-section { gap: 1.5rem; } .trust-content h2 { font-size: 1.6rem; } }
+        @media (max-width: 450px) { .phone-wrapper select, .phone-wrapper .country-search { font-size: 0.9rem; padding: 0.7rem 0.8rem; } }
+        .brand-meta { display:flex; flex-direction:column; gap:.15rem; }
+        .brand-subtitle { font-size:.72rem; color:#7b8da3; letter-spacing:.03em; }
+        .legal-footer { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid #e9edf4; }
+        .legal-footer nav { display: flex; flex-wrap: wrap; gap: .7rem 1.2rem; margin-bottom: .5rem; }
+        .legal-footer nav button { border: 0; background: none; color: #315f91; cursor: pointer; padding: 0; font: inherit; font-size: 0.9rem; }
+        .legal-footer nav button:hover { text-decoration: underline; }
+        .legal-footer small { color: #8ba0b9; line-height: 1.6; font-size: 0.85rem; }
+        .language-indicator { font-size:.75rem; color:#5b6f87; margin-top:.15rem; }
+        .language-picker { display:inline-flex; align-items:center; gap:.35rem; margin-top:.25rem; color:#5b6f87; font-size:.8rem; }
+        .language-picker select { border:1px solid #dce3ed; background:#fff; color:#1e2b3c; border-radius:10px; padding:.3rem .5rem; font-size:.8rem; cursor:pointer; outline:none; }
+        .language-picker select:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
+        #google_translate_element, .goog-te-banner-frame, .goog-te-balloon-frame, .goog-tooltip, .goog-tooltip:hover, .skiptranslate { display: none !important; }
+        body { top: 0 !important; }
+        .goog-text-highlight { background: transparent !important; box-shadow: none !important; }
+        .legal-modal { position: fixed; inset: 0; background: rgba(15,43,75,0.6); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 2000; }
+        .legal-modal.open { display: flex; }
+        .legal-card { background: #fff; width: min(900px, 100%); max-height: 88vh; overflow-y: auto; border-radius: 22px; padding: 2rem 2.5rem; box-shadow: 0 20px 60px rgba(0,0,0,0.25); position: relative; }
+        .legal-card .legal-close { position: sticky; top: 0; float: right; border: 0; background: #eef3f9; color: #0f2b4b; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1.1rem; margin-bottom: 1rem; }
+        .legal-card h2 { color: #0f2b4b; margin-bottom: 1.2rem; font-size: 1.6rem; }
+        .legal-card h3 { color: #0f2b4b; margin: 1.2rem 0 0.4rem; font-size: 1.2rem; }
+        .legal-card p, .legal-card li { color: #3d556e; line-height: 1.7; margin-bottom: 0.6rem; }
+        .legal-card ul { padding-left: 1.5rem; }
+        .stats-section { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); direction: rtl; gap: 1rem; margin: 1.5rem 0 2rem; width: 100%; align-items: stretch; }
+        .stats-section .stat-card { width: 100%; min-width: 0; direction: ltr; box-sizing: border-box; }
+        .stat-card { background: #fff; border: 1px solid #e5ebf2; border-radius: 16px; padding: 1.25rem 1rem; text-align: center; box-shadow: 0 6px 20px rgba(35, 61, 89, 0.07); transition: transform .2s ease, box-shadow .2s ease; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 9px 24px rgba(35, 61, 89, 0.11); }
+        .stat-icon { width: 42px; height: 42px; margin: 0 auto .55rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #eef5e9; color: #3d556e; font-weight: 700; font-size: 1.15rem; }
+        .stat-value { color: #20364d; font-size: clamp(1.55rem, 3vw, 2.1rem); line-height: 1.1; font-weight: 800; letter-spacing: -.02em; }
+        .stat-value span { font-size: .62em; }
+        .stat-label { margin-top: .4rem; color: #687d95; font-size: .88rem; line-height: 1.35; }
+        /* Suppression de la règle qui passait en 1 colonne sur mobile pour garder les statistiques côte à côte */
+        @media (max-width: 700px) {
+            .stats-section { grid-template-columns: repeat(3, 1fr); gap: .55rem; }
+            .stat-card { padding: 0.8rem .4rem; }
+            .stat-value { font-size: clamp(1rem, 4vw, 1.4rem); }
+            .stat-label { font-size: .65rem; }
+            .stat-icon { width: 32px; height: 32px; font-size: .9rem; }
+        }
+        /* Fin des modifications pour les stats */
+        .account-actions { display:flex; gap:.6rem; align-items:center; flex-wrap:wrap; }
+        .account-btn { border:1px solid #dce3ed; background:#fff; color:#0f2b4b; padding:.65rem 1rem; border-radius:30px; cursor:pointer; font-weight:600; }
+        .account-btn.primary { background:#0f2b4b; color:#fff; border-color:#0f2b4b; }
+        .account-btn:hover { transform:translateY(-1px); }
+        .account-panel { margin:1.2rem 0 1.5rem; padding:1.4rem; background:#f7faff; border:1px solid #e2eaf4; border-radius:20px; display:none; }
+        .account-panel.show { display:block; }
+        .account-panel-header { display:flex; justify-content:space-between; gap:1rem; align-items:center; flex-wrap:wrap; }
+        .account-panel h3 { color:#0f2b4b; margin:0; }
+        .account-status { color:#5b6f87; font-size:.9rem; }
+        .dashboard { display:none; margin:1.2rem 0 2rem; padding:1.7rem; background:#fff; border:1px solid #e3eaf3; border-radius:24px; box-shadow:0 5px 18px rgba(15,43,75,.05); }
+        .dashboard.show { display:block; }
+        .dashboard-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:1rem 0 1.5rem; }
+        .dash-card { background:#f7faff; border:1px solid #e5ebf3; border-radius:16px; padding:1rem; }
+        .dash-card .label { color:#71839a; font-size:.78rem; text-transform:uppercase; font-weight:700; }
+        .dash-card .value { color:#0f2b4b; font-size:1.15rem; font-weight:700; margin-top:.25rem; }
+        .status-track { display:grid; gap:.55rem; margin-top:1rem; }
+        .status-step { display:flex; gap:.75rem; align-items:center; padding:.75rem 1rem; border-radius:12px; background:#f3f6fa; color:#71839a; }
+        .status-step.active { background:#eaf2ff; color:#0f2b4b; font-weight:700; }
+        .status-step.done { background:#eef8f1; color:#1f8b4c; font-weight:600; }
+        .status-dot { width:12px; height:12px; border-radius:50%; background:#c8d2df; flex:0 0 12px; }
+        .status-step.active .status-dot { background:#2a7de1; }
+        .status-step.done .status-dot { background:#1f8b4c; }
+        .dash-actions { display:flex; gap:.7rem; flex-wrap:wrap; margin-top:1rem; }
+        .admin-panel { display:none; margin:1.2rem 0 2rem; padding:1.5rem; background:#fff; border:1px solid #e3eaf3; border-radius:24px; box-shadow:0 5px 18px rgba(15,43,75,.05); }
+        .admin-panel.show { display:block; }
+        .admin-toolbar { display:flex; gap:.7rem; flex-wrap:wrap; align-items:center; margin:1rem 0; }
+        .admin-search { flex:1 1 260px; padding:.75rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; font-size:1rem; outline:none; }
+        .admin-search:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
+        .admin-client-list { display:grid; gap:.8rem; }
+        .admin-client-card { border:1px solid #e5ebf3; border-radius:18px; padding:1rem; background:#f9fbfe; }
+        .admin-client-head { display:flex; justify-content:space-between; gap:1rem; align-items:flex-start; flex-wrap:wrap; }
+        .admin-client-name { color:#0f2b4b; font-weight:800; font-size:1.05rem; }
+        .admin-client-meta { color:#71839a; font-size:.85rem; margin-top:.2rem; }
+        .admin-client-balance { font-size:1.35rem; font-weight:800; color:#1f8b4c; white-space:nowrap; }
+        .admin-client-actions { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.6rem; margin-top:.9rem; }
+        .admin-client-actions input, .admin-client-actions select { width:100%; padding:.65rem .75rem; border:1.5px solid #dce3ed; border-radius:12px; background:#fff; outline:none; }
+        .admin-client-actions button { min-height:42px; }
+        .admin-client-transactions { margin-top:.8rem; font-size:.84rem; color:#5b6f87; }
+        .admin-mini-table { width:100%; border-collapse:collapse; margin-top:.5rem; }
+        .admin-mini-table th, .admin-mini-table td { padding:.45rem; border-bottom:1px solid #e9edf4; text-align:left; }
+        .admin-status-badge { display:inline-flex; padding:.25rem .6rem; border-radius:20px; font-size:.78rem; font-weight:700; background:#eaf2ff; color:#1f5fbd; }
+        .admin-status-badge.suspended { background:#fff5df; color:#9a6a00; }
+        .admin-status-badge.blocked { background:#fff0f0; color:#a12b2b; }
+        .admin-status-badge.pending { background:#f0f4fa; color:#5b6f87; }
+        .account-balance-card { background:#eef8f1; border:1px solid #d8efdf; border-radius:16px; padding:1rem; margin-bottom:1rem; }
+        .account-balance-card .label { color:#527263; font-size:.78rem; text-transform:uppercase; font-weight:700; }
+        .account-balance-card .value { color:#176d3c; font-size:1.7rem; font-weight:800; margin-top:.2rem; }
+        .account-status-client { margin-top:.25rem; font-weight:700; }
+        .wallet-history { margin-top:1.2rem; }
+        .wallet-history h3 { color:#0f2b4b; margin-bottom:.6rem; }
+        .wallet-entry { display:flex; justify-content:space-between; gap:1rem; padding:.65rem .8rem; border-radius:12px; background:#f7faff; margin-bottom:.45rem; }
+        .wallet-entry.credit .wallet-amount { color:#1f8b4c; font-weight:800; }
+        .wallet-entry.debit .wallet-amount { color:#a12b2b; font-weight:800; }
+        @media(max-width:850px) { .admin-client-actions { grid-template-columns:1fr 1fr; } }
+        @media(max-width:600px) { .admin-client-actions { grid-template-columns:1fr; } }
+        .logo-secret { border:0; background:transparent; padding:0; margin:0; cursor:pointer; font:inherit; font-size:1.8rem; font-weight:700; color:#0f2b4b; }
+        .logo-secret span { color:#2a7de1; }
+        .admin-modal { position:fixed; inset:0; background:rgba(15,43,75,.72); display:none; align-items:center; justify-content:center; padding:1rem; z-index:5000; backdrop-filter:blur(5px); }
+        .admin-modal.open { display:flex; }
+        .admin-modal-card { width:min(520px,100%); background:#fff; border-radius:24px; padding:2rem; box-shadow:0 20px 70px rgba(0,0,0,.28); max-height:90vh; overflow:auto; }
+        .admin-modal-card h2 { color:#0f2b4b; margin:0 0 .3rem; }
+        .admin-form { margin-top:1.2rem; }
+        .admin-form .form-group { margin-bottom:1rem; }
+        .admin-form label { display:block; margin-bottom:.4rem; color:#3d556e; font-weight:700; }
+        .admin-form input { padding:.8rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; width:100%; font-size:1rem; outline:none; }
+        .admin-form input:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
+        .admin-login-message { min-height:1.4rem; margin:.2rem 0 1rem; color:#a12b2b; font-size:.9rem; }
+        .admin-login-message.success { color:#1f8b4c; }
+        .admin-toolbar .admin-security-note { color:#71839a; font-size:.85rem; }
+        body.admin-mode { overflow:hidden; background:#f5f8fc; }
+        body.admin-mode .container > *:not(#adminPanel):not(.admin-modal) { display:none !important; }
+        body.admin-mode .container { max-width:none; width:100%; margin:0; padding:0; }
+        body.admin-mode #adminPanel { position:fixed; inset:0; z-index:3000; display:block !important; margin:0; padding:clamp(1rem,3vw,2rem); border:0; border-radius:0; overflow:auto; background:#f5f8fc; box-shadow:none; }
+        body.admin-mode #adminPanel .admin-shell { max-width:1200px; margin:0 auto; }
+        .admin-back-btn { margin-right:auto; }
+        @media(max-width:600px){ body.admin-mode #adminPanel{padding:.8rem;} }
+        .auth-modal { position:fixed; inset:0; background:rgba(15,43,75,.72); display:none; align-items:center; justify-content:center; padding:1rem; z-index:4000; backdrop-filter:blur(5px); }
+        .auth-modal.open { display:flex; }
+        .auth-card { width:min(520px,100%); background:#fff; border-radius:24px; padding:2rem; box-shadow:0 20px 70px rgba(0,0,0,.28); max-height:90vh; overflow:auto; }
+        .auth-card h2 { color:#0f2b4b; margin-bottom:.4rem; }
+        .auth-card .auth-sub { color:#71839a; margin-bottom:1.2rem; }
+        .auth-tabs { display:flex; gap:.4rem; background:#f2f5f9; padding:.35rem; border-radius:14px; margin-bottom:1.2rem; }
+        .auth-tab { flex:1; border:0; background:transparent; padding:.65rem; border-radius:10px; cursor:pointer; font-weight:700; color:#71839a; }
+        .auth-tab.active { background:#fff; color:#0f2b4b; box-shadow:0 2px 8px rgba(0,0,0,.06); }
+        .auth-form { display:none; }
+        .auth-form.active { display:block; }
+        .auth-form .form-group { margin-bottom:1rem; }
+        .auth-form input, .auth-form select { padding:.8rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; width:100%; font-size:1rem; outline:none; background:#fff; }
+        .auth-form input:focus, .auth-form select:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
+        .auth-submit { width:100%; margin-top:.4rem; }
+        .auth-link { border:0; background:none; color:#2a7de1; cursor:pointer; padding:.6rem 0; font-weight:600; }
+        .auth-message { margin-top:1rem; padding:.75rem 1rem; border-radius:12px; display:none; font-size:.9rem; }
+        .auth-message.show { display:block; }
+        .auth-message.error { background:#fff0f0; color:#a12b2b; }
+        .auth-message.success { background:#eef8f1; color:#176d3c; }
+        .password-row { position:relative; }
+        .password-toggle { position:absolute; right:.75rem; top:50%; transform:translateY(-50%); border:0; background:none; cursor:pointer; }
+        .doc-note { font-size:.82rem; color:#71839a; margin-top:.35rem; }
+        @media(max-width:800px) { .dashboard-grid { grid-template-columns:1fr; } }
+        @media(max-width:600px) { .account-actions { width:100%; } .account-btn { flex:1; } .auth-card { padding:1.4rem; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="brand-meta">
+            <button type="button" class="logo logo-secret" id="finveroLogo" aria-label="Finvero Capital">Finvero <span>Capital</span></button>
+            <div class="brand-subtitle">Solutions de financement • Europe</div>
+            <label class="language-picker" title="Choisir la langue">
+                <span>🌐</span>
+                <select id="languageSelect" aria-label="Choisir la langue">
+                    <option value="fr">Français</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="pt">Português</option>
+                    <option value="de">Deutsch</option>
+                    <option value="it">Italiano</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="pl">Polski</option>
+                    <option value="ro">Română</option>
+                    <option value="cs">Čeština</option>
+                    <option value="el">Ελληνικά</option>
+                    <option value="sv">Svenska</option>
+                    <option value="da">Dansk</option>
+                    <option value="fi">Suomi</option>
+                    <option value="no">Norsk</option>
+                    <option value="hu">Magyar</option>
+                    <option value="bg">Български</option>
+                    <option value="sk">Slovenčina</option>
+                    <option value="uk">Українська</option>
+                    <option value="tr">Türkçe</option>
+                </select>
+            </label>
+        </div>
+        <div class="account-actions">
+            <button type="button" class="account-btn" id="loginBtn">🔐 Se connecter</button>
+            <button type="button" class="account-btn primary" id="registerBtn">👤 Créer un compte</button>
+            <button type="button" class="account-btn" id="dashboardBtn" style="display:none;">📊 Mon espace</button>
+        </div>
+    </header>
+
+    <section class="account-panel" id="accountPanel">
+        <div class="account-panel-header">
+            <div>
+                <h3>👤 Espace client</h3>
+                <div class="account-status" id="accountStatus">Connexion...</div>
+            </div>
+            <button type="button" class="account-btn" id="logoutBtn">Se déconnecter</button>
+        </div>
+    </section>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-image">
+            <img src="1.jpg" alt="Financement" loading="lazy" />
+        </div>
+        <div class="hero-text">
+            <h1>Avez-vous besoin <br><span>d'un financement</span> ?</h1>
+            <p>Simulez votre crédit en quelques secondes, sans engagement.</p>
+            <span class="badge">✅ Réponse sous 24h</span>
+        </div>
+    </section>
+
+    <!-- STATISTIQUES (toujours côte à côte) -->
+    <section class="stats-section" aria-label="Statistiques Finvero Capital">
+        <div class="stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-value">5 690<span>+</span></div>
+            <div class="stat-label">dossiers reçus par semaine</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">✓</div>
+            <div class="stat-value">85<span>%</span></div>
+            <div class="stat-label">taux d’acceptation</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">€</div>
+            <div class="stat-value">750 652<span> €+</span></div>
+            <div class="stat-label">de financements accordés par mois</div>
+        </div>
+    </section>
+
+
+    <!-- ===== ESPACE CLIENT ===== -->
+    <section class="dashboard" id="clientDashboard">
+        <div class="account-panel-header">
+            <div>
+                <h2 style="color:#0f2b4b;margin:0;">Mon dossier de financement</h2>
+                <p class="account-status" id="dashboardWelcome">Bienvenue.</p>
+            </div>
+            <button type="button" class="account-btn" id="refreshDashboardBtn">↻ Actualiser</button>
+        </div>
+
+        <div class="account-balance-card">
+            <div class="label">Solde disponible</div>
+            <div class="value" id="dashBalance">0,00 €</div>
+            <div class="account-status-client" id="dashAccountStatus">Compte actif</div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dash-card"><div class="label">N° de dossier</div><div class="value" id="dashTracking">—</div></div>
+            <div class="dash-card"><div class="label">Montant demandé</div><div class="value" id="dashAmount">—</div></div>
+            <div class="dash-card"><div class="label">Durée</div><div class="value" id="dashDuration">—</div></div>
+            <div class="dash-card"><div class="label">Mensualité estimée</div><div class="value" id="dashMonthly">—</div></div>
+            <div class="dash-card"><div class="label">Statut</div><div class="value" id="dashStatus">Aucun dossier</div></div>
+            <div class="dash-card"><div class="label">Dernière mise à jour</div><div class="value" id="dashUpdated">—</div></div>
+        </div>
+
+        <h3 style="color:#0f2b4b;">Suivi de votre demande</h3>
+        <div class="status-track" id="statusTrack"></div>
+
+        <div id="dashDocuments" style="margin-top:1.5rem;"></div>
+        <div class="wallet-history" id="walletHistory"></div>
+        <div class="dash-actions">
+            <button type="button" class="account-btn" id="changePasswordBtn">🔑 Modifier mon mot de passe</button>
+            <button type="button" class="account-btn" id="transferFundsBtn">💸 Transférer vers mon compte bancaire</button>
+            <button type="button" class="account-btn" id="closeDashboardBtn">Fermer l'espace</button>
+        </div>
+    </section>
+
+    <!-- ===== ADMINISTRATION ===== -->
+    <section class="admin-panel" id="adminPanel" aria-hidden="true">
+        <div class="admin-shell">
+        <div class="account-panel-header">
+            <div>
+                <h2 style="color:#0f2b4b;margin:0;">🛠️ Administration</h2>
+                <p class="account-status">Gestion sécurisée des comptes clients, soldes et statuts.</p>
+            </div>
+            <div class="account-actions">
+                <button type="button" class="account-btn admin-back-btn" id="adminBackBtn">← Retour au site</button>
+                <button type="button" class="account-btn" id="adminSettingsBtn">⚙️ Paramètres</button>
+                <button type="button" class="account-btn" id="refreshAdminBtn">↻ Actualiser</button>
+                <button type="button" class="account-btn" id="adminLogoutBtn">Se déconnecter</button>
+            </div>
+        </div>
+        <div class="admin-toolbar">
+            <input class="admin-search" id="adminClientSearch" type="search" placeholder="Rechercher un client, e-mail ou téléphone..." autocomplete="off">
+        </div>
+        <div class="admin-client-list" id="adminClientList"></div>
+        </div>
+    </section>
+
+    <!-- ===== ADMIN LOGIN ===== -->
+    <div class="admin-modal" id="adminLoginModal" aria-hidden="true">
+        <div class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle">
+            <div class="account-panel-header">
+                <div>
+                    <h2 id="adminLoginTitle">🔐 Accès administration</h2>
+                    <p class="account-status">Entrez vos identifiants administrateur.</p>
+                </div>
+                <button type="button" class="account-btn" id="adminLoginClose">✕</button>
+            </div>
+            <form id="adminLoginForm" class="admin-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="adminUsername">Adresse e-mail administrateur</label>
+                    <input id="adminUsername" type="text" autocomplete="username" required maxlength="50">
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Mot de passe</label>
+                    <input id="adminPassword" type="password" autocomplete="current-password" required maxlength="200">
+                </div>
+                <p class="admin-login-message" id="adminLoginMessage" role="alert"></p>
+                <button type="submit" class="account-btn primary" id="adminLoginSubmit">Ouvrir l'administration</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== ADMIN SETTINGS ===== -->
+    <div class="admin-modal" id="adminSettingsModal" aria-hidden="true">
+        <div class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="adminSettingsTitle">
+            <div class="account-panel-header">
+                <div>
+                    <h2 id="adminSettingsTitle">⚙️ Paramètres d'administration</h2>
+                    <p class="account-status">Modifiez le nom d'utilisateur et, si nécessaire, le mot de passe.</p>
+                </div>
+                <button type="button" class="account-btn" id="adminSettingsClose">✕</button>
+            </div>
+            <form id="adminSettingsForm" class="admin-form" autocomplete="off">
+                <div class="form-group">
+                    <label for="adminNewUsername">Adresse e-mail administrateur</label>
+                    <input id="adminNewUsername" type="email" autocomplete="username" required maxlength="254" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="adminNewPassword">Nouveau mot de passe (laisser vide pour conserver l'actuel)</label>
+                    <input id="adminNewPassword" type="password" autocomplete="new-password" maxlength="200">
+                </div>
+                <div class="form-group">
+                    <label for="adminNewPassword2">Confirmer le nouveau mot de passe</label>
+                    <input id="adminNewPassword2" type="password" autocomplete="new-password" maxlength="200">
+                </div>
+                <p class="admin-login-message" id="adminSettingsMessage" role="alert"></p>
+                <button type="submit" class="account-btn primary">Enregistrer les paramètres</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FORMULAIRE -->
+    <section class="form-section">
+        <h2>Remplissez le formulaire suivant</h2>
+        <p class="sub">Ajustez le curseur pour le montant, la durée est libre.</p>
+
+        <form id="creditForm" novalidate>
+            <!-- Montant -->
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span>Montant souhaité (€) – <span style="font-weight:400;color:#5b6f87;">max 350 000 €</span></span>
+                    <span class="value" id="montantDisplay">25 000</span>
+                </div>
+                <input type="range" id="montantSlider" min="1000" max="350000" step="500" value="25000">
+                <div class="range-labels">
+                    <span>1 000 €</span>
+                    <span>350 000 €</span>
+                </div>
+            </div>
+
+            <!-- Durée -->
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span>Durée du prêt (mois)</span>
+                    <span class="value" id="dureeDisplay">60</span>
+                </div>
+                <input type="range" id="dureeSlider" min="3" max="360" step="1" value="60">
+                <div class="range-labels">
+                    <span>3 mois</span>
+                    <span>360 mois</span>
+                </div>
+            </div>
+
+            <!-- Taux -->
+            <div class="slider-group">
+                <div class="slider-header">
+                    <span>Taux d’intérêt annuel (%)</span>
+                    <span class="value" style="background:#eef5e9;">3,0 %</span>
+                </div>
+                <div class="taux-static">3 %</div>
+            </div>
+
+            <!-- Email & Téléphone -->
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="email">Adresse e-mail</label>
+                    <input type="email" id="email" placeholder="votre@email.fr" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="telephone">Numéro de téléphone</label>
+                    <div class="phone-wrapper">
+                        <input type="text" class="country-search" id="countrySearch" placeholder="Rechercher un pays..." autocomplete="off" />
+                        <select id="countrySelect"></select>
+                        <input type="tel" id="telephone" placeholder="Votre numéro" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-primary" id="simulerBtn">📊 Simuler mon crédit</button>
+            </div>
+        </form>
+
+        <!-- RÉSULTATS -->
+        <div id="simulationResults" class="simulation-results">
+            <div class="results-summary" id="resultsSummary"></div>
+            <div class="table-wrapper">
+                <table id="amortissementTable">
+                    <thead>
+                        <tr><th>Mois</th><th>Mensualité</th><th>Intérêts</th><th>Capital remboursé</th><th>Capital restant</th></tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+                <div style="font-size:0.8rem;color:#aab9ce;margin-top:0.3rem;">↕ Faites défiler pour voir toutes les échéances</div>
+            </div>
+
+            <!-- TÉLÉCHARGEMENT -->
+            <div class="documents-upload">
+                <h4>📎 Téléchargez vos documents</h4>
+                <div class="doc-upload-group">
+                    <label for="docId">Carte d'identité</label>
+                    <input type="file" id="docId" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
+                </div>
+                <div class="doc-upload-group">
+                    <label for="docTax">Code d'identification fiscale</label>
+                    <input type="file" id="docTax" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
+                </div>
+                <div class="doc-upload-group">
+                    <label for="docIncome">Document de revenu mensuel</label>
+                    <input type="file" id="docIncome" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
+                    <div class="doc-note">Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.</div>
+                </div>
+            </div>
+
+            <!-- ENVOYER -->
+            <div class="validation-area" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button type="button" class="btn btn-success" id="envoyerBtn">📩 Enregistrer et envoyer ma demande</button>
+                <a href="#" class="btn btn-primary" id="emailContactBtn" style="display:none;text-decoration:none;">✉️ Ouvrir mon e-mail</a>
+            </div>
+            <div id="emailContactNote" class="doc-note" style="display:none;text-align:center;margin-top:10px;">
+                Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.
+            </div>
+        </div>
+    </section>
+
+    <!-- 3 ÉTAPES -->
+    <div class="steps-after-form">
+        <h3>📋 Demande de crédit entièrement en ligne</h3>
+        <div class="steps-grid">
+            <div class="step-item">
+                <strong>Étape 1</strong>
+                <p>Calculez votre mensualité.</p>
+            </div>
+            <div class="step-item">
+                <strong>Étape 2</strong>
+                <p>Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
+            </div>
+            <div class="step-item">
+                <strong>Étape 3</strong>
+                <p>Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINI LA PAPERASSE -->
+    <div class="promo-banner">
+        <div class="promo-image">
+            <img src="2.jpg" alt="Documents" loading="lazy" />
+        </div>
+        <div class="promo-text">
+            <p>
+                <span class="emoji-big">📄</span> Fini la paperasse. Fini les longues files d'attente. Fini les complications !<br>
+                Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨
+            </p>
+            <p style="margin-top: 0.6rem; font-weight: 400; font-size: 1.05rem;">
+                Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.
+            </p>
+        </div>
+    </div>
+
+    <!-- POURQUOI CHOISIR FINVERO -->
+    <section class="trust-section">
+        <div class="trust-content">
+            <h2>Pourquoi choisir Finvero Capital ?</h2>
+            <div class="trust-item">
+                <strong>🔒 Fiable</strong>
+                <p>Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.</p>
+            </div>
+            <div class="trust-item">
+                <strong>⚡ Rapide</strong>
+                <p>Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.</p>
+            </div>
+            <div class="trust-item">
+                <strong>🛡️ Sûr</strong>
+                <p>Avec Finvero Capital, vos données personnelles et financières sont 100 % sécurisées.</p>
+            </div>
+        </div>
+        <div class="trust-image">
+            <img src="3.jpg" alt="Confiance, rapidité, sécurité" loading="lazy" />
+            <p style="margin-top:0.5rem; font-size:0.85rem; color:#8ba0b9;">Votre sécurité, notre priorité</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="legal-footer">
+        <nav>
+            <button type="button" data-legal="mentions">Mentions légales</button>
+            <button type="button" data-legal="privacy">Politique de confidentialité</button>
+            <button type="button" data-legal="terms">Conditions d'utilisation</button>
+            <button type="button" data-legal="credit">Informations crédit</button>
+        </nav>
+        <small>Finvero Capital © 2026 — Service de simulation et de demande de financement.</small>
+    </footer>
+</div>
+
+
+<!-- ===== MODALE AUTHENTIFICATION ===== -->
+<div class="auth-modal" id="authModal">
+    <div class="auth-card">
+        <button class="legal-close" id="authClose" style="float:right;">✕</button>
+        <h2 id="authTitle">Votre espace client</h2>
+        <p class="auth-sub" id="authSubtitle">Créez votre compte pour suivre votre dossier.</p>
+
+        <div class="auth-tabs" id="authTabs">
+            <button class="auth-tab active" data-auth-tab="login">Connexion</button>
+            <button class="auth-tab" data-auth-tab="register">Inscription</button>
+        </div>
+
+        <form class="auth-form active" id="loginForm">
+            <div class="form-group">
+                <label for="loginEmail">Adresse e-mail</label>
+                <input type="email" id="loginEmail" autocomplete="email" required>
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Mot de passe</label>
+                <div class="password-row">
+                    <input type="password" id="loginPassword" autocomplete="current-password" required>
+                    <button type="button" class="password-toggle" data-target="loginPassword">👁️</button>
+                </div>
+            </div>
+            <button class="btn btn-primary auth-submit" type="submit">🔐 Se connecter</button>
+            <button class="auth-link" type="button" id="forgotPasswordBtn">Mot de passe oublié ?</button>
+        </form>
+
+        <form class="auth-form" id="registerForm">
+            <div class="form-group">
+                <label for="registerName">Nom complet</label>
+                <input type="text" id="registerName" autocomplete="name" required>
+            </div>
+            <div class="form-group">
+                <label for="registerGender">Civilité</label>
+                <select id="registerGender" required>
+                    <option value="M.">M.</option>
+                    <option value="Mme">Mme</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="registerEmail">Adresse e-mail</label>
+                <input type="email" id="registerEmail" autocomplete="email" required>
+            </div>
+            <div class="form-group">
+                <label for="registerPhone">Téléphone</label>
+                <input type="tel" id="registerPhone" autocomplete="tel" required>
+            </div>
+            <div class="form-group">
+                <label for="registerPassword">Mot de passe</label>
+                <div class="password-row">
+                    <input type="password" id="registerPassword" autocomplete="new-password" minlength="8" required>
+                    <button type="button" class="password-toggle" data-target="registerPassword">👁️</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="registerPassword2">Confirmer le mot de passe</label>
+                <input type="password" id="registerPassword2" autocomplete="new-password" minlength="8" required>
+            </div>
+            <button class="btn btn-primary auth-submit" type="submit">👤 Créer mon compte</button>
+        </form>
+
+        <form class="auth-form" id="forgotForm">
+            <div class="form-group">
+                <label for="forgotEmail">Adresse e-mail du compte</label>
+                <input type="email" id="forgotEmail" autocomplete="email" required>
+            </div>
+            <button class="btn btn-primary auth-submit" type="submit">📧 Envoyer le lien de réinitialisation</button>
+            <button class="auth-link" type="button" id="backToLoginBtn">← Retour à la connexion</button>
+        </form>
+
+        <form class="auth-form" id="resetForm">
+            <div class="form-group">
+                <label for="newPassword">Nouveau mot de passe</label>
+                <input type="password" id="newPassword" autocomplete="new-password" minlength="8" required>
+            </div>
+            <div class="form-group">
+                <label for="newPassword2">Confirmer le nouveau mot de passe</label>
+                <input type="password" id="newPassword2" autocomplete="new-password" minlength="8" required>
+            </div>
+            <button class="btn btn-primary auth-submit" type="submit">🔑 Enregistrer le nouveau mot de passe</button>
+        </form>
+
+        <div class="auth-message" id="authMessage"></div>
+    </div>
+</div>
+
+<!-- ===== MODALE NUMÉRO DE SUIVI ===== -->
+<div class="tracking-modal" id="trackingModal">
+    <div class="tracking-card">
+        <h2>📋 Numéro de suivi</h2>
+        <p class="info-text">Conservez ce numéro pour le suivi de votre demande :</p>
+        <div class="tracking-number" id="trackingNumberDisplay">---</div>
+        <p class="info-text" style="font-size:0.85rem;">Cliquez sur le bouton ci-dessous pour le copier.</p>
+        <button class="copy-btn" id="copyTrackingBtn">📋 Copier</button>
+    </div>
+</div>
+
+<!-- ===== MODALE TRANSFERT BANCAIRE ===== -->
+<div class="transfer-modal" id="transferModal">
+    <div class="transfer-card">
+        <h2>💸 Demande de transfert bancaire</h2>
+        <div id="transferMessage" class="info-text" style="font-weight:500; color:#0f2b4b; line-height:1.6;"></div>
+        <div class="form-group" style="text-align:left; margin-top:1rem;">
+            <label for="transferAmount">Montant à transférer (€)</label>
+            <input type="number" id="transferAmount" min="0.01" step="0.01" placeholder="Montant" required>
+        </div>
+        <div class="form-group" style="text-align:left; margin-top:1rem;">
+            <label for="transferBankName">Nom de la banque</label>
+            <input type="text" id="transferBankName" maxlength="150" placeholder="Nom de votre banque" required>
+        </div>
+        <div class="form-group" style="text-align:left; margin-top:1rem;">
+            <label for="transferBankAccount">IBAN / numéro de compte</label>
+            <input type="text" id="transferBankAccount" maxlength="150" placeholder="IBAN ou numéro de compte" required>
+        </div>
+        <div id="transferStepDisplay" style="margin:0.8rem 0 0.5rem; font-size:0.9rem; color:#5b6f87;">Étape 1/4</div>
+        <div id="transferProgress" style="width:100%; height:6px; background:#dce3ed; border-radius:4px; margin:0.5rem 0 1rem; overflow:hidden;">
+            <div id="transferProgressBar" style="height:100%; width:10%; background:#2a7de1; border-radius:4px; transition:width 0.3s;"></div>
+        </div>
+        <div class="fee-amount" id="transferFeeDisplay">198 €</div>
+        <p class="info-text" style="font-size:0.9rem;" id="transferSubtext">Frais administratifs affichés : 198 €. Aucun paiement n’est effectué automatiquement.</p>
+        <button class="transfer-btn" id="confirmTransferBtn">Continuer</button>
+        <button class="close-transfer" id="closeTransferBtn">✕ Annuler</button>
+        <div id="transferStatus" class="transfer-success" style="display:none;"></div>
+    </div>
+</div>
+
+<!-- ===== MODALE LÉGALE ===== -->
+<div class="legal-modal" id="legalModal">
+    <div class="legal-card">
+        <button class="legal-close" id="legalClose">✕</button>
+        <h2 id="legalTitle">Informations légales</h2>
+        <div id="legalContent"></div>
+    </div>
+</div>
+
+<!-- WHATSAPP -->
+<a href="https://wa.me/447520682877" target="_blank" class="floating-btn whatsapp" title="Service client WhatsApp">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+</a>
+
+<!-- CHATBOT -->
+<button class="floating-btn chat" id="chatToggle" title="Assistant virtuel">💬</button>
+<div class="chat-window" id="chatWindow">
+    <div class="chat-header"><span>🤖 Assistant Finvero Capital</span><button class="close-chat" id="chatClose">✕</button></div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Votre question..." />
+        <button id="chatSend">Envoyer</button>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">📨 Demande envoyée avec succès !</div>
+
+<!-- ===== TRADUCTION MANUELLE ===== -->
+<div id="google_translate_element" aria-hidden="true"></div>
+<script>
+function googleTranslateElementInit() {
+    if (!window.google || !google.translate) return;
+    new google.translate.TranslateElement({
+        pageLanguage: 'fr',
+        includedLanguages: 'fr,en,es,pt,de,it,nl,pl,ro,cs,el,sv,da,fi,no,hu,bg,sk,uk,tr',
+        autoDisplay: false,
+        multilanguagePage: true
+    }, 'google_translate_element');
+}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const select = document.getElementById('languageSelect');
+    const supported = ['fr','en','es','pt','de','it','nl','pl','ro','cs','el','sv','da','fi','no','hu','bg','sk','uk','tr'];
+    const match = document.cookie.match(/(?:^|;\s*)googtrans=\/fr\/([^;]+)/);
+    const current = match && supported.includes(match[1]) ? match[1] : 'fr';
+    window.FINVERO_LANGUAGE = current;
+    window.FINVERO_LOCALE = current === 'fr' ? 'fr-FR' : current;
+    document.documentElement.lang = current;
+    if (select) {
+        select.value = current;
+        select.addEventListener('change', function () {
+            const target = this.value;
+            document.cookie = 'googtrans=/fr/' + target + ';path=/;SameSite=Lax';
+            window.FINVERO_LANGUAGE = target;
+            window.FINVERO_LOCALE = target === 'fr' ? 'fr-FR' : target;
+            document.documentElement.lang = target;
+            window.location.reload();
+        });
+    }
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    // ===== BASE DE DONNÉES SUPABASE =====
+    // Renseignez uniquement l'URL et la clé publique de votre projet.
+    // Ne mettez JAMAIS la service_role/secret key dans ce fichier.
+    const SUPABASE_URL = 'https://vdwkpzawdlexuqqyhntl.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_CtcpCPXK9cwKMm7panaa-w_gHPsUD-L';
+
+    const { createClient } = window.supabase;
+    const localDB = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+        auth: {
+            autoRefreshToken: true,
+            persistSession: true,
+            detectSessionInUrl: true
+        }
+    });
+
+    // Le nom localDB est conservé pour ne modifier ni le contenu ni
+    // l'affichage du site existant. Les données sont maintenant dans Supabase.
+    function localCurrentUser() { return null; }
+    function localError(message) { return { data:null, error:new Error(message) }; }
+
+    // ===== CONSTANTES =====
+    const TAUX_FIXE = 3.0;
+    const CONTACT_EMAIL = 'contact@finvero-capital.de';
+
+    // ===== SLIDERS =====
+    const montantSlider = document.getElementById('montantSlider');
+    const dureeSlider = document.getElementById('dureeSlider');
+    const montantDisplay = document.getElementById('montantDisplay');
+    const dureeDisplay = document.getElementById('dureeDisplay');
+
+    function updateMontant() {
+        montantDisplay.textContent = parseInt(montantSlider.value).toLocaleString(window.FINVERO_LOCALE || 'fr-FR');
+    }
+    function updateDuree() {
+        dureeDisplay.textContent = dureeSlider.value;
+    }
+    montantSlider.addEventListener('input', updateMontant);
+    dureeSlider.addEventListener('input', updateDuree);
+    updateMontant();
+    updateDuree();
+
+    // ===== PAYS EUROPÉENS =====
+    const europeanCountries = [
+        { code: "AL", dial: "+355", label: "Albanie" },
+        { code: "AD", dial: "+376", label: "Andorre" },
+        { code: "AM", dial: "+374", label: "Arménie" },
+        { code: "AT", dial: "+43", label: "Autriche" },
+        { code: "AZ", dial: "+994", label: "Azerbaïdjan" },
+        { code: "BY", dial: "+375", label: "Biélorussie" },
+        { code: "BE", dial: "+32", label: "Belgique" },
+        { code: "BA", dial: "+387", label: "Bosnie-Herzégovine" },
+        { code: "BG", dial: "+359", label: "Bulgarie" },
+        { code: "CY", dial: "+357", label: "Chypre" },
+        { code: "HR", dial: "+385", label: "Croatie" },
+        { code: "CZ", dial: "+420", label: "République tchèque" },
+        { code: "DK", dial: "+45", label: "Danemark" },
+        { code: "EE", dial: "+372", label: "Estonie" },
+        { code: "FI", dial: "+358", label: "Finlande" },
+        { code: "FR", dial: "+33", label: "France" },
+        { code: "GE", dial: "+995", label: "Géorgie" },
+        { code: "DE", dial: "+49", label: "Allemagne" },
+        { code: "GR", dial: "+30", label: "Grèce" },
+        { code: "HU", dial: "+36", label: "Hongrie" },
+        { code: "IS", dial: "+354", label: "Islande" },
+        { code: "IE", dial: "+353", label: "Irlande" },
+        { code: "IT", dial: "+39", label: "Italie" },
+        { code: "KZ", dial: "+7", label: "Kazakhstan" },
+        { code: "XK", dial: "+383", label: "Kosovo" },
+        { code: "LV", dial: "+371", label: "Lettonie" },
+        { code: "LI", dial: "+423", label: "Liechtenstein" },
+        { code: "LT", dial: "+370", label: "Lituanie" },
+        { code: "LU", dial: "+352", label: "Luxembourg" },
+        { code: "MT", dial: "+356", label: "Malte" },
+        { code: "MD", dial: "+373", label: "Moldavie" },
+        { code: "MC", dial: "+377", label: "Monaco" },
+        { code: "ME", dial: "+382", label: "Monténégro" },
+        { code: "NL", dial: "+31", label: "Pays-Bas" },
+        { code: "MK", dial: "+389", label: "Macédoine du Nord" },
+        { code: "NO", dial: "+47", label: "Norvège" },
+        { code: "PL", dial: "+48", label: "Pologne" },
+        { code: "PT", dial: "+351", label: "Portugal" },
+        { code: "RO", dial: "+40", label: "Roumanie" },
+        { code: "RU", dial: "+7", label: "Russie" },
+        { code: "SM", dial: "+378", label: "Saint-Marin" },
+        { code: "RS", dial: "+381", label: "Serbie" },
+        { code: "SK", dial: "+421", label: "Slovaquie" },
+        { code: "SI", dial: "+386", label: "Slovénie" },
+        { code: "ES", dial: "+34", label: "Espagne" },
+        { code: "SE", dial: "+46", label: "Suède" },
+        { code: "CH", dial: "+41", label: "Suisse" },
+        { code: "TR", dial: "+90", label: "Turquie" },
+        { code: "UA", dial: "+380", label: "Ukraine" },
+        { code: "GB", dial: "+44", label: "Royaume-Uni" },
+        { code: "VA", dial: "+39", label: "Vatican" }
+    ];
+
+    const countrySelect = document.getElementById('countrySelect');
+    const countrySearch = document.getElementById('countrySearch');
+    const allOptions = [];
+
+    europeanCountries.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.code + '|' + c.dial;
+        opt.textContent = c.label + ' ' + c.dial;
+        countrySelect.appendChild(opt);
+        allOptions.push(opt);
+    });
+
+    const frIndex = europeanCountries.findIndex(c => c.code === 'FR');
+    if (frIndex !== -1) countrySelect.selectedIndex = frIndex;
+
+    countrySearch.addEventListener('input', function() {
+        const search = this.value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        countrySelect.innerHTML = '';
+        allOptions.forEach(opt => {
+            const text = opt.textContent.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            const val = opt.value.toLowerCase();
+            if (text.includes(search) || val.includes(search)) {
+                const clone = opt.cloneNode(true);
+                countrySelect.appendChild(clone);
+            }
+        });
+        if (countrySelect.options.length === 0) {
+            const emptyOpt = document.createElement('option');
+            emptyOpt.textContent = 'Aucun pays trouvé';
+            emptyOpt.disabled = true;
+            countrySelect.appendChild(emptyOpt);
+        }
+        if (countrySelect.options.length > 0 && !countrySelect.options[0].disabled) {
+            countrySelect.selectedIndex = 0;
+        }
+    });
+
+    const phoneInput = document.getElementById('telephone');
+    phoneInput.removeAttribute('maxlength');
+    phoneInput.removeAttribute('minlength');
+
+    // ===== GÉNÉRATION DU NUMÉRO DE SUIVI =====
+    function generateTrackingNumber(email, phone) {
+        const now = new Date();
+        const dateStr = now.getFullYear() +
+            String(now.getMonth() + 1).padStart(2, '0') +
+            String(now.getDate()).padStart(2, '0');
+        let phonePart = phone.replace(/\D/g, '').slice(-3);
+        while (phonePart.length < 3) phonePart = '0' + phonePart;
+        let emailPart = email.split('@')[0].slice(0, 3).toUpperCase();
+        while (emailPart.length < 3) emailPart += 'x';
+        return dateStr + phonePart + emailPart;
+    }
+
+    function showTrackingModal(trackingNumber, callbackAfterCopy) {
+        const modal = document.getElementById('trackingModal');
+        const display = document.getElementById('trackingNumberDisplay');
+        const copyBtn = document.getElementById('copyTrackingBtn');
+        display.textContent = trackingNumber;
+        modal.classList.add('open');
+        copyBtn.textContent = '📋 Copier';
+        copyBtn.classList.remove('copied');
+        copyBtn.onclick = function() {
+            navigator.clipboard.writeText(trackingNumber).then(() => {
+                copyBtn.textContent = '✅ Copié !';
+                copyBtn.classList.add('copied');
+                setTimeout(() => {
+                    modal.classList.remove('open');
+                    if (callbackAfterCopy) callbackAfterCopy();
+                }, 800);
+            }).catch(() => {
+                const range = document.createRange();
+                range.selectNode(display);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+                window.getSelection().removeAllRanges();
+                copyBtn.textContent = '✅ Copié !';
+                copyBtn.classList.add('copied');
+                setTimeout(() => {
+                    modal.classList.remove('open');
+                    if (callbackAfterCopy) callbackAfterCopy();
+                }, 800);
+            });
+        };
+    }
+
+    // ===== SIMULATEUR =====
+    function calculerMensualite(montant, dureeMois, tauxAnnuel) {
+        const tauxMensuel = tauxAnnuel / 100 / 12;
+        if (tauxMensuel === 0) return montant / dureeMois;
+        const denominator = 1 - Math.pow(1 + tauxMensuel, -dureeMois);
+        return (montant * tauxMensuel) / denominator;
+    }
+
+    function genererTableauAmortissement(montant, dureeMois, tauxAnnuel) {
+        const tauxMensuel = tauxAnnuel / 100 / 12;
+        const mensualite = calculerMensualite(montant, dureeMois, tauxAnnuel);
+        let capitalRestant = montant;
+        const tableau = [];
+        for (let mois = 1; mois <= dureeMois; mois++) {
+            const interets = capitalRestant * tauxMensuel;
+            const capitalRembourse = mensualite - interets;
+            capitalRestant -= capitalRembourse;
+            if (mois === dureeMois) capitalRestant = 0;
+            tableau.push({ mois, mensualite, interets, capitalRembourse, capitalRestant: Math.max(0, capitalRestant) });
+        }
+        return tableau;
+    }
+
+    function afficherSimulation() {
+        const montant = parseFloat(montantSlider.value);
+        const duree = parseInt(dureeSlider.value);
+        const taux = TAUX_FIXE;
+        const email = document.getElementById('email').value.trim();
+        const telephone = phoneInput.value.trim();
+
+        if (!email || !email.includes('@')) {
+            alert('Veuillez entrer une adresse e-mail valide.');
+            return;
+        }
+        if (!telephone) {
+            alert('Veuillez entrer un numéro de téléphone.');
+            return;
+        }
+
+        const mensualite = calculerMensualite(montant, duree, taux);
+        const totalRembourse = mensualite * duree;
+        const totalInterets = totalRembourse - montant;
+        const tableau = genererTableauAmortissement(montant, duree, taux);
+
+        document.getElementById('resultsSummary').innerHTML = `
+            <div class="result-item"><div class="label">Mensualité estimée</div><div class="value">${mensualite.toFixed(2)} €</div></div>
+            <div class="result-item"><div class="label">Total à rembourser</div><div class="value">${totalRembourse.toFixed(2)} €</div></div>
+            <div class="result-item"><div class="label">Intérêts totaux</div><div class="value">${totalInterets.toFixed(2)} €</div></div>
+            <div class="result-item"><div class="label">Taux appliqué</div><div class="value">${taux.toFixed(1)} %</div></div>
+        `;
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        tableau.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${row.mois}</td><td>${row.mensualite.toFixed(2)} €</td><td>${row.interets.toFixed(2)} €</td><td>${row.capitalRembourse.toFixed(2)} €</td><td>${row.capitalRestant.toFixed(2)} €</td>`;
+            tbody.appendChild(tr);
+        });
+        const emailBtn = document.getElementById('emailContactBtn');
+        const emailNote = document.getElementById('emailContactNote');
+        if (emailBtn) { emailBtn.style.display = 'none'; emailBtn.removeAttribute('href'); }
+        if (emailNote) emailNote.style.display = 'none';
+        document.getElementById('simulationResults').classList.add('show');
+        document.getElementById('simulationResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // Le bouton de simulation doit fonctionner indépendamment de Supabase.
+    const simulerBtn = document.getElementById('simulerBtn');
+    if (simulerBtn) {
+        simulerBtn.addEventListener('click', afficherSimulation);
+    }
+
+    // ===== ENVOI / ENREGISTREMENT DE LA DEMANDE =====
+    // Ce bouton était présent dans l'interface mais son écouteur n'était pas relié.
+    // On le relie explicitement à l'enregistrement Supabase + préparation du mailto.
+    const envoyerBtn = document.getElementById('envoyerBtn');
+    if (envoyerBtn) {
+        envoyerBtn.addEventListener('click', async function () {
+            if (envoyerBtn.disabled) return;
+            envoyerBtn.disabled = true;
+            const originalText = envoyerBtn.textContent;
+            envoyerBtn.textContent = '⏳ Enregistrement en cours...';
+            try {
+                await envoyerParEmail();
+            } catch (error) {
+                console.error('Erreur lors de la transmission de la demande :', error);
+                alert(error?.message || 'Impossible de transmettre votre demande pour le moment.');
+            } finally {
+                envoyerBtn.disabled = false;
+                envoyerBtn.textContent = originalText;
+            }
+        });
+    }
+
+    // ===== ENREGISTREMENT SUPABASE DE LA DEMANDE =====
+    async function envoyerParEmail() {
+        const userResult = await localDB.auth.getUser();
+        const user = userResult.data.user;
+        if (!user) {
+            openAuthModal('login');
+            showAuthMessage('Connectez-vous ou créez un compte avant d’envoyer votre demande.', 'error');
+            return;
+        }
+
+        const fileId = document.getElementById('docId');
+        const fileTax = document.getElementById('docTax');
+        const fileIncome = document.getElementById('docIncome');
+
+        if (!fileId.files.length || !fileTax.files.length || !fileIncome.files.length) {
+            alert('Veuillez télécharger les trois documents demandés.');
+            return;
+        }
+
+        const selectedOption = countrySelect.options[countrySelect.selectedIndex];
+        const countryLabel = selectedOption ? selectedOption.text : 'France +33';
+        const dialCode = selectedOption ? selectedOption.value.split('|')[1] : '+33';
+
+        const montant = Number(montantSlider.value);
+        const duree = Number(dureeSlider.value);
+        const taux = TAUX_FIXE;
+        const email = document.getElementById('email').value.trim();
+        const telephone = phoneInput.value.trim();
+        const mensualite = calculerMensualite(montant, duree, taux);
+        const totalRembourse = mensualite * duree;
+        const totalInterets = totalRembourse - montant;
+        const trackingNumber = generateTrackingNumber(email, telephone);
+
+        const files = [
+            { input: fileId, type: 'identity' },
+            { input: fileTax, type: 'tax' },
+            { input: fileIncome, type: 'income' }
+        ];
+        const maxSize = 10 * 1024 * 1024;
+        const allowed = ['application/pdf','image/jpeg','image/png','image/gif','image/bmp','image/tiff','image/heic'];
+
+        for (const item of files) {
+            const f = item.input.files[0];
+            if (f.size > maxSize) {
+                alert(`Le fichier "${f.name}" dépasse 10 Mo.`);
+                return;
+            }
+            if (f.type && !allowed.includes(f.type)) {
+                alert(`Format non autorisé pour "${f.name}".`);
+                return;
+            }
+        }
+
+        const toast = document.getElementById('toast');
+        toast.textContent = '⏳ Envoi sécurisé de votre dossier...';
+        toast.classList.add('show');
+
+        try {
+            const { data: profile } = await localDB
+                .from('profiles')
+                .select('full_name, phone')
+                .eq('id', user.id)
+                .maybeSingle();
+
+            const dossier = {
+                user_id: user.id,
+                tracking_number: trackingNumber,
+                amount_requested: montant,
+                duration_months: duree,
+                annual_rate: taux,
+                monthly_payment: Number(mensualite.toFixed(2)),
+                total_repayment: Number(totalRembourse.toFixed(2)),
+                total_interest: Number(totalInterets.toFixed(2)),
+                email: email,
+                phone: telephone,
+                country: countryLabel,
+                status: 'Application submitted'
+            };
+
+            const { data: application, error: applicationError } = await localDB
+                .from('applications')
+                .insert(dossier)
+                .select()
+                .single();
+
+            if (applicationError) throw applicationError;
+
+            for (const item of files) {
+                const f = item.input.files[0];
+                const safeName = f.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+                const path = `${user.id}/${application.id}/${item.type}-${Date.now()}-${safeName}`;
+
+                const { error: uploadError } = await localDB.storage
+                    .from('documents')
+                    .upload(path, f, { upsert:false, contentType:f.type || undefined });
+
+                if (uploadError) throw uploadError;
+
+                const { error: docError } = await localDB
+                    .from('application_documents')
+                    .insert({
+                        application_id: application.id,
+                        user_id: user.id,
+                        document_type: item.type,
+                        file_path: path,
+                        original_name: f.name,
+                        mime_type: f.type || null,
+                        file_size: f.size
+                    });
+
+                if (docError) throw docError;
+            }
+
+            toast.textContent = '📨 Demande enregistrée avec succès !';
+            setTimeout(() => toast.classList.remove('show'), 5000);
+
+            const userName = profile?.full_name || user.user_metadata?.full_name || 'Client';
+
+            // Ouverture d'une nouvelle demande e-mail via le client de messagerie du visiteur.
+            // Les pièces jointes restent à ajouter manuellement dans la messagerie.
+            const subject = `Demande de crédit Finvero Capital — ${trackingNumber}`;
+            const body = [
+                `Bonjour Finvero Capital,`,
+                ``,
+                `Je souhaite transmettre ma demande de crédit.`,
+                ``,
+                `Numéro de suivi : ${trackingNumber}`,
+                `Nom : ${userName}`,
+                `E-mail : ${email}`,
+                `Téléphone : ${telephone}`,
+                `Pays : ${countryLabel}`,
+                `Montant demandé : ${montant.toFixed(2)} €`,
+                `Durée : ${duree} mois`,
+                `Taux indicatif : ${taux.toFixed(2)} %`,
+                `Mensualité estimée : ${mensualite.toFixed(2)} €`,
+                `Total à rembourser : ${totalRembourse.toFixed(2)} €`,
+                `Intérêts estimés : ${totalInterets.toFixed(2)} €`,
+                ``,
+                `Ma demande et mes documents sont également enregistrés dans mon espace Finvero Capital.`,
+                ``,
+                `Cordialement,`,
+                userName
+            ].join('\n');
+            const mailtoUrl = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            const emailBtn = document.getElementById('emailContactBtn');
+            const emailNote = document.getElementById('emailContactNote');
+            if (emailBtn) {
+                emailBtn.href = mailtoUrl;
+                emailBtn.style.display = 'inline-flex';
+            }
+            if (emailNote) emailNote.style.display = 'block';
+
+            showTrackingModal(trackingNumber, async () => {
+                await loadClientDashboard();
+            });
+
+            await loadClientDashboard();
+
+        } catch (error) {
+            console.error(error);
+            toast.classList.remove('show');
+            alert('Impossible d’enregistrer la demande pour le moment. Vérifiez votre connexion puis réessayez.');
+        }
+    }
+
+    // ===== DEMANDE DE TRANSFERT BANCAIRE VIA SUPABASE =====
+    let transferStep = 0;
+
+    async function transferFunds() {
+        const { data: userData } = await localDB.auth.getUser();
+        const user = userData.user;
+        if (!user) {
+            openAuthModal('login');
+            showAuthMessage('Connectez-vous pour demander un transfert.', 'error');
+            return;
+        }
+
+        const { data: profile, error } = await localDB
+            .from('profiles')
+            .select('balance,currency,full_name')
+            .eq('id', user.id)
+            .maybeSingle();
+
+        if (error) {
+            alert(error.message);
+            return;
+        }
+
+        transferStep = 0;
+        const modal = document.getElementById('transferModal');
+        const message = document.getElementById('transferMessage');
+        const amountInput = document.getElementById('transferAmount');
+        const statusDiv = document.getElementById('transferStatus');
+        const feeDisplay = document.getElementById('transferFeeDisplay');
+        const subtext = document.getElementById('transferSubtext');
+        const progressBar = document.getElementById('transferProgressBar');
+        const stepDisplay = document.getElementById('transferStepDisplay');
+        const confirmBtn = document.getElementById('confirmTransferBtn');
+
+        amountInput.max = Number(profile?.balance || 0).toFixed(2);
+        amountInput.value = '';
+        document.getElementById('transferBankName').value = '';
+        document.getElementById('transferBankAccount').value = '';
+        statusDiv.style.display = 'none';
+        statusDiv.textContent = '';
+        message.innerHTML = `Solde disponible : <strong>${Number(profile?.balance || 0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} ${profile?.currency === 'EUR' ? '€' : (profile?.currency || 'EUR')}</strong>.`;
+        stepDisplay.textContent = 'Étape 1/4';
+        progressBar.style.width = '10%';
+        feeDisplay.textContent = '198 €';
+        subtext.textContent = 'Frais administratifs affichés : 198 €. Aucun paiement n’est effectué automatiquement.';
+        confirmBtn.textContent = 'Continuer';
+        confirmBtn.disabled = false;
+        modal.classList.add('open');
+    }
+
+    async function handleTransferRequest() {
+        const { data: userData } = await localDB.auth.getUser();
+        const user = userData.user;
+        if (!user) {
+            openAuthModal('login');
+            return;
+        }
+
+        const amount = Number(document.getElementById('transferAmount').value);
+        const bankName = document.getElementById('transferBankName').value.trim();
+        const bankAccount = document.getElementById('transferBankAccount').value.trim();
+        const btn = document.getElementById('confirmTransferBtn');
+        const statusDiv = document.getElementById('transferStatus');
+        const messageDiv = document.getElementById('transferMessage');
+        const feeDisplay = document.getElementById('transferFeeDisplay');
+        const subtext = document.getElementById('transferSubtext');
+        const progressBar = document.getElementById('transferProgressBar');
+        const stepDisplay = document.getElementById('transferStepDisplay');
+
+        if (!Number.isFinite(amount) || amount <= 0) {
+            alert('Veuillez saisir un montant valide.');
+            return;
+        }
+        if (!bankName || !bankAccount) {
+            alert('Veuillez renseigner la banque et le compte bancaire.');
+            return;
+        }
+
+        if (transferStep === 0) {
+            transferStep = 1;
+            stepDisplay.textContent = 'Étape 2/4';
+            progressBar.style.width = '50%';
+            feeDisplay.textContent = '75 €';
+            subtext.textContent = 'Frais d’assurance affichés : 75 €. Aucun paiement n’est effectué automatiquement.';
+            messageDiv.innerHTML = 'Votre demande est en cours de vérification. Les frais affichés restent à votre charge uniquement selon les conditions applicables à votre dossier.';
+            btn.textContent = 'Continuer';
+            return;
+        }
+
+        if (transferStep === 1) {
+            transferStep = 2;
+            stepDisplay.textContent = 'Étape 3/4';
+            progressBar.style.width = '90%';
+            feeDisplay.textContent = '273 €';
+            subtext.textContent = 'Total des frais affichés : 198 € + 75 €. Aucun paiement n’est effectué automatiquement.';
+            messageDiv.innerHTML = 'Vérification finale des informations du transfert. Aucun montant n’est débité de votre compte à cette étape.';
+            btn.textContent = 'Envoyer la demande';
+            return;
+        }
+
+        if (transferStep === 2) {
+            btn.disabled = true;
+            statusDiv.style.display = 'block';
+            statusDiv.textContent = '⏳ Enregistrement de votre demande...';
+
+            try {
+                const { data: profile, error: profileError } = await localDB
+                    .from('profiles')
+                    .select('balance,currency')
+                    .eq('id', user.id)
+                    .maybeSingle();
+                if (profileError) throw profileError;
+
+                const balance = Number(profile?.balance || 0);
+                if (amount > balance) throw new Error('Le montant demandé dépasse votre solde disponible.');
+
+                const { error } = await localDB
+                    .from('transfer_requests')
+                    .insert({
+                        user_id: user.id,
+                        amount,
+                        currency: profile?.currency || 'EUR',
+                        bank_name: bankName,
+                        bank_account: bankAccount,
+                        status: 'pending',
+                        note: 'Demande de transfert bancaire'
+                    });
+                if (error) throw error;
+
+                transferStep = 3;
+                stepDisplay.textContent = 'Étape 4/4';
+                progressBar.style.width = '100%';
+                feeDisplay.textContent = '273 €';
+                subtext.textContent = 'Les montants affichés correspondent aux frais présentés dans le parcours. Aucun paiement n’a été effectué automatiquement.';
+                messageDiv.innerHTML = 'Votre demande de transfert bancaire a été enregistrée. Elle est maintenant en attente de traitement.';
+                statusDiv.textContent = '✅ Demande enregistrée avec succès.';
+                btn.textContent = 'Fermer';
+                btn.disabled = false;
+            } catch (e) {
+                statusDiv.textContent = `❌ ${e.message || 'Impossible d’enregistrer la demande.'}`;
+                btn.disabled = false;
+            }
+            return;
+        }
+
+        document.getElementById('transferModal').classList.remove('open');
+        loadClientDashboard();
+    }
+
+// ===== MODALE TRANSFERT =====
+    document.getElementById('transferFundsBtn').addEventListener('click', transferFunds);
+    document.getElementById('confirmTransferBtn').addEventListener('click', handleTransferRequest);
+    document.getElementById('closeTransferBtn').addEventListener('click', function() {
+        document.getElementById('transferModal').classList.remove('open');
+    });
+    document.getElementById('transferModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('open');
+    });
+
+    // ===== MODALE LÉGALE =====
+    const legalModal = document.getElementById('legalModal');
+    const legalClose = document.getElementById('legalClose');
+    const legalTitle = document.getElementById('legalTitle');
+    const legalContent = document.getElementById('legalContent');
+
+    const legalContents = {
+        'mentions': {
+            title: 'Mentions légales — Finvero Capital',
+            html: `<p>Le site Finvero Capital est destiné à présenter les services, fonctionnalités et informations proposés par Finvero Capital.</p><h3>Propriété intellectuelle</h3><p>L'ensemble des contenus présents sur ce site, notamment les textes, images, éléments graphiques, logos, icônes et éléments de conception, est protégé par les dispositions applicables en matière de propriété intellectuelle.</p><p>Toute reproduction, modification, distribution ou utilisation, totale ou partielle, sans autorisation préalable est interdite.</p><h3>Données personnelles</h3><p>Les informations éventuellement communiquées par l'utilisateur via les moyens de contact présents sur le site sont utilisées uniquement dans le cadre du traitement de sa demande.</p><p>Finvero Capital s'engage à traiter les données personnelles conformément aux dispositions applicables en matière de protection des données.</p><h3>Responsabilité</h3><p>Finvero Capital s'efforce de maintenir des informations exactes et à jour sur son site. Toutefois, aucune garantie ne peut être apportée quant à l'exhaustivité ou à l'absence d'erreurs dans les informations publiées.</p><p>L'utilisateur reconnaît utiliser le site sous sa propre responsabilité.</p><h3>Liens externes</h3><p>Le site peut contenir des liens vers des services ou sites tiers. Finvero Capital ne peut être tenu responsable du contenu, du fonctionnement ou des pratiques de ces services externes.</p><h3>Contact</h3><p>Pour toute question concernant le site, ses contenus ou les services proposés, l'utilisateur peut contacter Finvero Capital via les moyens de contact disponibles sur le site.</p>`
+        },
+        'privacy': {
+            title: 'Politique de confidentialité',
+            html: `<p>La présente Politique de confidentialité explique comment Finvero Capital traite les données personnelles des utilisateurs qui consultent le site, utilisent le simulateur ou transmettent une demande de financement.</p><h3>1. Données collectées</h3><p>Selon les fonctionnalités utilisées, Finvero Capital peut être amené à collecter les informations suivantes :</p><ul><li>adresse e-mail ;</li><li>numéro de téléphone ;</li><li>informations relatives à la demande de financement ;</li><li>montant souhaité ;</li><li>durée souhaitée ;</li><li>informations nécessaires au traitement de la demande ;</li><li>documents justificatifs transmis volontairement par l’utilisateur, notamment les documents d’identité, justificatifs fiscaux ou justificatifs de revenus.</li></ul><p>L’utilisateur est informé des informations demandées au moment où celles-ci sont saisies ou transmises.</p><h3>2. Utilisation des données</h3><p>Les informations communiquées sont utilisées principalement pour :</p><ul><li>effectuer une simulation de financement ;</li><li>permettre le traitement d’une demande ;</li><li>vérifier les informations communiquées ;</li><li>permettre le suivi d’une demande ;</li><li>contacter l’utilisateur concernant sa demande ;</li><li>répondre aux demandes d’assistance ou d’information ;</li><li>assurer le fonctionnement et la sécurité du site.</li></ul><p>Les données sont utilisées uniquement dans le cadre des finalités prévues par les services proposés par Finvero Capital.</p><h3>3. Documents justificatifs</h3><p>Lorsqu’un utilisateur transmet des documents justificatifs, ceux-ci peuvent contenir des informations personnelles ou financières.</p><p>Ces documents sont destinés au traitement de la demande concernée et doivent correspondre aux justificatifs demandés.</p><p>L’utilisateur doit s’assurer que les documents transmis sont exacts, lisibles et qu’ils correspondent à sa propre situation.</p><h3>4. Confidentialité des informations</h3><p>Finvero Capital accorde une importance particulière à la confidentialité des informations communiquées par ses utilisateurs.</p><p>Les données personnelles ne sont pas destinées à être vendues ou louées à des tiers à des fins commerciales.</p><p>L’accès aux informations peut être limité aux personnes ou services qui en ont besoin dans le cadre du traitement de la demande ou du fonctionnement du service.</p><h3>5. Transmission à des services tiers</h3><p>Certaines fonctionnalités du site peuvent nécessiter l’utilisation de services tiers, notamment pour communiquer avec Finvero Capital ou transmettre une demande.</p><p>Lorsque l’utilisateur utilise un service tiers, les informations échangées peuvent également être soumises aux règles de confidentialité et aux conditions d’utilisation de ce service.</p><h3>6. Communications</h3><p>Les coordonnées communiquées par l’utilisateur peuvent être utilisées pour le contacter concernant :</p><ul><li>sa demande de financement ;</li><li>une simulation ;</li><li>le suivi de son dossier ;</li><li>une demande d’information ;</li><li>une assistance liée aux services Finvero Capital.</li></ul><p>Finvero Capital ne doit pas être utilisé pour transmettre des informations personnelles inutiles à une demande.</p><h3>7. Sécurité des données</h3><p>Finvero Capital met en œuvre des mesures raisonnables destinées à protéger les informations personnelles contre l'accès non autorisé, la perte, l'altération ou la divulgation.</p><p>Toutefois, aucune transmission de données sur Internet ne peut être considérée comme totalement exempte de risques.</p><p>L’utilisateur doit également prendre les précautions nécessaires pour protéger ses propres appareils, comptes et moyens de communication.</p><h3>8. Conservation des données</h3><p>Les données personnelles sont conservées pendant une durée proportionnée à leur utilisation et aux besoins liés au traitement des demandes.</p><p>Lorsque les informations ne sont plus nécessaires, elles peuvent être supprimées, anonymisées ou archivées lorsque cela est nécessaire.</p><h3>9. Droits des utilisateurs</h3><p>Selon la réglementation applicable, l’utilisateur peut disposer de différents droits concernant ses données personnelles, notamment :</p><ul><li>demander l’accès à ses données ;</li><li>demander la correction d’informations inexactes ;</li><li>demander la suppression de certaines données ;</li><li>demander la limitation de certains traitements ;</li><li>s’opposer à certains traitements lorsque cela est applicable ;</li><li>retirer son consentement lorsqu’un traitement repose sur celui-ci.</li></ul><p>Toute demande concernant les données personnelles peut être adressée à Finvero Capital par les moyens de contact proposés sur le site.</p><h3>10. Exactitude des informations</h3><p>L’utilisateur est responsable des informations qu’il communique.</p><p>Il doit fournir des informations exactes, complètes et à jour et ne doit pas transmettre de documents appartenant à une autre personne sans autorisation.</p><h3>11. Liens et services externes</h3><p>Le site peut contenir des liens ou permettre l’utilisation de services externes.</p><p>Finvero Capital ne peut pas être tenu responsable des pratiques de confidentialité appliquées directement par ces services externes.</p><p>Il est recommandé à l’utilisateur de consulter leurs propres politiques de confidentialité lorsqu’il les utilise.</p><h3>12. Modification de la politique</h3><p>Finvero Capital peut faire évoluer la présente Politique de confidentialité afin de tenir compte de l’évolution de ses services, de ses fonctionnalités ou des exigences applicables.</p><p>La version publiée sur le site constitue la version applicable lors de l’utilisation des services.</p>`
+        },
+        'terms': {
+            title: 'Conditions d’utilisation',
+            html: `<p>Bienvenue sur Finvero Capital.</p><p>Les présentes Conditions d’utilisation définissent les règles applicables à l’utilisation du site Finvero Capital, de son simulateur de financement et des fonctionnalités permettant de transmettre une demande de financement.</p><p>En accédant au site ou en utilisant ses fonctionnalités, l’utilisateur accepte les présentes Conditions d’utilisation.</p><h3>1. Objet du site</h3><p>Finvero Capital propose notamment des outils permettant à l’utilisateur :</p><ul><li>d’effectuer une simulation de financement ;</li><li>d’obtenir une estimation indicative des conditions d’un financement ;</li><li>de préparer une demande de financement ;</li><li>de transmettre les informations nécessaires au traitement de cette demande ;</li><li>de contacter le service concerné.</li></ul><p>Les simulations et informations présentées sur le site sont fournies à titre indicatif.</p><h3>2. Utilisation du simulateur</h3><p>Le simulateur permet d’obtenir une estimation à partir des informations renseignées par l’utilisateur.</p><p>Les résultats affichés peuvent notamment dépendre :</p><ul><li>du montant demandé ;</li><li>de la durée choisie ;</li><li>du taux applicable ;</li><li>des informations renseignées lors de la simulation.</li></ul><p>Le résultat d’une simulation ne constitue pas une offre ferme de financement et ne garantit pas l’acceptation d’une demande.</p><p>Les conditions définitives d’un éventuel financement peuvent dépendre de l’étude complète du dossier et des informations ou justificatifs fournis.</p><h3>3. Demande de financement</h3><p>L’utilisateur peut décider de poursuivre une simulation en transmettant une demande.</p><p>Il doit alors fournir des informations exactes, complètes et sincères.</p><p>La transmission d’une demande ne signifie pas que le financement est automatiquement accepté.</p><p>Toute demande peut faire l’objet d’une vérification et d’une étude avant toute décision.</p><h3>4. Documents justificatifs</h3><p>Lorsque des justificatifs sont demandés, l’utilisateur s’engage à transmettre des documents authentiques et correspondant à sa situation.</p><p>Il ne doit notamment pas :</p><ul><li>fournir un document falsifié ;</li><li>modifier volontairement un justificatif ;</li><li>transmettre le document d’une autre personne sans autorisation ;</li><li>communiquer des informations volontairement fausses.</li></ul><p>Toute information inexacte peut entraîner l’arrêt ou le refus du traitement de la demande.</p><h3>5. Informations communiquées</h3><p>L’utilisateur est responsable des informations qu’il saisit sur le site.</p><p>Il doit vérifier les informations avant de transmettre sa demande.</p><p>Finvero Capital ne peut pas être tenu responsable des erreurs résultant d’informations incorrectes, incomplètes ou volontairement erronées fournies par l’utilisateur.</p><h3>6. Utilisation autorisée</h3><p>Le site doit être utilisé de manière légale, honnête et conforme aux présentes Conditions d’utilisation.</p><p>Il est notamment interdit d’utiliser le site pour :</p><ul><li>frauder ;</li><li>usurper l’identité d’une autre personne ;</li><li>transmettre de faux documents ;</li><li>tenter d'obtenir un financement au moyen d'informations trompeuses ;</li><li>perturber ou compromettre le fonctionnement du site ;</li><li>tenter d'accéder sans autorisation à des données ou fonctionnalités ;</li><li>utiliser le site à des fins contraires à la loi.</li></ul><h3>7. Disponibilité du service</h3><p>Finvero Capital s’efforce de maintenir le site et ses fonctionnalités accessibles dans des conditions normales.</p><p>Toutefois, l’accès au site peut être temporairement interrompu notamment en raison de maintenance, de difficultés techniques, de problèmes de réseau ou de circonstances indépendantes du fonctionnement normal du service.</p><h3>8. Services et liens externes</h3><p>Certaines fonctionnalités peuvent permettre à l’utilisateur d’utiliser ou d’accéder à des services externes, notamment des services de messagerie ou de communication.</p><p>L’utilisation de ces services peut être soumise à leurs propres conditions d’utilisation.</p><p>Finvero Capital ne contrôle pas nécessairement le fonctionnement ou les conditions applicables aux services externes.</p><h3>9. Propriété du contenu</h3><p>Les éléments présents sur le site, notamment les textes, éléments graphiques, logos, interfaces, présentations et contenus, sont destinés à l’utilisation normale du site.</p><p>Toute reproduction, modification, extraction ou réutilisation non autorisée d’éléments du site peut être interdite.</p><h3>10. Responsabilité de l’utilisateur</h3><p>L’utilisateur est responsable de l’utilisation qu’il fait du site et des informations qu’il communique.</p><p>Il doit notamment conserver la confidentialité de ses informations personnelles et prendre les mesures nécessaires pour protéger son appareil et ses moyens de communication.</p><h3>11. Limitation de responsabilité</h3><p>Les informations et résultats proposés sur Finvero Capital sont destinés à fournir une aide à la simulation et à la préparation d’une demande.</p><p>Ils ne constituent pas une garantie d’obtention d’un financement.</p><p>Finvero Capital ne garantit pas qu’une demande aboutira à une acceptation ni que les conditions estimées lors d’une simulation seront nécessairement celles d’un éventuel financement définitif.</p><h3>12. Protection des données</h3><p>L’utilisation du site peut entraîner le traitement de données personnelles.</p><p>Les modalités relatives à la collecte, à l’utilisation, à la conservation et à la protection de ces données sont présentées dans la Politique de confidentialité de Finvero Capital.</p><h3>13. Évolution des services</h3><p>Finvero Capital peut faire évoluer, modifier, suspendre ou supprimer certaines fonctionnalités du site lorsque cela est nécessaire au fonctionnement ou à l’évolution du service.</p><p>Les présentes Conditions d’utilisation peuvent également être adaptées afin de tenir compte de l’évolution des services proposés.</p><h3>14. Acceptation des conditions</h3><p>En utilisant le site Finvero Capital, l’utilisateur reconnaît avoir pris connaissance des présentes Conditions d’utilisation et accepter de les respecter.</p><p>Si l’utilisateur n’accepte pas ces conditions, il doit cesser d’utiliser les services concernés.</p>`
+        },
+        'credit': {
+            title: 'Informations crédit',
+            html: `<p>Cette rubrique présente les principales informations relatives aux simulations et demandes de financement proposées par Finvero Capital.</p><h3>1. Simulation de financement</h3><p>Finvero Capital permet à l’utilisateur d’effectuer une simulation à partir du montant et de la durée de financement souhaités.</p><p>La simulation permet notamment d’obtenir une estimation :</p><ul><li>du montant des mensualités ;</li><li>du coût estimatif du financement ;</li><li>du montant total à rembourser ;</li><li>des intérêts estimatifs.</li></ul><p>Les résultats affichés sont indicatifs et peuvent varier selon les conditions applicables au dossier.</p><h3>2. Montant du financement</h3><p>Le montant pouvant être demandé dépend des conditions proposées par le service et de l’étude de la demande.</p><p>Le montant indiqué lors de la simulation correspond au montant souhaité par l’utilisateur et ne constitue pas une confirmation automatique de l’octroi du financement.</p><h3>3. Durée de remboursement</h3><p>L’utilisateur peut sélectionner la durée de remboursement proposée dans le simulateur.</p><p>Une durée plus longue peut modifier le montant des mensualités ainsi que le coût total du financement.</p><p>La durée définitive peut être déterminée lors de l’étude de la demande.</p><h3>4. Taux et coût du crédit</h3><p>Le taux affiché lors de la simulation est utilisé pour établir une estimation du coût du financement.</p><p>Le coût total peut notamment dépendre du montant financé, de la durée de remboursement et des conditions applicables au dossier.</p><p>Les résultats du simulateur doivent donc être considérés comme des estimations et non comme des conditions contractuelles définitives.</p><h3>5. Mensualités</h3><p>La mensualité affichée correspond à une estimation du montant à rembourser périodiquement selon les paramètres renseignés dans le simulateur.</p><p>Toute modification du montant, de la durée ou des conditions du financement peut entraîner une modification de la mensualité.</p><h3>6. Demande de financement</h3><p>Après une simulation, l’utilisateur peut choisir de transmettre une demande de financement.</p><p>Cette demande peut nécessiter des informations personnelles ainsi que certains documents justificatifs afin de permettre l’étude du dossier.</p><p>La transmission d’une demande ne garantit pas son acceptation.</p><h3>7. Étude du dossier</h3><p>Une demande peut être examinée sur la base des informations et justificatifs communiqués par l’utilisateur.</p><p>Des informations complémentaires peuvent être demandées lorsque cela est nécessaire à l’étude du dossier.</p><p>Une décision définitive peut dépendre de critères et de vérifications qui ne sont pas déterminés uniquement par le résultat du simulateur.</p><h3>8. Remboursement</h3><p>Lorsqu’un financement est accordé, les modalités de remboursement applicables sont communiquées dans les conditions du financement concerné.</p><p>L’utilisateur doit respecter les échéances et modalités qui lui sont communiquées.</p><p>En cas de difficulté concernant le remboursement, il est recommandé de contacter rapidement le service concerné.</p><h3>9. Informations fournies par l’utilisateur</h3><p>Les résultats d’une simulation dépendent des informations saisies par l’utilisateur.</p><p>Une erreur dans le montant, la durée ou toute autre information peut entraîner un résultat incorrect.</p><p>L’utilisateur doit donc vérifier les informations renseignées avant de poursuivre sa demande.</p><h3>10. Caractère indicatif</h3><p>Les informations présentées dans cette rubrique et les résultats du simulateur ont une vocation informative.</p><p>Ils ne constituent pas une promesse d’octroi, une offre ferme ou une garantie de financement.</p><p>Les conditions définitives applicables à un financement sont celles communiquées après l’étude du dossier et, le cas échéant, celles prévues dans les documents contractuels correspondants.</p><h3>11. Comprendre son financement</h3><p>Avant de s’engager, l’utilisateur est invité à prendre connaissance de l’ensemble des informations relatives au financement proposé, notamment :</p><ul><li>le montant financé ;</li><li>la durée ;</li><li>le montant des échéances ;</li><li>le coût total ;</li><li>les intérêts ;</li><li>les éventuels frais applicables ;</li><li>les modalités de remboursement.</li></ul><p>L’utilisateur doit s’assurer que le financement envisagé correspond à ses capacités de remboursement.</p>`
+        }
+    };
+
+    function openLegalModal(type) {
+        const content = legalContents[type] || legalContents['mentions'];
+        legalTitle.textContent = content.title;
+        legalContent.innerHTML = content.html;
+        legalModal.classList.add('open');
+    }
+
+    document.querySelectorAll('.legal-footer button[data-legal]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const type = this.getAttribute('data-legal');
+            openLegalModal(type);
+        });
+    });
+
+    legalClose.addEventListener('click', () => legalModal.classList.remove('open'));
+    legalModal.addEventListener('click', (e) => { if (e.target === legalModal) legalModal.classList.remove('open'); });
+
+    // ===== CHATBOT =====
+    const chatToggle = document.getElementById('chatToggle');
+    const chatWindow = document.getElementById('chatWindow');
+    const chatClose = document.getElementById('chatClose');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const chatMessages = document.getElementById('chatMessages');
+
+    const botReplies = {
+        'taux': 'Notre taux d’intérêt est fixe à **3 %** pour tous nos crédits.',
+        'durée': 'Vous pouvez choisir une durée de remboursement entre **3 et 360 mois** selon votre projet.',
+        'montant': 'Le montant maximum que nous finançons est de **350 000 €**. Utilisez le curseur sur la page pour simuler.',
+        'document': 'Les documents demandés sont : carte d’identité, code fiscal et justificatif de revenu. Vous pouvez les télécharger directement dans le formulaire.',
+        'simulation': 'La simulation se fait en cliquant sur « Simuler mon crédit » après avoir rempli le formulaire. Vous obtiendrez votre mensualité et le tableau d’amortissement.',
+        'contact': 'Vous pouvez nous joindre par WhatsApp au +229 61 44 35 97 ou par e-mail à otezaolga@gmail.com.',
+        'délai': 'Après validation de votre dossier, le versement est effectué dans les plus brefs délais (généralement sous 48h).',
+        'urgence': 'Pour une urgence, contactez-nous directement par WhatsApp, nous traitons les demandes prioritairement.',
+        'sécurité': 'Vos données sont protégées conformément au RGPD. Nous ne partageons aucune information avec des tiers.'
+    };
+
+    function getBotReply(userMessage) {
+        const msg = userMessage.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        if (msg.includes('taux') || msg.includes('pourcentage') || msg.includes('%')) return botReplies.taux;
+        if (msg.includes('durée') || msg.includes('mois') || msg.includes('année') || msg.includes('remboursement')) return botReplies.durée;
+        if (msg.includes('montant') || msg.includes('somme') || msg.includes('max') || msg.includes('maximum')) return botReplies.montant;
+        if (msg.includes('document') || msg.includes('papier') || msg.includes('justificatif') || msg.includes('identité') || msg.includes('carte')) return botReplies.document;
+        if (msg.includes('simulation') || msg.includes('simuler') || msg.includes('calcul') || msg.includes('mensualité')) return botReplies.simulation;
+        if (msg.includes('contact') || msg.includes('joindre') || msg.includes('email') || msg.includes('adresse') || msg.includes('telephone')) return botReplies.contact;
+        if (msg.includes('délai') || msg.includes('temps') || msg.includes('versement') || msg.includes('rapide')) return botReplies.délai;
+        if (msg.includes('urgent') || msg.includes('urgence') || msg.includes('vite')) return botReplies.urgence;
+        if (msg.includes('sécurité') || msg.includes('confidentiel') || msg.includes('rgpd') || msg.includes('donnée')) return botReplies.sécurité;
+        return "Je n’ai pas compris votre question. Pour toute demande précise, n’hésitez pas à contacter notre service client par WhatsApp ou par e-mail. Je suis là pour vous guider sur nos offres de crédit, les taux, les documents et les simulations.";
+    }
+
+    function addMessage(sender, text) {
+        const div = document.createElement('div');
+        div.className = `chat-message ${sender}`;
+        div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function handleUserMessage() {
+        const text = chatInput.value.trim();
+        if (!text) return;
+        addMessage('user', text);
+        chatInput.value = '';
+        setTimeout(() => {
+            const reply = getBotReply(text);
+            addMessage('bot', reply);
+        }, 500);
+    }
+
+    chatToggle.addEventListener('click', () => chatWindow.classList.toggle('open'));
+    chatClose.addEventListener('click', () => chatWindow.classList.remove('open'));
+    chatSend.addEventListener('click', handleUserMessage);
+    chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleUserMessage(); });
+    addMessage('bot', 'Bonjour ! Je suis votre assistant virtuel. Posez-moi vos questions sur nos offres de crédit, les taux, les documents ou les délais.');
+
+    // ===== AUTHENTIFICATION + ESPACE CLIENT VIA SUPABASE =====
+    const authModal = document.getElementById('authModal');
+    const authMessage = document.getElementById('authMessage');
+    const authTitle = document.getElementById('authTitle');
+    const authSubtitle = document.getElementById('authSubtitle');
+    const accountPanel = document.getElementById('accountPanel');
+    const clientDashboard = document.getElementById('clientDashboard');
+
+    const statusOrder = [
+        'Application submitted',
+        'Documents under review',
+        'Application under assessment',
+        'Application approved',
+        'Contract to sign',
+        'Funding in preparation',
+        'Funding granted'
+    ];
+
+    const statusLabelsFr = {
+        'Application submitted': 'Demande envoyée',
+        'Documents under review': 'Documents en vérification',
+        'Application under assessment': 'Dossier en cours d’étude',
+        'Application approved': 'Dossier accepté',
+        'Contract to sign': 'Contrat à signer',
+        'Funding in preparation': 'Financement en préparation',
+        'Funding granted': 'Financement accordé'
+    };
+
+    const documentLabelsFr = {
+        identity: 'Carte d’identité',
+        tax: 'Document fiscal',
+        income: 'Justificatif de revenu'
+    };
+
+    function showAuthMessage(message, type='success') {
+        authMessage.textContent = message;
+        authMessage.className = `auth-message show ${type}`;
+    }
+
+    function clearAuthMessage() {
+        authMessage.textContent = '';
+        authMessage.className = 'auth-message';
+    }
+
+    function openAuthModal(tab='login') {
+        authModal.classList.add('open');
+        clearAuthMessage();
+        switchAuthTab(tab);
+    }
+
+    function closeAuthModal() {
+        authModal.classList.remove('open');
+        clearAuthMessage();
+    }
+
+    function switchAuthTab(tab) {
+        document.querySelectorAll('.auth-tab').forEach(b => b.classList.toggle('active', b.dataset.authTab === tab));
+        document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+        const form = document.getElementById(tab === 'login' ? 'loginForm' : tab === 'register' ? 'registerForm' : tab + 'Form');
+        if (form) form.classList.add('active');
+
+        if (tab === 'register') {
+            authTitle.textContent = 'Créer votre espace client';
+            authSubtitle.textContent = 'Votre espace vous permettra de suivre votre demande en temps réel.';
+        } else if (tab === 'forgot') {
+            authTitle.textContent = 'Réinitialiser le mot de passe';
+            authSubtitle.textContent = 'Nous vous enverrons un lien sécurisé par e-mail.';
+        } else if (tab === 'reset') {
+            authTitle.textContent = 'Nouveau mot de passe';
+            authSubtitle.textContent = 'Choisissez un nouveau mot de passe sécurisé.';
+        } else {
+            authTitle.textContent = 'Votre espace client';
+            authSubtitle.textContent = 'Connectez-vous pour suivre votre dossier.';
+        }
+    }
+
+    async function updateAuthUI(user) {
+        const loginBtn = document.getElementById('loginBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const dashboardBtn = document.getElementById('dashboardBtn');
+
+        if (user) {
+            loginBtn.style.display = 'none';
+            registerBtn.style.display = 'none';
+            dashboardBtn.style.display = 'inline-flex';
+            accountPanel.classList.add('show');
+            const name = user.user_metadata?.full_name || user.email || 'Client';
+            document.getElementById('accountStatus').textContent = `Connecté en tant que ${name}`;
+            await loadClientDashboard();
+        } else {
+            loginBtn.style.display = 'inline-flex';
+            registerBtn.style.display = 'inline-flex';
+            dashboardBtn.style.display = 'none';
+            accountPanel.classList.remove('show');
+            clientDashboard.classList.remove('show');
+            adminPanel.classList.remove('show');
+        }
+    }
+
+    async function loadClientDashboard() {
+        const { data: userData } = await localDB.auth.getUser();
+        const user = userData.user;
+        if (!user) return;
+
+        const { data: profile } = await localDB
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .maybeSingle();
+
+        const { data: apps, error } = await localDB
+            .from('applications')
+            .select('*')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending:false })
+            .limit(1);
+
+        if (error) {
+            console.error(error);
+            return;
+        }
+
+        clientDashboard.classList.add('show');
+        const displayName = profile?.full_name || user.user_metadata?.full_name || user.email;
+        const balance = Number(profile?.balance || 0);
+        const currency = profile?.currency || 'EUR';
+        const accountStatus = profile?.account_status || 'active';
+        document.getElementById('dashBalance').textContent = `${balance.toLocaleString(window.FINVERO_LOCALE || 'fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2})} ${currency === 'EUR' ? '€' : currency}`;
+        const accountStatusLabels = { active:'Compte actif', pending:'Compte en attente', suspended:'Compte suspendu', blocked:'Compte bloqué' };
+        document.getElementById('dashAccountStatus').textContent = accountStatusLabels[accountStatus] || accountStatus;
+        document.getElementById('dashboardWelcome').textContent = `Bonjour ${displayName}. Les changements de statut apparaissent automatiquement.`;
+
+        const app = apps?.[0];
+        if (!app) {
+            document.getElementById('dashTracking').textContent = 'Aucun dossier';
+            document.getElementById('dashAmount').textContent = '—';
+            document.getElementById('dashDuration').textContent = '—';
+            document.getElementById('dashMonthly').textContent = '—';
+            document.getElementById('dashStatus').textContent = 'Aucun dossier';
+            document.getElementById('dashUpdated').textContent = '—';
+            document.getElementById('statusTrack').innerHTML = '<div class="status-step active"><span class="status-dot"></span><span>Vous n’avez pas encore envoyé de demande.</span></div>';
+            document.getElementById('dashDocuments').innerHTML = '';
+            return;
+        }
+
+        document.getElementById('dashTracking').textContent = app.tracking_number || '—';
+        document.getElementById('dashAmount').textContent = `${Number(app.amount_requested).toLocaleString('fr-FR')} €`;
+        document.getElementById('dashDuration').textContent = `${app.duration_months} mois`;
+        document.getElementById('dashMonthly').textContent = `${Number(app.monthly_payment).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
+        document.getElementById('dashStatus').textContent = statusLabelsFr[app.status] || app.status || 'Demande envoyée';
+        document.getElementById('dashUpdated').textContent = app.updated_at ? new Date(app.updated_at).toLocaleString('fr-FR') : '—';
+
+        const currentIndex = Math.max(0, statusOrder.indexOf(app.status));
+        document.getElementById('statusTrack').innerHTML = statusOrder.map((s, i) => {
+            const cls = i < currentIndex ? 'done' : i === currentIndex ? 'active' : '';
+            return `<div class="status-step ${cls}"><span class="status-dot"></span><span>${statusLabelsFr[s] || s}</span></div>`;
+        }).join('');
+
+        const { data: docs } = await localDB
+            .from('application_documents')
+            .select('document_type, original_name, created_at')
+            .eq('application_id', app.id)
+            .order('created_at', { ascending:true });
+
+        const labels = documentLabelsFr;
+        document.getElementById('dashDocuments').innerHTML = docs?.length
+            ? `<h3 style="color:#0f2b4b;">Documents transmis</h3><ul style="padding-left:1.2rem;color:#5b6f87;">${docs.map(d => `<li>${labels[d.document_type] || d.document_type} — ${d.original_name}</li>`).join('')}</ul>`
+            : '<p class="doc-note">Aucun document enregistré.</p>';
+
+        const { data: walletRows } = await localDB
+            .from('wallet_transactions')
+            .select('amount,balance_after,transaction_type,note,reference,created_at')
+            .eq('user_id', user.id)
+            .order('created_at', { ascending:false })
+            .limit(20);
+        const walletEl = document.getElementById('walletHistory');
+        walletEl.innerHTML = `<h3>Historique du compte</h3>` + (walletRows?.length
+            ? walletRows.map(t => {
+                const sign = Number(t.amount) >= 0 ? '+' : '';
+                const amount = `${sign}${Number(t.amount).toLocaleString(window.FINVERO_LOCALE || 'fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
+                const date = new Date(t.created_at).toLocaleString(window.FINVERO_LOCALE || 'fr-FR');
+                return `<div class="wallet-entry ${t.transaction_type === 'credit' ? 'credit' : 'debit'}"><div><strong>${t.transaction_type === 'credit' ? 'Crédit' : t.transaction_type === 'debit' ? 'Débit' : 'Ajustement'}</strong><br><span class="doc-note">${t.note || t.reference || ''} · ${date}</span></div><div class="wallet-amount">${amount}</div></div>`;
+              }).join('')
+            : '<p class="doc-note">Aucun mouvement sur le compte.</p>');
+    }
+
+    document.getElementById('loginBtn').addEventListener('click', () => openAuthModal('login'));
+    document.getElementById('registerBtn').addEventListener('click', () => openAuthModal('register'));
+    document.getElementById('dashboardBtn').addEventListener('click', () => clientDashboard.classList.toggle('show'));
+    document.getElementById('closeDashboardBtn').addEventListener('click', () => clientDashboard.classList.remove('show'));
+    document.getElementById('refreshDashboardBtn').addEventListener('click', loadClientDashboard);
+    document.getElementById('authClose').addEventListener('click', closeAuthModal);
+    authModal.addEventListener('click', e => { if (e.target === authModal) closeAuthModal(); });
+
+    document.querySelectorAll('.auth-tab').forEach(btn => {
+        btn.addEventListener('click', () => switchAuthTab(btn.dataset.authTab));
+    });
+
+    document.querySelectorAll('.password-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = document.getElementById(btn.dataset.target);
+            input.type = input.type === 'password' ? 'text' : 'password';
+            btn.textContent = input.type === 'password' ? '👁️' : '🙈';
+        });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        clearAuthMessage();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const { data, error } = await localDB.auth.signInWithPassword({ email, password });
+        if (error) return showAuthMessage(error.message, 'error');
+        closeAuthModal();
+        await updateAuthUI(data.user);
+    });
+
+    document.getElementById('registerForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        clearAuthMessage();
+
+        const fullName = document.getElementById('registerName').value.trim();
+        const gender = document.getElementById('registerGender').value;
+        const email = document.getElementById('registerEmail').value.trim();
+        const phone = document.getElementById('registerPhone').value.trim();
+        const password = document.getElementById('registerPassword').value;
+        const password2 = document.getElementById('registerPassword2').value;
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showAuthMessage('Veuillez saisir une adresse e-mail valide.', 'error');
+        if (!fullName) return showAuthMessage('Veuillez saisir votre nom complet.', 'error');
+        if (password !== password2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
+        if (password.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
+
+        const { data, error } = await localDB.auth.signUp({
+            email, password,
+            options: {
+                data: { full_name: fullName, phone, gender },
+                emailRedirectTo: 'https://finverocapital.de/'
+            }
+        });
+
+        if (error) return showAuthMessage(error.message, 'error');
+
+        // Le profil est créé automatiquement par le trigger Supabase à l'inscription.
+
+        if (data.session) {
+            closeAuthModal();
+        } else {
+            showAuthMessage('Compte créé. Consultez votre e-mail pour confirmer votre adresse avant de vous connecter.', 'success');
+        }
+    });
+
+    document.getElementById('forgotPasswordBtn').addEventListener('click', () => switchAuthTab('forgot'));
+    document.getElementById('backToLoginBtn').addEventListener('click', () => switchAuthTab('login'));
+
+    document.getElementById('forgotForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        clearAuthMessage();
+        const email = document.getElementById('forgotEmail').value.trim();
+        const { error } = await localDB.auth.resetPasswordForEmail(email, {
+            redirectTo: 'https://finverocapital.de/'
+        });
+        if (error) return showAuthMessage(error.message, 'error');
+        showAuthMessage('Un lien sécurisé de réinitialisation vient de vous être envoyé par e-mail.', 'success');
+    });
+
+    document.getElementById('resetForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        clearAuthMessage();
+        const p1 = document.getElementById('newPassword').value;
+        const p2 = document.getElementById('newPassword2').value;
+        if (p1 !== p2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
+        if (p1.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
+
+        const { error } = await localDB.auth.updateUser({ password:p1 });
+        if (error) return showAuthMessage(error.message, 'error');
+        showAuthMessage('Mot de passe modifié avec succès. Vous pouvez fermer cette fenêtre.', 'success');
+    });
+
+    document.getElementById('changePasswordBtn').addEventListener('click', () => {
+        openAuthModal('reset');
+    });
+
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await localDB.auth.signOut();
+        clientDashboard.classList.remove('show');
+    });
+
+    // ===== ADMINISTRATION VIA SUPABASE =====
+    const adminPanel = document.getElementById('adminPanel');
+    const adminClientList = document.getElementById('adminClientList');
+    const adminClientSearch = document.getElementById('adminClientSearch');
+    const adminLoginModal = document.getElementById('adminLoginModal');
+    const adminSettingsModal = document.getElementById('adminSettingsModal');
+    const adminLoginForm = document.getElementById('adminLoginForm');
+    const adminSettingsForm = document.getElementById('adminSettingsForm');
+    const adminLoginMessage = document.getElementById('adminLoginMessage');
+    const adminSettingsMessage = document.getElementById('adminSettingsMessage');
+    let adminClients = [];
+    let adminUser = null;
+
+    const adminAccountStatusLabels = { active:'Actif', pending:'En attente', suspended:'Suspendu', blocked:'Bloqué' };
+
+    function esc(value) {
+        return String(value ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','\"':'&quot;'}[c]));
+    }
+    function openAdminModal(modal) { modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); }
+    function closeAdminModal(modal) { modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+    function clearAdminMessage(el) { el.textContent=''; el.classList.remove('success','error'); }
+
+    async function verifyAdminSession() {
+        const { data, error } = await localDB.auth.getUser();
+        if (error || !data.user) return false;
+        const { data: profile, error: profileError } = await localDB
+            .from('profiles').select('id,role,account_status,email,full_name').eq('id',data.user.id).maybeSingle();
+        if (profileError || profile?.role !== 'admin' || profile?.account_status !== 'active') return false;
+        adminUser = data.user;
+        return true;
+    }
+
+    function openAdministration() {
+        document.body.classList.add('admin-mode');
+        clearAdminMessage(adminLoginMessage);
+        document.getElementById('adminPassword').value='';
+        openAdminModal(adminLoginModal);
+        document.getElementById('adminUsername').focus();
+    }
+
+    function closeAdministration() {
+        closeAdminModal(adminLoginModal);
+        closeAdminModal(adminSettingsModal);
+        document.body.classList.remove('admin-mode');
+        adminPanel.classList.remove('show');
+        adminPanel.setAttribute('aria-hidden','true');
+    }
+
+    async function loadAdminClients() {
+        if (!await verifyAdminSession()) {
+            closeAdministration();
+            openAdminModal(adminLoginModal);
+            adminLoginMessage.textContent='Accès administrateur non autorisé.';
+            adminLoginMessage.classList.add('error');
+            return;
+        }
+        adminPanel.classList.add('show');
+        adminPanel.setAttribute('aria-hidden','false');
+        adminClientList.innerHTML='<p class="doc-note">Chargement des clients...</p>';
+        try {
+            const { data: profiles, error: profilesError } = await localDB
+                .from('profiles')
+                .select('*')
+                .neq('role','admin')
+                .order('created_at',{ascending:false});
+            if (profilesError) throw profilesError;
+
+            const { data: applications, error: appsError } = await localDB
+                .from('applications')
+                .select('*')
+                .order('created_at',{ascending:false});
+            if (appsError) throw appsError;
+
+            const latestByUser = {};
+            for (const app of (applications || [])) {
+                if (!latestByUser[app.user_id]) latestByUser[app.user_id]=app;
+            }
+            adminClients = (profiles || []).map(p => {
+                const app = latestByUser[p.id] || null;
+                return {
+                    ...p, user_id:p.id,
+                    tracking_number:app?.tracking_number || null,
+                    amount_requested:app?.amount_requested ?? null,
+                    duration_months:app?.duration_months ?? null,
+                    application_status:app?.status || null,
+                    application_id:app?.id || null
+                };
+            });
+            renderAdminClients();
+        } catch (e) {
+            adminClientList.innerHTML=`<p class="auth-message show error">${esc(e.message)}</p>`;
+        }
+    }
+
+    function renderAdminClients() {
+        const q=(adminClientSearch.value||'').trim().toLowerCase();
+        const rows=adminClients.filter(c=>[c.full_name,c.email,c.phone,c.tracking_number].some(v=>String(v||'').toLowerCase().includes(q)));
+        adminClientList.innerHTML=rows.length ? rows.map(c=>`
+            <div class="admin-client-card" data-user-id="${esc(c.user_id)}">
+                <div class="admin-client-head">
+                    <div>
+                        <div class="admin-client-name">${esc(c.full_name||'Client sans nom')}</div>
+                        <div class="admin-client-meta">${esc(c.email||'')} · ${esc(c.phone||'')}</div>
+                        <div class="admin-client-meta">Dossier : ${esc(c.tracking_number||'Aucun dossier')} · ${c.amount_requested!=null?Number(c.amount_requested).toLocaleString('fr-FR')+' €':'—'} · ${c.duration_months!=null?esc(c.duration_months)+' mois':'—'}</div>
+                        <div class="admin-client-meta">Statut du dossier : <strong>${esc(statusLabelsFr[c.application_status]||c.application_status||'Aucun dossier')}</strong></div>
+                        <span class="admin-status-badge ${esc(c.account_status)}">${esc(adminAccountStatusLabels[c.account_status]||c.account_status||'Actif')}</span>
+                    </div>
+                    <div class="admin-client-balance">${Number(c.balance||0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} ${c.currency==='EUR'?'€':esc(c.currency||'EUR')}</div>
+                </div>
+                <div class="admin-client-actions">
+                    <input class="admin-amount" type="number" min="0.01" step="0.01" placeholder="Montant à créditer">
+                    <input class="admin-note" type="text" maxlength="200" placeholder="Motif / commentaire">
+                    <input class="admin-reference" type="text" maxlength="100" placeholder="Référence (facultatif)">
+                    <button type="button" class="account-btn primary admin-credit-btn">💶 Créditer</button>
+                    <input class="admin-debit-amount" type="number" min="0.01" step="0.01" placeholder="Montant à débiter">
+                    <button type="button" class="account-btn admin-debit-btn">↘️ Débiter</button>
+                    <select class="admin-status-select">${Object.entries(adminAccountStatusLabels).map(([k,v])=>`<option value="${k}" ${k===c.account_status?'selected':''}>${v}</option>`).join('')}</select>
+                    <input class="admin-status-note" type="text" maxlength="200" placeholder="Motif du changement de statut">
+                    <button type="button" class="account-btn admin-status-btn">Modifier le statut</button>
+                    <button type="button" class="account-btn admin-edit-btn">✏️ Modifier le client</button>
+                    <button type="button" class="account-btn admin-history-btn">Voir les mouvements</button>
+                </div>
+                <div class="admin-client-transactions"></div>
+            </div>`).join(''):'<p class="doc-note">Aucun client trouvé.</p>';
+
+        adminClientList.querySelectorAll('.admin-credit-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+            const card=btn.closest('.admin-client-card'), userId=card.dataset.userId, amount=Number(card.querySelector('.admin-amount').value);
+            const note=card.querySelector('.admin-note').value.trim()||null, reference=card.querySelector('.admin-reference').value.trim()||null;
+            if(!amount||amount<=0)return alert('Entrez un montant supérieur à zéro.');
+            if(!confirm(`Créditer ce compte de ${amount.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} € ?`))return;
+            btn.disabled=true;
+            try {
+                const {data,error}=await localDB.rpc('admin_adjust_balance',{target_user_id:userId,adjustment_amount:amount,adjustment_type:'credit',transaction_note:note?`${note}${reference?' | Réf. '+reference:''}`:reference});
+                if(error)throw error;
+                alert(`Compte crédité. Nouveau solde : ${Number(data).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`);
+                await loadAdminClients();
+            } catch(e){alert(e.message);} finally{btn.disabled=false;}
+        }));
+
+        adminClientList.querySelectorAll('.admin-debit-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+            const card=btn.closest('.admin-client-card'), userId=card.dataset.userId, amount=Number(card.querySelector('.admin-debit-amount').value);
+            const note=card.querySelector('.admin-note').value.trim()||null, reference=card.querySelector('.admin-reference').value.trim()||null;
+            if(!amount||amount<=0)return alert('Entrez un montant supérieur à zéro.');
+            if(!confirm(`Débiter ce compte de ${amount.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} € ?`))return;
+            btn.disabled=true;
+            try {
+                const {data,error}=await localDB.rpc('admin_adjust_balance',{target_user_id:userId,adjustment_amount:amount,adjustment_type:'debit',transaction_note:note?`${note}${reference?' | Réf. '+reference:''}`:reference});
+                if(error)throw error;
+                alert(`Compte débité. Nouveau solde : ${Number(data).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`);
+                await loadAdminClients();
+            } catch(e){alert(e.message);} finally{btn.disabled=false;}
+        }));
+
+        adminClientList.querySelectorAll('.admin-status-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+            const card=btn.closest('.admin-client-card'), userId=card.dataset.userId, status=card.querySelector('.admin-status-select').value, note=card.querySelector('.admin-status-note').value.trim();
+            try {
+                const {error}=await localDB.from('profiles').update({account_status:status}).eq('id',userId);
+                if(error)throw error;
+                await loadAdminClients();
+            } catch(e){alert(e.message);}
+        }));
+
+        adminClientList.querySelectorAll('.admin-edit-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+            const card=btn.closest('.admin-client-card'), c=adminClients.find(x=>x.user_id===card.dataset.userId);
+            if(!c)return;
+            const full_name=prompt('Nom complet :',c.full_name||''); if(full_name===null)return;
+            const phone=prompt('Téléphone :',c.phone||''); if(phone===null)return;
+            const gender=prompt('Civilité (M. ou Mme) :',c.gender||'M.'); if(gender===null)return;
+            try {
+                const {error}=await localDB.from('profiles').update({full_name,phone,gender}).eq('id',c.user_id);
+                if(error)throw error;
+                await loadAdminClients();
+            } catch(e){alert(e.message);}
+        }));
+
+        adminClientList.querySelectorAll('.admin-history-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+            const card=btn.closest('.admin-client-card'), target=card.querySelector('.admin-client-transactions');
+            target.textContent='Chargement...';
+            try {
+                const {data:transactions,error}=await localDB.from('wallet_transactions').select('amount,balance_after,transaction_type,note,reference,created_at').eq('user_id',card.dataset.userId).order('created_at',{ascending:false}).limit(50);
+                if(error)throw error;
+                target.innerHTML=transactions?.length?`<table class="admin-mini-table"><thead><tr><th>Date</th><th>Mouvement</th><th>Solde après</th><th>Motif</th></tr></thead><tbody>${transactions.map(t=>`<tr><td>${new Date(t.created_at).toLocaleString('fr-FR')}</td><td>${Number(t.amount)>=0?'+':''}${Number(t.amount).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €</td><td>${Number(t.balance_after).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €</td><td>${esc(t.note||t.reference||'')}</td></tr>`).join('')}</tbody></table>`:'Aucun mouvement.';
+            } catch(e){target.textContent=e.message;}
+        }));
+    }
+
+    adminClientSearch.addEventListener('input',renderAdminClients);
+    document.getElementById('refreshAdminBtn').addEventListener('click',loadAdminClients);
+
+    document.getElementById('adminSettingsBtn').addEventListener('click',async()=>{
+        clearAdminMessage(adminSettingsMessage);
+        if(!await verifyAdminSession())return alert('Session administrateur invalide.');
+        const {data:userData}=await localDB.auth.getUser();
+        document.getElementById('adminNewUsername').value=userData.user?.email||'';
+        document.getElementById('adminNewPassword').value='';
+        document.getElementById('adminNewPassword2').value='';
+        openAdminModal(adminSettingsModal);
+    });
+
+    document.getElementById('adminBackBtn').addEventListener('click',closeAdministration);
+    document.getElementById('adminLogoutBtn').addEventListener('click',async()=>{await localDB.auth.signOut();adminUser=null;closeAdministration();});
+    document.getElementById('adminLoginClose').addEventListener('click',()=>closeAdminModal(adminLoginModal));
+    document.getElementById('adminSettingsClose').addEventListener('click',()=>closeAdminModal(adminSettingsModal));
+    adminLoginModal.addEventListener('click',e=>{if(e.target===adminLoginModal)closeAdminModal(adminLoginModal);});
+    adminSettingsModal.addEventListener('click',e=>{if(e.target===adminSettingsModal)closeAdminModal(adminSettingsModal);});
+
+    adminLoginForm.addEventListener('submit',async e=>{
+        e.preventDefault(); clearAdminMessage(adminLoginMessage);
+        const email=document.getElementById('adminUsername').value.trim(), password=document.getElementById('adminPassword').value, submit=document.getElementById('adminLoginSubmit');
+        submit.disabled=true;
+        try {
+            const {data,error}=await localDB.auth.signInWithPassword({email,password});
+            if(error)throw error;
+            const {data:profile,error:profileError}=await localDB.from('profiles').select('role,account_status').eq('id',data.user.id).maybeSingle();
+            if(profileError)throw profileError;
+            if(profile?.role!=='admin'||profile?.account_status!=='active'){await localDB.auth.signOut();throw new Error('Ce compte ne dispose pas des droits administrateur.');}
+            closeAdminModal(adminLoginModal);
+            await loadAdminClients();
+        } catch(e){adminLoginMessage.textContent=e.message||'Identifiants invalides.';adminLoginMessage.classList.add('error');} finally{submit.disabled=false;}
+    });
+
+    adminSettingsForm.addEventListener('submit',async e=>{
+        e.preventDefault(); clearAdminMessage(adminSettingsMessage);
+        const password=document.getElementById('adminNewPassword').value, password2=document.getElementById('adminNewPassword2').value;
+        if(password&&password!==password2){adminSettingsMessage.textContent='Les deux nouveaux mots de passe ne correspondent pas.';return;}
+        if(password&&password.length<10){adminSettingsMessage.textContent='Le nouveau mot de passe doit contenir au moins 10 caractères.';return;}
+        try {
+            if(password){const {error}=await localDB.auth.updateUser({password});if(error)throw error;}
+            adminSettingsMessage.textContent='Paramètres enregistrés avec succès.';adminSettingsMessage.classList.add('success');
+            document.getElementById('adminNewPassword').value='';document.getElementById('adminNewPassword2').value='';
+            setTimeout(()=>closeAdminModal(adminSettingsModal),900);
+        } catch(e){adminSettingsMessage.textContent=e.message;adminSettingsMessage.classList.add('error');}
+    });
+
+    const finveroLogo = document.getElementById('finveroLogo');
+    let logoClickCount = 0;
+    let logoFirstClickAt = 0;
+    finveroLogo.addEventListener('click', () => {
+        const now = Date.now();
+        if (!logoFirstClickAt || now - logoFirstClickAt > 4000) { logoFirstClickAt = now; logoClickCount = 1; }
+        else logoClickCount += 1;
+        if (logoClickCount >= 7) { logoClickCount = 0; logoFirstClickAt = 0; openAdministration(); }
+    });
+
+    // ===== AUTH SUPABASE + MISE À JOUR TEMPS RÉEL =====
+    let supabaseRealtimeChannel = null;
+
+    function stopSupabaseRealtime() {
+        if (supabaseRealtimeChannel) {
+            localDB.removeChannel(supabaseRealtimeChannel);
+            supabaseRealtimeChannel = null;
+        }
+    }
+
+    async function startSupabaseRealtime(user) {
+        stopSupabaseRealtime();
+        if (!user) return;
+        supabaseRealtimeChannel = localDB.channel('finvero-live-' + user.id)
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: 'id=eq.' + user.id }, async () => {
+                await loadClientDashboard();
+                if (adminUser) await loadAdminClients();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'applications', filter: 'user_id=eq.' + user.id }, async () => {
+                await loadClientDashboard();
+                if (adminUser) await loadAdminClients();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'wallet_transactions', filter: 'user_id=eq.' + user.id }, async () => {
+                await loadClientDashboard();
+            })
+            .subscribe();
+    }
+
+    localDB.auth.onAuthStateChange(async (event, session) => {
+        if (event === 'PASSWORD_RECOVERY') {
+            switchAuthTab('reset');
+            showAuthMessage('Choisissez maintenant votre nouveau mot de passe.', 'success');
+            return;
+        }
+        await updateAuthUI(session?.user || null);
+        await startSupabaseRealtime(session?.user || null);
+    });
+
+    (async function restoreClientSession() {
+        const { data: sessionData } = await localDB.auth.getSession();
+        await updateAuthUI(sessionData.session?.user || null);
+        await startSupabaseRealtime(sessionData.session?.user || null);
+    })();
+
+</script>
+
+</body>
+</html>
