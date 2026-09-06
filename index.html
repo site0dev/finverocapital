@@ -1661,6 +1661,25 @@ document.addEventListener('DOMContentLoaded', function () {
         if (user) {
             loginBtn.style.display = 'none';
             registerBtn.style.display = 'none';
+
+            // Un administrateur ne doit jamais voir l'espace client.
+            // On vérifie son profil avant d'afficher le tableau de bord client.
+            const { data: profile, error: profileError } = await localDB
+                .from('profiles')
+                .select('role, account_status')
+                .eq('id', user.id)
+                .maybeSingle();
+
+            if (!profileError && profile?.role === 'admin' && profile?.account_status === 'active') {
+                dashboardBtn.style.display = 'none';
+                accountPanel.classList.remove('show');
+                clientDashboard.classList.remove('show');
+                adminUser = user;
+                document.body.classList.add('admin-mode');
+                await loadAdminClients();
+                return;
+            }
+
             dashboardBtn.style.display = 'inline-flex';
             accountPanel.classList.add('show');
             const name = user.user_metadata?.full_name || user.email || 'Client';
@@ -1672,7 +1691,8 @@ document.addEventListener('DOMContentLoaded', function () {
             dashboardBtn.style.display = 'none';
             accountPanel.classList.remove('show');
             clientDashboard.classList.remove('show');
-            adminPanel.classList.remove('show');
+            adminUser = null;
+            closeAdministration();
         }
     }
 
