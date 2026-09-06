@@ -218,6 +218,14 @@
         .admin-client-actions input, .admin-client-actions select { width:100%; padding:.65rem .75rem; border:1.5px solid #dce3ed; border-radius:12px; background:#fff; outline:none; }
         .admin-client-actions button { min-height:42px; }
         .admin-client-transactions { margin-top:.8rem; font-size:.84rem; color:#5b6f87; }
+        .admin-transfer-panel { margin:1rem 0 1.2rem; padding:1rem; border:1px solid #e5ebf3; border-radius:18px; background:#f9fbfe; }
+        .admin-transfer-head { display:flex; justify-content:space-between; gap:1rem; align-items:center; flex-wrap:wrap; }
+        .admin-transfer-head h3 { margin:0; color:#0f2b4b; }
+        .admin-transfer-table-wrap { overflow:auto; }
+        .admin-transfer-table { width:100%; border-collapse:collapse; min-width:760px; margin-top:.8rem; }
+        .admin-transfer-table th,.admin-transfer-table td { padding:.65rem .55rem; border-bottom:1px solid #e9edf4; text-align:left; vertical-align:middle; }
+        .admin-transfer-table th { color:#5b6f87; font-size:.78rem; text-transform:uppercase; }
+        .admin-transfer-status { padding:.45rem .6rem; border:1.5px solid #dce3ed; border-radius:10px; background:#fff; color:#0f2b4b; }
         .admin-mini-table { width:100%; border-collapse:collapse; margin-top:.5rem; }
         .admin-mini-table th, .admin-mini-table td { padding:.45rem; border-bottom:1px solid #e9edf4; text-align:left; }
         .admin-status-badge { display:inline-flex; padding:.25rem .6rem; border-radius:20px; font-size:.78rem; font-weight:700; background:#eaf2ff; color:#1f5fbd; }
@@ -396,6 +404,7 @@
 
         <div id="dashDocuments" style="margin-top:1.5rem;"></div>
         <div class="wallet-history" id="walletHistory"></div>
+        <div id="clientTransferStatus" class="wallet-history"></div>
         <div class="dash-actions">
             <button type="button" class="account-btn" id="changePasswordBtn">🔑 Modifier mon mot de passe</button>
             <button type="button" class="account-btn" id="transferFundsBtn">💸 Transférer vers mon compte bancaire</button>
@@ -421,6 +430,10 @@
         <div class="admin-toolbar">
             <input class="admin-search" id="adminClientSearch" type="search" placeholder="Rechercher un client, e-mail ou téléphone..." autocomplete="off">
         </div>
+        <section class="admin-transfer-panel">
+            <div class="admin-transfer-head"><div><h3>💸 Virements bancaires</h3><p class="admin-security-note">Suivi synchronisé avec la table <code>transfer_requests</code> de Supabase.</p></div><button type="button" class="account-btn" id="refreshTransfersBtn">↻ Actualiser les virements</button></div>
+            <div id="adminTransferList"><p class="doc-note">Chargement des virements...</p></div>
+        </section>
         <div class="admin-client-list" id="adminClientList"></div>
         </div>
     </section>
@@ -1693,6 +1706,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 return `<div class="wallet-entry ${t.transaction_type === 'credit' ? 'credit' : 'debit'}"><div><strong>${t.transaction_type === 'credit' ? 'Crédit' : t.transaction_type === 'debit' ? 'Débit' : 'Ajustement'}</strong><br><span class="doc-note">${t.note || t.reference || ''} · ${date}</span></div><div class="wallet-amount">${amount}</div></div>`;
               }).join('')
             : '<p class="doc-note">Aucun mouvement sur le compte.</p>');
+
+        const { data: transferRows, error: transferError } = await localDB.from('transfer_requests')
+            .select('id,amount,currency,bank_name,status,created_at,updated_at')
+            .eq('user_id', user.id).order('created_at',{ascending:false}).limit(10);
+        const transferLabels = {pending:'Virement en attente',processing:'Traitement en cours',completed:'Virement effectué',rejected:'Virement refusé',cancelled:'Virement annulé'};
+        const transferEl = document.getElementById('clientTransferStatus');
+        if (transferEl) transferEl.innerHTML = transferError ? '<p class="doc-note">Impossible de charger le statut des virements.</p>' : (transferRows?.length ? '<h3>Suivi des virements</h3>' + transferRows.map(t => `<div class="wallet-entry"><div><strong>${Number(t.amount).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} ${t.currency==='EUR'?'€':esc(t.currency||'')}</strong><div class="doc-note">${esc(t.bank_name||'Banque')} · ${new Date(t.created_at).toLocaleString('fr-FR')}</div></div><div><strong>${esc(transferLabels[t.status]||t.status||'Statut inconnu')}</strong></div></div>`).join('') : '<p class="doc-note">Aucun virement demandé.</p>');
     }
 
     document.getElementById('loginBtn').addEventListener('click', () => openAuthModal('login'));
@@ -1845,6 +1865,19 @@ document.addEventListener('DOMContentLoaded', function () {
         adminPanel.setAttribute('aria-hidden','true');
     }
 
+    const transferAdminStatusLabels = {pending:'Virement en attente',processing:'Traitement en cours',completed:'Virement effectué',rejected:'Virement refusé',cancelled:'Virement annulé'};
+    async function loadAdminTransfers() {
+        const el=document.getElementById('adminTransferList'); if(!el)return; el.innerHTML='<p class="doc-note">Chargement des virements...</p>';
+        try {
+            if(!await verifyAdminSession()) throw new Error('Session administrateur invalide.');
+            const {data,error}=await localDB.from('transfer_requests').select('id,user_id,amount,currency,bank_name,bank_account,status,note,created_at,updated_at').order('created_at',{ascending:false}).limit(100);
+            if(error)throw error;
+            const names=Object.fromEntries(adminClients.map(c=>[c.user_id,c.full_name||c.email||c.user_id]));
+            el.innerHTML=data?.length?`<div class="admin-transfer-table-wrap"><table class="admin-transfer-table"><thead><tr><th>Client</th><th>Montant</th><th>Banque</th><th>Compte</th><th>Date</th><th>Statut</th><th></th></tr></thead><tbody>${data.map(t=>`<tr data-transfer-id="${esc(t.id)}"><td>${esc(names[t.user_id]||t.user_id)}</td><td>${Number(t.amount).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} ${t.currency==='EUR'?'€':esc(t.currency||'')}</td><td>${esc(t.bank_name||'—')}</td><td>${esc(t.bank_account||'—')}</td><td>${new Date(t.created_at).toLocaleString('fr-FR')}</td><td><select class="admin-transfer-status">${Object.entries(transferAdminStatusLabels).map(([k,v])=>`<option value="${k}" ${k===t.status?'selected':''}>${v}</option>`).join('')}</select></td><td><button type="button" class="account-btn primary admin-transfer-update">Mettre à jour</button></td></tr>`).join('')}</tbody></table></div>`:'<p class="doc-note">Aucune demande de virement.</p>';
+            el.querySelectorAll('.admin-transfer-update').forEach(btn=>btn.addEventListener('click',async()=>{const row=btn.closest('tr'),status=row.querySelector('.admin-transfer-status').value;if(!confirm(`Modifier le statut du virement en « ${transferAdminStatusLabels[status]||status} » ?`))return;btn.disabled=true;try{const {error}=await localDB.from('transfer_requests').update({status}).eq('id',row.dataset.transferId);if(error)throw error;await loadAdminTransfers();}catch(e){alert(e.message||'Impossible de modifier le statut du virement.');}finally{btn.disabled=false;}}));
+        } catch(e) { el.innerHTML=`<p class="auth-message show error">${esc(e.message)}</p>`; }
+    }
+
     async function loadAdminClients() {
         if (!await verifyAdminSession()) {
             closeAdministration();
@@ -1886,6 +1919,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
             });
             renderAdminClients();
+            await loadAdminTransfers();
         } catch (e) {
             adminClientList.innerHTML=`<p class="auth-message show error">${esc(e.message)}</p>`;
         }
@@ -2019,6 +2053,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     adminClientSearch.addEventListener('input',renderAdminClients);
     document.getElementById('refreshAdminBtn').addEventListener('click',loadAdminClients);
+    document.getElementById('refreshTransfersBtn').addEventListener('click',loadAdminTransfers);
 
     document.getElementById('adminSettingsBtn').addEventListener('click',async()=>{
         clearAdminMessage(adminSettingsMessage);
@@ -2099,6 +2134,10 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .on('postgres_changes', { event: '*', schema: 'public', table: 'wallet_transactions', filter: 'user_id=eq.' + user.id }, async () => {
                 await loadClientDashboard();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'transfer_requests', filter: 'user_id=eq.' + user.id }, async () => {
+                await loadClientDashboard();
+                if (adminUser) await loadAdminTransfers();
             })
             .subscribe();
     }
