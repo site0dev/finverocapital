@@ -1,9 +1,0 @@
-SUPABASE_URL=https://kydcyhbtquccuprhivme.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt5ZGN5aGJ0cXVjY3Vwcmhpdm1lIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4ODUxMTIwMCwiZXhwIjoyMTA0MDg3MjAwfQ.l1hlL1GBny9FBwM3PI7utES-wnq7p_S0kdnIIkuHCOY
-SMTP_HOST=TON_SERVEUR_SMTP
-SMTP_PORT=465
-SMTP_SECURE=true
-SMTP_USER=no-reply@finverocapital.de
-SMTP_PASSWORD=TON_MOT_DE_PASSE_SMTP
-MAIL_FROM=Finvero Capital <no-reply@finverocapital.de>
-PORT=10000
