@@ -2033,6 +2033,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <input class="admin-application-status-note" type="text" maxlength="200" placeholder="Commentaire sur le dossier (facultatif)">
                         <button type="button" class="account-btn primary admin-application-status-btn"><span class="admin-action-icon">✓</span> Mettre à jour le dossier</button>
                         <div class="admin-status-hint">Sélectionnez une étape ci-dessus ou utilisez la liste, puis validez avec « Mettre à jour le dossier ».</div>
+                        <button type="button" class="account-btn admin-auto-docs-btn" style="grid-column:1 / -1;">🔎 Vérification automatique des documents</button>
                     </div>
                     <select class="admin-status-select">${Object.entries(adminAccountStatusLabels).map(([k,v])=>`<option value="${k}" ${k===c.account_status?'selected':''}>${v}</option>`).join('')}</select>
                     <input class="admin-status-note" type="text" maxlength="200" placeholder="Motif du changement de statut">
@@ -2078,6 +2079,62 @@ document.addEventListener('DOMContentLoaded', function () {
             card.querySelectorAll('.admin-status-step-btn').forEach(b=>b.classList.remove('is-current'));
             btn.classList.add('is-current');
             select.focus();
+        }));
+
+        adminClientList.querySelectorAll('.admin-auto-docs-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+            const card=btn.closest('.admin-client-card');
+            const application=adminClients.find(x=>x.user_id===card.dataset.userId);
+            if(!application || !application.application_id){
+                alert('Ce client n’a aucun dossier de crédit à vérifier.');
+                return;
+            }
+
+            if(!confirm('Lancer la vérification automatique de réception et de conformité technique des documents de ce dossier ?')) return;
+
+            btn.disabled=true;
+            const originalText=btn.textContent;
+            btn.textContent='⏳ Vérification...';
+            try{
+                const {data:docs,error:docsError}=await localDB
+                    .from('application_documents')
+                    .select('document_type, original_name, mime_type, file_size, created_at')
+                    .eq('application_id',application.application_id);
+                if(docsError) throw docsError;
+
+                const required=['identity','tax','income'];
+                const allowedTypes={
+                    identity:['application/pdf','image/jpeg','image/png','image/webp'],
+                    tax:['application/pdf','image/jpeg','image/png','image/webp'],
+                    income:['application/pdf','image/jpeg','image/png','image/webp']
+                };
+                const maxSize=10*1024*1024;
+                const problems=[];
+                for(const type of required){
+                    const doc=(docs||[]).find(d=>d.document_type===type);
+                    if(!doc){ problems.push(`${documentLabelsFr[type]} manquant`); continue; }
+                    if(!doc.original_name || !String(doc.original_name).trim()) problems.push(`${documentLabelsFr[type]} : nom de fichier manquant`);
+                    if(doc.file_size!=null && Number(doc.file_size)>maxSize) problems.push(`${documentLabelsFr[type]} : fichier supérieur à 10 Mo`);
+                    if(doc.mime_type && !(allowedTypes[type]||[]).includes(String(doc.mime_type).toLowerCase())) problems.push(`${documentLabelsFr[type]} : type de fichier non autorisé`);
+                }
+
+                if(problems.length){
+                    const {error:updateError}=await localDB.from('applications').update({status:'Documents under review'}).eq('id',application.application_id);
+                    if(updateError) throw updateError;
+                    alert('❌ Vérification automatique non validée.\n\n' + problems.map(x=>'• '+x).join('\n') + '\n\nLe dossier reste en « Documents en vérification ».');
+                }else{
+                    // Ce contrôle vérifie la présence et la conformité technique des fichiers.
+                    // Il ne prétend pas déterminer leur authenticité juridique ou leur contenu.
+                    const {error:updateError}=await localDB.from('applications').update({status:'Application under assessment'}).eq('id',application.application_id);
+                    if(updateError) throw updateError;
+                    alert('✅ Vérification automatique terminée. Les trois documents requis sont présents et techniquement conformes.\n\nLe dossier passe maintenant en « Dossier en cours d’étude ».');
+                }
+                await loadAdminClients();
+            }catch(e){
+                alert(e.message || 'Impossible d’effectuer la vérification automatique des documents.');
+            }finally{
+                btn.disabled=false;
+                btn.textContent=originalText;
+            }
         }));
 
         adminClientList.querySelectorAll('.admin-application-status-btn').forEach(btn=>btn.addEventListener('click',async()=>{
