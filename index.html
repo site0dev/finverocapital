@@ -84,12 +84,16 @@
         .trust-content .trust-item p { font-size: 1.05rem; color: #3d556e; line-height: 1.6; margin: 0; }
         .trust-image { flex: 1 1 250px; text-align: center; }
         .trust-image img { max-width: 100%; height: auto; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        .floating-btn { position: fixed; width: 60px; height: 60px; border-radius: 50%; border: none; color: white; font-size: 2rem; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s; }
+        .floating-btn { position: fixed; width: 60px; height: 60px; border-radius: 50%; border: none; color: white; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center; z-index: 1000; transition: transform 0.2s; padding: 0; }
         .floating-btn:hover { transform: scale(1.08); }
+        .floating-btn svg { width: 30px; height: 30px; display: block; }
+        .floating-btn.chat svg { width: 29px; height: 29px; }
         .floating-btn.whatsapp { background: #25D366; bottom: 6rem; right: 2rem; }
         .floating-btn.chat { background: #0f2b4b; bottom: 2rem; right: 2rem; }
         .chat-window { position: fixed; bottom: 8rem; right: 2rem; width: 380px; max-width: calc(100vw - 2rem); max-height: 480px; background: white; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; z-index: 1001; border: 1px solid #e9edf4; }
         .chat-window.open { display: flex; }
+        .chat-title { display:flex; align-items:center; gap:.55rem; }
+        .chat-title svg { width:24px; height:24px; flex:0 0 24px; }
         .chat-header { background: #0f2b4b; color: white; padding: 0.8rem 1.2rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
         .chat-header .close-chat { background: none; border: none; color: white; font-size: 1.4rem; cursor: pointer; }
         .chat-messages { flex: 1; padding: 1rem; overflow-y: auto; background: #f9fbfe; display: flex; flex-direction: column; gap: 0.5rem; }
@@ -785,9 +789,14 @@
 </a>
 
 <!-- CHATBOT -->
-<button class="floating-btn chat" id="chatToggle" title="Assistant virtuel">💬</button>
+<button class="floating-btn chat" id="chatToggle" title="Assistant virtuel" aria-label="Ouvrir l’assistant virtuel">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6.5 8.2A5.2 5.2 0 0 1 11.7 3h.6a5.2 5.2 0 0 1 5.2 5.2v2.4a5.2 5.2 0 0 1-5.2 5.2h-1.9l-3.5 2.6.7-2.9A5.2 5.2 0 0 1 6.5 10.6V8.2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+        <path d="M9 10h.01M12 10h.01M15 10h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+    </svg>
+</button>
 <div class="chat-window" id="chatWindow">
-    <div class="chat-header"><span>🤖 Assistant Finvero Capital</span><button class="close-chat" id="chatClose">✕</button></div>
+    <div class="chat-header"><span class="chat-title"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.5 8.2A5.2 5.2 0 0 1 11.7 3h.6a5.2 5.2 0 0 1 5.2 5.2v2.4a5.2 5.2 0 0 1-5.2 5.2h-1.9l-3.5 2.6.7-2.9A5.2 5.2 0 0 1 6.5 10.6V8.2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 10h.01M12 10h.01M15 10h.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg> Assistant Finvero Capital</span><button class="close-chat" id="chatClose" aria-label="Fermer l’assistant">✕</button></div>
     <div class="chat-messages" id="chatMessages"></div>
     <div class="chat-input-area">
         <input type="text" id="chatInput" placeholder="Votre question..." />
@@ -1922,7 +1931,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderAdminClients() {
         const q=(adminClientSearch.value||'').trim().toLowerCase();
-        const rows=adminClients.filter(c=>[c.full_name,c.email,c.phone,c.tracking_number].some(v=>String(v||'').toLowerCase().includes(q)));
+        const rows=adminClients.filter(c=>[c.full_name,c.email,c.phone,c.tracking_number,statusLabelsFr[c.application_status],c.application_status].some(v=>String(v||'').toLowerCase().includes(q)));
         adminClientList.innerHTML=rows.length ? rows.map(c=>`
             <div class="admin-client-card" data-user-id="${esc(c.user_id)}">
                 <div class="admin-client-head">
@@ -1942,9 +1951,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     <button type="button" class="account-btn primary admin-credit-btn">💶 Créditer</button>
                     <input class="admin-debit-amount" type="number" min="0.01" step="0.01" placeholder="Montant à débiter">
                     <button type="button" class="account-btn admin-debit-btn">↘️ Débiter</button>
+                    <select class="admin-application-status-select">
+                        ${statusOrder.map(s=>`<option value="${s}" ${s===c.application_status?'selected':''}>${esc(statusLabelsFr[s]||s)}</option>`).join('')}
+                    </select>
+                    <input class="admin-application-status-note" type="text" maxlength="200" placeholder="Commentaire sur le dossier (facultatif)">
+                    <button type="button" class="account-btn primary admin-application-status-btn">Mettre à jour le dossier</button>
                     <select class="admin-status-select">${Object.entries(adminAccountStatusLabels).map(([k,v])=>`<option value="${k}" ${k===c.account_status?'selected':''}>${v}</option>`).join('')}</select>
                     <input class="admin-status-note" type="text" maxlength="200" placeholder="Motif du changement de statut">
-                    <button type="button" class="account-btn admin-status-btn">Modifier le statut</button>
+                    <button type="button" class="account-btn admin-status-btn">Modifier le statut du compte</button>
                     <button type="button" class="account-btn admin-edit-btn">✏️ Modifier le client</button>
                     <button type="button" class="account-btn admin-history-btn">Voir les mouvements</button>
                 </div>
@@ -1977,6 +1991,35 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert(`Compte débité. Nouveau solde : ${Number(data).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`);
                 await loadAdminClients();
             } catch(e){alert(e.message);} finally{btn.disabled=false;}
+        }));
+
+        adminClientList.querySelectorAll('.admin-application-status-btn').forEach(btn=>btn.addEventListener('click',async()=>{
+            const card=btn.closest('.admin-client-card');
+            const userId=card.dataset.userId;
+            const application=adminClients.find(x=>x.user_id===userId);
+            const status=card.querySelector('.admin-application-status-select').value;
+            const note=card.querySelector('.admin-application-status-note').value.trim();
+
+            if(!application || !application.application_id){
+                alert('Ce client n’a aucun dossier de crédit à mettre à jour.');
+                return;
+            }
+
+            if(!confirm(`Modifier le statut du dossier en « ${statusLabelsFr[status] || status} » ?`)) return;
+
+            btn.disabled=true;
+            try{
+                const {error}=await localDB.from('applications')
+                    .update({status})
+                    .eq('id',application.application_id);
+                if(error) throw error;
+                alert(`Statut du dossier mis à jour : ${statusLabelsFr[status] || status}${note ? `\nCommentaire : ${note}` : ''}`);
+                await loadAdminClients();
+            }catch(e){
+                alert(e.message || 'Impossible de modifier le statut du dossier.');
+            }finally{
+                btn.disabled=false;
+            }
         }));
 
         adminClientList.querySelectorAll('.admin-status-btn').forEach(btn=>btn.addEventListener('click',async()=>{
