@@ -560,8 +560,12 @@
             </div>
 
             <!-- ENVOYER -->
-            <div class="validation-area">
-                <button type="button" class="btn btn-success" id="envoyerBtn">📩 Envoyer ma demande</button>
+            <div class="validation-area" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;">
+                <button type="button" class="btn btn-success" id="envoyerBtn">📩 Enregistrer et envoyer ma demande</button>
+                <a href="#" class="btn btn-primary" id="emailContactBtn" style="display:none;text-decoration:none;">✉️ Ouvrir mon e-mail</a>
+            </div>
+            <div id="emailContactNote" class="doc-note" style="display:none;text-align:center;margin-top:10px;">
+                Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.
             </div>
         </div>
     </section>
@@ -978,7 +982,7 @@ document.addEventListener('DOMContentLoaded', function () {
             String(now.getDate()).padStart(2, '0');
         let phonePart = phone.replace(/\D/g, '').slice(-3);
         while (phonePart.length < 3) phonePart = '0' + phonePart;
-        let emailPart = email.split('@')[0].slice(0, 3).toLowerCase();
+        let emailPart = email.split('@')[0].slice(0, 3).toUpperCase();
         while (emailPart.length < 3) emailPart += 'x';
         return dateStr + phonePart + emailPart;
     }
@@ -1073,6 +1077,10 @@ document.addEventListener('DOMContentLoaded', function () {
             tr.innerHTML = `<td>${row.mois}</td><td>${row.mensualite.toFixed(2)} €</td><td>${row.interets.toFixed(2)} €</td><td>${row.capitalRembourse.toFixed(2)} €</td><td>${row.capitalRestant.toFixed(2)} €</td>`;
             tbody.appendChild(tr);
         });
+        const emailBtn = document.getElementById('emailContactBtn');
+        const emailNote = document.getElementById('emailContactNote');
+        if (emailBtn) { emailBtn.style.display = 'none'; emailBtn.removeAttribute('href'); }
+        if (emailNote) emailNote.style.display = 'none';
         document.getElementById('simulationResults').classList.add('show');
         document.getElementById('simulationResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -1140,7 +1148,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const { data: profile } = await localDB
                 .from('profiles')
-                .select('full_name, phone, gender')
+                .select('full_name, phone')
                 .eq('id', user.id)
                 .maybeSingle();
 
@@ -1197,12 +1205,40 @@ document.addEventListener('DOMContentLoaded', function () {
             setTimeout(() => toast.classList.remove('show'), 5000);
 
             const userName = profile?.full_name || user.user_metadata?.full_name || 'Client';
-            const gender = profile?.gender || 'Mr';
-            try {
-                // Les données sont enregistrées dans Supabase. L’e-mail Auth utilise le SMTP configuré dans Supabase.
-            } catch (emailError) {
-                console.error('Erreur service email:', emailError);
+
+            // Ouverture d'une nouvelle demande e-mail via le client de messagerie du visiteur.
+            // Les pièces jointes restent à ajouter manuellement dans la messagerie.
+            const subject = `Demande de crédit Finvero Capital — ${trackingNumber}`;
+            const body = [
+                `Bonjour Finvero Capital,`,
+                ``,
+                `Je souhaite transmettre ma demande de crédit.`,
+                ``,
+                `Numéro de suivi : ${trackingNumber}`,
+                `Nom : ${userName}`,
+                `E-mail : ${email}`,
+                `Téléphone : ${telephone}`,
+                `Pays : ${countryLabel}`,
+                `Montant demandé : ${montant.toFixed(2)} €`,
+                `Durée : ${duree} mois`,
+                `Taux indicatif : ${taux.toFixed(2)} %`,
+                `Mensualité estimée : ${mensualite.toFixed(2)} €`,
+                `Total à rembourser : ${totalRembourse.toFixed(2)} €`,
+                `Intérêts estimés : ${totalInterets.toFixed(2)} €`,
+                ``,
+                `Ma demande et mes documents sont également enregistrés dans mon espace Finvero Capital.`,
+                ``,
+                `Cordialement,`,
+                userName
+            ].join('\n');
+            const mailtoUrl = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            const emailBtn = document.getElementById('emailContactBtn');
+            const emailNote = document.getElementById('emailContactNote');
+            if (emailBtn) {
+                emailBtn.href = mailtoUrl;
+                emailBtn.style.display = 'inline-flex';
             }
+            if (emailNote) emailNote.style.display = 'block';
 
             showTrackingModal(trackingNumber, async () => {
                 await loadClientDashboard();
