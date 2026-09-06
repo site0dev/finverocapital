@@ -120,6 +120,11 @@
         .transfer-card { background: #ffffff; border-radius: 24px; padding: 2.5rem 3rem; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; animation: fadeUp 0.4s ease; }
         .transfer-card h2 { font-size: 1.6rem; color: #0f2b4b; margin-bottom: 0.5rem; }
         .transfer-card .fee-amount { font-size: 2.2rem; font-weight: 700; color: #a12b2b; background: #fff0f0; padding: 0.5rem 1rem; border-radius: 12px; margin: 1rem 0; display: inline-block; }
+        .transfer-progress-wrap { margin:1rem 0 1.2rem; text-align:left; }
+        .transfer-progress-head { display:flex; justify-content:space-between; gap:.75rem; color:#5b6f87; font-size:.85rem; font-weight:700; margin-bottom:.45rem; }
+        .transfer-progress { height:10px; background:#e9eef5; border-radius:999px; overflow:hidden; }
+        .transfer-progress-bar { height:100%; width:0%; background:#2a7de1; border-radius:999px; transition:width .3s ease; }
+        .transfer-pending { margin-top:.8rem; padding:.8rem 1rem; border-radius:12px; background:#fff8e8; color:#805d00; font-weight:700; display:none; }
         .transfer-card .info-text { color: #5b6f87; font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
         .transfer-card .transfer-btn { background: #0f2b4b; color: white; border: none; padding: 0.8rem 2.5rem; border-radius: 40px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: background 0.2s, transform 0.1s; }
         .transfer-card .transfer-btn:hover { background: #1a3a62; transform: scale(1.02); }
@@ -204,6 +209,11 @@
         .admin-client-name { color:#0f2b4b; font-weight:800; font-size:1.05rem; }
         .admin-client-meta { color:#71839a; font-size:.85rem; margin-top:.2rem; }
         .admin-client-balance { font-size:1.35rem; font-weight:800; color:#1f8b4c; white-space:nowrap; }
+        .admin-application-status-select { min-width: 230px; padding: .7rem .85rem; border: 1.5px solid #dce3ed; border-radius: 14px; background: #fff; color: #0f2b4b; font-size: .95rem; outline: none; }
+        .admin-application-status-select:focus { border-color: #2a7de1; box-shadow: 0 0 0 3px rgba(42,125,225,.1); }
+        .chat-window { height: 500px; }
+        .chat-input-area { display:flex; gap:.55rem; align-items:center; }
+        .chat-input-area input { flex:1; min-width:0; }
         .admin-client-actions { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.6rem; margin-top:.9rem; }
         .admin-client-actions input, .admin-client-actions select { width:100%; padding:.65rem .75rem; border:1.5px solid #dce3ed; border-radius:12px; background:#fff; outline:none; }
         .admin-client-actions button { min-height:42px; }
@@ -760,13 +770,14 @@
             <label for="transferBankAccount">IBAN / numéro de compte</label>
             <input type="text" id="transferBankAccount" maxlength="150" placeholder="IBAN ou numéro de compte" required>
         </div>
-        <div id="transferStepDisplay" style="margin:0.8rem 0 0.5rem; font-size:0.9rem; color:#5b6f87;">Étape 1/4</div>
-        <div id="transferProgress" style="width:100%; height:6px; background:#dce3ed; border-radius:4px; margin:0.5rem 0 1rem; overflow:hidden;">
-            <div id="transferProgressBar" style="height:100%; width:10%; background:#2a7de1; border-radius:4px; transition:width 0.3s;"></div>
+        <div class="transfer-progress-wrap">
+            <div class="transfer-progress-head"><span id="transferStepDisplay">Étape 1/3</span><span id="transferProgressLabel">Préparation</span></div>
+            <div class="transfer-progress"><div class="transfer-progress-bar" id="transferProgressBar"></div></div>
         </div>
         <div class="fee-amount" id="transferFeeDisplay">198 €</div>
-        <p class="info-text" style="font-size:0.9rem;" id="transferSubtext">Frais administratifs affichés : 198 €. Aucun paiement n’est effectué automatiquement.</p>
-        <button class="transfer-btn" id="confirmTransferBtn">Continuer</button>
+        <p class="info-text" style="font-size:0.9rem;" id="transferSubtext">Frais applicables au transfert : 198 €. Ce montant est affiché avant toute confirmation ou paiement.</p>
+        <div class="transfer-pending" id="transferPendingNotice">⏳ Virement en attente : votre demande a été enregistrée et doit être vérifiée avant la suite.</div>
+        <button class="transfer-btn" id="confirmTransferBtn">Enregistrer la demande</button>
         <button class="close-transfer" id="closeTransferBtn">✕ Annuler</button>
         <div id="transferStatus" class="transfer-success" style="display:none;"></div>
     </div>
@@ -1290,6 +1301,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // ===== DEMANDE DE TRANSFERT BANCAIRE VIA SUPABASE =====
     let transferStep = 0;
 
+    function updateTransferProgress(step, label) {
+        const bar = document.getElementById('transferProgressBar');
+        const display = document.getElementById('transferStepDisplay');
+        const progressLabel = document.getElementById('transferProgressLabel');
+        const pct = step === 0 ? 0 : (step === 1 ? 10 : 100);
+        if (bar) bar.style.width = pct + '%';
+        if (display) display.textContent = `Étape ${step + 1}/3`;
+        if (progressLabel) progressLabel.textContent = label;
+    }
+
     async function transferFunds() {
         const { data: userData } = await localDB.auth.getUser();
         const user = userData.user;
@@ -1305,45 +1326,30 @@ document.addEventListener('DOMContentLoaded', function () {
             .eq('id', user.id)
             .maybeSingle();
 
-        if (error) {
-            alert(error.message);
-            return;
-        }
+        if (error) { alert(error.message); return; }
 
         transferStep = 0;
         const modal = document.getElementById('transferModal');
-        const message = document.getElementById('transferMessage');
-        const amountInput = document.getElementById('transferAmount');
-        const statusDiv = document.getElementById('transferStatus');
-        const feeDisplay = document.getElementById('transferFeeDisplay');
-        const subtext = document.getElementById('transferSubtext');
-        const progressBar = document.getElementById('transferProgressBar');
-        const stepDisplay = document.getElementById('transferStepDisplay');
-        const confirmBtn = document.getElementById('confirmTransferBtn');
-
-        amountInput.max = Number(profile?.balance || 0).toFixed(2);
-        amountInput.value = '';
+        document.getElementById('transferAmount').max = Number(profile?.balance || 0).toFixed(2);
+        document.getElementById('transferAmount').value = '';
         document.getElementById('transferBankName').value = '';
         document.getElementById('transferBankAccount').value = '';
-        statusDiv.style.display = 'none';
-        statusDiv.textContent = '';
-        message.innerHTML = `Solde disponible : <strong>${Number(profile?.balance || 0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} ${profile?.currency === 'EUR' ? '€' : (profile?.currency || 'EUR')}</strong>.`;
-        stepDisplay.textContent = 'Étape 1/4';
-        progressBar.style.width = '10%';
-        feeDisplay.textContent = '198 €';
-        subtext.textContent = 'Frais administratifs affichés : 198 €. Aucun paiement n’est effectué automatiquement.';
-        confirmBtn.textContent = 'Continuer';
-        confirmBtn.disabled = false;
+        document.getElementById('transferStatus').style.display = 'none';
+        document.getElementById('transferStatus').textContent = '';
+        document.getElementById('transferPendingNotice').style.display = 'none';
+        document.getElementById('transferMessage').innerHTML = `Solde disponible : <strong>${Number(profile?.balance || 0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} ${profile?.currency === 'EUR' ? '€' : (profile?.currency || 'EUR')}</strong>.`;
+        document.getElementById('transferFeeDisplay').textContent = '198 €';
+        document.getElementById('transferSubtext').textContent = 'Frais applicables au transfert : 198 €. Ce montant est affiché avant toute confirmation ou paiement.';
+        document.getElementById('confirmTransferBtn').textContent = 'Enregistrer la demande';
+        document.getElementById('confirmTransferBtn').disabled = false;
+        updateTransferProgress(0, 'Préparation');
         modal.classList.add('open');
     }
 
     async function handleTransferRequest() {
         const { data: userData } = await localDB.auth.getUser();
         const user = userData.user;
-        if (!user) {
-            openAuthModal('login');
-            return;
-        }
+        if (!user) { openAuthModal('login'); return; }
 
         const amount = Number(document.getElementById('transferAmount').value);
         const bankName = document.getElementById('transferBankName').value.trim();
@@ -1351,78 +1357,34 @@ document.addEventListener('DOMContentLoaded', function () {
         const btn = document.getElementById('confirmTransferBtn');
         const statusDiv = document.getElementById('transferStatus');
         const messageDiv = document.getElementById('transferMessage');
-        const feeDisplay = document.getElementById('transferFeeDisplay');
-        const subtext = document.getElementById('transferSubtext');
-        const progressBar = document.getElementById('transferProgressBar');
-        const stepDisplay = document.getElementById('transferStepDisplay');
+        const pendingNotice = document.getElementById('transferPendingNotice');
 
-        if (!Number.isFinite(amount) || amount <= 0) {
-            alert('Veuillez saisir un montant valide.');
-            return;
-        }
-        if (!bankName || !bankAccount) {
-            alert('Veuillez renseigner la banque et le compte bancaire.');
-            return;
-        }
+        if (!Number.isFinite(amount) || amount <= 0) { alert('Veuillez saisir un montant valide.'); return; }
+        if (!bankName || !bankAccount) { alert('Veuillez renseigner la banque et le compte bancaire.'); return; }
 
         if (transferStep === 0) {
-            transferStep = 1;
-            stepDisplay.textContent = 'Étape 2/4';
-            progressBar.style.width = '50%';
-            feeDisplay.textContent = '75 €';
-            subtext.textContent = 'Frais d’assurance affichés : 75 €. Aucun paiement n’est effectué automatiquement.';
-            messageDiv.innerHTML = 'Votre demande est en cours de vérification. Les frais affichés restent à votre charge uniquement selon les conditions applicables à votre dossier.';
-            btn.textContent = 'Continuer';
-            return;
-        }
-
-        if (transferStep === 1) {
-            transferStep = 2;
-            stepDisplay.textContent = 'Étape 3/4';
-            progressBar.style.width = '90%';
-            feeDisplay.textContent = '273 €';
-            subtext.textContent = 'Total des frais affichés : 198 € + 75 €. Aucun paiement n’est effectué automatiquement.';
-            messageDiv.innerHTML = 'Vérification finale des informations du transfert. Aucun montant n’est débité de votre compte à cette étape.';
-            btn.textContent = 'Envoyer la demande';
-            return;
-        }
-
-        if (transferStep === 2) {
             btn.disabled = true;
             statusDiv.style.display = 'block';
-            statusDiv.textContent = '⏳ Enregistrement de votre demande...';
-
+            statusDiv.textContent = '⏳ Enregistrement de votre demande de virement...';
             try {
                 const { data: profile, error: profileError } = await localDB
-                    .from('profiles')
-                    .select('balance,currency')
-                    .eq('id', user.id)
-                    .maybeSingle();
+                    .from('profiles').select('balance,currency').eq('id', user.id).maybeSingle();
                 if (profileError) throw profileError;
-
                 const balance = Number(profile?.balance || 0);
                 if (amount > balance) throw new Error('Le montant demandé dépasse votre solde disponible.');
 
-                const { error } = await localDB
-                    .from('transfer_requests')
-                    .insert({
-                        user_id: user.id,
-                        amount,
-                        currency: profile?.currency || 'EUR',
-                        bank_name: bankName,
-                        bank_account: bankAccount,
-                        status: 'pending',
-                        note: 'Demande de transfert bancaire'
-                    });
+                const { error } = await localDB.from('transfer_requests').insert({
+                    user_id: user.id, amount, currency: profile?.currency || 'EUR',
+                    bank_name: bankName, bank_account: bankAccount, status: 'pending',
+                    note: 'Demande de transfert bancaire - virement en attente de vérification'
+                });
                 if (error) throw error;
 
-                transferStep = 3;
-                stepDisplay.textContent = 'Étape 4/4';
-                progressBar.style.width = '100%';
-                feeDisplay.textContent = '273 €';
-                subtext.textContent = 'Les montants affichés correspondent aux frais présentés dans le parcours. Aucun paiement n’a été effectué automatiquement.';
-                messageDiv.innerHTML = 'Votre demande de transfert bancaire a été enregistrée. Elle est maintenant en attente de traitement.';
-                statusDiv.textContent = '✅ Demande enregistrée avec succès.';
+                transferStep = 1;
+                updateTransferProgress(1, 'Virement en attente');
+                pendingNotice.style.display = 'block';
+                messageDiv.innerHTML = '<strong>Virement en attente.</strong><br>La demande est enregistrée. Le traitement et la vérification doivent être effectués avant toute étape ultérieure.';
+                statusDiv.textContent = '✅ Demande enregistrée. Statut : virement en attente.';
                 btn.textContent = 'Fermer';
                 btn.disabled = false;
             } catch (e) {
@@ -1951,14 +1913,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     <button type="button" class="account-btn primary admin-credit-btn">💶 Créditer</button>
                     <input class="admin-debit-amount" type="number" min="0.01" step="0.01" placeholder="Montant à débiter">
                     <button type="button" class="account-btn admin-debit-btn">↘️ Débiter</button>
-                    <select class="admin-application-status-select">
+                    <select class="admin-application-status-select" aria-label="Statut du dossier">
                         ${statusOrder.map(s=>`<option value="${s}" ${s===c.application_status?'selected':''}>${esc(statusLabelsFr[s]||s)}</option>`).join('')}
                     </select>
-                    <input class="admin-application-status-note" type="text" maxlength="200" placeholder="Commentaire sur le dossier (facultatif)">
                     <button type="button" class="account-btn primary admin-application-status-btn">Mettre à jour le dossier</button>
                     <select class="admin-status-select">${Object.entries(adminAccountStatusLabels).map(([k,v])=>`<option value="${k}" ${k===c.account_status?'selected':''}>${v}</option>`).join('')}</select>
                     <input class="admin-status-note" type="text" maxlength="200" placeholder="Motif du changement de statut">
-                    <button type="button" class="account-btn admin-status-btn">Modifier le statut du compte</button>
+                    <button type="button" class="account-btn admin-status-btn">Modifier le statut</button>
                     <button type="button" class="account-btn admin-edit-btn">✏️ Modifier le client</button>
                     <button type="button" class="account-btn admin-history-btn">Voir les mouvements</button>
                 </div>
@@ -1998,27 +1959,28 @@ document.addEventListener('DOMContentLoaded', function () {
             const userId=card.dataset.userId;
             const application=adminClients.find(x=>x.user_id===userId);
             const status=card.querySelector('.admin-application-status-select').value;
-            const note=card.querySelector('.admin-application-status-note').value.trim();
 
             if(!application || !application.application_id){
                 alert('Ce client n’a aucun dossier de crédit à mettre à jour.');
                 return;
             }
-
             if(!confirm(`Modifier le statut du dossier en « ${statusLabelsFr[status] || status} » ?`)) return;
 
             btn.disabled=true;
+            const originalText=btn.textContent;
+            btn.textContent='⏳ Mise à jour...';
             try{
                 const {error}=await localDB.from('applications')
                     .update({status})
                     .eq('id',application.application_id);
                 if(error) throw error;
-                alert(`Statut du dossier mis à jour : ${statusLabelsFr[status] || status}${note ? `\nCommentaire : ${note}` : ''}`);
+                alert(`Statut du dossier mis à jour : ${statusLabelsFr[status] || status}`);
                 await loadAdminClients();
             }catch(e){
                 alert(e.message || 'Impossible de modifier le statut du dossier.');
             }finally{
                 btn.disabled=false;
+                btn.textContent=originalText;
             }
         }));
 
