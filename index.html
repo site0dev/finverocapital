@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Finvero Capital – Simulation de crédit</title>
     <style>
-        /* --- Styles inchangés, on ajoute quelques classes pour la modale documents --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif; }
         body { background: #f4f7fc; color: #1e2b3c; line-height: 1.5; padding: 1rem; }
         .container { max-width: 1200px; margin: 0 auto; background: #ffffff; border-radius: 28px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05); padding: 2rem 2.5rem; }
@@ -58,12 +57,6 @@
         table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
         th { background: #f0f4fa; color: #1e3349; font-weight: 600; padding: 0.6rem; }
         td { padding: 0.6rem; border-bottom: 1px solid #eef2f7; }
-        .documents-upload { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #e9edf4; }
-        .documents-upload h4 { font-size: 1.2rem; margin-bottom: 1.2rem; }
-        .doc-upload-group { margin-bottom: 1.2rem; }
-        .doc-upload-group label { font-weight: 600; font-size: 0.95rem; display: block; margin-bottom: 0.2rem; }
-        .doc-upload-group input[type="file"] { width: 100%; padding: 0.8rem 1rem; border: 1.5px solid #dce3ed; border-radius: 14px; font-size: 1rem; background: #ffffff; cursor: pointer; }
-        .doc-upload-group input[type="file"]::file-selector-button { padding: 0.5rem 1.5rem; border: none; border-radius: 30px; background: #0f2b4b; color: white; font-weight: 600; cursor: pointer; margin-right: 1rem; }
         .validation-area { display: flex; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e9edf4; }
         .steps-after-form { margin: 2rem 0 2rem; padding-top: 1.5rem; border-top: 1px dashed #dce3ed; }
         .steps-after-form h3 { font-size: 1.8rem; color: #0f2b4b; margin-bottom: 1.5rem; }
@@ -292,7 +285,7 @@
         @media(max-width:850px) { .admin-application-details { grid-template-columns:repeat(2,minmax(0,1fr)); } .admin-status-flow { grid-template-columns:repeat(2,minmax(0,1fr)); } .admin-status-controls { grid-template-columns:1fr 1fr; } .admin-status-controls .admin-application-status-btn { grid-column:1 / -1; } }
         @media(max-width:600px) { .admin-application-details { grid-template-columns:1fr; } .chat-window { width:calc(100vw - 1.5rem); right:.75rem; bottom:6.5rem; height:50vh; max-height:50vh; } .admin-status-flow { grid-template-columns:1fr; } .admin-status-controls { grid-template-columns:1fr; } }
 
-        /* Styles pour la modale documents admin */
+        /* Styles pour la modale documents admin (conservée mais vide) */
         .doc-modal { position: fixed; inset:0; background:rgba(15,43,75,0.7); display:none; align-items:center; justify-content:center; padding:1rem; z-index:6000; backdrop-filter:blur(4px); }
         .doc-modal.open { display:flex; }
         .doc-card { background:#fff; border-radius:24px; padding:2rem; max-width:600px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation:fadeUp .4s ease; }
@@ -580,23 +573,7 @@
                 <div style="font-size:0.8rem;color:#aab9ce;margin-top:0.3rem;">↕ Faites défiler pour voir toutes les échéances</div>
             </div>
 
-            <!-- TÉLÉCHARGEMENT -->
-            <div class="documents-upload">
-                <h4>📎 Téléchargez vos documents</h4>
-                <div class="doc-upload-group">
-                    <label for="docId">Carte d'identité</label>
-                    <input type="file" id="docId" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
-                </div>
-                <div class="doc-upload-group">
-                    <label for="docTax">Code d'identification fiscale</label>
-                    <input type="file" id="docTax" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
-                </div>
-                <div class="doc-upload-group">
-                    <label for="docIncome">Document de revenu mensuel</label>
-                    <input type="file" id="docIncome" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
-                    <div class="doc-note">Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.</div>
-                </div>
-            </div>
+            <!-- PLUS DE DOCUMENTS : section supprimée -->
 
             <!-- ENVOYER -->
             <div class="validation-area" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;">
@@ -619,11 +596,11 @@
             </div>
             <div class="step-item">
                 <strong>Étape 2</strong>
-                <p>Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
+                <p>Remplissez le formulaire. Cela ne prend que quelques minutes.</p>
             </div>
             <div class="step-item">
                 <strong>Étape 3</strong>
-                <p>Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
+                <p>Signez ensuite numériquement votre contrat de crédit. Une fois toutes les informations validées, nous procédons au versement dans les plus brefs délais.</p>
             </div>
         </div>
     </div>
@@ -819,7 +796,7 @@
     </div>
 </div>
 
-<!-- MODALE DOCUMENTS ADMIN -->
+<!-- MODALE DOCUMENTS ADMIN (conservée mais sans usage) -->
 <div class="doc-modal" id="docModal">
     <div class="doc-card">
         <button class="doc-close" id="docModalClose">✕</button>
@@ -1156,7 +1133,7 @@ document.addEventListener('DOMContentLoaded', function () {
         simulerBtn.addEventListener('click', afficherSimulation);
     }
 
-    // ===== ENVOI / ENREGISTREMENT DE LA DEMANDE =====
+    // ===== ENVOI / ENREGISTREMENT DE LA DEMANDE (SANS DOCUMENTS) =====
     const envoyerBtn = document.getElementById('envoyerBtn');
     if (envoyerBtn) {
         envoyerBtn.addEventListener('click', async function () {
@@ -1185,18 +1162,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        const fileId = document.getElementById('docId');
-        const fileTax = document.getElementById('docTax');
-        const fileIncome = document.getElementById('docIncome');
-
-        if (!fileId.files.length || !fileTax.files.length || !fileIncome.files.length) {
-            alert('Veuillez télécharger les trois documents demandés.');
-            return;
-        }
-
         const selectedOption = countrySelect.options[countrySelect.selectedIndex];
         const countryLabel = selectedOption ? selectedOption.text : 'France +33';
-        const dialCode = selectedOption ? selectedOption.value.split('|')[1] : '+33';
 
         const montant = Number(montantSlider.value);
         const duree = Number(dureeSlider.value);
@@ -1208,28 +1175,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const totalInterets = totalRembourse - montant;
         const trackingNumber = generateTrackingNumber(email, telephone);
 
-        const files = [
-            { input: fileId, type: 'identity' },
-            { input: fileTax, type: 'tax' },
-            { input: fileIncome, type: 'income' }
-        ];
-        const maxSize = 10 * 1024 * 1024;
-        const allowed = ['application/pdf','image/jpeg','image/png','image/gif','image/bmp','image/tiff','image/heic'];
-
-        for (const item of files) {
-            const f = item.input.files[0];
-            if (f.size > maxSize) {
-                alert(`Le fichier "${f.name}" dépasse 10 Mo.`);
-                return;
-            }
-            if (f.type && !allowed.includes(f.type)) {
-                alert(`Format non autorisé pour "${f.name}".`);
-                return;
-            }
-        }
-
         const toast = document.getElementById('toast');
-        toast.textContent = '⏳ Envoi sécurisé de votre dossier...';
+        toast.textContent = '⏳ Enregistrement de votre demande...';
         toast.classList.add('show');
 
         try {
@@ -1262,32 +1209,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (applicationError) throw applicationError;
 
-            for (const item of files) {
-                const f = item.input.files[0];
-                const safeName = f.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-                const path = `${user.id}/${application.id}/${item.type}-${Date.now()}-${safeName}`;
-
-                const { error: uploadError } = await localDB.storage
-                    .from('documents')
-                    .upload(path, f, { upsert:false, contentType:f.type || undefined });
-
-                if (uploadError) throw uploadError;
-
-                const { error: docError } = await localDB
-                    .from('application_documents')
-                    .insert({
-                        application_id: application.id,
-                        user_id: user.id,
-                        document_type: item.type,
-                        file_path: path,
-                        original_name: f.name,
-                        mime_type: f.type || null,
-                        file_size: f.size
-                    });
-
-                if (docError) throw docError;
-            }
-
             toast.textContent = '📨 Demande enregistrée avec succès !';
             setTimeout(() => toast.classList.remove('show'), 5000);
 
@@ -1311,7 +1232,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 `Total à rembourser : ${totalRembourse.toFixed(2)} €`,
                 `Intérêts estimés : ${totalInterets.toFixed(2)} €`,
                 ``,
-                `Ma demande et mes documents sont également enregistrés dans mon espace Finvero Capital.`,
+                `Ma demande est enregistrée dans mon espace Finvero Capital.`,
                 ``,
                 `Cordialement,`,
                 userName
@@ -1578,7 +1499,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (e.target === this) this.classList.remove('open');
     });
 
-    // ===== ADMIN : VISUALISATION DES DOCUMENTS (30 JOURS) =====
+    // ===== ADMIN : VISUALISATION DES DOCUMENTS (30 JOURS) – conservé mais vide =====
     const docModal = document.getElementById('docModal');
     const docModalClose = document.getElementById('docModalClose');
     const docModalTitle = document.getElementById('docModalTitle');
@@ -1590,7 +1511,7 @@ document.addEventListener('DOMContentLoaded', function () {
         docModal.classList.add('open');
 
         try {
-            // Récupérer les documents de ce client
+            // Récupérer les documents – normalement vide
             const { data: docs, error } = await localDB
                 .from('application_documents')
                 .select('*')
@@ -1604,11 +1525,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            // Générer des URLs signées valables 30 jours (2592000 secondes)
+            // Générer des URLs signées (30 jours)
             const docItems = await Promise.all(docs.map(async (doc) => {
                 const { data: signedUrlData, error: urlError } = await localDB.storage
                     .from('documents')
-                    .createSignedUrl(doc.file_path, 60 * 60 * 24 * 30); // 30 jours
+                    .createSignedUrl(doc.file_path, 60 * 60 * 24 * 30);
 
                 if (urlError || !signedUrlData) {
                     return {
@@ -1915,16 +1836,8 @@ document.addEventListener('DOMContentLoaded', function () {
             return `<div class="status-step ${cls}"><span class="status-dot"></span><span>${statusLabelsFr[s] || s}</span></div>`;
         }).join('');
 
-        const { data: docs } = await localDB
-            .from('application_documents')
-            .select('document_type, original_name, created_at')
-            .eq('application_id', app.id)
-            .order('created_at', { ascending:true });
-
-        const labels = documentLabelsFr;
-        document.getElementById('dashDocuments').innerHTML = docs?.length
-            ? `<h3 style="color:#0f2b4b;">Documents transmis</h3><ul style="padding-left:1.2rem;color:#5b6f87;">${docs.map(d => `<li>${labels[d.document_type] || d.document_type} — ${d.original_name}</li>`).join('')}</ul>`
-            : '<p class="doc-note">Aucun document enregistré.</p>';
+        // Aucun document associé
+        document.getElementById('dashDocuments').innerHTML = '<p class="doc-note">Aucun document enregistré.</p>';
 
         const { data: walletRows } = await localDB
             .from('wallet_transactions')
@@ -2232,7 +2145,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } catch(e){alert(e.message);} finally{btn.disabled=false;}
         }));
 
-        // Nouveau bouton "Documents"
+        // Bouton "Documents" (peut être vide)
         adminClientList.querySelectorAll('.admin-docs-btn').forEach(btn=>btn.addEventListener('click', function() {
             const card = this.closest('.admin-client-card');
             const userId = card.dataset.userId;
