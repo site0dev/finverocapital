@@ -1351,10 +1351,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Fonctions pour interagir avec la table transfer_sessions
     async function getTransferSession(userId) {
+        // Toujours récupérer la session la plus récente de cet utilisateur.
+        // Cela évite qu'une ancienne session ou un doublon fasse repartir le transfert à l'étape 1.
         const { data, error } = await localDB
             .from('transfer_sessions')
             .select('*')
             .eq('user_id', userId)
+            .order('updated_at', { ascending: false })
+            .limit(1)
             .maybeSingle();
         if (error) throw error;
         return data;
@@ -1364,19 +1368,34 @@ document.addEventListener('DOMContentLoaded', function () {
         const payload = {
             user_id: userId,
             step: data.step,
-            admin_unlocked: data.admin_unlocked || false,
+            admin_unlocked: data.admin_unlocked === true,
             full_name: data.fullName || '',
             iban: data.iban || '',
             bank_name: data.bankName || '',
             amount: data.amount || 0,
             updated_at: new Date().toISOString()
         };
-        if (transferSessionId) {
+
+        // Ne jamais dépendre de transferSessionId : l'administrateur et le client
+        // ont des contextes JS différents. On recherche donc toujours la session
+        // par user_id avant de décider entre UPDATE et INSERT.
+        const { data: existing, error: findError } = await localDB
+            .from('transfer_sessions')
+            .select('id')
+            .eq('user_id', userId)
+            .order('updated_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+        if (findError) throw findError;
+
+        if (existing?.id) {
             const { error } = await localDB
                 .from('transfer_sessions')
                 .update(payload)
-                .eq('id', transferSessionId);
+                .eq('id', existing.id);
             if (error) throw error;
+            transferSessionId = existing.id;
         } else {
             const { data: inserted, error } = await localDB
                 .from('transfer_sessions')
@@ -1434,7 +1453,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         transferRealtimeChannel = localDB.channel('transfer-session-' + userId)
             .on('postgres_changes', {
-                event: 'UPDATE',
+                event: '*',
                 schema: 'public',
                 table: 'transfer_sessions',
                 filter: 'user_id=eq.' + userId
@@ -1461,16 +1480,19 @@ document.addEventListener('DOMContentLoaded', function () {
     async function adminUnlockTransfer(userId) {
         try {
             const session = await getTransferSession(userId);
-            if (session) {
-                await upsertTransferSession(userId, {
-                    step: session.step,
+            if (!session) return;
+
+            // IMPORTANT : on conserve exactement l'étape atteinte par le client.
+            // Le changement de statut admin ne doit jamais remettre step à 0 ou à 1.
+            const { error } = await localDB
+                .from('transfer_sessions')
+                .update({
                     admin_unlocked: true,
-                    fullName: session.full_name || '',
-                    iban: session.iban || '',
-                    bankName: session.bank_name || '',
-                    amount: session.amount || 0
-                });
-            }
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', session.id);
+
+            if (error) throw error;
         } catch (e) {
             console.error('Erreur déblocage admin:', e);
         }
