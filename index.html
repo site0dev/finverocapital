@@ -145,7 +145,7 @@
         .transfer-card .info-text { color: #5b6f87; font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
         .transfer-card .transfer-btn { background: #0f2b4b; color: white; border: none; padding: 0.8rem 2.5rem; border-radius: 40px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: background 0.2s, transform 0.1s; }
         .transfer-card .transfer-btn:hover { background: #1a3a62; transform: scale(1.02); }
-        .transfer-card .transfer-btn:disabled { background: #b0bccd; cursor: not-allowed; }
+        .transfer-card .transfer-btn:disabled { background: #b0bccd !important; color:#eef2f6; cursor: not-allowed; opacity:.85; pointer-events:none; transform:none !important; }
         .transfer-card .close-transfer { background: none; border: none; color: #5b6f87; font-size: 1.2rem; cursor: pointer; margin-top: 1rem; display: block; width: 100%; text-align: center; }
         .transfer-card .close-transfer:hover { text-decoration: underline; }
         .transfer-card .transfer-success { color: #1f8b4c; font-weight: 600; margin-top: 0.5rem; }
@@ -922,7 +922,7 @@
 
         <button type="button" class="transfer-back-top" id="backTransferBtn" style="display:none;" aria-label="Retour" title="Retour">←</button>
         <button class="transfer-btn" id="confirmTransferBtn">Valider</button>
-        <button class="transfer-btn transfer-next-btn" id="continueTransferBtn" style="display:none; background:#0f2b4b;">Continuer</button>
+        <button type="button" class="transfer-btn transfer-next-btn" id="continueTransferBtn" style="display:none; background:#0f2b4b;">Continuer</button>
         
         <button class="transfer-btn transfer-support-btn" id="supportTransferBtn" style="display:none; background:#0f2b4b;">📞 Contacter le support</button>
 
@@ -1765,25 +1765,33 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.open('https://wa.me/447520682877', '_blank');
             };
 
-            // Le bouton « Suivant » reste visible à l'écran 2.
-            // Il reste grisé tant que l'administrateur n'a pas validé l'étape 2.
+            // Étape 2 : le bouton est TOUJOURS visible, mais il est strictement
+            // non cliquable tant que l'administrateur n'a pas validé l'étape 2.
+            // Si la validation existe déjà, elle est conservée et le passage à
+            // l'étape 3 ne dépend pas d'une nouvelle requête réseau.
             continueBtn.style.display = 'inline-block';
-            continueBtn.textContent = 'Continuer vers l\'étape suivante';
-            continueBtn.disabled = !adminUnlocked;
+            continueBtn.textContent = "Continuer vers l'étape suivante";
+            continueBtn.disabled = adminUnlocked !== true;
+            continueBtn.setAttribute('aria-disabled', String(!adminUnlocked));
             continueBtn.title = adminUnlocked
                 ? 'Continuer vers l’étape 3'
                 : 'En attente de validation de l’administrateur';
-            continueBtn.onclick = async function() {
-                if (!adminUnlocked) return;
-                const { data: userData } = await localDB.auth.getUser();
-                if (!userData.user) return;
+            continueBtn.onclick = function(event) {
+                event.preventDefault();
+                event.stopPropagation();
 
-                continueBtn.disabled = true;
+                // Aucune action possible avant validation administrateur.
+                if (adminUnlocked !== true || continueBtn.disabled) return false;
 
-                try {
-                    // On conserve la validation de l'administrateur pour qu'un retour
-                    // depuis l'écran 3 réactive immédiatement le bouton « Suivant ».
-                    await upsertTransferSession(userData.user.id, {
+                // Passage immédiat à l'étape 3 : une connexion lente ne bloque pas l'interface.
+                transferStep = 2;
+                adminUnlocked = true;
+                renderTransferStep(2);
+
+                // Persistance en arrière-plan, sans bloquer le changement d'écran.
+                localDB.auth.getUser().then(({ data: userData }) => {
+                    if (!userData.user) return;
+                    return upsertTransferSession(userData.user.id, {
                         step: 2,
                         admin_unlocked: true,
                         fullName: transferData.fullName,
@@ -1791,15 +1799,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         bankName: transferData.bankName,
                         amount: transferData.amount
                     });
+                }).catch(e => console.error('Persistance étape 3 en arrière-plan:', e));
 
-                    transferStep = 2;
-                    adminUnlocked = true;
-                    await renderTransferStep(2);
-                } catch (e) {
-                    console.error('Erreur passage étape 3:', e);
-                    alert(e.message || 'Impossible de passer à l’étape suivante.');
-                    continueBtn.disabled = !adminUnlocked;
-                }
+                return false;
             };
 
             return;
