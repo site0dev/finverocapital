@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Finvero Capital – Simulation de crédit</title>
     <style>
-        /* --- Styles inchangés, on ajoute quelques classes pour la modale documents --- */
+        /* --- Styles inchangés --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif; }
         body { background: #f4f7fc; color: #1e2b3c; line-height: 1.5; padding: 1rem; }
         .container { max-width: 1200px; margin: 0 auto; background: #ffffff; border-radius: 28px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05); padding: 2rem 2.5rem; }
@@ -80,7 +80,6 @@
         .trust-section { margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e9edf4; display: flex; flex-wrap: wrap; align-items: center; gap: 2.5rem; }
         .trust-content { flex: 2 1 400px; }
         .trust-content h2 { font-size: 2rem; color: #0f2b4b; margin-bottom: 1.5rem; }
-        .trust-content .trust-item { margin-bottom: 1.2rem; }
         .trust-content .trust-item strong { display: block; font-size: 1.3rem; color: #0f2b4b; }
         .trust-content .trust-item p { font-size: 1.05rem; color: #3d556e; line-height: 1.6; margin: 0; }
         .trust-image { flex: 1 1 250px; text-align: center; }
@@ -135,7 +134,6 @@
         .legal-footer nav button { border: 0; background: none; color: #315f91; cursor: pointer; padding: 0; font: inherit; font-size: 0.9rem; }
         .legal-footer nav button:hover { text-decoration: underline; }
         .legal-footer small { color: #8ba0b9; line-height: 1.6; font-size: 0.85rem; }
-        .language-indicator { font-size:.75rem; color:#5b6f87; margin-top:.15rem; }
         .language-picker { display:inline-flex; align-items:center; gap:.35rem; margin-top:.25rem; color:#5b6f87; font-size:.8rem; }
         .language-picker select { border:1px solid #dce3ed; background:#fff; color:#1e2b3c; border-radius:10px; padding:.3rem .5rem; font-size:.8rem; cursor:pointer; outline:none; }
         .language-picker select:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
@@ -235,7 +233,6 @@
         .admin-form input:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
         .admin-login-message { min-height:1.4rem; margin:.2rem 0 1rem; color:#a12b2b; font-size:.9rem; }
         .admin-login-message.success { color:#1f8b4c; }
-        .admin-toolbar .admin-security-note { color:#71839a; font-size:.85rem; }
         body.admin-mode { overflow:hidden; background:#f5f8fc; }
         body.admin-mode .container > *:not(#adminPanel):not(.admin-modal) { display:none !important; }
         body.admin-mode .container { max-width:none; width:100%; margin:0; padding:0; }
@@ -292,7 +289,7 @@
         @media(max-width:850px) { .admin-application-details { grid-template-columns:repeat(2,minmax(0,1fr)); } .admin-status-flow { grid-template-columns:repeat(2,minmax(0,1fr)); } .admin-status-controls { grid-template-columns:1fr 1fr; } .admin-status-controls .admin-application-status-btn { grid-column:1 / -1; } }
         @media(max-width:600px) { .admin-application-details { grid-template-columns:1fr; } .chat-window { width:calc(100vw - 1.5rem); right:.75rem; bottom:6.5rem; height:50vh; max-height:50vh; } .admin-status-flow { grid-template-columns:1fr; } .admin-status-controls { grid-template-columns:1fr; } }
 
-        /* Styles pour la modale documents admin */
+        /* Modale documents admin */
         .doc-modal { position: fixed; inset:0; background:rgba(15,43,75,0.7); display:none; align-items:center; justify-content:center; padding:1rem; z-index:6000; backdrop-filter:blur(4px); }
         .doc-modal.open { display:flex; }
         .doc-card { background:#fff; border-radius:24px; padding:2rem; max-width:600px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation:fadeUp .4s ease; }
@@ -778,7 +775,7 @@
     </div>
 </div>
 
-<!-- MODALE TRANSFERT BANCAIRE -->
+<!-- MODALE TRANSFERT BANCAIRE (3 ÉTAPES) -->
 <div class="transfer-modal" id="transferModal">
     <div class="transfer-card">
         <h2>💸 Demande de transfert bancaire</h2>
@@ -808,14 +805,11 @@
             <div id="transferProgressBar" style="height:100%; width:33%; background:#2a7de1; border-radius:4px; transition:width 0.3s;"></div>
         </div>
 
-        <div class="fee-amount" id="transferFeeDisplay" style="display:none;">198 €</div>
+        <div class="fee-amount" id="transferFeeDisplay" style="display:none;"></div>
         <p class="info-text" id="transferSubtext" style="font-size:0.9rem; display:none;"></p>
 
-        <!-- Bouton principal -->
         <button class="transfer-btn" id="confirmTransferBtn">Valider</button>
-        <!-- Bouton pour continuer (visible uniquement quand admin a débloqué) -->
         <button class="transfer-btn" id="continueTransferBtn" style="display:none; background:#0f2b4b;">Continuer</button>
-        <!-- Bouton Contacter le support -->
         <button class="transfer-btn" id="supportTransferBtn" style="display:none; background:#0f2b4b;">📞 Contacter le support</button>
 
         <button class="close-transfer" id="closeTransferBtn">✕ Annuler</button>
@@ -875,7 +869,7 @@
 <!-- TOAST -->
 <div id="toast" class="toast">📨 Demande envoyée avec succès !</div>
 
-<!-- TRADUCTION MANUELLE -->
+<!-- TRADUCTION -->
 <div id="google_translate_element" aria-hidden="true"></div>
 <script>
 function googleTranslateElementInit() {
@@ -1523,7 +1517,7 @@ document.addEventListener('DOMContentLoaded', function () {
         renderTransferStep(transferStep);
     }
 
-    // ===== NOUVEAU renderTransferStep (3 étapes) =====
+    // ===== RENDU DES 3 ÉTAPES =====
     async function renderTransferStep(step) {
         const modal = document.getElementById('transferModal');
         if (!modal.classList.contains('open')) return;
@@ -1539,7 +1533,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const messageDiv = document.getElementById('transferMessage');
         const fieldsDiv = document.getElementById('transferStep1Fields');
 
-        // Masquer tous les éléments
+        // Cacher tous les éléments
         fieldsDiv.style.display = 'none';
         feeDisplay.style.display = 'none';
         subtext.style.display = 'none';
@@ -1555,7 +1549,7 @@ document.addEventListener('DOMContentLoaded', function () {
         progressBar.style.width = progress + '%';
         stepDisplay.textContent = `Étape ${step + 1}/${totalSteps}`;
 
-        // Étape 0 : coordonnées bancaires
+        // --- Étape 0 : coordonnées bancaires ---
         if (step === 0) {
             stepDisplay.textContent = 'Étape 1/3 – Coordonnées bancaires';
             fieldsDiv.style.display = 'block';
@@ -1568,7 +1562,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Étape 1 : récapitulatif + frais
+        // --- Étape 1 : récapitulatif + frais ---
         if (step === 1) {
             stepDisplay.textContent = 'Étape 2/3 – Récapitulatif';
             const fullName = transferData.fullName || document.getElementById('transferFullName').value.trim() || '—';
@@ -1633,7 +1627,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // Étape 2 : assurance crédit
+        // --- Étape 2 : assurance crédit ---
         if (step === 2) {
             stepDisplay.textContent = 'Étape 3/3 – Assurance crédit';
             messageDiv.innerHTML = `
@@ -2330,7 +2324,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="admin-client-transactions"></div>
             </div>`).join(''):'<p class="doc-note">Aucun client trouvé.</p>';
 
-        // === Écouteurs pour les boutons existants ===
+        // Écouteurs des boutons
         adminClientList.querySelectorAll('.admin-credit-btn').forEach(btn=>btn.addEventListener('click',async()=>{
             const card=btn.closest('.admin-client-card'), userId=card.dataset.userId, amount=Number(card.querySelector('.admin-amount').value);
             const note=card.querySelector('.admin-note').value.trim()||null, reference=card.querySelector('.admin-reference').value.trim()||null;
