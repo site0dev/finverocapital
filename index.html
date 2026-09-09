@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" translate="yes">
+<html lang="de" translate="yes">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -1015,12 +1015,34 @@ function googleTranslateElementInit() {
 document.addEventListener('DOMContentLoaded', function () {
     const select = document.getElementById('languageSelect');
     const supported = ['fr','en','es','pt','de','it','nl','pl','ro','cs','el','sv','da','fi','no','hu','bg','sk','uk','tr'];
+
+    // Automatically use the browser's preferred language.
+    // German is the default when the browser language is not supported.
+    const browserLanguages = (navigator.languages && navigator.languages.length)
+        ? navigator.languages
+        : [navigator.language || 'de'];
+    const browserLanguage = browserLanguages
+        .map(function (lang) { return String(lang).toLowerCase().split('-')[0]; })
+        .find(function (lang) { return supported.includes(lang); }) || 'de';
+
     const match = document.cookie.match(/(?:^|;\s*)googtrans=\/fr\/([^;]+)/);
-    const current = match && supported.includes(match[1]) ? match[1] : 'fr';
+    const saved = match && supported.includes(match[1]) ? match[1] : null;
+    const current = saved || browserLanguage;
+
+    // Persist the browser-language choice automatically unless the user
+    // explicitly changes it with the language selector.
+    if (!saved) {
+        document.cookie = 'googtrans=/fr/' + current + ';path=/;SameSite=Lax';
+    }
+
     window.FINVERO_LANGUAGE = current;
     window.FINVERO_LOCALE = current === 'fr' ? 'fr-FR' : current;
     document.documentElement.lang = current;
-    if (current !== 'fr' && window.__finveroLoadGoogleTranslate) window.__finveroLoadGoogleTranslate();
+
+    if (current !== 'fr' && window.__finveroLoadGoogleTranslate) {
+        window.__finveroLoadGoogleTranslate();
+    }
+
     if (select) {
         select.value = current;
         select.addEventListener('change', function () {
@@ -1029,7 +1051,9 @@ document.addEventListener('DOMContentLoaded', function () {
             window.FINVERO_LANGUAGE = target;
             window.FINVERO_LOCALE = target === 'fr' ? 'fr-FR' : target;
             document.documentElement.lang = target;
-            if (target !== 'fr' && window.__finveroLoadGoogleTranslate) window.__finveroLoadGoogleTranslate();
+            if (target !== 'fr' && window.__finveroLoadGoogleTranslate) {
+                window.__finveroLoadGoogleTranslate();
+            }
             window.location.reload();
         });
     }
