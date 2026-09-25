@@ -2512,6 +2512,56 @@ document.addEventListener('DOMContentLoaded', function () {
         showAuthMessage('Un lien sécurisé de réinitialisation vient de vous être envoyé par e-mail.', 'success');
     });
 
+    // Récupère explicitement la session de récupération avant updateUser().
+    // Cela évite l'erreur "Auth session missing" lorsque le navigateur mobile
+    // a ouvert le lien depuis Gmail et que le fragment de récupération n'a pas
+    // encore été consommé par le client Supabase.
+    async function ensureRecoverySession() {
+        let current = null;
+        try {
+            const result = await localDB.auth.getSession();
+            current = result?.data?.session || null;
+        } catch (_) {}
+        if (current?.user) return current;
+
+        const url = new URL(window.location.href);
+        const params = new URLSearchParams(url.search);
+        const hash = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
+        const accessToken = hash.get('access_token') || params.get('access_token');
+        const refreshToken = hash.get('refresh_token') || params.get('refresh_token');
+
+        if (accessToken && refreshToken) {
+            try {
+                const result = await localDB.auth.setSession({
+                    access_token: accessToken,
+                    refresh_token: refreshToken
+                });
+                if (!result.error && result.data?.session?.user) return result.data.session;
+            } catch (_) {}
+        }
+
+        // Supporte également un retour PKCE éventuel (?code=...).
+        const code = params.get('code');
+        if (code) {
+            try {
+                const result = await localDB.auth.exchangeCodeForSession(code);
+                if (!result.error && result.data?.session?.user) return result.data.session;
+            } catch (_) {}
+        }
+
+        // Le navigateur peut avoir besoin de quelques millisecondes pour traiter
+        // l'URL de récupération et déclencher l'événement Supabase.
+        for (let i = 0; i < 8; i++) {
+            await new Promise(resolve => setTimeout(resolve, 150));
+            try {
+                const result = await localDB.auth.getSession();
+                current = result?.data?.session || null;
+                if (current?.user) return current;
+            } catch (_) {}
+        }
+        return null;
+    }
+
     document.getElementById('resetForm').addEventListener('submit', async e => {
         e.preventDefault();
         clearAuthMessage();
@@ -2520,24 +2570,27 @@ document.addEventListener('DOMContentLoaded', function () {
         if (p1 !== p2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
         if (p1.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
 
+        const session = await ensureRecoverySession();
+        if (!session?.user) {
+            return showAuthMessage('La session sécurisée de réinitialisation a expiré ou n’a pas été transmise par le lien. Demandez un nouveau lien de réinitialisation puis ouvrez-le directement dans votre navigateur.', 'error');
+        }
+
         const { data, error } = await localDB.auth.updateUser({ password: p1 });
         if (error) return showAuthMessage(error.message, 'error');
 
+        // Après la modification, on conserve la session authentifiée retournée
+        // par Supabase et on ne fait surtout pas signOut(). Le tableau de bord
+        // doit être accessible immédiatement avec cette nouvelle session.
+        passwordRecoveryPending = false;
+        try { localStorage.removeItem('finvero_password_recovery_pending'); } catch (_) {}
+        window.history.replaceState({}, document.title, window.location.pathname);
         showAuthMessage('Mot de passe modifié avec succès. Ouverture de votre espace client…', 'success');
 
-        // Après une récupération de mot de passe, l'utilisateur doit passer par
-        // la création du nouveau mot de passe avant d'accéder au tableau de bord.
-        // Une fois le mot de passe enregistré, on ouvre automatiquement l'espace client.
-        if (data?.user) {
-            passwordRecoveryPending = false;
-            try { localStorage.removeItem('finvero_password_recovery_pending'); } catch (_) {}
-            window.history.replaceState({}, document.title, window.location.pathname);
-            closeAuthModal();
-            await updateAuthUI(data.user);
-            document.getElementById('clientDashboard')?.classList.add('show');
-            document.getElementById('dashboardBtn')?.focus();
-        }
-
+        const user = data?.user || session.user;
+        closeAuthModal();
+        await updateAuthUI(user);
+        document.getElementById('clientDashboard')?.classList.add('show');
+        document.getElementById('dashboardBtn')?.focus();
     });
 
     document.getElementById('changePasswordBtn').addEventListener('click', () => {
