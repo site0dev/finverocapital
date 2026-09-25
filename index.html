@@ -1156,10 +1156,69 @@ document.addEventListener('DOMContentLoaded', function () {
 
     normalizeEditableControls();
 
-    const editableControlsObserver = new MutationObserver(() => {
-        normalizeEditableControls();
+    // Ne surveille pas en permanence les attributs des champs : sur certains
+    // navigateurs mobiles, ce type de MutationObserver peut perturber la saisie
+    // native/composition du clavier. Les champs sont normalisés au chargement
+    // et lors de leur création dynamique, sans réécrire leur valeur pendant la frappe.
+    const editableControlsObserver = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            if (mutation.type === 'childList') {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === 1) normalizeEditableControls(node);
+                });
+            }
+        }
     });
-    editableControlsObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['disabled', 'readonly'] });
+    editableControlsObserver.observe(document.body, { childList: true, subtree: true });
+
+    // Correctif de saisie mobile : mémorise la dernière valeur réellement reçue
+    // par les champs de transfert. Si un composant ou un rafraîchissement de
+    // l'interface vide exceptionnellement la valeur juste après une frappe,
+    // elle est restaurée sans empêcher le clavier Android/iOS de fonctionner.
+    function protectTransferInput(id) {
+        const el = document.getElementById(id);
+        if (!el || el.dataset.inputGuard === '1') return;
+        el.dataset.inputGuard = '1';
+
+        let lastValue = el.value || '';
+        let pendingBeforeInput = null;
+
+        el.addEventListener('beforeinput', (event) => {
+            pendingBeforeInput = {
+                inputType: event.inputType || '',
+                data: event.data || ''
+            };
+        }, true);
+
+        el.addEventListener('input', () => {
+            const current = el.value || '';
+            if (current !== '') {
+                lastValue = current;
+                pendingBeforeInput = null;
+                return;
+            }
+
+            const pending = pendingBeforeInput;
+            if (lastValue && pending && /delete|historyUndo|historyRedo/i.test(pending.inputType)) {
+                lastValue = '';
+                pendingBeforeInput = null;
+                return;
+            }
+
+            if (pending && pending.data) {
+                const restored = lastValue + pending.data;
+                el.value = restored;
+                lastValue = restored;
+            }
+            pendingBeforeInput = null;
+        }, true);
+
+        el.addEventListener('change', () => {
+            lastValue = el.value || '';
+        }, true);
+    }
+
+    ['transferFullName', 'transferBankAccount', 'transferBankName', 'transferAmount'].forEach(protectTransferInput);
 
     // ===== CONSTANTES =====
     const TAUX_FIXE = 3.0;
