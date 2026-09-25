@@ -279,120 +279,6 @@
         .auth-form .form-group { margin-bottom:1rem; }
         .auth-form input, .auth-form select { padding:.8rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; width:100%; font-size:1rem; outline:none; background:#fff; }
         .auth-form input:focus, .auth-form select:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
-        /* Interaction des champs : tous les contrôles réellement éditables restent
-           cliquables, sélectionnables et saisissables, y compris sur mobile. */
-        input:not([disabled]):not([readonly]), textarea:not([disabled]):not([readonly]), select:not([disabled]) {
-            pointer-events: auto !important;
-            user-select: text !important;
-            -webkit-user-select: text !important;
-            -webkit-touch-callout: default;
-            touch-action: manipulation;
-            caret-color: #0f2b4b;
-        }
-        /* Correctif d'affichage du texte saisi : certains styles hérités/natifs
-           pouvaient laisser le curseur visible tout en rendant la valeur quasi
-           invisible. On force une couleur de texte explicite sur tous les
-           contrôles éditables, sans modifier leur logique. */
-        input:not([type="range"]):not([type="file"]):not([disabled]):not([readonly]),
-        textarea:not([disabled]):not([readonly]),
-        select:not([disabled]) {
-            color: #1e2b3c !important;
-            -webkit-text-fill-color: #1e2b3c !important;
-            opacity: 1 !important;
-            text-shadow: none !important;
-            caret-color: #0f2b4b !important;
-            background-color: #ffffff !important;
-        }
-        input:not([type="range"]):not([type="file"])::placeholder,
-        textarea::placeholder {
-            color: #8ba0b9 !important;
-            -webkit-text-fill-color: #8ba0b9 !important;
-            opacity: 1 !important;
-        }
-        input[type="range"] {
-            color: inherit !important;
-            -webkit-text-fill-color: initial !important;
-            background-color: #dce3ed !important;
-        }
-        input[type="file"] {
-            color: #1e2b3c !important;
-            -webkit-text-fill-color: #1e2b3c !important;
-            opacity: 1 !important;
-        }
-        /* Rendu natif robuste sur Android / Chrome / Gboard.
-           On ne masque jamais la valeur réelle du contrôle et on évite les
-           propriétés héritées pouvant rendre le texte saisi invisible. */
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        input[type="number"],
-        input[type="password"],
-        input[type="search"],
-        input[type="url"],
-        textarea {
-            -webkit-appearance: none !important;
-            appearance: none !important;
-            color: #1e2b3c !important;
-            -webkit-text-fill-color: #1e2b3c !important;
-            background-color: #ffffff !important;
-            background-clip: padding-box !important;
-            -webkit-background-clip: padding-box !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-            filter: none !important;
-            mix-blend-mode: normal !important;
-            text-indent: 0 !important;
-            text-shadow: none !important;
-            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif !important;
-            line-height: 1.4 !important;
-            caret-color: #0f2b4b !important;
-            -webkit-user-modify: read-write !important;
-        }
-
-        input[type="text"]:focus,
-        input[type="email"]:focus,
-        input[type="tel"]:focus,
-        input[type="number"]:focus,
-        input[type="password"]:focus,
-        input[type="search"]:focus,
-        input[type="url"]:focus,
-        textarea:focus {
-            color: #1e2b3c !important;
-            -webkit-text-fill-color: #1e2b3c !important;
-            opacity: 1 !important;
-            visibility: visible !important;
-            filter: none !important;
-            mix-blend-mode: normal !important;
-            caret-color: #0f2b4b !important;
-        }
-
-        input[type="text"]::selection,
-        input[type="email"]::selection,
-        input[type="tel"]::selection,
-        input[type="number"]::selection,
-        input[type="password"]::selection,
-        input[type="search"]::selection,
-        input[type="url"]::selection,
-        textarea::selection {
-            background: #b9d7ff !important;
-            color: #102a43 !important;
-            -webkit-text-fill-color: #102a43 !important;
-        }
-
-        input:not([disabled]):not([readonly]):focus,
-        textarea:not([disabled]):not([readonly]):focus,
-        select:not([disabled]):focus {
-            pointer-events: auto !important;
-        }
-        .account-panel input:not([disabled]):not([readonly]),
-        .account-panel textarea:not([disabled]):not([readonly]),
-        .account-panel select:not([disabled]),
-        .dashboard input:not([disabled]):not([readonly]),
-        .dashboard textarea:not([disabled]):not([readonly]),
-        .dashboard select:not([disabled]) {
-            pointer-events: auto !important;
-            cursor: text;
-        }
         .auth-submit { width:100%; margin-top:.4rem; }
         .auth-link { border:0; background:none; color:#2a7de1; cursor:pointer; padding:.6rem 0; font-weight:600; }
         .auth-message { margin-top:1rem; padding:.75rem 1rem; border-radius:12px; display:none; font-size:.9rem; }
@@ -1190,50 +1076,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // ===== GARDE-FOU INTERACTION DES CHAMPS =====
-    // Les contrôles natifs restent maîtres de leur valeur : aucun observer ne
-    // réécrit, ne réactive ou ne réinitialise les champs pendant une saisie.
-    // C'est particulièrement important sur Android/Gboard, où une saisie peut
-    // passer par une phase de composition IME avant d'être validée.
-    function prepareEditableControl(el) {
-        if (!el || el.dataset.locked === 'true' || el.id === 'adminNewUsername') return;
-        if (el.matches('input, textarea, select')) {
-            el.style.pointerEvents = 'auto';
-            el.style.userSelect = 'text';
-            el.style.webkitUserSelect = 'text';
-            el.style.webkitTouchCallout = 'default';
-        }
-    }
-
-    document.querySelectorAll('input, textarea, select').forEach(prepareEditableControl);
-
-    // Préserve explicitement la composition clavier mobile sans intercepter
-    // l'événement et sans empêcher le navigateur de gérer la valeur native.
-    document.addEventListener('compositionstart', (event) => {
-        if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
-            event.target.dataset.finveroComposing = 'true';
-        }
-    }, true);
-
-    document.addEventListener('compositionend', (event) => {
-        if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
-            delete event.target.dataset.finveroComposing;
-        }
-    }, true);
-
-    // Les cartes d'administration sont injectées dynamiquement. On prépare
-    // uniquement leurs contrôles lorsqu'ils apparaissent, sans modifier leur
-    // état disabled/readonly ni leur valeur.
-    const editableControlObserver = new MutationObserver((mutations) => {
-        for (const mutation of mutations) {
-            for (const node of mutation.addedNodes) {
-                if (node.nodeType !== Node.ELEMENT_NODE) continue;
-                if (node.matches?.('input, textarea, select')) prepareEditableControl(node);
-                node.querySelectorAll?.('input, textarea, select').forEach(prepareEditableControl);
-            }
-        }
-    });
-    editableControlObserver.observe(document.body, { childList: true, subtree: true });
+    // Les champs de saisie utilisent exclusivement le comportement natif du navigateur.
+    // Aucun écouteur global, observer ou script ne modifie leur valeur pendant la frappe.
 
     // ===== CONSTANTES =====
     const TAUX_FIXE = 3.0;
@@ -2790,7 +2634,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
             });
             renderAdminClients();
-            normalizeEditableControls(adminClientList);
         } catch (e) {
             adminClientList.innerHTML=`<p class="auth-message show error">${esc(e.message)}</p>`;
         }
