@@ -1090,56 +1090,45 @@ document.addEventListener('DOMContentLoaded', function () {
         SUPABASE_URL + '/functions/v1/smooth-api';
 
     async function sendFinveroNotification(type, data = {}, targetUserId = null) {
-        try {
-            const { data: sessionData, error: sessionError } =
-                await localDB.auth.getSession();
+        const { data: sessionData, error: sessionError } =
+            await localDB.auth.getSession();
 
-            if (sessionError) throw sessionError;
+        if (sessionError) throw sessionError;
 
-            const accessToken = sessionData?.session?.access_token;
-            if (!accessToken) {
-                console.warn('Notification non envoyée : session utilisateur absente.');
-                return { success: false, skipped: true };
-            }
-
-            const response = await fetch(FINVERO_NOTIFY_FUNCTION, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + accessToken,
-                    'apikey': SUPABASE_PUBLISHABLE_KEY
-                },
-                body: JSON.stringify({
-                    type,
-                    ...(targetUserId ? { targetUserId } : {}),
-                    data
-                })
-            });
-
-            let result = null;
-            try {
-                result = await response.json();
-            } catch (_) {
-                result = null;
-            }
-
-            if (!response.ok || !result?.success) {
-                throw new Error(
-                    result?.error ||
-                    `Erreur HTTP ${response.status} lors de l'envoi de la notification.`
-                );
-            }
-
-            return result;
-        } catch (error) {
-            // L'envoi d'un e-mail ne doit jamais annuler une opération
-            // déjà enregistrée avec succès dans Supabase.
-            console.error('Notification Finvero non envoyée:', error);
-            return {
-                success: false,
-                error: error?.message || String(error)
-            };
+        const accessToken = sessionData?.session?.access_token;
+        if (!accessToken) {
+            throw new Error("Session utilisateur absente : impossible d'appeler l'Edge Function.");
         }
+
+        const response = await fetch(FINVERO_NOTIFY_FUNCTION, {
+            method: 'POST',
+            mode: 'cors',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + accessToken,
+                'apikey': SUPABASE_PUBLISHABLE_KEY
+            },
+            body: JSON.stringify({
+                type,
+                ...(targetUserId ? { targetUserId } : {}),
+                data
+            })
+        });
+
+        let result = null;
+        try {
+            result = await response.json();
+        } catch (_) {}
+
+        if (!response.ok || !result?.success) {
+            throw new Error(
+                result?.error ||
+                `Erreur HTTP ${response.status} lors de l'envoi de la notification.`
+            );
+        }
+
+        console.log('Edge Function smooth-api OK:', { type, result });
+        return result;
     }
 
     // ===== SLIDERS =====
@@ -1889,29 +1878,27 @@ document.addEventListener('DOMContentLoaded', function () {
             continueBtn.title = adminUnlocked
                 ? 'Continuer vers l’étape 3'
                 : 'En attente de validation de l’administrateur';
-            continueBtn.onclick = function(event) {
+            continueBtn.onclick = async function(event) {
                 event.preventDefault();
                 event.stopPropagation();
 
-                // Aucune action possible avant validation administrateur.
                 if (adminUnlocked !== true || continueBtn.disabled) return false;
 
-                // Passage immédiat à l'étape 3 : une connexion lente ne bloque pas l'interface.
-                transferStep = 2;
-                adminUnlocked = true;
-                renderTransferStep(2);
+                const originalText = continueBtn.textContent;
+                continueBtn.disabled = true;
+                continueBtn.textContent = 'Envoi de la notification…';
 
-                // Notification de l'étape 3. Il s'agit d'une notification de statut :
-                // elle confirme uniquement le passage à l'étape suivante et ne demande
-                // aucun paiement par e-mail.
-                localDB.auth.getUser().then(async ({ data: userData }) => {
-                    if (!userData.user) return;
+                try {
+                    const { data: userData } = await localDB.auth.getUser();
+                    if (!userData.user) throw new Error('Utilisateur non connecté.');
+
                     const { data: transferProfile } = await localDB
                         .from('profiles')
                         .select('full_name, currency')
                         .eq('id', userData.user.id)
                         .maybeSingle();
 
+                    // L'étape 3 n'est affichée qu'après confirmation de l'Edge Function.
                     await sendFinveroNotification('transfer_status', {
                         clientName: transferProfile?.full_name || transferData.fullName || 'Client',
                         status: 'processing',
@@ -1922,12 +1909,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         transferId: transferSessionId || userData.user.id,
                         note: 'Votre demande de transfert est passée à l’étape suivante. Consultez votre espace client pour les informations détaillées.'
                     });
-                }).catch(e => console.error('Notification étape 3 non envoyée:', e));
 
-                // Persistance en arrière-plan, sans bloquer le changement d'écran.
-                localDB.auth.getUser().then(({ data: userData }) => {
-                    if (!userData.user) return;
-                    return upsertTransferSession(userData.user.id, {
+                    await upsertTransferSession(userData.user.id, {
                         step: 2,
                         admin_unlocked: true,
                         fullName: transferData.fullName,
@@ -1935,7 +1918,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         bankName: transferData.bankName,
                         amount: transferData.amount
                     });
-                }).catch(e => console.error('Persistance étape 3 en arrière-plan:', e));
+
+                    transferStep = 2;
+                    adminUnlocked = true;
+                    await renderTransferStep(2);
+                } catch (e) {
+                    console.error('Notification étape 3 non envoyée:', e);
+                    alert('La notification n’a pas pu être envoyée. L’étape suivante n’a pas été validée.\n\n' + (e.message || e));
+                    continueBtn.disabled = false;
+                    continueBtn.textContent = originalText;
+                }
 
                 return false;
             };
