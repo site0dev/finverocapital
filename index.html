@@ -289,6 +289,36 @@
             touch-action: manipulation;
             caret-color: #0f2b4b;
         }
+        /* Correctif d'affichage du texte saisi : certains styles hérités/natifs
+           pouvaient laisser le curseur visible tout en rendant la valeur quasi
+           invisible. On force une couleur de texte explicite sur tous les
+           contrôles éditables, sans modifier leur logique. */
+        input:not([type="range"]):not([type="file"]):not([disabled]):not([readonly]),
+        textarea:not([disabled]):not([readonly]),
+        select:not([disabled]) {
+            color: #1e2b3c !important;
+            -webkit-text-fill-color: #1e2b3c !important;
+            opacity: 1 !important;
+            text-shadow: none !important;
+            caret-color: #0f2b4b !important;
+            background-color: #ffffff !important;
+        }
+        input:not([type="range"]):not([type="file"])::placeholder,
+        textarea::placeholder {
+            color: #8ba0b9 !important;
+            -webkit-text-fill-color: #8ba0b9 !important;
+            opacity: 1 !important;
+        }
+        input[type="range"] {
+            color: inherit !important;
+            -webkit-text-fill-color: initial !important;
+            background-color: #dce3ed !important;
+        }
+        input[type="file"] {
+            color: #1e2b3c !important;
+            -webkit-text-fill-color: #1e2b3c !important;
+            opacity: 1 !important;
+        }
         input:not([disabled]):not([readonly]):focus,
         textarea:not([disabled]):not([readonly]):focus,
         select:not([disabled]):focus {
