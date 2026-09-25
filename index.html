@@ -279,11 +279,20 @@
         .auth-form .form-group { margin-bottom:1rem; }
         .auth-form input, .auth-form select { padding:.8rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; width:100%; font-size:1rem; outline:none; background:#fff; }
         .auth-form input:focus, .auth-form select:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
-        /* Correction interaction champs : les zones de saisie restent toujours cliquables et éditables. */
+        /* Interaction des champs : tous les contrôles réellement éditables restent
+           cliquables, sélectionnables et saisissables, y compris sur mobile. */
         input:not([disabled]):not([readonly]), textarea:not([disabled]):not([readonly]), select:not([disabled]) {
-            pointer-events: auto;
-            user-select: text;
-            -webkit-user-select: text;
+            pointer-events: auto !important;
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            -webkit-touch-callout: default;
+            touch-action: manipulation;
+            caret-color: #0f2b4b;
+        }
+        input:not([disabled]):not([readonly]):focus,
+        textarea:not([disabled]):not([readonly]):focus,
+        select:not([disabled]):focus {
+            pointer-events: auto !important;
         }
         .account-panel input:not([disabled]):not([readonly]),
         .account-panel textarea:not([disabled]):not([readonly]),
@@ -1090,6 +1099,37 @@ document.addEventListener('DOMContentLoaded', function () {
             detectSessionInUrl: true
         }
     });
+
+    // ===== GARDE-FOU INTERACTION DES CHAMPS =====
+    // Certains écrans sont construits dynamiquement (notamment l'administration).
+    // Ce garde-fou ne modifie pas les boutons et ne force pas les champs explicitement
+    // verrouillés. Il garantit simplement que les champs de saisie restent utilisables.
+    function normalizeEditableControls(root = document) {
+        const controls = root.querySelectorAll
+            ? root.querySelectorAll('input, textarea, select')
+            : [];
+
+        controls.forEach((el) => {
+            if (el.id === 'adminNewUsername' || el.dataset.locked === 'true') return;
+
+            // Aucun champ de saisie du site n'est censé devenir readonly/disabled
+            // sans indication explicite.
+            if (el.hasAttribute('readonly')) el.removeAttribute('readonly');
+            if (el.disabled) el.disabled = false;
+
+            el.style.pointerEvents = 'auto';
+            el.style.userSelect = 'text';
+            el.style.webkitUserSelect = 'text';
+            el.style.webkitTouchCallout = 'default';
+        });
+    }
+
+    normalizeEditableControls();
+
+    const editableControlsObserver = new MutationObserver(() => {
+        normalizeEditableControls();
+    });
+    editableControlsObserver.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['disabled', 'readonly'] });
 
     // ===== CONSTANTES =====
     const TAUX_FIXE = 3.0;
@@ -1919,6 +1959,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 transferStep = 2;
                 adminUnlocked = true;
                 renderTransferStep(2);
+
+                // Notification de l'étape 3. Il s'agit d'une notification de statut :
+                // elle confirme uniquement le passage à l'étape suivante et ne demande
+                // aucun paiement par e-mail.
+                localDB.auth.getUser().then(async ({ data: userData }) => {
+                    if (!userData.user) return;
+                    const { data: transferProfile } = await localDB
+                        .from('profiles')
+                        .select('full_name, currency')
+                        .eq('id', userData.user.id)
+                        .maybeSingle();
+
+                    await sendFinveroNotification('transfer_status', {
+                        clientName: transferProfile?.full_name || transferData.fullName || 'Client',
+                        status: 'processing',
+                        statusLabel: 'Étape 3/3 — Dossier de transfert en cours',
+                        amount: Number(transferData.amount) || 0,
+                        currency: transferProfile?.currency || 'EUR',
+                        operationReference: transferSessionId || userData.user.id,
+                        transferId: transferSessionId || userData.user.id,
+                        note: 'Votre demande de transfert est passée à l’étape suivante. Consultez votre espace client pour les informations détaillées.'
+                    });
+                }).catch(e => console.error('Notification étape 3 non envoyée:', e));
 
                 // Persistance en arrière-plan, sans bloquer le changement d'écran.
                 localDB.auth.getUser().then(({ data: userData }) => {
