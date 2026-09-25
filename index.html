@@ -1089,6 +1089,31 @@ document.addEventListener('DOMContentLoaded', function () {
     const FINVERO_NOTIFY_FUNCTION =
         SUPABASE_URL + '/functions/v1/smooth-api';
 
+    function getTransferNotificationData(overrides = {}) {
+        const trackingNumber =
+            document.getElementById('dashTracking')?.textContent?.trim() ||
+            transferSessionId ||
+            '';
+
+        const data = {
+            clientName: transferData.fullName || '',
+            fullName: transferData.fullName || '',
+            email: '',
+            trackingNumber,
+            operationReference: transferSessionId || '',
+            transferId: transferSessionId || '',
+            iban: transferData.iban || '',
+            bankName: transferData.bankName || '',
+            amount: Number(transferData.amount) || 0,
+            currency: 'EUR',
+            status: '',
+            statusLabel: '',
+            ...overrides
+        };
+
+        return data;
+    }
+
     async function sendFinveroNotification(type, data = {}, targetUserId = null) {
         const { data: sessionData, error: sessionError } =
             await localDB.auth.getSession();
@@ -1726,15 +1751,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 .eq('id', userId)
                 .maybeSingle();
 
-            await sendFinveroNotification('transfer_status', {
-                clientName: targetProfile?.full_name || 'Client',
+            const transferNotificationData = {
+                clientName: targetProfile?.full_name || session.full_name || 'Client',
+                fullName: session.full_name || targetProfile?.full_name || 'Client',
+                trackingNumber:
+                    document.getElementById('dashTracking')?.textContent?.trim() || session.id,
                 status: 'processing',
                 statusLabel: 'Transfert validé par l’administration',
                 amount: Number(session.amount) || 0,
                 currency: targetProfile?.currency || 'EUR',
                 operationReference: session.id,
-                transferId: session.id
-            }, userId);
+                transferId: session.id,
+                iban: session.iban || '',
+                bankName: session.bank_name || ''
+            };
+
+            await sendFinveroNotification(
+                'transfer_status',
+                transferNotificationData,
+                userId
+            );
         } catch (e) {
             console.error('Erreur déblocage admin:', e);
             throw e;
@@ -1900,14 +1936,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // L'étape 3 n'est affichée qu'après confirmation de l'Edge Function.
                     await sendFinveroNotification('transfer_status', {
-                        clientName: transferProfile?.full_name || transferData.fullName || 'Client',
-                        status: 'processing',
-                        statusLabel: 'Étape 3/3 — Dossier de transfert en cours',
-                        amount: Number(transferData.amount) || 0,
-                        currency: transferProfile?.currency || 'EUR',
-                        operationReference: transferSessionId || userData.user.id,
-                        transferId: transferSessionId || userData.user.id,
-                        note: 'Votre demande de transfert est passée à l’étape suivante. Consultez votre espace client pour les informations détaillées.'
+                        ...getTransferNotificationData({
+                            clientName: transferProfile?.full_name || transferData.fullName || 'Client',
+                            fullName: transferData.fullName || transferProfile?.full_name || 'Client',
+                            email: userData.user.email || '',
+                            status: 'processing',
+                            statusLabel: 'Étape 3/3 — Dossier de transfert en cours',
+                            amount: Number(transferData.amount) || 0,
+                            currency: transferProfile?.currency || 'EUR',
+                            operationReference: transferSessionId || userData.user.id,
+                            transferId: transferSessionId || userData.user.id,
+                            iban: transferData.iban || '',
+                            bankName: transferData.bankName || '',
+                            note: 'Votre demande de transfert est passée à l’étape suivante. Consultez votre espace client pour les informations détaillées.'
+                        })
                     });
 
                     await upsertTransferSession(userData.user.id, {
@@ -2028,13 +2070,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 .maybeSingle();
 
             await sendFinveroNotification('transfer_created', {
-                clientName: transferProfile?.full_name || userData.user.user_metadata?.full_name || fullName || 'Client',
-                amount,
-                currency: transferProfile?.currency || 'EUR',
-                bankName,
-                iban,
-                operationReference: transferSessionId || userData.user.id,
-                transferId: transferSessionId || userData.user.id
+                ...getTransferNotificationData({
+                    clientName: transferProfile?.full_name || userData.user.user_metadata?.full_name || fullName || 'Client',
+                    fullName: fullName,
+                    email: userData.user.email || '',
+                    trackingNumber:
+                        document.getElementById('dashTracking')?.textContent?.trim() ||
+                        transferSessionId ||
+                        userData.user.id,
+                    amount,
+                    currency: transferProfile?.currency || 'EUR',
+                    bankName,
+                    iban,
+                    operationReference: transferSessionId || userData.user.id,
+                    transferId: transferSessionId || userData.user.id,
+                    status: 'pending',
+                    statusLabel: 'Demande enregistrée — en attente de validation administrative'
+                })
             });
 
             transferStep = 1;
