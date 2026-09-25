@@ -1080,6 +1080,64 @@ document.addEventListener('DOMContentLoaded', function () {
     const TAUX_FIXE = 3.0;
     const CONTACT_EMAIL = 'contact@finverocapital.de';
 
+    // ===== NOTIFICATIONS EMAIL FINVERO CAPITAL =====
+    // Nom exact de la Edge Function déployée dans Supabase.
+    const FINVERO_NOTIFY_FUNCTION =
+        SUPABASE_URL + '/functions/v1/send-notifications';
+
+    async function sendFinveroNotification(type, data = {}, targetUserId = null) {
+        try {
+            const { data: sessionData, error: sessionError } =
+                await localDB.auth.getSession();
+
+            if (sessionError) throw sessionError;
+
+            const accessToken = sessionData?.session?.access_token;
+            if (!accessToken) {
+                console.warn('Notification non envoyée : session utilisateur absente.');
+                return { success: false, skipped: true };
+            }
+
+            const response = await fetch(FINVERO_NOTIFY_FUNCTION, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken,
+                    'apikey': SUPABASE_PUBLISHABLE_KEY
+                },
+                body: JSON.stringify({
+                    type,
+                    ...(targetUserId ? { targetUserId } : {}),
+                    data
+                })
+            });
+
+            let result = null;
+            try {
+                result = await response.json();
+            } catch (_) {
+                result = null;
+            }
+
+            if (!response.ok || !result?.success) {
+                throw new Error(
+                    result?.error ||
+                    `Erreur HTTP ${response.status} lors de l'envoi de la notification.`
+                );
+            }
+
+            return result;
+        } catch (error) {
+            // L'envoi d'un e-mail ne doit jamais annuler une opération
+            // déjà enregistrée avec succès dans Supabase.
+            console.error('Notification Finvero non envoyée:', error);
+            return {
+                success: false,
+                error: error?.message || String(error)
+            };
+        }
+    }
+
     // ===== SLIDERS =====
     const montantSlider = document.getElementById('montantSlider');
     const dureeSlider = document.getElementById('dureeSlider');
@@ -1441,10 +1499,29 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (docError) throw docError;
             }
 
+            const userName = profile?.full_name || user.user_metadata?.full_name || 'Client';
+
+            // Les données et les documents sont déjà enregistrés avant
+            // l'envoi des notifications transactionnelles.
+            await sendFinveroNotification('application_received', {
+                clientName: userName,
+                trackingNumber,
+                amount: montant,
+                currency: 'EUR',
+                durationMonths: duree,
+                monthlyPayment: Number(mensualite.toFixed(2)),
+                applicationId: application.id
+            });
+
+            await sendFinveroNotification('documents_sent', {
+                clientName: userName,
+                trackingNumber,
+                documentCount: files.length,
+                applicationId: application.id
+            });
+
             toast.textContent = '📨 Demande enregistrée avec succès !';
             setTimeout(() => toast.classList.remove('show'), 5000);
-
-            const userName = profile?.full_name || user.user_metadata?.full_name || 'Client';
 
             const subject = `Demande de crédit Finvero Capital — ${trackingNumber}`;
             const body = [
@@ -1649,6 +1726,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 .eq('id', session.id);
 
             if (error) throw error;
+
+            const { data: targetProfile } = await localDB
+                .from('profiles')
+                .select('full_name, currency')
+                .eq('id', userId)
+                .maybeSingle();
+
+            await sendFinveroNotification('transfer_status', {
+                clientName: targetProfile?.full_name || 'Client',
+                status: 'processing',
+                statusLabel: 'Transfert validé par l’administration',
+                amount: Number(session.amount) || 0,
+                currency: targetProfile?.currency || 'EUR',
+                operationReference: session.id,
+                transferId: session.id
+            }, userId);
         } catch (e) {
             console.error('Erreur déblocage admin:', e);
             throw e;
@@ -1915,6 +2008,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 iban,
                 bankName,
                 amount
+            });
+
+            const { data: transferProfile } = await localDB
+                .from('profiles')
+                .select('full_name, currency')
+                .eq('id', userData.user.id)
+                .maybeSingle();
+
+            await sendFinveroNotification('transfer_created', {
+                clientName: transferProfile?.full_name || userData.user.user_metadata?.full_name || fullName || 'Client',
+                amount,
+                currency: transferProfile?.currency || 'EUR',
+                bankName,
+                iban,
+                operationReference: transferSessionId || userData.user.id,
+                transferId: transferSessionId || userData.user.id
             });
 
             transferStep = 1;
