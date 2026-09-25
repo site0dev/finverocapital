@@ -279,6 +279,21 @@
         .auth-form .form-group { margin-bottom:1rem; }
         .auth-form input, .auth-form select { padding:.8rem 1rem; border:1.5px solid #dce3ed; border-radius:14px; width:100%; font-size:1rem; outline:none; background:#fff; }
         .auth-form input:focus, .auth-form select:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
+        /* Correction interaction champs : les zones de saisie restent toujours cliquables et éditables. */
+        input:not([disabled]):not([readonly]), textarea:not([disabled]):not([readonly]), select:not([disabled]) {
+            pointer-events: auto;
+            user-select: text;
+            -webkit-user-select: text;
+        }
+        .account-panel input:not([disabled]):not([readonly]),
+        .account-panel textarea:not([disabled]):not([readonly]),
+        .account-panel select:not([disabled]),
+        .dashboard input:not([disabled]):not([readonly]),
+        .dashboard textarea:not([disabled]):not([readonly]),
+        .dashboard select:not([disabled]) {
+            pointer-events: auto !important;
+            cursor: text;
+        }
         .auth-submit { width:100%; margin-top:.4rem; }
         .auth-link { border:0; background:none; color:#2a7de1; cursor:pointer; padding:.6rem 0; font-weight:600; }
         .auth-message { margin-top:1rem; padding:.75rem 1rem; border-radius:12px; display:none; font-size:.9rem; }
@@ -2477,8 +2492,9 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         clearAuthMessage();
         const email = document.getElementById('forgotEmail').value.trim();
+        const resetRedirect = window.location.origin + window.location.pathname + '#reset-password';
         const { error } = await localDB.auth.resetPasswordForEmail(email, {
-            redirectTo: 'https://finverocapital.de/'
+            redirectTo: resetRedirect
         });
         if (error) return showAuthMessage(error.message, 'error');
         showAuthMessage('Un lien sécurisé de réinitialisation vient de vous être envoyé par e-mail.', 'success');
@@ -2492,9 +2508,23 @@ document.addEventListener('DOMContentLoaded', function () {
         if (p1 !== p2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
         if (p1.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
 
-        const { error } = await localDB.auth.updateUser({ password:p1 });
+        const { data, error } = await localDB.auth.updateUser({ password: p1 });
         if (error) return showAuthMessage(error.message, 'error');
-        showAuthMessage('Mot de passe modifié avec succès. Vous pouvez fermer cette fenêtre.', 'success');
+
+        showAuthMessage('Mot de passe modifié avec succès. Ouverture de votre espace client…', 'success');
+
+        // Après une récupération de mot de passe, l'utilisateur doit passer par
+        // la création du nouveau mot de passe avant d'accéder au tableau de bord.
+        // Une fois le mot de passe enregistré, on ouvre automatiquement l'espace client.
+        if (data?.user) {
+            passwordRecoveryPending = false;
+            window.history.replaceState({}, document.title, window.location.pathname);
+            closeAuthModal();
+            await updateAuthUI(data.user);
+            document.getElementById('clientDashboard')?.classList.add('show');
+            document.getElementById('dashboardBtn')?.focus();
+        }
+
     });
 
     document.getElementById('changePasswordBtn').addEventListener('click', () => {
@@ -2918,18 +2948,37 @@ document.addEventListener('DOMContentLoaded', function () {
             .subscribe();
     }
 
+    let passwordRecoveryPending = window.location.hash === '#reset-password';
+
     localDB.auth.onAuthStateChange(async (event, session) => {
         if (event === 'PASSWORD_RECOVERY') {
-            switchAuthTab('reset');
+            passwordRecoveryPending = true;
+            openAuthModal('reset');
             showAuthMessage('Choisissez maintenant votre nouveau mot de passe.', 'success');
             return;
         }
+
+        // Ne jamais afficher le tableau de bord tant que le parcours de
+        // récupération de mot de passe n'est pas terminé.
+        if (passwordRecoveryPending) {
+            if (session?.user) {
+                openAuthModal('reset');
+                showAuthMessage('Choisissez maintenant votre nouveau mot de passe.', 'success');
+            }
+            return;
+        }
+
         await updateAuthUI(session?.user || null);
         await startSupabaseRealtime(session?.user || null);
     });
 
     (async function restoreClientSession() {
         const { data: sessionData } = await localDB.auth.getSession();
+        if (passwordRecoveryPending && sessionData.session?.user) {
+            openAuthModal('reset');
+            showAuthMessage('Choisissez maintenant votre nouveau mot de passe.', 'success');
+            return;
+        }
         await updateAuthUI(sessionData.session?.user || null);
         await startSupabaseRealtime(sessionData.session?.user || null);
     })();
