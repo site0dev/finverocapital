@@ -907,7 +907,7 @@
         <p class="info-text">Conservez ce numéro pour le suivi de votre demande :</p>
         <div class="tracking-number" id="trackingNumberDisplay">---</div>
         <p class="info-text" style="font-size:0.85rem;">Cliquez sur le bouton ci-dessous pour le copier.</p>
-        <button class="copy-btn" id="copyTrackingBtn">📋 Copier</button>
+        <button type="button" class="copy-btn" id="copyTrackingBtn">📋 Copier</button>
     </div>
 </div>
 
@@ -948,9 +948,9 @@
         <button class="transfer-btn" id="confirmTransferBtn">Valider</button>
         <button type="button" class="transfer-btn transfer-next-btn" id="continueTransferBtn" style="display:none; background:#0f2b4b;">Continuer</button>
         
-        <button class="transfer-btn transfer-support-btn" id="supportTransferBtn" style="display:none; background:#0f2b4b;">📞 Contacter le support</button>
+        <button type="button" class="transfer-btn transfer-support-btn" id="supportTransferBtn" style="display:none; background:#0f2b4b;">📞 Contacter le support</button>
 
-        <button class="close-transfer" id="closeTransferBtn">✕ Annuler</button>
+        <button type="button" class="close-transfer" id="closeTransferBtn">✕ Annuler</button>
         <div id="transferStatus" class="transfer-success" style="display:none;"></div>
     </div>
 </div>
@@ -958,7 +958,7 @@
 <!-- MODALE DOCUMENTS ADMIN -->
 <div class="doc-modal" id="docModal">
     <div class="doc-card">
-        <button class="doc-close" id="docModalClose">✕</button>
+        <button type="button" class="doc-close" id="docModalClose">✕</button>
         <h2 id="docModalTitle">📎 Documents du client</h2>
         <div id="docModalContent" class="doc-list">
             <p class="doc-note">Aucun document trouvé.</p>
@@ -969,7 +969,7 @@
 <!-- MODALE LÉGALE -->
 <div class="legal-modal" id="legalModal">
     <div class="legal-card">
-        <button class="legal-close" id="legalClose">✕</button>
+        <button type="button" class="legal-close" id="legalClose">✕</button>
         <h2 id="legalTitle">Informations légales</h2>
         <div id="legalContent"></div>
     </div>
@@ -996,7 +996,7 @@
         <path d="M8 10h.01M12 10h.01M16 10h.01M8.5 15c1.9 1.3 5.1 1.3 7 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
     </svg>
     <span>Assistant Finvero Capital</span>
-</span><button class="close-chat" id="chatClose" aria-label="Fermer l’assistant">✕</button></div>
+</span><button type="button" class="close-chat" id="chatClose" aria-label="Fermer l’assistant">✕</button></div>
     <div class="chat-messages" id="chatMessages"></div>
     <div class="chat-input-area">
         <input type="text" id="chatInput" placeholder="Votre question..." />
@@ -1902,12 +1902,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const amount = Number(transferData.amount) || parseFloat(document.getElementById('transferAmount').value) || 0;
             const tracking = document.getElementById('dashTracking')?.textContent || '—';
 
-            const fraisAdmin = 128.00;
-            const fraisVirement = 162.00;
-            const totalFrais = fraisAdmin + fraisVirement;
-
             messageDiv.innerHTML = `
-                <h3 style="color:#0f2b4b; margin-bottom:0.5rem;">Relevé de l'opération</h3>
+                <h3 style="color:#0f2b4b; margin-bottom:0.5rem;">Récapitulatif de l'opération</h3>
                 <div style="background:#f7faff; padding:1rem; border-radius:12px; text-align:left; font-size:0.95rem;">
                     <p><strong>Numéro de suivi :</strong> ${tracking}</p>
                     <p><strong>Nom et prénom :</strong> ${fullName}</p>
@@ -1915,12 +1911,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     <p><strong>Banque :</strong> ${bankName}</p>
                     <p><strong>Montant demandé :</strong> ${amount.toFixed(2)} €</p>
                     <hr style="border:1px dashed #dce3ed; margin:0.7rem 0;">
-                    <p><strong>Frais administratifs :</strong> ${fraisAdmin.toFixed(2)} €</p>
-                    <p><strong>Frais de virement :</strong> ${fraisVirement.toFixed(2)} €</p>
-                    <p><strong>Total des frais :</strong> ${totalFrais.toFixed(2)} €</p>
-                    <hr style="border:1px dashed #dce3ed; margin:0.7rem 0;">
-                    <p style="font-weight:600; color:#0f2b4b;">Cher client,</p>
-                    <p>Veuillez contacter votre administrateur pour vous acquitter des frais de transfert afin de faire évoluer votre opération bancaire.</p>
+                    <p style="font-weight:600; color:#0f2b4b;">Statut de l'opération</p>
+                    <p>Votre demande a bien été enregistrée. Elle reste en attente de validation administrative avant le passage à l'étape suivante.</p>
                 </div>
             `;
 
@@ -2002,14 +1994,14 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        // --- ÉTAPE 3 : assurance crédit ---
+        // --- ÉTAPE 3 : traitement administratif ---
         if (step === 2) {
-            stepDisplay.textContent = 'Étape 3/3 – Assurance crédit';
+            stepDisplay.textContent = 'Étape 3/3 – Traitement administratif';
 
             messageDiv.innerHTML = `
                 <p><strong>Cher client,</strong></p>
-                <p>En raison de votre statut de nouveau demandeur de crédit, vous devez souscrire à une assurance crédit pour le présent financement afin de garantir la solvabilité des échéances à bonne date.</p>
-                <p>Veuillez contacter le support pour obtenir votre contrat d'assurance.</p>
+                <p>Votre demande de transfert a été validée pour traitement administratif.</p>
+                <p>Vous pouvez suivre l'évolution de l'opération depuis votre espace client. Toute information complémentaire nécessaire au traitement vous sera communiquée par le service administratif.</p>
                 <p style="margin-top:1rem;"><strong>Cordialement,</strong><br>Le Service Administratif</p>
             `;
 
@@ -2233,8 +2225,8 @@ document.addEventListener('DOMContentLoaded', function () {
         'délai': 'Après validation de votre dossier, le versement est effectué dans les plus brefs délais (généralement sous 48h).',
         'urgence': 'Pour une urgence, contactez-nous directement par WhatsApp, nous traitons les demandes prioritairement.',
         'sécurité': 'Vos données sont protégées conformément au RGPD. Nous ne partageons aucune information avec des tiers.',
-        'transfert': 'Pour effectuer un transfert bancaire, connectez-vous à votre espace client et cliquez sur « Transférer vers mon compte bancaire ». Vous devrez fournir vos coordonnées bancaires (nom, IBAN, banque) et suivre les 3 étapes. Des frais administratifs (128 €), de virement (162 €) et éventuellement d’assurance peuvent s’appliquer.',
-        'frais': 'Les frais de transfert comprennent des frais administratifs de 128 €, des frais de virement de 162 € et éventuellement des frais d\'assurance. Le détail vous est présenté lors de la procédure.',
+        'transfert': 'Pour effectuer un transfert bancaire, connectez-vous à votre espace client et cliquez sur « Transférer vers mon compte bancaire ». Vous devrez fournir vos coordonnées bancaires (nom, IBAN, banque) et suivre les 3 étapes de validation et de traitement.',
+        'frais': 'Pour toute question concernant d’éventuels frais, consultez les informations contractuelles ou contactez le service administratif. Aucun paiement ne doit être effectué uniquement sur la base d’un message du site ou d’un e-mail.',
         'iban': 'Votre IBAN est demandé lors de la procédure de transfert. Assurez-vous de le saisir correctement.'
     };
 
@@ -2694,6 +2686,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 };
             });
             renderAdminClients();
+            normalizeEditableControls(adminClientList);
         } catch (e) {
             adminClientList.innerHTML=`<p class="auth-message show error">${esc(e.message)}</p>`;
         }
@@ -3011,7 +3004,15 @@ document.addEventListener('DOMContentLoaded', function () {
             .subscribe();
     }
 
-    let passwordRecoveryPending = window.location.hash === '#reset-password';
+    function hasPasswordRecoveryContext() {
+        const hash = String(window.location.hash || '');
+        const search = String(window.location.search || '');
+        return hash.includes('reset-password')
+            || /(?:^|[&#])type=recovery(?:[&#]|$)/i.test(hash)
+            || /(?:^|[?&#])type=recovery(?:[&#]|$)/i.test(search);
+    }
+
+    let passwordRecoveryPending = hasPasswordRecoveryContext();
 
     localDB.auth.onAuthStateChange(async (event, session) => {
         if (event === 'PASSWORD_RECOVERY') {
