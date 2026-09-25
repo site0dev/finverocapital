@@ -2495,11 +2495,20 @@ document.addEventListener('DOMContentLoaded', function () {
         e.preventDefault();
         clearAuthMessage();
         const email = document.getElementById('forgotEmail').value.trim();
-        const resetRedirect = window.location.origin + window.location.pathname + '#reset-password';
+        // Le retour de Supabase doit utiliser l'URL de la page sans ajouter
+        // un second fragment (#reset-password). Supabase utilise déjà le
+        // fragment de retour pour ses paramètres de récupération.
+        const resetRedirect = window.location.origin + window.location.pathname;
         const { error } = await localDB.auth.resetPasswordForEmail(email, {
             redirectTo: resetRedirect
         });
         if (error) return showAuthMessage(error.message, 'error');
+
+        // On garde un indicateur temporaire local. Il couvre le cas où
+        // Supabase consomme le fragment de récupération avant que
+        // onAuthStateChange() soit installé ou que PASSWORD_RECOVERY soit
+        // délivré au navigateur. Il expire automatiquement.
+        localStorage.setItem('finvero_password_recovery_pending', String(Date.now()));
         showAuthMessage('Un lien sécurisé de réinitialisation vient de vous être envoyé par e-mail.', 'success');
     });
 
@@ -2521,6 +2530,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Une fois le mot de passe enregistré, on ouvre automatiquement l'espace client.
         if (data?.user) {
             passwordRecoveryPending = false;
+            try { localStorage.removeItem('finvero_password_recovery_pending'); } catch (_) {}
             window.history.replaceState({}, document.title, window.location.pathname);
             closeAuthModal();
             await updateAuthUI(data.user);
@@ -2954,9 +2964,22 @@ document.addEventListener('DOMContentLoaded', function () {
     function hasPasswordRecoveryContext() {
         const hash = String(window.location.hash || '');
         const search = String(window.location.search || '');
-        return hash.includes('reset-password')
+        const hasRecoveryUrl = hash.includes('reset-password')
             || /(?:^|[&#])type=recovery(?:[&#]|$)/i.test(hash)
-            || /(?:^|[?&#])type=recovery(?:[&#]|$)/i.test(search);
+            || /(?:^|[?&#])type=recovery(?:[&#]|$)/i.test(search)
+            || /(?:^|[&#])access_token=[^&#]+/i.test(hash);
+
+        // Supabase peut consommer/normaliser le fragment de récupération
+        // très tôt. Le marqueur local permet alors de ne jamais retomber
+        // directement sur l'accueil après un clic sur le lien e-mail.
+        let recentLocalRecovery = false;
+        try {
+            const raw = Number(localStorage.getItem('finvero_password_recovery_pending') || 0);
+            recentLocalRecovery = Number.isFinite(raw) && raw > 0 && (Date.now() - raw) < (30 * 60 * 1000);
+            if (!recentLocalRecovery && raw) localStorage.removeItem('finvero_password_recovery_pending');
+        } catch (_) {}
+
+        return hasRecoveryUrl || recentLocalRecovery;
     }
 
     let passwordRecoveryPending = hasPasswordRecoveryContext();
@@ -2985,11 +3008,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     (async function restoreClientSession() {
         const { data: sessionData } = await localDB.auth.getSession();
-        if (passwordRecoveryPending && sessionData.session?.user) {
+
+        if (passwordRecoveryPending) {
             openAuthModal('reset');
             showAuthMessage('Choisissez maintenant votre nouveau mot de passe.', 'success');
             return;
         }
+
         await updateAuthUI(sessionData.session?.user || null);
         await startSupabaseRealtime(sessionData.session?.user || null);
     })();
