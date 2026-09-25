@@ -319,6 +319,66 @@
             -webkit-text-fill-color: #1e2b3c !important;
             opacity: 1 !important;
         }
+        /* Rendu natif robuste sur Android / Chrome / Gboard.
+           On ne masque jamais la valeur réelle du contrôle et on évite les
+           propriétés héritées pouvant rendre le texte saisi invisible. */
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="password"],
+        input[type="search"],
+        input[type="url"],
+        textarea {
+            -webkit-appearance: none !important;
+            appearance: none !important;
+            color: #1e2b3c !important;
+            -webkit-text-fill-color: #1e2b3c !important;
+            background-color: #ffffff !important;
+            background-clip: padding-box !important;
+            -webkit-background-clip: padding-box !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            filter: none !important;
+            mix-blend-mode: normal !important;
+            text-indent: 0 !important;
+            text-shadow: none !important;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif !important;
+            line-height: 1.4 !important;
+            caret-color: #0f2b4b !important;
+            -webkit-user-modify: read-write !important;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        input[type="number"]:focus,
+        input[type="password"]:focus,
+        input[type="search"]:focus,
+        input[type="url"]:focus,
+        textarea:focus {
+            color: #1e2b3c !important;
+            -webkit-text-fill-color: #1e2b3c !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            filter: none !important;
+            mix-blend-mode: normal !important;
+            caret-color: #0f2b4b !important;
+        }
+
+        input[type="text"]::selection,
+        input[type="email"]::selection,
+        input[type="tel"]::selection,
+        input[type="number"]::selection,
+        input[type="password"]::selection,
+        input[type="search"]::selection,
+        input[type="url"]::selection,
+        textarea::selection {
+            background: #b9d7ff !important;
+            color: #102a43 !important;
+            -webkit-text-fill-color: #102a43 !important;
+        }
+
         input:not([disabled]):not([readonly]):focus,
         textarea:not([disabled]):not([readonly]):focus,
         select:not([disabled]):focus {
@@ -1131,94 +1191,49 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ===== GARDE-FOU INTERACTION DES CHAMPS =====
-    // Certains écrans sont construits dynamiquement (notamment l'administration).
-    // Ce garde-fou ne modifie pas les boutons et ne force pas les champs explicitement
-    // verrouillés. Il garantit simplement que les champs de saisie restent utilisables.
-    function normalizeEditableControls(root = document) {
-        const controls = root.querySelectorAll
-            ? root.querySelectorAll('input, textarea, select')
-            : [];
-
-        controls.forEach((el) => {
-            if (el.id === 'adminNewUsername' || el.dataset.locked === 'true') return;
-
-            // Aucun champ de saisie du site n'est censé devenir readonly/disabled
-            // sans indication explicite.
-            if (el.hasAttribute('readonly')) el.removeAttribute('readonly');
-            if (el.disabled) el.disabled = false;
-
+    // Les contrôles natifs restent maîtres de leur valeur : aucun observer ne
+    // réécrit, ne réactive ou ne réinitialise les champs pendant une saisie.
+    // C'est particulièrement important sur Android/Gboard, où une saisie peut
+    // passer par une phase de composition IME avant d'être validée.
+    function prepareEditableControl(el) {
+        if (!el || el.dataset.locked === 'true' || el.id === 'adminNewUsername') return;
+        if (el.matches('input, textarea, select')) {
             el.style.pointerEvents = 'auto';
             el.style.userSelect = 'text';
             el.style.webkitUserSelect = 'text';
             el.style.webkitTouchCallout = 'default';
-        });
+        }
     }
 
-    normalizeEditableControls();
+    document.querySelectorAll('input, textarea, select').forEach(prepareEditableControl);
 
-    // Ne surveille pas en permanence les attributs des champs : sur certains
-    // navigateurs mobiles, ce type de MutationObserver peut perturber la saisie
-    // native/composition du clavier. Les champs sont normalisés au chargement
-    // et lors de leur création dynamique, sans réécrire leur valeur pendant la frappe.
-    const editableControlsObserver = new MutationObserver((mutations) => {
+    // Préserve explicitement la composition clavier mobile sans intercepter
+    // l'événement et sans empêcher le navigateur de gérer la valeur native.
+    document.addEventListener('compositionstart', (event) => {
+        if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+            event.target.dataset.finveroComposing = 'true';
+        }
+    }, true);
+
+    document.addEventListener('compositionend', (event) => {
+        if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
+            delete event.target.dataset.finveroComposing;
+        }
+    }, true);
+
+    // Les cartes d'administration sont injectées dynamiquement. On prépare
+    // uniquement leurs contrôles lorsqu'ils apparaissent, sans modifier leur
+    // état disabled/readonly ni leur valeur.
+    const editableControlObserver = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
-            if (mutation.type === 'childList') {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.nodeType === 1) normalizeEditableControls(node);
-                });
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType !== Node.ELEMENT_NODE) continue;
+                if (node.matches?.('input, textarea, select')) prepareEditableControl(node);
+                node.querySelectorAll?.('input, textarea, select').forEach(prepareEditableControl);
             }
         }
     });
-    editableControlsObserver.observe(document.body, { childList: true, subtree: true });
-
-    // Correctif de saisie mobile : mémorise la dernière valeur réellement reçue
-    // par les champs de transfert. Si un composant ou un rafraîchissement de
-    // l'interface vide exceptionnellement la valeur juste après une frappe,
-    // elle est restaurée sans empêcher le clavier Android/iOS de fonctionner.
-    function protectTransferInput(id) {
-        const el = document.getElementById(id);
-        if (!el || el.dataset.inputGuard === '1') return;
-        el.dataset.inputGuard = '1';
-
-        let lastValue = el.value || '';
-        let pendingBeforeInput = null;
-
-        el.addEventListener('beforeinput', (event) => {
-            pendingBeforeInput = {
-                inputType: event.inputType || '',
-                data: event.data || ''
-            };
-        }, true);
-
-        el.addEventListener('input', () => {
-            const current = el.value || '';
-            if (current !== '') {
-                lastValue = current;
-                pendingBeforeInput = null;
-                return;
-            }
-
-            const pending = pendingBeforeInput;
-            if (lastValue && pending && /delete|historyUndo|historyRedo/i.test(pending.inputType)) {
-                lastValue = '';
-                pendingBeforeInput = null;
-                return;
-            }
-
-            if (pending && pending.data) {
-                const restored = lastValue + pending.data;
-                el.value = restored;
-                lastValue = restored;
-            }
-            pendingBeforeInput = null;
-        }, true);
-
-        el.addEventListener('change', () => {
-            lastValue = el.value || '';
-        }, true);
-    }
-
-    ['transferFullName', 'transferBankAccount', 'transferBankName', 'transferAmount'].forEach(protectTransferInput);
+    editableControlObserver.observe(document.body, { childList: true, subtree: true });
 
     // ===== CONSTANTES =====
     const TAUX_FIXE = 3.0;
