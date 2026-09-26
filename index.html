@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="" translate="yes">
+<html lang="de">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Finvero Capital : simulation de crédit et demande de financement en ligne pour les utilisateurs en Europe. Service disponible en plusieurs langues." />
+    <meta name="description" content="Finvero Capital : simulation de crédit et demande de financement en ligne pour les utilisateurs en Europe. Service de simulation et de demande de financement." />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#0f2b4b" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
@@ -384,28 +384,6 @@
     "Royaume-Uni",
     "Vatican"
   ],
-  "availableLanguage": [
-    "fr",
-    "en",
-    "es",
-    "pt",
-    "de",
-    "it",
-    "nl",
-    "pl",
-    "ro",
-    "cs",
-    "el",
-    "sv",
-    "da",
-    "fi",
-    "no",
-    "hu",
-    "bg",
-    "sk",
-    "uk",
-    "tr"
-  ],
   "serviceType": "Credit and financing simulation"
 }
     </script>
@@ -422,32 +400,15 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
  .dashboard-grid .dash-card,.admin-application-details>*{min-width:0;}
 }
 
-<style id="finvero-language-style">
+
+<style id="language-switcher-style">
 .language-switcher{display:flex;align-items:center;gap:.4rem;margin-top:.65rem;}
 .language-switcher .language-label{font-size:1.05rem;line-height:1;}
 .language-switcher select{border:1px solid #dfe6ee;border-radius:10px;background:#fff;color:#233d59;font-weight:700;padding:.45rem 1.8rem .45rem .65rem;cursor:pointer;outline:none;}
 .language-switcher select:focus{border-color:#2a7de1;box-shadow:0 0 0 3px rgba(42,125,225,.12);}
 @media(max-width:600px){.language-switcher{margin-top:.5rem;}.language-switcher select{padding:.4rem 1.6rem .4rem .55rem;}}
 </style>
-<script id="finvero-language-bootstrap">
-(function(){
-  try {
-    var cookieMatch=document.cookie.match(/(?:^|; )eh_language=([^;]+)/);
-    var saved=cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
-    if(!saved) saved=localStorage.getItem('eh_language') || '';
-    var raw=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();
-    var browser=raw.indexOf('de')===0?'de':(raw.indexOf('it')===0?'it':(raw.indexOf('fr')===0?'fr':''));
-    var lang=(saved==='de'||saved==='it'||saved==='fr')?saved:browser;
-    if(lang){
-      document.documentElement.lang=lang;
-      window.FINVERO_LANGUAGE=lang;
-    } else {
-      document.documentElement.removeAttribute('lang');
-      window.FINVERO_LANGUAGE='';
-    }
-  } catch(e) {}
-})();
-</script>
+
 </head>
 <body>
 
@@ -461,9 +422,8 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             <div class="language-switcher" aria-label="Choix de la langue">
                 <span class="language-label" aria-hidden="true">🌐</span>
                 <select class="lang" id="lang-btn" aria-label="Langue">
-                    <option value="" disabled>—</option>
-                    <option value="fr">FR</option>
                     <option value="de">DE</option>
+                    <option value="fr">FR</option>
                     <option value="it">IT</option>
                 </select>
             </div>
@@ -1059,16 +1019,8 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                     ...(targetUserId ? { targetUserId } : {}),
                     data: {
                         ...data,
-                        // Langue réellement sélectionnée sur le site, avec repli sur
-                        // la langue du navigateur normalisée (fr/de/it).
-                        language: window.FINVERO_LANGUAGE || (function () {
-                            const raw = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
-                            return raw.startsWith('de') ? 'de' : raw.startsWith('it') ? 'it' : raw.startsWith('fr') ? 'fr' : '';
-                        })(),
-                        browserLanguage: (function () {
-                            const raw = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
-                            return raw.startsWith('de') ? 'de' : raw.startsWith('it') ? 'it' : raw.startsWith('fr') ? 'fr' : '';
-                        })()
+                        language: window.FINVERO_LANGUAGE || 'de',
+                        browserLanguage: window.FINVERO_LANGUAGE || 'de'
                     }
                 })
             });
@@ -2226,7 +2178,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 <div class="doc-item">
                     <div>
                         <div class="doc-name">${docLabels[doc.document_type] || doc.document_type}</div>
-                        <div class="doc-meta">${doc.original_name} — ${new Date(doc.created_at).toLocaleString(window.FINVERO_LOCALE || navigator.language)}</div>
+                        <div class="doc-meta">${doc.original_name} — ${new Date(doc.created_at).toLocaleString('fr-FR')}</div>
                     </div>
                     ${doc.signedUrl ? `<a href="${doc.signedUrl}" target="_blank" class="doc-link" download>📥 Télécharger</a>` : `<span class="doc-meta">⚠️ ${doc.error || 'Lien indisponible'}</span>`}
                 </div>
@@ -2504,11 +2456,11 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         }
 
         document.getElementById('dashTracking').textContent = app.tracking_number || '—';
-        document.getElementById('dashAmount').textContent = `${Number(app.amount_requested).toLocaleString(window.FINVERO_LOCALE || navigator.language)} €`;
+        document.getElementById('dashAmount').textContent = `${Number(app.amount_requested).toLocaleString('fr-FR')} €`;
         document.getElementById('dashDuration').textContent = `${app.duration_months} mois`;
-        document.getElementById('dashMonthly').textContent = `${Number(app.monthly_payment).toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
+        document.getElementById('dashMonthly').textContent = `${Number(app.monthly_payment).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
         document.getElementById('dashStatus').textContent = statusLabelsFr[app.status] || app.status || 'Demande envoyée';
-        document.getElementById('dashUpdated').textContent = app.updated_at ? new Date(app.updated_at).toLocaleString(window.FINVERO_LOCALE || navigator.language) : '—';
+        document.getElementById('dashUpdated').textContent = app.updated_at ? new Date(app.updated_at).toLocaleString('fr-FR') : '—';
 
         const currentIndex = Math.max(0, statusOrder.indexOf(app.status));
         document.getElementById('statusTrack').innerHTML = statusOrder.map((s, i) => {
@@ -2900,19 +2852,19 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                     <div>
                         <div class="admin-client-name">${esc(c.full_name||'Client sans nom')}</div>
                         <div class="admin-client-meta">${esc(c.email||'')} · ${esc(c.phone||'')}</div>
-                        <div class="admin-client-meta">Dossier : ${esc(c.tracking_number||'Aucun dossier')} · ${c.amount_requested!=null?Number(c.amount_requested).toLocaleString(window.FINVERO_LOCALE || navigator.language)+' €':'—'} · ${c.duration_months!=null?esc(c.duration_months)+' mois':'—'}</div>
+                        <div class="admin-client-meta">Dossier : ${esc(c.tracking_number||'Aucun dossier')} · ${c.amount_requested!=null?Number(c.amount_requested).toLocaleString('fr-FR')+' €':'—'} · ${c.duration_months!=null?esc(c.duration_months)+' mois':'—'}</div>
                         <div class="admin-client-meta">Statut du dossier : <strong>${esc(statusLabelsFr[c.application_status]||c.application_status||'Aucun dossier')}</strong></div>
                         <div class="admin-application-details">
-                            <span><b>Taux :</b> ${c.annual_rate!=null?Number(c.annual_rate).toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})+' %':'—'}</span>
-                            <span><b>Mensualité :</b> ${c.monthly_payment!=null?Number(c.monthly_payment).toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})+' €':'—'}</span>
-                            <span><b>Total :</b> ${c.total_repayment!=null?Number(c.total_repayment).toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})+' €':'—'}</span>
-                            <span><b>Intérêts :</b> ${c.total_interest!=null?Number(c.total_interest).toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})+' €':'—'}</span>
+                            <span><b>Taux :</b> ${c.annual_rate!=null?Number(c.annual_rate).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' %':'—'}</span>
+                            <span><b>Mensualité :</b> ${c.monthly_payment!=null?Number(c.monthly_payment).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €':'—'}</span>
+                            <span><b>Total :</b> ${c.total_repayment!=null?Number(c.total_repayment).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €':'—'}</span>
+                            <span><b>Intérêts :</b> ${c.total_interest!=null?Number(c.total_interest).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €':'—'}</span>
                             <span><b>Pays :</b> ${esc(c.country||'—')}</span>
-                            <span><b>MAJ :</b> ${c.application_updated_at?new Date(c.application_updated_at).toLocaleString(window.FINVERO_LOCALE || navigator.language):'—'}</span>
+                            <span><b>MAJ :</b> ${c.application_updated_at?new Date(c.application_updated_at).toLocaleString('fr-FR'):'—'}</span>
                         </div>
                         <span class="admin-status-badge ${esc(c.account_status)}">${esc(adminAccountStatusLabels[c.account_status]||c.account_status||'Actif')}</span>
                     </div>
-                    <div class="admin-client-balance">${Number(c.balance||0).toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})} ${c.currency==='EUR'?'€':esc(c.currency||'EUR')}</div>
+                    <div class="admin-client-balance">${Number(c.balance||0).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} ${c.currency==='EUR'?'€':esc(c.currency||'EUR')}</div>
                 </div>
                 <div class="admin-client-actions">
                     <input class="admin-amount" type="number" min="0.01" step="0.01" placeholder="Montant à créditer">
@@ -2956,12 +2908,12 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             const card=btn.closest('.admin-client-card'), userId=card.dataset.userId, amount=Number(card.querySelector('.admin-amount').value);
             const note=card.querySelector('.admin-note').value.trim()||null, reference=card.querySelector('.admin-reference').value.trim()||null;
             if(!amount||amount<=0)return alert('Entrez un montant supérieur à zéro.');
-            if(!confirm(`Créditer ce compte de ${amount.toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})} € ?`))return;
+            if(!confirm(`Créditer ce compte de ${amount.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} € ?`))return;
             btn.disabled=true;
             try {
                 const {data,error}=await localDB.rpc('admin_adjust_balance',{target_user_id:userId,adjustment_amount:amount,adjustment_type:'credit',transaction_note:note?`${note}${reference?' | Réf. '+reference:''}`:reference});
                 if(error)throw error;
-                alert(`Compte crédité. Nouveau solde : ${Number(data).toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})} €`);
+                alert(`Compte crédité. Nouveau solde : ${Number(data).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`);
                 await loadAdminClients();
             } catch(e){alert(e.message);} finally{btn.disabled=false;}
         }));
@@ -2970,12 +2922,12 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             const card=btn.closest('.admin-client-card'), userId=card.dataset.userId, amount=Number(card.querySelector('.admin-debit-amount').value);
             const note=card.querySelector('.admin-note').value.trim()||null, reference=card.querySelector('.admin-reference').value.trim()||null;
             if(!amount||amount<=0)return alert('Entrez un montant supérieur à zéro.');
-            if(!confirm(`Débiter ce compte de ${amount.toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})} € ?`))return;
+            if(!confirm(`Débiter ce compte de ${amount.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} € ?`))return;
             btn.disabled=true;
             try {
                 const {data,error}=await localDB.rpc('admin_adjust_balance',{target_user_id:userId,adjustment_amount:amount,adjustment_type:'debit',transaction_note:note?`${note}${reference?' | Réf. '+reference:''}`:reference});
                 if(error)throw error;
-                alert(`Compte débité. Nouveau solde : ${Number(data).toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})} €`);
+                alert(`Compte débité. Nouveau solde : ${Number(data).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`);
                 await loadAdminClients();
             } catch(e){alert(e.message);} finally{btn.disabled=false;}
         }));
@@ -3112,7 +3064,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             try {
                 const {data:transactions,error}=await localDB.from('wallet_transactions').select('amount,balance_after,transaction_type,note,reference,created_at').eq('user_id',card.dataset.userId).order('created_at',{ascending:false}).limit(50);
                 if(error)throw error;
-                target.innerHTML=transactions?.length?`<table class="admin-mini-table"><thead><tr><th>Date</th><th>Mouvement</th><th>Solde après</th><th>Motif</th></tr></thead><tbody>${transactions.map(t=>`<tr><td>${new Date(t.created_at).toLocaleString(window.FINVERO_LOCALE || navigator.language)}</td><td>${Number(t.amount)>=0?'+':''}${Number(t.amount).toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})} €</td><td>${Number(t.balance_after).toLocaleString(window.FINVERO_LOCALE || navigator.language,{minimumFractionDigits:2,maximumFractionDigits:2})} €</td><td>${esc(t.note||t.reference||'')}</td></tr>`).join('')}</tbody></table>`:'Aucun mouvement.';
+                target.innerHTML=transactions?.length?`<table class="admin-mini-table"><thead><tr><th>Date</th><th>Mouvement</th><th>Solde après</th><th>Motif</th></tr></thead><tbody>${transactions.map(t=>`<tr><td>${new Date(t.created_at).toLocaleString('fr-FR')}</td><td>${Number(t.amount)>=0?'+':''}${Number(t.amount).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €</td><td>${Number(t.balance_after).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €</td><td>${esc(t.note||t.reference||'')}</td></tr>`).join('')}</tbody></table>`:'Aucun mouvement.';
             } catch(e){target.textContent=e.message;}
         }));
     }
@@ -3330,29 +3282,9 @@ const it = {
 };
 translations.de=de; translations.it=it;
 
-// Textes générés dynamiquement (alertes, statuts, placeholders, résultats et messages).
-// Ils utilisent la même langue que le sélecteur au moment où ils sont affichés.
-const runtimeTranslations = {
-  de: {
-    'Aucun pays trouvé':'Kein Land gefunden','Veuillez entrer une adresse e-mail valide.':'Bitte geben Sie eine gültige E-Mail-Adresse ein.','Veuillez entrer un numéro de téléphone.':'Bitte geben Sie eine Telefonnummer ein.','Enregistrement en cours...':'Speicherung läuft...','Impossible de transmettre votre demande pour le moment.':'Ihre Anfrage kann derzeit nicht übermittelt werden.','Connectez-vous ou créez un compte avant d’envoyer votre demande.':'Melden Sie sich an oder erstellen Sie ein Konto, bevor Sie Ihre Anfrage senden.','Veuillez télécharger les trois documents demandés.':'Bitte laden Sie die drei angeforderten Dokumente hoch.','Envoi sécurisé de votre dossier...':'Sichere Übermittlung Ihrer Unterlagen...','📨 Demande enregistrée avec succès !':'📨 Anfrage erfolgreich gespeichert!','Impossible d’enregistrer la demande pour le moment. Vérifiez votre connexion puis réessayez.':'Die Anfrage konnte derzeit nicht gespeichert werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.','Connectez-vous pour demander un transfert.':'Melden Sie sich an, um eine Überweisung anzufordern.','Veuillez renseigner les coordonnées de votre compte bancaire.':'Bitte geben Sie Ihre Bankverbindung ein.','Veuillez remplir tous les champs correctement.':'Bitte füllen Sie alle Felder korrekt aus.','Impossible de charger le transfert bancaire.':'Die Banküberweisung konnte nicht geladen werden.','Impossible d’enregistrer les coordonnées du transfert.':'Die Überweisungsdaten konnten nicht gespeichert werden.','Chargement...':'Wird geladen...','Aucun document trouvé pour ce client.':'Keine Dokumente für diesen Kunden gefunden.','Aucun mouvement sur le compte.':'Keine Kontobewegungen.','Aucun document enregistré.':'Keine Dokumente gespeichert.','Aucun dossier':'Keine Vorgänge','Aucun dossier.':'Kein Vorgang.','Aucun client trouvé.':'Keine Kunden gefunden.','Rechercher un client, e-mail ou téléphone...':'Kunde, E-Mail oder Telefon suchen...','Nouveau mot de passe (laisser vide pour conserver l’actuel)':'Neues Passwort (leer lassen, um das aktuelle beizubehalten)','Montant à créditer':'Gutzuschreibender Betrag','Montant à débiter':'Abzubuchender Betrag','Commentaire sur le dossier (facultatif)':'Kommentar zum Vorgang (optional)','Motif du changement de statut':'Grund für die Statusänderung','Nouveau statut du dossier':'Neuer Vorgangsstatus','Documents transmis':'Übermittelte Dokumente','Statut de l’opération':'Status des Vorgangs','Informations disponibles dans le dossier de transfert.':'Informationen sind im Überweisungsvorgang verfügbar.','Demande envoyée':'Anfrage gesendet','Documents en vérification':'Dokumente werden geprüft','Dossier en cours d’étude':'Vorgang wird geprüft','Dossier accepté':'Vorgang genehmigt','Client sans nom':'Kunde ohne Namen','Dossier :':'Vorgang:','Aucun dossier':'Kein Vorgang','Statut du dossier :':'Status des Vorgangs:','Taux :':'Zinssatz:','Mensualité :':'Monatsrate:','Total :':'Gesamt:','Intérêts :':'Zinsen:','MAJ :':'Aktualisiert:','Date':'Datum','Mouvement':'Bewegung','Solde après':'Kontostand danach','Motif':'Grund','Entrez un montant supérieur à zéro.':'Geben Sie einen Betrag größer als null ein.','Ce client n’a aucun dossier de crédit à vérifier.':'Dieser Kunde hat keinen Kreditantrag zu prüfen.','Ce client n’a aucun dossier de crédit à mettre à jour.':'Dieser Kunde hat keinen Kreditantrag zu aktualisieren.','Session administrateur invalide.':'Ungültige Administratorsitzung.','Accès administrateur non autorisé.':'Administratorzugriff nicht autorisiert.','Paramètres enregistrés avec succès.':'Einstellungen erfolgreich gespeichert.','Le nouveau mot de passe doit contenir au moins 10 caractères.':'Das neue Passwort muss mindestens 10 Zeichen enthalten.','Veuillez patienter…':'Bitte warten…','Veuillez renseigner votre e-mail et votre mot de passe.':'Bitte geben Sie Ihre E-Mail-Adresse und Ihr Passwort ein.','Connexion…':'Anmeldung…','Connexion impossible.':'Anmeldung nicht möglich.','Veuillez saisir une adresse e-mail valide.':'Bitte geben Sie eine gültige E-Mail-Adresse ein.','Veuillez saisir votre nom complet.':'Bitte geben Sie Ihren vollständigen Namen ein.','Veuillez saisir votre numéro de téléphone.':'Bitte geben Sie Ihre Telefonnummer ein.','Le mot de passe doit contenir au moins 8 caractères.':'Das Passwort muss mindestens 8 Zeichen enthalten.','Compte créé. Consultez votre e-mail et confirmez votre adresse avant de vous connecter.':'Konto erstellt. Prüfen Sie Ihre E-Mail und bestätigen Sie Ihre Adresse, bevor Sie sich anmelden.','Création du compte impossible.':'Konto konnte nicht erstellt werden.','Envoi…':'Senden…','Impossible d’envoyer le lien de réinitialisation.':'Der Link zum Zurücksetzen konnte nicht gesendet werden.','Enregistrement…':'Speichern…','Impossible de modifier le mot de passe.':'Das Passwort konnte nicht geändert werden.','Choisissez maintenant votre nouveau mot de passe.':'Wählen Sie jetzt Ihr neues Passwort.','Le lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien.':'Der Link zum Zurücksetzen ist ungültig oder abgelaufen. Fordern Sie einen neuen Link an.','Erreur lors de la transmission de la demande :':'Fehler bei der Übermittlung der Anfrage:','Erreur lors de la transmission de la demande :':'Fehler bei der Übermittlung der Anfrage:','Votre demande est enregistrée dans votre espace.':'Ihre Anfrage wurde in Ihrem Bereich gespeichert.','Étape 1':'Schritt 1','Étape 2':'Schritt 2','Étape 3':'Schritt 3','Mois':'Monate','Document fiscal':'Steuerdokument','Carte d’identité':'Ausweisdokument','Code d’identification fiscale':'Steueridentifikationsnummer','Document de revenu mensuel':'Monatlicher Einkommensnachweis'
-  },
-  it: {
-    'Aucun pays trouvé':'Nessun paese trovato','Veuillez entrer une adresse e-mail valide.':'Inserisci un indirizzo e-mail valido.','Veuillez entrer un numéro de téléphone.':'Inserisci un numero di telefono.','Enregistrement en cours...':'Salvataggio in corso...','Impossible de transmettre votre demande pour le moment.':'Impossibile trasmettere la richiesta al momento.','Connectez-vous ou créez un compte avant d’envoyer votre demande.':'Accedi o crea un account prima di inviare la richiesta.','Veuillez télécharger les trois documents demandés.':'Carica i tre documenti richiesti.','Envoi sécurisé de votre dossier...':'Invio sicuro della tua pratica...','📨 Demande enregistrée avec succès !':'📨 Richiesta registrata con successo!','Impossible d’enregistrer la demande pour le moment. Vérifiez votre connexion puis réessayez.':'Impossibile registrare la richiesta al momento. Controlla la connessione e riprova.','Connectez-vous pour demander un transfert.':'Accedi per richiedere un trasferimento.','Veuillez renseigner les coordonnées de votre compte bancaire.':'Inserisci le coordinate del tuo conto bancario.','Veuillez remplir tous les champs correctement.':'Compila correttamente tutti i campi.','Impossible de charger le transfert bancaire.':'Impossibile caricare il trasferimento bancario.','Impossible d’enregistrer les coordonnées du transfert.':'Impossibile salvare i dati del trasferimento.','Chargement...':'Caricamento...','Aucun document trouvé pour ce client.':'Nessun documento trovato per questo cliente.','Aucun mouvement sur le compte.':'Nessun movimento sul conto.','Aucun document enregistré.':'Nessun documento registrato.','Aucun dossier':'Nessuna pratica','Aucun dossier.':'Nessuna pratica.','Aucun client trouvé.':'Nessun cliente trovato.','Rechercher un client, e-mail ou téléphone...':'Cerca cliente, e-mail o telefono...','Nouveau mot de passe (laisser vide pour conserver l’actuel)':'Nuova password (lascia vuoto per mantenere quella attuale)','Montant à créditer':'Importo da accreditare','Montant à débiter':'Importo da addebitare','Commentaire sur le dossier (facultatif)':'Commento sulla pratica (facoltativo)','Motif du changement de statut':'Motivo della modifica dello stato','Nouveau statut du dossier':'Nuovo stato della pratica','Documents transmis':'Documenti trasmessi','Statut de l’opération':'Stato dell’operazione','Informations disponibles dans le dossier de transfert.':'Informazioni disponibili nella pratica di trasferimento.','Demande envoyée':'Richiesta inviata','Documents en vérification':'Documenti in verifica','Dossier en cours d’étude':'Pratica in valutazione','Dossier accepté':'Pratica approvata','Client sans nom':'Cliente senza nome','Dossier :':'Pratica:','Statut du dossier :':'Stato della pratica:','Taux :':'Tasso:','Mensualité :':'Rata:','Total :':'Totale:','Intérêts :':'Interessi:','MAJ :':'Aggiornato:','Date':'Data','Mouvement':'Movimento','Solde après':'Saldo dopo','Motif':'Motivo','Entrez un montant supérieur à zéro.':'Inserisci un importo maggiore di zero.','Ce client n’a aucun dossier de crédit à vérifier.':'Questo cliente non ha pratiche di credito da verificare.','Ce client n’a aucun dossier de crédit à mettre à jour.':'Questo cliente non ha pratiche di credito da aggiornare.','Session administrateur invalide.':'Sessione amministratore non valida.','Accès administrateur non autorisé.':'Accesso amministratore non autorizzato.','Paramètres enregistrés avec succès.':'Impostazioni salvate con successo.','Le nouveau mot de passe doit contenir au moins 10 caractères.':'La nuova password deve contenere almeno 10 caratteri.','Veuillez patienter…':'Attendere…','Veuillez renseigner votre e-mail et votre mot de passe.':'Inserisci e-mail e password.','Connexion…':'Accesso…','Connexion impossible.':'Impossibile accedere.','Veuillez saisir une adresse e-mail valide.':'Inserisci un indirizzo e-mail valido.','Veuillez saisir votre nom complet.':'Inserisci il tuo nome completo.','Veuillez saisir votre numéro de téléphone.':'Inserisci il tuo numero di telefono.','Le mot de passe doit contenir au moins 8 caractères.':'La password deve contenere almeno 8 caratteri.','Compte créé. Consultez votre e-mail et confirmez votre adresse avant de vous connecter.':'Account creato. Controlla la tua e-mail e conferma l’indirizzo prima di accedere.','Création du compte impossible.':'Impossibile creare l’account.','Envoi…':'Invio…','Impossible d’envoyer le lien de réinitialisation.':'Impossibile inviare il link di reimpostazione.','Enregistrement…':'Salvataggio…','Impossible de modifier le mot de passe.':'Impossibile modificare la password.','Choisissez maintenant votre nouveau mot de passe.':'Scegli ora la nuova password.','Le lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien.':'Il link di reimpostazione non è valido o è scaduto. Richiedi un nuovo link.','Erreur lors de la transmission de la demande :':'Errore durante l’invio della richiesta:','Votre demande est enregistrée dans votre espace.':'La tua richiesta è salvata nella tua area.','Étape 1':'Passaggio 1','Étape 2':'Passaggio 2','Étape 3':'Passaggio 3','Mois':'Mesi','Document fiscal':'Documento fiscale','Carte d’identité':'Documento d’identità','Code d’identification fiscale':'Codice fiscale','Document de revenu mensuel':'Documento del reddito mensile'
-  }
-}
-Object.assign(translations.de, runtimeTranslations.de)
-Object.assign(translations.it, runtimeTranslations.it)
-
-const getBrowserLanguage = () => {
-  const raw = ((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
-  if(raw.startsWith('de')) return 'de';
-  if(raw.startsWith('it')) return 'it';
-  if(raw.startsWith('fr')) return 'fr';
-  return '';
-};
-
-// Aucune langue n'est imposée par le code : le navigateur est utilisé lors
-// de la première visite, puis le choix manuel de l'utilisateur devient prioritaire.
+// L'allemand est la langue par défaut du site.
+// Un choix manuel FR/DE/IT enregistré est toujours prioritaire et persiste
+// jusqu'à ce que le visiteur sélectionne une autre langue.
 let currentLanguage = (function(){
   let saved='';
   try {
@@ -3360,9 +3292,9 @@ let currentLanguage = (function(){
     saved=m ? decodeURIComponent(m[1]) : '';
     if(!saved) saved=localStorage.getItem('eh_language') || '';
   } catch(_) {}
-  if(['fr','de','it'].includes(saved)) return saved;
-  return getBrowserLanguage();
+  return ['fr','de','it'].includes(saved) ? saved : 'de';
 })();
+if(!translations[currentLanguage]) currentLanguage='de';
 
 // Le moteur précédent retraduisait les textes déjà traduits. On conserve donc
 // systématiquement leur valeur source afin que DE <-> IT <-> FR soit réversible.
@@ -3392,39 +3324,23 @@ function rememberSources(root=document.body){
 }
 
 function translateSource(text){
-  const t=currentLanguage && translations[currentLanguage];
+  const t=translations[currentLanguage]||translations.de;
   let out=String(text ?? '');
-  if(!t) return out;
   const keys=Object.keys(t).filter(Boolean).sort((a,b)=>b.length-a.length);
   for(const key of keys){ if(out.includes(key)) out=out.split(key).join(t[key]); }
   return out;
 }
 
-function persistLanguage(lang){
-  try { localStorage.setItem('eh_language',lang); } catch(_) {}
-  try { document.cookie='eh_language='+encodeURIComponent(lang)+'; Max-Age=31536000; Path=/; SameSite=Lax'; } catch(_) {}
-}
-
-function applyLanguage(lang, options={}){
-  if(!translations[lang]) return false;
-
-  currentLanguage=lang;
-
-  // Un choix manuel est toujours persistant et prioritaire sur la langue du navigateur.
-  if(options.persist !== false){
-    persistLanguage(currentLanguage);
-  }
-
+function applyLanguage(lang){
+  currentLanguage=translations[lang]?lang:'de';
+  try { localStorage.setItem('eh_language',currentLanguage); } catch(_) {}
+  try { document.cookie='eh_language='+encodeURIComponent(currentLanguage)+'; Max-Age=31536000; Path=/; SameSite=Lax'; } catch(_) {}
   document.documentElement.lang=currentLanguage;
   window.FINVERO_LANGUAGE=currentLanguage;
-  window.FINVERO_LOCALE={fr:'fr-FR',de:'de-DE',it:'it-IT'}[currentLanguage];
   window.currentLanguage=currentLanguage;
-
-  const btn=document.getElementById('lang-btn');
-  if(btn) btn.value=currentLanguage;
-
+  const btn=document.getElementById('lang-btn'); if(btn) btn.value=currentLanguage;
   const root=document.body;
-  if(!root) return true;
+  if(!root) return;
 
   // Important : ne jamais reprendre le texte actuellement affiché comme source.
   rememberSources(root);
@@ -3454,25 +3370,12 @@ function applyLanguage(lang, options={}){
   });
 }
 
-window.FINVERO_LANGUAGE=currentLanguage || '';
+window.FINVERO_LANGUAGE=currentLanguage;
 window.FINVERO_TRANSLATIONS=translations;
 window.FINVERO_SET_LANGUAGE=applyLanguage;
-window.currentLanguage=currentLanguage || '';
+window.currentLanguage=currentLanguage;
 window.applyLanguage=applyLanguage;
-window.FINVERO_TRANSLATE=translateSource;
-if(!window.__FINVERO_DIALOG_I18N){
-  const nativeAlert=window.alert.bind(window);
-  const nativeConfirm=window.confirm.bind(window);
-  window.alert=(message)=>nativeAlert(translateSource(String(message ?? '')));
-  window.confirm=(message)=>nativeConfirm(translateSource(String(message ?? '')));
-  window.__FINVERO_DIALOG_I18N=true;
-}
-document.getElementById('lang-btn')?.addEventListener('change',e=>{
-  const lang=e.target.value;
-  if(translations[lang]){
-    applyLanguage(lang, {persist:true});
-  }
-});
+document.getElementById('lang-btn')?.addEventListener('change',e=>applyLanguage(e.target.value));
 
 let translating=false;
 const observer=new MutationObserver((mutations)=>{
@@ -3497,7 +3400,8 @@ const observer=new MutationObserver((mutations)=>{
 });
 if(document.body) observer.observe(document.body,{childList:true,subtree:true});
 
-if(currentLanguage) applyLanguage(currentLanguage, {persist:false});
+applyLanguage(currentLanguage);
+
 
 </body>
 </html>
