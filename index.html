@@ -3319,6 +3319,8 @@ function applyLanguage(lang){
  currentLanguage=translations[lang]?lang:"fr";
  localStorage.setItem("eh_language",currentLanguage);
  document.documentElement.lang=currentLanguage;
+ window.FINVERO_LANGUAGE=currentLanguage;
+ window.currentLanguage=currentLanguage;
  const langBtn=document.getElementById("lang-btn");
  if(langBtn)langBtn.value=currentLanguage;
  document.querySelectorAll("[data-i18n]").forEach(el=>{
@@ -3339,7 +3341,8 @@ window.currentLanguage=currentLanguage;
 window.applyLanguage=applyLanguage;
 
 document.getElementById("lang-btn")?.addEventListener("change",e=>applyLanguage(e.target.value));
-applyLanguage("fr");
+// Restaurer la langue mémorisée : ne jamais forcer le français au rechargement.
+applyLanguage(currentLanguage);
 
 </script>
 
