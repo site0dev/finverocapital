@@ -461,7 +461,7 @@
     <section class="account-panel" id="accountPanel">
         <div class="account-panel-header">
             <div>
-                <h3>👤 Espace client</h3>
+                <h3None> Espace client</h3>
                 <div class="account-status" id="accountStatus">Connexion...</div>
             </div>
             <button type="button" class="account-btn" id="logoutBtn">Se déconnecter</button>
@@ -474,7 +474,7 @@
             <img src="1.jpg" alt="Financement" loading="eager" fetchpriority="high" decoding="async" />
         </div>
         <div class="hero-text">
-            <h1>Avez-vous besoin <br><span>d'un financement</span> ?</h1>
+            <h1None>Avez-vous besoin <br><span>d'un financement</span> ?</h1>
             <p>Simulez votre crédit en quelques secondes, sans engagement.</p>
             <span class="badge">✅ Réponse sous 24h</span>
         </div>
@@ -542,7 +542,7 @@
         <div class="admin-shell">
         <div class="account-panel-header">
             <div>
-                <h2 style="color:#0f2b4b;margin:0;">🛠️ Administration</h2>
+                <h2 style="color:#0f2b4b;margin:0;"> Administration</h2>
                 <p class="account-status">Gestion sécurisée des comptes clients, soldes et statuts.</p>
             </div>
             <div class="account-actions">
@@ -564,7 +564,7 @@
         <div class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle">
             <div class="account-panel-header">
                 <div>
-                    <h2 id="adminLoginTitle">🔐 Accès administration</h2>
+                    <h2 id="adminLoginTitle"> Accès administration</h2>
                     <p class="account-status">Entrez vos identifiants administrateur.</p>
                 </div>
                 <button type="button" class="account-btn" id="adminLoginClose">✕</button>
@@ -589,7 +589,7 @@
         <div class="admin-modal-card" role="dialog" aria-modal="true" aria-labelledby="adminSettingsTitle">
             <div class="account-panel-header">
                 <div>
-                    <h2 id="adminSettingsTitle">⚙️ Paramètres d'administration</h2>
+                    <h2 id="adminSettingsTitle"> Paramètres d'administration</h2>
                     <p class="account-status">Modifiez le nom d'utilisateur et, si nécessaire, le mot de passe.</p>
                 </div>
                 <button type="button" class="account-btn" id="adminSettingsClose">✕</button>
@@ -615,7 +615,7 @@
 
     <!-- FORMULAIRE -->
     <section class="form-section">
-        <h2>Remplissez le formulaire suivant</h2>
+        <h2None>Remplissez le formulaire suivant</h2>
         <p class="sub">Ajustez le curseur pour le montant, la durée est libre.</p>
 
         <form id="creditForm" novalidate>
@@ -691,7 +691,7 @@
 
             <!-- TÉLÉCHARGEMENT -->
             <div class="documents-upload">
-                <h4>📎 Téléchargez vos documents</h4>
+                <h4None>📎 Téléchargez vos documents</h4>
                 <div class="doc-upload-group">
                     <label for="docId">Carte d'identité</label>
                     <input type="file" id="docId" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
@@ -720,7 +720,7 @@
 
     <!-- 3 ÉTAPES -->
     <div class="steps-after-form">
-        <h3>📋 Demande de crédit entièrement en ligne</h3>
+        <h3None> Demande de crédit entièrement en ligne</h3>
         <div class="steps-grid">
             <div class="step-item">
                 <strong>Étape 1</strong>
@@ -756,7 +756,7 @@
     <!-- POURQUOI CHOISIR FINVERO -->
     <section class="trust-section">
         <div class="trust-content">
-            <h2>Pourquoi choisir Finvero Capital ?</h2>
+            <h2None>Pourquoi choisir Finvero Capital ?</h2>
             <div class="trust-item">
                 <strong>🔒 Fiable</strong>
                 <p>Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.</p>
@@ -879,7 +879,7 @@
 <!-- MODALE NUMÉRO DE SUIVI -->
 <div class="tracking-modal" id="trackingModal">
     <div class="tracking-card">
-        <h2>📋 Numéro de suivi</h2>
+        <h2None> Numéro de suivi</h2>
         <p class="info-text">Conservez ce numéro pour le suivi de votre demande :</p>
         <div class="tracking-number" id="trackingNumberDisplay">---</div>
         <p class="info-text" style="font-size:0.85rem;">Cliquez sur le bouton ci-dessous pour le copier.</p>
@@ -890,7 +890,7 @@
 <!-- MODALE TRANSFERT BANCAIRE (3 ÉTAPES) -->
 <div class="transfer-modal" id="transferModal">
     <div class="transfer-card">
-        <h2>💸 Demande de transfert bancaire</h2>
+        <h2None>💸 Demande de transfert bancaire</h2>
         <div id="transferMessage" class="info-text" style="font-weight:500; color:#0f2b4b; line-height:1.6;"></div>
 
         <div id="transferStep1Fields">
@@ -1139,6 +1139,129 @@ document.addEventListener('DOMContentLoaded', function () {
                 error: error?.message || String(error)
             };
         }
+    }
+
+
+    // ===== PROTECTION ANTI-DOUBLON DES NOTIFICATIONS DE TRANSFERT =====
+    // Une notification de transfert n'est considérée comme envoyée qu'après
+    // une réponse { success: true } de la Edge Function.
+    // Ainsi, précédent/suivant ne renvoie pas le même e-mail.
+    const transferNotificationLocks = new Set();
+
+    function getTransferNotificationStorageKey(eventKey, sessionId) {
+        const safeSessionId = String(sessionId || 'no-session').trim();
+        return `finvero_transfer_notification_v1:${safeSessionId}:${eventKey}`;
+    }
+
+    async function sendTransferNotificationOnce(
+        eventKey,
+        type,
+        data = {},
+        targetUserId = null
+    ) {
+        const sessionId =
+            data.transferId ||
+            data.transfer_id ||
+            data.operationReference ||
+            transferSessionId ||
+            targetUserId ||
+            'no-session';
+
+        const storageKey = getTransferNotificationStorageKey(
+            eventKey,
+            sessionId
+        );
+
+        try {
+            if (localStorage.getItem(storageKey) === 'sent') {
+                console.info(
+                    `Notification ${eventKey} déjà envoyée pour le transfert ${sessionId}.`
+                );
+                return {
+                    success: true,
+                    skipped: true,
+                    alreadySent: true
+                };
+            }
+        } catch (e) {
+            console.warn('Lecture anti-doublon localStorage impossible:', e);
+        }
+
+        // Empêche deux appels simultanés dans le même onglet.
+        if (transferNotificationLocks.has(storageKey)) {
+            console.info(
+                `Notification ${eventKey} déjà en cours d'envoi.`
+            );
+            return {
+                success: true,
+                skipped: true,
+                inProgress: true
+            };
+        }
+
+        transferNotificationLocks.add(storageKey);
+
+        try {
+            const result = await sendFinveroNotification(
+                type,
+                data,
+                targetUserId
+            );
+
+            // On mémorise uniquement après succès réel de la Edge Function.
+            // En cas d'échec, un nouvel essai reste possible.
+            if (result?.success === true) {
+                try {
+                    localStorage.setItem(storageKey, 'sent');
+                } catch (e) {
+                    console.warn('Écriture anti-doublon localStorage impossible:', e);
+                }
+            }
+
+            return result;
+        } finally {
+            transferNotificationLocks.delete(storageKey);
+        }
+    }
+
+    function buildTransferNotificationData(extra = {}) {
+        const trackingNumber =
+            document.getElementById('dashTracking')?.textContent?.trim() ||
+            transferSessionId ||
+            '';
+
+        const fraisAdmin =
+            extra.fraisAdmin !== undefined ? extra.fraisAdmin : 128.00;
+
+        const fraisVirement =
+            extra.fraisVirement !== undefined ? extra.fraisVirement : 162.00;
+
+        const totalFrais =
+            extra.totalFrais !== undefined
+                ? extra.totalFrais
+                : Number(fraisAdmin) + Number(fraisVirement);
+
+        return {
+            ...extra,
+            trackingNumber,
+            transferId:
+                extra.transferId ||
+                transferSessionId ||
+                '',
+            operationReference:
+                extra.operationReference ||
+                transferSessionId ||
+                '',
+            fraisAdmin,
+            fraisVirement,
+            totalFrais,
+            assurance:
+                extra.assurance ||
+                'Informations disponibles dans le dossier de transfert.',
+            note:
+                extra.note ||
+                'Notification automatique liée au transfert bancaire.'
+        };
     }
 
     // ===== SLIDERS =====
@@ -1732,33 +1855,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const { data: targetProfile } = await localDB
                 .from('profiles')
-                .select('full_name, currency, email')
+                .select('full_name, currency')
                 .eq('id', userId)
                 .maybeSingle();
 
-            const fraisAdmin = 128.00;
-            const fraisVirement = 162.00;
-            const totalFrais = fraisAdmin + fraisVirement;
-
-            await sendFinveroNotification('transfer_status', {
+            const transferNotificationData = buildTransferNotificationData({
                 clientName: targetProfile?.full_name || session.full_name || 'Client',
                 fullName: session.full_name || targetProfile?.full_name || 'Client',
-                email: targetProfile?.email || '',
-                status: 'processing',
-                statusLabel: 'Transfert validé par l’administration',
-                amount: Number(session.amount) || 0,
-                currency: targetProfile?.currency || 'EUR',
-                operationReference: session.id,
-                transferId: session.id,
-                trackingNumber: document.getElementById('dashTracking')?.textContent?.trim() || session.id,
                 iban: session.iban || '',
                 bankName: session.bank_name || '',
-                fraisAdmin,
-                fraisVirement,
-                totalFrais,
-                assurance: 'Voir les conditions applicables présentées dans l’espace client.',
+                amount: Number(session.amount) || 0,
+                currency: targetProfile?.currency || 'EUR',
+                status: 'processing',
+                statusLabel: 'Transfert validé par l’administration',
+                transferId: session.id,
+                operationReference: session.id,
                 note: 'Transfert bancaire validé par l’administration.'
-            }, userId);
+            });
+
+            await sendTransferNotificationOnce(
+                'step-2-admin-validation',
+                'transfer_status',
+                transferNotificationData,
+                userId
+            );
         } catch (e) {
             console.error('Erreur déblocage admin:', e);
             throw e;
@@ -1863,9 +1983,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const bankName = transferData.bankName || document.getElementById('transferBankName').value.trim() || '—';
             const amount = Number(transferData.amount) || parseFloat(document.getElementById('transferAmount').value) || 0;
             const tracking = document.getElementById('dashTracking')?.textContent || '—';
-            const fraisAdmin = 128.00;
-            const fraisVirement = 162.00;
-            const totalFrais = fraisAdmin + fraisVirement;
 
             messageDiv.innerHTML = `
                 <h3 style="color:#0f2b4b; margin-bottom:0.5rem;">Récapitulatif de l'opération</h3>
@@ -1875,9 +1992,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     <p><strong>IBAN :</strong> ${iban}</p>
                     <p><strong>Banque :</strong> ${bankName}</p>
                     <p><strong>Montant demandé :</strong> ${amount.toFixed(2)} €</p>
-                    <p><strong>Frais administratifs :</strong> ${fraisAdmin.toFixed(2)} €</p>
-                    <p><strong>Frais de virement :</strong> ${fraisVirement.toFixed(2)} €</p>
-                    <p><strong>Total des frais :</strong> ${totalFrais.toFixed(2)} €</p>
                     <hr style="border:1px dashed #dce3ed; margin:0.7rem 0;">
                     <p style="font-weight:600; color:#0f2b4b;">Statut de l'opération</p>
                     <p>Votre demande a bien été enregistrée. Elle reste en attente de validation administrative avant le passage à l'étape suivante.</p>
@@ -1927,33 +2041,31 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!userData.user) return;
                     const { data: transferProfile } = await localDB
                         .from('profiles')
-                        .select('full_name, currency, email')
+                        .select('full_name, currency')
                         .eq('id', userData.user.id)
                         .maybeSingle();
 
-                    const fraisAdmin = 128.00;
-                    const fraisVirement = 162.00;
-                    const totalFrais = fraisAdmin + fraisVirement;
-
-                    await sendFinveroNotification('transfer_status', {
+                    const transferNotificationData = buildTransferNotificationData({
                         clientName: transferProfile?.full_name || transferData.fullName || 'Client',
                         fullName: transferData.fullName || transferProfile?.full_name || 'Client',
-                        email: transferProfile?.email || userData.user.email || '',
+                        email: userData.user.email || '',
+                        iban: transferData.iban || '',
+                        bankName: transferData.bankName || '',
                         status: 'processing',
                         statusLabel: 'Étape 3/3 — Dossier de transfert en cours',
                         amount: Number(transferData.amount) || 0,
                         currency: transferProfile?.currency || 'EUR',
-                        operationReference: transferSessionId || userData.user.id,
                         transferId: transferSessionId || userData.user.id,
-                        trackingNumber: document.getElementById('dashTracking')?.textContent?.trim() || transferSessionId || userData.user.id,
-                        iban: transferData.iban || '',
-                        bankName: transferData.bankName || '',
-                        fraisAdmin,
-                        fraisVirement,
-                        totalFrais,
-                        assurance: 'Voir les conditions applicables présentées dans l’espace client.',
+                        operationReference: transferSessionId || userData.user.id,
                         note: 'Votre demande de transfert est passée à l’étape suivante. Consultez votre espace client pour les informations détaillées.'
                     });
+
+                    await sendTransferNotificationOnce(
+                        'step-3',
+                        'transfer_status',
+                        transferNotificationData,
+                        userData.user.id
+                    );
                 }).catch(e => console.error('Notification étape 3 non envoyée:', e));
 
                 // Persistance en arrière-plan, sans bloquer le changement d'écran.
@@ -2063,33 +2175,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const { data: transferProfile } = await localDB
                 .from('profiles')
-                .select('full_name, currency, email')
+                .select('full_name, currency')
                 .eq('id', userData.user.id)
                 .maybeSingle();
 
-            const fraisAdmin = 128.00;
-            const fraisVirement = 162.00;
-            const totalFrais = fraisAdmin + fraisVirement;
-
-            await sendFinveroNotification('transfer_created', {
+            const transferNotificationData = buildTransferNotificationData({
                 clientName: transferProfile?.full_name || userData.user.user_metadata?.full_name || fullName || 'Client',
-                fullName: fullName || transferProfile?.full_name || 'Client',
-                email: transferProfile?.email || userData.user.email || '',
+                fullName: fullName,
+                email: userData.user.email || '',
                 amount,
                 currency: transferProfile?.currency || 'EUR',
                 bankName,
                 iban,
-                operationReference: transferSessionId || userData.user.id,
-                transferId: transferSessionId || userData.user.id,
-                trackingNumber: document.getElementById('dashTracking')?.textContent?.trim() || transferSessionId || userData.user.id,
                 status: 'pending',
-                statusLabel: 'Demande enregistrée — en attente de validation administrative',
-                fraisAdmin,
-                fraisVirement,
-                totalFrais,
-                assurance: 'Voir les conditions applicables présentées dans l’espace client.',
+                statusLabel: 'Demande de transfert enregistrée',
+                transferId: transferSessionId || userData.user.id,
+                operationReference: transferSessionId || userData.user.id,
                 note: 'Demande de transfert bancaire enregistrée.'
             });
+
+            await sendTransferNotificationOnce(
+                'step-2-created',
+                'transfer_created',
+                transferNotificationData,
+                userData.user.id
+            );
 
             transferStep = 1;
             adminUnlocked = false;
@@ -2179,10 +2289,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const legalContent = document.getElementById('legalContent');
 
     const legalContents = {
-        'mentions': { title: 'Mentions légales — Finvero Capital', html: `<p>Le site Finvero Capital est destiné à présenter les services, fonctionnalités et informations proposés par Finvero Capital.</p><h3>Propriété intellectuelle</h3><p>L'ensemble des contenus présents sur ce site, notamment les textes, images, éléments graphiques, logos, icônes et éléments de conception, est protégé par les dispositions applicables en matière de propriété intellectuelle.</p><p>Toute reproduction, modification, distribution ou utilisation, totale ou partielle, sans autorisation préalable est interdite.</p><h3>Données personnelles</h3><p>Les informations éventuellement communiquées par l'utilisateur via les moyens de contact présents sur le site sont utilisées uniquement dans le cadre du traitement de sa demande.</p><p>Finvero Capital s'engage à traiter les données personnelles conformément aux dispositions applicables en matière de protection des données.</p><h3>Responsabilité</h3><p>Finvero Capital s'efforce de maintenir des informations exactes et à jour sur son site. Toutefois, aucune garantie ne peut être apportée quant à l'exhaustivité ou à l'absence d'erreurs dans les informations publiées.</p><p>L'utilisateur reconnaît utiliser le site sous sa propre responsabilité.</p><h3>Liens externes</h3><p>Le site peut contenir des liens vers des services ou sites tiers. Finvero Capital ne peut être tenu responsable du contenu, du fonctionnement ou des pratiques de ces services externes.</p><h3>Contact</h3><p>Pour toute question concernant le site, ses contenus ou les services proposés, l'utilisateur peut contacter Finvero Capital via les moyens de contact disponibles sur le site.</p>` },
-        'privacy': { title: 'Politique de confidentialité', html: `<p>La présente Politique de confidentialité explique comment Finvero Capital traite les données personnelles des utilisateurs qui consultent le site, utilisent le simulateur ou transmettent une demande de financement.</p><h3>1. Données collectées</h3><p>Selon les fonctionnalités utilisées, Finvero Capital peut être amené à collecter les informations suivantes :</p><ul><li>adresse e-mail ;</li><li>numéro de téléphone ;</li><li>informations relatives à la demande de financement ;</li><li>montant souhaité ;</li><li>durée souhaitée ;</li><li>informations nécessaires au traitement de la demande ;</li><li>documents justificatifs transmis volontairement par l’utilisateur, notamment les documents d’identité, justificatifs fiscaux ou justificatifs de revenus.</li></ul><p>L’utilisateur est informé des informations demandées au moment où celles-ci sont saisies ou transmises.</p><h3>2. Utilisation des données</h3><p>Les informations communiquées sont utilisées principalement pour :</p><ul><li>effectuer une simulation de financement ;</li><li>permettre le traitement d’une demande ;</li><li>vérifier les informations communiquées ;</li><li>permettre le suivi d’une demande ;</li><li>contacter l’utilisateur concernant sa demande ;</li><li>répondre aux demandes d’assistance ou d’information ;</li><li>assurer le fonctionnement et la sécurité du site.</li></ul><p>Les données sont utilisées uniquement dans le cadre des finalités prévues par les services proposés par Finvero Capital.</p><h3>3. Documents justificatifs</h3><p>Lorsqu’un utilisateur transmet des documents justificatifs, ceux-ci peuvent contenir des informations personnelles ou financières.</p><p>Ces documents sont destinés au traitement de la demande concernée et doivent correspondre aux justificatifs demandés.</p><p>L’utilisateur doit s’assurer que les documents transmis sont exacts, lisibles et qu’ils correspondent à sa propre situation.</p><h3>4. Confidentialité des informations</h3><p>Finvero Capital accorde une importance particulière à la confidentialité des informations communiquées par ses utilisateurs.</p><p>Les données personnelles ne sont pas destinées à être vendues ou louées à des tiers à des fins commerciales.</p><p>L’accès aux informations peut être limité aux personnes ou services qui en ont besoin dans le cadre du traitement de la demande ou du fonctionnement du service.</p><h3>5. Transmission à des services tiers</h3><p>Certaines fonctionnalités du site peuvent nécessiter l’utilisation de services tiers, notamment pour communiquer avec Finvero Capital ou transmettre une demande.</p><p>Lorsque l’utilisateur utilise un service tiers, les informations échangées peuvent également être soumises aux règles de confidentialité et aux conditions d’utilisation de ce service.</p><h3>6. Communications</h3><p>Les coordonnées communiquées par l’utilisateur peuvent être utilisées pour le contacter concernant :</p><ul><li>sa demande de financement ;</li><li>une simulation ;</li><li>le suivi de son dossier ;</li><li>une demande d’information ;</li><li>une assistance liée aux services Finvero Capital.</li></ul><p>Finvero Capital ne doit pas être utilisé pour transmettre des informations personnelles inutiles à une demande.</p><h3>7. Sécurité des données</h3><p>Finvero Capital met en œuvre des mesures raisonnables destinées à protéger les informations personnelles contre l'accès non autorisé, la perte, l'altération ou la divulgation.</p><p>Toutefois, aucune transmission de données sur Internet ne peut être considérée comme totalement exempte de risques.</p><p>L’utilisateur doit également prendre les précautions nécessaires pour protéger ses propres appareils, comptes et moyens de communication.</p><h3>8. Conservation des données</h3><p>Les données personnelles sont conservées pendant une durée proportionnée à leur utilisation et aux besoins liés au traitement des demandes.</p><p>Lorsque les informations ne sont plus nécessaires, elles peuvent être supprimées, anonymisées ou archivées lorsque cela est nécessaire.</p><h3>9. Droits des utilisateurs</h3><p>Selon la réglementation applicable, l’utilisateur peut disposer de différents droits concernant ses données personnelles, notamment :</p><ul><li>demander l’accès à ses données ;</li><li>demander la correction d’informations inexactes ;</li><li>demander la suppression de certaines données ;</li><li>demander la limitation de certains traitements ;</li><li>s’opposer à certains traitements lorsque cela est applicable ;</li><li>retirer son consentement lorsqu’un traitement repose sur celui-ci.</li></ul><p>Toute demande concernant les données personnelles peut être adressée à Finvero Capital par les moyens de contact proposés sur le site.</p><h3>10. Exactitude des informations</h3><p>L’utilisateur est responsable des informations qu’il communique.</p><p>Il doit fournir des informations exactes, complètes et à jour et ne doit pas transmettre de documents appartenant à une autre personne sans autorisation.</p><h3>11. Liens et services externes</h3><p>Le site peut contenir des liens ou permettre l’utilisation de services externes.</p><p>Finvero Capital ne peut pas être tenu responsable des pratiques de confidentialité appliquées directement par ces services externes.</p><p>Il est recommandé à l’utilisateur de consulter leurs propres politiques de confidentialité lorsqu’il les utilise.</p><h3>12. Modification de la politique</h3><p>Finvero Capital peut faire évoluer la présente Politique de confidentialité afin de tenir compte de l’évolution de ses services, de ses fonctionnalités ou des exigences applicables.</p><p>La version publiée sur le site constitue la version applicable lors de l’utilisation des services.</p>` },
-        'terms': { title: 'Conditions d’utilisation', html: `<p>Bienvenue sur Finvero Capital.</p><p>Les présentes Conditions d’utilisation définissent les règles applicables à l’utilisation du site Finvero Capital, de son simulateur de financement et des fonctionnalités permettant de transmettre une demande de financement.</p><p>En accédant au site ou en utilisant ses fonctionnalités, l’utilisateur accepte les présentes Conditions d’utilisation.</p><h3>1. Objet du site</h3><p>Finvero Capital propose notamment des outils permettant à l’utilisateur :</p><ul><li>d’effectuer une simulation de financement ;</li><li>d’obtenir une estimation indicative des conditions d’un financement ;</li><li>de préparer une demande de financement ;</li><li>de transmettre les informations nécessaires au traitement de cette demande ;</li><li>de contacter le service concerné.</li></ul><p>Les simulations et informations présentées sur le site sont fournies à titre indicatif.</p><h3>2. Utilisation du simulateur</h3><p>Le simulateur permet d’obtenir une estimation à partir des informations renseignées par l’utilisateur.</p><p>Les résultats affichés peuvent notamment dépendre :</p><ul><li>du montant demandé ;</li><li>de la durée choisie ;</li><li>du taux applicable ;</li><li>des informations renseignées lors de la simulation.</li></ul><p>Le résultat d’une simulation ne constitue pas une offre ferme de financement et ne garantit pas l’acceptation d’une demande.</p><p>Les conditions définitives d’un éventuel financement peuvent dépendre de l’étude complète du dossier et des informations ou justificatifs fournis.</p><h3>3. Demande de financement</h3><p>L’utilisateur peut décider de poursuivre une simulation en transmettant une demande.</p><p>Il doit alors fournir des informations exactes, complètes et sincères.</p><p>La transmission d’une demande ne signifie pas que le financement est automatiquement accepté.</p><p>Toute demande peut faire l’objet d’une vérification et d’une étude avant toute décision.</p><h3>4. Documents justificatifs</h3><p>Lorsque des justificatifs sont demandés, l’utilisateur s’engage à transmettre des documents authentiques et correspondant à sa situation.</p><p>Il ne doit notamment pas :</p><ul><li>fournir un document falsifié ;</li><li>modifier volontairement un justificatif ;</li><li>transmettre le document d’une autre personne sans autorisation ;</li><li>communiquer des informations volontairement fausses.</li></ul><p>Toute information inexacte peut entraîner l’arrêt ou le refus du traitement de la demande.</p><h3>5. Informations communiquées</h3><p>L’utilisateur est responsable des informations qu’il saisit sur le site.</p><p>Il doit vérifier les informations avant de transmettre sa demande.</p><p>Finvero Capital ne peut pas être tenu responsable des erreurs résultant d’informations incorrectes, incomplètes ou volontairement erronées fournies par l’utilisateur.</p><h3>6. Utilisation autorisée</h3><p>Le site doit être utilisé de manière légale, honnête et conforme aux présentes Conditions d’utilisation.</p><p>Il est notamment interdit d’utiliser le site pour :</p><ul><li>frauder ;</li><li>usurper l’identité d’une autre personne ;</li><li>transmettre de faux documents ;</li><li>tenter d'obtenir un financement au moyen d'informations trompeuses ;</li><li>perturber ou compromettre le fonctionnement du site ;</li><li>tenter d'accéder sans autorisation à des données ou fonctionnalités ;</li><li>utiliser le site à des fins contraires à la loi.</li></ul><h3>7. Disponibilité du service</h3><p>Finvero Capital s’efforce de maintenir le site et ses fonctionnalités accessibles dans des conditions normales.</p><p>Toutefois, l’accès au site peut être temporairement interrompu notamment en raison de maintenance, de difficultés techniques, de problèmes de réseau ou de circonstances indépendantes du fonctionnement normal du service.</p><h3>8. Services et liens externes</h3><p>Certaines fonctionnalités peuvent permettre à l’utilisateur d’utiliser ou d’accéder à des services externes, notamment des services de messagerie ou de communication.</p><p>L’utilisation de ces services peut être soumise à leurs propres conditions d’utilisation.</p><p>Finvero Capital ne contrôle pas nécessairement le fonctionnement ou les conditions applicables aux services externes.</p><h3>9. Propriété du contenu</h3><p>Les éléments présents sur le site, notamment les textes, éléments graphiques, logos, interfaces, présentations et contenus, sont destinés à l’utilisation normale du site.</p><p>Toute reproduction, modification, extraction ou réutilisation non autorisée d’éléments du site peut être interdite.</p><h3>10. Responsabilité de l’utilisateur</h3><p>L’utilisateur est responsable de l’utilisation qu’il fait du site et des informations qu’il communique.</p><p>Il doit notamment conserver la confidentialité de ses informations personnelles et prendre les mesures nécessaires pour protéger son appareil et ses moyens de communication.</p><h3>11. Limitation de responsabilité</h3><p>Les informations et résultats proposés sur Finvero Capital sont destinés à fournir une aide à la simulation et à la préparation d’une demande.</p><p>Ils ne constituent pas une garantie d’obtention d’un financement.</p><p>Finvero Capital ne garantit pas qu’une demande aboutira à une acceptation ni que les conditions estimées lors d’une simulation seront nécessairement celles d’un éventuel financement définitif.</p><h3>12. Protection des données</h3><p>L’utilisation du site peut entraîner le traitement de données personnelles.</p><p>Les modalités relatives à la collecte, à l’utilisation, à la conservation et à la protection de ces données sont présentées dans la Politique de confidentialité de Finvero Capital.</p><h3>13. Évolution des services</h3><p>Finvero Capital peut faire évoluer, modifier, suspendre ou supprimer certaines fonctionnalités du site lorsque cela est nécessaire au fonctionnement ou à l’évolution du service.</p><p>Les présentes Conditions d’utilisation peuvent également être adaptées afin de tenir compte de l’évolution des services proposés.</p><h3>14. Acceptation des conditions</h3><p>En utilisant le site Finvero Capital, l’utilisateur reconnaît avoir pris connaissance des présentes Conditions d’utilisation et accepter de les respecter.</p><p>Si l’utilisateur n’accepte pas ces conditions, il doit cesser d’utiliser les services concernés.</p>` },
-        'credit': { title: 'Informations crédit', html: `<p>Cette rubrique présente les principales informations relatives aux simulations et demandes de financement proposées par Finvero Capital.</p><h3>1. Simulation de financement</h3><p>Finvero Capital permet à l’utilisateur d’effectuer une simulation à partir du montant et de la durée de financement souhaités.</p><p>La simulation permet notamment d’obtenir une estimation :</p><ul><li>du montant des mensualités ;</li><li>du coût estimatif du financement ;</li><li>du montant total à rembourser ;</li><li>des intérêts estimatifs.</li></ul><p>Les résultats affichés sont indicatifs et peuvent varier selon les conditions applicables au dossier.</p><h3>2. Montant du financement</h3><p>Le montant pouvant être demandé dépend des conditions proposées par le service et de l’étude de la demande.</p><p>Le montant indiqué lors de la simulation correspond au montant souhaité par l’utilisateur et ne constitue pas une confirmation automatique de l’octroi du financement.</p><h3>3. Durée de remboursement</h3><p>L’utilisateur peut sélectionner la durée de remboursement proposée dans le simulateur.</p><p>Une durée plus longue peut modifier le montant des mensualités ainsi que le coût total du financement.</p><p>La durée définitive peut être déterminée lors de l’étude de la demande.</p><h3>4. Taux et coût du crédit</h3><p>Le taux affiché lors de la simulation est utilisé pour établir une estimation du coût du financement.</p><p>Le coût total peut notamment dépendre du montant financé, de la durée de remboursement et des conditions applicables au dossier.</p><p>Les résultats du simulateur doivent donc être considérés comme des estimations et non comme des conditions contractuelles définitives.</p><h3>5. Mensualités</h3><p>La mensualité affichée correspond à une estimation du montant à rembourser périodiquement selon les paramètres renseignés dans le simulateur.</p><p>Toute modification du montant, de la durée ou des conditions du financement peut entraîner une modification de la mensualité.</p><h3>6. Demande de financement</h3><p>Après une simulation, l’utilisateur peut choisir de transmettre une demande de financement.</p><p>Cette demande peut nécessiter des informations personnelles ainsi que certains documents justificatifs afin de permettre l’étude du dossier.</p><p>La transmission d’une demande ne garantit pas son acceptation.</p><h3>7. Étude du dossier</h3><p>Une demande peut être examinée sur la base des informations et justificatifs communiqués par l’utilisateur.</p><p>Des informations complémentaires peuvent être demandées lorsque cela est nécessaire à l’étude du dossier.</p><p>Une décision définitive peut dépendre de critères et de vérifications qui ne sont pas déterminés uniquement par le résultat du simulateur.</p><h3>8. Remboursement</h3><p>Lorsqu’un financement est accordé, les modalités de remboursement applicables sont communiquées dans les conditions du financement concerné.</p><p>L’utilisateur doit respecter les échéances et modalités qui lui sont communiquées.</p><p>En cas de difficulté concernant le remboursement, il est recommandé de contacter rapidement le service concerné.</p><h3>9. Informations fournies par l’utilisateur</h3><p>Les résultats d’une simulation dépendent des informations saisies par l’utilisateur.</p><p>Une erreur dans le montant, la durée ou toute autre information peut entraîner un résultat incorrect.</p><p>L’utilisateur doit donc vérifier les informations renseignées avant de poursuivre sa demande.</p><h3>10. Caractère indicatif</h3><p>Les informations présentées dans cette rubrique et les résultats du simulateur ont une vocation informative.</p><p>Ils ne constituent pas une promesse d’octroi, une offre ferme ou une garantie de financement.</p><p>Les conditions définitives applicables à un financement sont celles communiquées après l’étude du dossier et, le cas échéant, celles prévues dans les documents contractuels correspondants.</p><h3>11. Comprendre son financement</h3><p>Avant de s’engager, l’utilisateur est invité à prendre connaissance de l’ensemble des informations relatives au financement proposé, notamment :</p><ul><li>le montant financé ;</li><li>la durée ;</li><li>le montant des échéances ;</li><li>le coût total ;</li><li>les intérêts ;</li><li>les éventuels frais applicables ;</li><li>les modalités de remboursement.</li></ul><p>L’utilisateur doit s’assurer que le financement envisagé correspond à ses capacités de remboursement.</p>` }
+        'mentions': { title: 'Mentions légales — Finvero Capital', html: `<p>Le site Finvero Capital est destiné à présenter les services, fonctionnalités et informations proposés par Finvero Capital.</p><h3None>Propriété intellectuelle</h3><p>L'ensemble des contenus présents sur ce site, notamment les textes, images, éléments graphiques, logos, icônes et éléments de conception, est protégé par les dispositions applicables en matière de propriété intellectuelle.</p><p>Toute reproduction, modification, distribution ou utilisation, totale ou partielle, sans autorisation préalable est interdite.</p><h3None>Données personnelles</h3><p>Les informations éventuellement communiquées par l'utilisateur via les moyens de contact présents sur le site sont utilisées uniquement dans le cadre du traitement de sa demande.</p><p>Finvero Capital s'engage à traiter les données personnelles conformément aux dispositions applicables en matière de protection des données.</p><h3None>Responsabilité</h3><p>Finvero Capital s'efforce de maintenir des informations exactes et à jour sur son site. Toutefois, aucune garantie ne peut être apportée quant à l'exhaustivité ou à l'absence d'erreurs dans les informations publiées.</p><p>L'utilisateur reconnaît utiliser le site sous sa propre responsabilité.</p><h3None>Liens externes</h3><p>Le site peut contenir des liens vers des services ou sites tiers. Finvero Capital ne peut être tenu responsable du contenu, du fonctionnement ou des pratiques de ces services externes.</p><h3None>Contact</h3><p>Pour toute question concernant le site, ses contenus ou les services proposés, l'utilisateur peut contacter Finvero Capital via les moyens de contact disponibles sur le site.</p>` },
+        'privacy': { title: 'Politique de confidentialité', html: `<p>La présente Politique de confidentialité explique comment Finvero Capital traite les données personnelles des utilisateurs qui consultent le site, utilisent le simulateur ou transmettent une demande de financement.</p><h3None>1. Données collectées</h3><p>Selon les fonctionnalités utilisées, Finvero Capital peut être amené à collecter les informations suivantes :</p><ul><li>adresse e-mail ;</li><li>numéro de téléphone ;</li><li>informations relatives à la demande de financement ;</li><li>montant souhaité ;</li><li>durée souhaitée ;</li><li>informations nécessaires au traitement de la demande ;</li><li>documents justificatifs transmis volontairement par l’utilisateur, notamment les documents d’identité, justificatifs fiscaux ou justificatifs de revenus.</li></ul><p>L’utilisateur est informé des informations demandées au moment où celles-ci sont saisies ou transmises.</p><h3None>2. Utilisation des données</h3><p>Les informations communiquées sont utilisées principalement pour :</p><ul><li>effectuer une simulation de financement ;</li><li>permettre le traitement d’une demande ;</li><li>vérifier les informations communiquées ;</li><li>permettre le suivi d’une demande ;</li><li>contacter l’utilisateur concernant sa demande ;</li><li>répondre aux demandes d’assistance ou d’information ;</li><li>assurer le fonctionnement et la sécurité du site.</li></ul><p>Les données sont utilisées uniquement dans le cadre des finalités prévues par les services proposés par Finvero Capital.</p><h3None>3. Documents justificatifs</h3><p>Lorsqu’un utilisateur transmet des documents justificatifs, ceux-ci peuvent contenir des informations personnelles ou financières.</p><p>Ces documents sont destinés au traitement de la demande concernée et doivent correspondre aux justificatifs demandés.</p><p>L’utilisateur doit s’assurer que les documents transmis sont exacts, lisibles et qu’ils correspondent à sa propre situation.</p><h3None>4. Confidentialité des informations</h3><p>Finvero Capital accorde une importance particulière à la confidentialité des informations communiquées par ses utilisateurs.</p><p>Les données personnelles ne sont pas destinées à être vendues ou louées à des tiers à des fins commerciales.</p><p>L’accès aux informations peut être limité aux personnes ou services qui en ont besoin dans le cadre du traitement de la demande ou du fonctionnement du service.</p><h3None>5. Transmission à des services tiers</h3><p>Certaines fonctionnalités du site peuvent nécessiter l’utilisation de services tiers, notamment pour communiquer avec Finvero Capital ou transmettre une demande.</p><p>Lorsque l’utilisateur utilise un service tiers, les informations échangées peuvent également être soumises aux règles de confidentialité et aux conditions d’utilisation de ce service.</p><h3None>6. Communications</h3><p>Les coordonnées communiquées par l’utilisateur peuvent être utilisées pour le contacter concernant :</p><ul><li>sa demande de financement ;</li><li>une simulation ;</li><li>le suivi de son dossier ;</li><li>une demande d’information ;</li><li>une assistance liée aux services Finvero Capital.</li></ul><p>Finvero Capital ne doit pas être utilisé pour transmettre des informations personnelles inutiles à une demande.</p><h3None>7. Sécurité des données</h3><p>Finvero Capital met en œuvre des mesures raisonnables destinées à protéger les informations personnelles contre l'accès non autorisé, la perte, l'altération ou la divulgation.</p><p>Toutefois, aucune transmission de données sur Internet ne peut être considérée comme totalement exempte de risques.</p><p>L’utilisateur doit également prendre les précautions nécessaires pour protéger ses propres appareils, comptes et moyens de communication.</p><h3None>8. Conservation des données</h3><p>Les données personnelles sont conservées pendant une durée proportionnée à leur utilisation et aux besoins liés au traitement des demandes.</p><p>Lorsque les informations ne sont plus nécessaires, elles peuvent être supprimées, anonymisées ou archivées lorsque cela est nécessaire.</p><h3None>9. Droits des utilisateurs</h3><p>Selon la réglementation applicable, l’utilisateur peut disposer de différents droits concernant ses données personnelles, notamment :</p><ul><li>demander l’accès à ses données ;</li><li>demander la correction d’informations inexactes ;</li><li>demander la suppression de certaines données ;</li><li>demander la limitation de certains traitements ;</li><li>s’opposer à certains traitements lorsque cela est applicable ;</li><li>retirer son consentement lorsqu’un traitement repose sur celui-ci.</li></ul><p>Toute demande concernant les données personnelles peut être adressée à Finvero Capital par les moyens de contact proposés sur le site.</p><h3None>10. Exactitude des informations</h3><p>L’utilisateur est responsable des informations qu’il communique.</p><p>Il doit fournir des informations exactes, complètes et à jour et ne doit pas transmettre de documents appartenant à une autre personne sans autorisation.</p><h3None>11. Liens et services externes</h3><p>Le site peut contenir des liens ou permettre l’utilisation de services externes.</p><p>Finvero Capital ne peut pas être tenu responsable des pratiques de confidentialité appliquées directement par ces services externes.</p><p>Il est recommandé à l’utilisateur de consulter leurs propres politiques de confidentialité lorsqu’il les utilise.</p><h3None>12. Modification de la politique</h3><p>Finvero Capital peut faire évoluer la présente Politique de confidentialité afin de tenir compte de l’évolution de ses services, de ses fonctionnalités ou des exigences applicables.</p><p>La version publiée sur le site constitue la version applicable lors de l’utilisation des services.</p>` },
+        'terms': { title: 'Conditions d’utilisation', html: `<p>Bienvenue sur Finvero Capital.</p><p>Les présentes Conditions d’utilisation définissent les règles applicables à l’utilisation du site Finvero Capital, de son simulateur de financement et des fonctionnalités permettant de transmettre une demande de financement.</p><p>En accédant au site ou en utilisant ses fonctionnalités, l’utilisateur accepte les présentes Conditions d’utilisation.</p><h3None>1. Objet du site</h3><p>Finvero Capital propose notamment des outils permettant à l’utilisateur :</p><ul><li>d’effectuer une simulation de financement ;</li><li>d’obtenir une estimation indicative des conditions d’un financement ;</li><li>de préparer une demande de financement ;</li><li>de transmettre les informations nécessaires au traitement de cette demande ;</li><li>de contacter le service concerné.</li></ul><p>Les simulations et informations présentées sur le site sont fournies à titre indicatif.</p><h3None>2. Utilisation du simulateur</h3><p>Le simulateur permet d’obtenir une estimation à partir des informations renseignées par l’utilisateur.</p><p>Les résultats affichés peuvent notamment dépendre :</p><ul><li>du montant demandé ;</li><li>de la durée choisie ;</li><li>du taux applicable ;</li><li>des informations renseignées lors de la simulation.</li></ul><p>Le résultat d’une simulation ne constitue pas une offre ferme de financement et ne garantit pas l’acceptation d’une demande.</p><p>Les conditions définitives d’un éventuel financement peuvent dépendre de l’étude complète du dossier et des informations ou justificatifs fournis.</p><h3None>3. Demande de financement</h3><p>L’utilisateur peut décider de poursuivre une simulation en transmettant une demande.</p><p>Il doit alors fournir des informations exactes, complètes et sincères.</p><p>La transmission d’une demande ne signifie pas que le financement est automatiquement accepté.</p><p>Toute demande peut faire l’objet d’une vérification et d’une étude avant toute décision.</p><h3None>4. Documents justificatifs</h3><p>Lorsque des justificatifs sont demandés, l’utilisateur s’engage à transmettre des documents authentiques et correspondant à sa situation.</p><p>Il ne doit notamment pas :</p><ul><li>fournir un document falsifié ;</li><li>modifier volontairement un justificatif ;</li><li>transmettre le document d’une autre personne sans autorisation ;</li><li>communiquer des informations volontairement fausses.</li></ul><p>Toute information inexacte peut entraîner l’arrêt ou le refus du traitement de la demande.</p><h3None>5. Informations communiquées</h3><p>L’utilisateur est responsable des informations qu’il saisit sur le site.</p><p>Il doit vérifier les informations avant de transmettre sa demande.</p><p>Finvero Capital ne peut pas être tenu responsable des erreurs résultant d’informations incorrectes, incomplètes ou volontairement erronées fournies par l’utilisateur.</p><h3None>6. Utilisation autorisée</h3><p>Le site doit être utilisé de manière légale, honnête et conforme aux présentes Conditions d’utilisation.</p><p>Il est notamment interdit d’utiliser le site pour :</p><ul><li>frauder ;</li><li>usurper l’identité d’une autre personne ;</li><li>transmettre de faux documents ;</li><li>tenter d'obtenir un financement au moyen d'informations trompeuses ;</li><li>perturber ou compromettre le fonctionnement du site ;</li><li>tenter d'accéder sans autorisation à des données ou fonctionnalités ;</li><li>utiliser le site à des fins contraires à la loi.</li></ul><h3None>7. Disponibilité du service</h3><p>Finvero Capital s’efforce de maintenir le site et ses fonctionnalités accessibles dans des conditions normales.</p><p>Toutefois, l’accès au site peut être temporairement interrompu notamment en raison de maintenance, de difficultés techniques, de problèmes de réseau ou de circonstances indépendantes du fonctionnement normal du service.</p><h3None>8. Services et liens externes</h3><p>Certaines fonctionnalités peuvent permettre à l’utilisateur d’utiliser ou d’accéder à des services externes, notamment des services de messagerie ou de communication.</p><p>L’utilisation de ces services peut être soumise à leurs propres conditions d’utilisation.</p><p>Finvero Capital ne contrôle pas nécessairement le fonctionnement ou les conditions applicables aux services externes.</p><h3None>9. Propriété du contenu</h3><p>Les éléments présents sur le site, notamment les textes, éléments graphiques, logos, interfaces, présentations et contenus, sont destinés à l’utilisation normale du site.</p><p>Toute reproduction, modification, extraction ou réutilisation non autorisée d’éléments du site peut être interdite.</p><h3None>10. Responsabilité de l’utilisateur</h3><p>L’utilisateur est responsable de l’utilisation qu’il fait du site et des informations qu’il communique.</p><p>Il doit notamment conserver la confidentialité de ses informations personnelles et prendre les mesures nécessaires pour protéger son appareil et ses moyens de communication.</p><h3None>11. Limitation de responsabilité</h3><p>Les informations et résultats proposés sur Finvero Capital sont destinés à fournir une aide à la simulation et à la préparation d’une demande.</p><p>Ils ne constituent pas une garantie d’obtention d’un financement.</p><p>Finvero Capital ne garantit pas qu’une demande aboutira à une acceptation ni que les conditions estimées lors d’une simulation seront nécessairement celles d’un éventuel financement définitif.</p><h3None>12. Protection des données</h3><p>L’utilisation du site peut entraîner le traitement de données personnelles.</p><p>Les modalités relatives à la collecte, à l’utilisation, à la conservation et à la protection de ces données sont présentées dans la Politique de confidentialité de Finvero Capital.</p><h3None>13. Évolution des services</h3><p>Finvero Capital peut faire évoluer, modifier, suspendre ou supprimer certaines fonctionnalités du site lorsque cela est nécessaire au fonctionnement ou à l’évolution du service.</p><p>Les présentes Conditions d’utilisation peuvent également être adaptées afin de tenir compte de l’évolution des services proposés.</p><h3None>14. Acceptation des conditions</h3><p>En utilisant le site Finvero Capital, l’utilisateur reconnaît avoir pris connaissance des présentes Conditions d’utilisation et accepter de les respecter.</p><p>Si l’utilisateur n’accepte pas ces conditions, il doit cesser d’utiliser les services concernés.</p>` },
+        'credit': { title: 'Informations crédit', html: `<p>Cette rubrique présente les principales informations relatives aux simulations et demandes de financement proposées par Finvero Capital.</p><h3None>1. Simulation de financement</h3><p>Finvero Capital permet à l’utilisateur d’effectuer une simulation à partir du montant et de la durée de financement souhaités.</p><p>La simulation permet notamment d’obtenir une estimation :</p><ul><li>du montant des mensualités ;</li><li>du coût estimatif du financement ;</li><li>du montant total à rembourser ;</li><li>des intérêts estimatifs.</li></ul><p>Les résultats affichés sont indicatifs et peuvent varier selon les conditions applicables au dossier.</p><h3None>2. Montant du financement</h3><p>Le montant pouvant être demandé dépend des conditions proposées par le service et de l’étude de la demande.</p><p>Le montant indiqué lors de la simulation correspond au montant souhaité par l’utilisateur et ne constitue pas une confirmation automatique de l’octroi du financement.</p><h3None>3. Durée de remboursement</h3><p>L’utilisateur peut sélectionner la durée de remboursement proposée dans le simulateur.</p><p>Une durée plus longue peut modifier le montant des mensualités ainsi que le coût total du financement.</p><p>La durée définitive peut être déterminée lors de l’étude de la demande.</p><h3None>4. Taux et coût du crédit</h3><p>Le taux affiché lors de la simulation est utilisé pour établir une estimation du coût du financement.</p><p>Le coût total peut notamment dépendre du montant financé, de la durée de remboursement et des conditions applicables au dossier.</p><p>Les résultats du simulateur doivent donc être considérés comme des estimations et non comme des conditions contractuelles définitives.</p><h3None>5. Mensualités</h3><p>La mensualité affichée correspond à une estimation du montant à rembourser périodiquement selon les paramètres renseignés dans le simulateur.</p><p>Toute modification du montant, de la durée ou des conditions du financement peut entraîner une modification de la mensualité.</p><h3None>6. Demande de financement</h3><p>Après une simulation, l’utilisateur peut choisir de transmettre une demande de financement.</p><p>Cette demande peut nécessiter des informations personnelles ainsi que certains documents justificatifs afin de permettre l’étude du dossier.</p><p>La transmission d’une demande ne garantit pas son acceptation.</p><h3None>7. Étude du dossier</h3><p>Une demande peut être examinée sur la base des informations et justificatifs communiqués par l’utilisateur.</p><p>Des informations complémentaires peuvent être demandées lorsque cela est nécessaire à l’étude du dossier.</p><p>Une décision définitive peut dépendre de critères et de vérifications qui ne sont pas déterminés uniquement par le résultat du simulateur.</p><h3None>8. Remboursement</h3><p>Lorsqu’un financement est accordé, les modalités de remboursement applicables sont communiquées dans les conditions du financement concerné.</p><p>L’utilisateur doit respecter les échéances et modalités qui lui sont communiquées.</p><p>En cas de difficulté concernant le remboursement, il est recommandé de contacter rapidement le service concerné.</p><h3None>9. Informations fournies par l’utilisateur</h3><p>Les résultats d’une simulation dépendent des informations saisies par l’utilisateur.</p><p>Une erreur dans le montant, la durée ou toute autre information peut entraîner un résultat incorrect.</p><p>L’utilisateur doit donc vérifier les informations renseignées avant de poursuivre sa demande.</p><h3None>10. Caractère indicatif</h3><p>Les informations présentées dans cette rubrique et les résultats du simulateur ont une vocation informative.</p><p>Ils ne constituent pas une promesse d’octroi, une offre ferme ou une garantie de financement.</p><p>Les conditions définitives applicables à un financement sont celles communiquées après l’étude du dossier et, le cas échéant, celles prévues dans les documents contractuels correspondants.</p><h3None>11. Comprendre son financement</h3><p>Avant de s’engager, l’utilisateur est invité à prendre connaissance de l’ensemble des informations relatives au financement proposé, notamment :</p><ul><li>le montant financé ;</li><li>la durée ;</li><li>le montant des échéances ;</li><li>le coût total ;</li><li>les intérêts ;</li><li>les éventuels frais applicables ;</li><li>les modalités de remboursement.</li></ul><p>L’utilisateur doit s’assurer que le financement envisagé correspond à ses capacités de remboursement.</p>` }
     };
 
     function openLegalModal(type) {
@@ -2461,7 +2571,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .order('created_at', { ascending:false })
             .limit(20);
         const walletEl = document.getElementById('walletHistory');
-        walletEl.innerHTML = `<h3>Historique du compte</h3>` + (walletRows?.length
+        walletEl.innerHTML = `<h3None>Historique du compte</h3>` + (walletRows?.length
             ? walletRows.map(t => {
                 const sign = Number(t.amount) >= 0 ? '+' : '';
                 const amount = `${sign}${Number(t.amount).toLocaleString(window.FINVERO_LOCALE || 'fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
@@ -3138,3 +3248,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 </body>
 </html>
+<style id="professional-heading-fix">
+/* Titres : aucun pictogramme/pseudo-element parasite */
+h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::after,h5::before,h5::after,h6::before,h6::after{content:none!important;display:none!important;}
+</style>
