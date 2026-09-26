@@ -163,7 +163,18 @@
         .language-picker { display:inline-flex; align-items:center; gap:.35rem; margin-top:.25rem; color:#5b6f87; font-size:.8rem; }
         .language-picker select { border:1px solid #dce3ed; background:#fff; color:#1e2b3c; border-radius:10px; padding:.3rem .5rem; font-size:.8rem; cursor:pointer; outline:none; }
         .language-picker select:focus { border-color:#2a7de1; box-shadow:0 0 0 3px rgba(42,125,225,.1); }
-        #google_translate_element, .goog-te-banner-frame, .goog-te-balloon-frame, .goog-tooltip, .goog-tooltip:hover, .skiptranslate { display: none !important; }
+        /* Google Translate : moteur masqué visuellement, mais conservé dans le DOM pour fonctionner correctement. */
+        #google_translate_element {
+            position: fixed !important;
+            left: -10000px !important;
+            top: -10000px !important;
+            width: 1px !important;
+            height: 1px !important;
+            overflow: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        .goog-te-banner-frame, .goog-te-balloon-frame, .goog-tooltip, .goog-tooltip:hover { display: none !important; }
         body { top: 0 !important; }
         .goog-text-highlight { background: transparent !important; box-shadow: none !important; }
         .legal-modal { position: fixed; inset: 0; background: rgba(15,43,75,0.6); display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 2000; }
@@ -1001,82 +1012,141 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 <script>
 (function () {
     'use strict';
+
     const SUPPORTED = ['fr','en','es','pt','de','it','nl','pl','ro','cs','el','sv','da','fi','no','hu','bg','sk','uk','tr'];
     const DEFAULT_LANGUAGE = 'fr';
     const COOKIE_NAME = 'googtrans';
+    const STORAGE_NAME = 'finvero_language';
+
+    function normalizeLanguage(value) {
+        value = String(value || '').trim().toLowerCase().split('-')[0];
+        return SUPPORTED.includes(value) ? value : DEFAULT_LANGUAGE;
+    }
 
     function getCookie(name) {
-        const m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&') + '=([^;]*)'));
-        return m ? decodeURIComponent(m[1]) : '';
+        const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const match = document.cookie.match(new RegExp('(?:^|;\s*)' + escaped + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : '';
     }
+
     function setCookie(name, value) {
         document.cookie = name + '=' + encodeURIComponent(value) + '; path=/; max-age=31536000; SameSite=Lax';
     }
-    function normalizeLanguage(value) {
-        value = String(value || '').toLowerCase().split('-')[0];
-        return SUPPORTED.includes(value) ? value : DEFAULT_LANGUAGE;
+
+    function deleteCookie(name) {
+        document.cookie = name + '=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; SameSite=Lax';
+        // Évite qu'un ancien cookie de domaine ne réapparaisse sur certains hébergements.
+        const host = location.hostname;
+        if (host && host.indexOf('.') !== -1) {
+            document.cookie = name + '=; path=/; domain=.' + host + '; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; SameSite=Lax';
+        }
     }
-    function getSavedLanguage() {
+
+    function readStoredLanguage() {
         const cookie = getCookie(COOKIE_NAME);
-        const m = cookie.match(/^\/fr\/([a-z-]+)$/i);
-        if (m && SUPPORTED.includes(m[1])) return m[1];
-        try { return normalizeLanguage(localStorage.getItem('finvero_language')); } catch (_) { return DEFAULT_LANGUAGE; }
+        const match = cookie.match(/^\/fr\/([a-z-]+)$/i);
+        if (match) return normalizeLanguage(match[1]);
+
+        try {
+            return normalizeLanguage(localStorage.getItem(STORAGE_NAME));
+        } catch (_) {
+            return DEFAULT_LANGUAGE;
+        }
     }
-    function saveLanguage(lang) {
+
+    function persistLanguage(lang) {
         lang = normalizeLanguage(lang);
-        setCookie(COOKIE_NAME, '/fr/' + lang);
-        try { localStorage.setItem('finvero_language', lang); } catch (_) {}
+
+        if (lang === DEFAULT_LANGUAGE) {
+            deleteCookie(COOKIE_NAME);
+        } else {
+            // Google Translate lit ce cookie au chargement de la page.
+            setCookie(COOKIE_NAME, '/fr/' + lang);
+        }
+
+        try {
+            localStorage.setItem(STORAGE_NAME, lang);
+        } catch (_) {}
+
         window.FINVERO_LANGUAGE = lang;
         window.FINVERO_LOCALE = lang === 'fr' ? 'fr-FR' : lang;
         document.documentElement.lang = lang;
         return lang;
     }
 
-    window.FINVERO_SET_LANGUAGE = function (lang) {
-        const target = saveLanguage(lang);
-        if (target === 'fr') {
-            // Revenir au français sans recharger : Google Translate accepte 'fr' comme langue source.
-            const combo = document.querySelector('.goog-te-combo');
-            if (combo) { combo.value = 'fr'; combo.dispatchEvent(new Event('change', {bubbles:true})); }
-            return;
-        }
-        window.__finveroApplyGoogleLanguage(target);
-    };
-
     function findGoogleCombo() {
         return document.querySelector('.goog-te-combo');
     }
-    window.__finveroApplyGoogleLanguage = function (target) {
-        target = normalizeLanguage(target);
+
+    function applyGoogleLanguage(lang) {
         const combo = findGoogleCombo();
         if (!combo) return false;
-        combo.value = target;
+
+        lang = normalizeLanguage(lang);
+        combo.value = lang;
         combo.dispatchEvent(new Event('change', { bubbles: true }));
         return true;
+    }
+
+    function applyGoogleLanguageWhenReady(lang, maxTries, reloadIfMissing) {
+        let tries = 0;
+        const attempt = function () {
+            if (applyGoogleLanguage(lang)) return;
+            tries++;
+            if (tries < maxTries) {
+                setTimeout(attempt, 100);
+            } else if (reloadIfMissing) {
+                // Le cookie est déjà enregistré : après rechargement Google Translate
+                // appliquera automatiquement la langue sélectionnée.
+                window.location.reload();
+            }
+        };
+        attempt();
+    }
+
+    window.FINVERO_SET_LANGUAGE = function (lang) {
+        const target = persistLanguage(lang);
+
+        // Une nouvelle langue remplace immédiatement l'ancienne comme langue par défaut.
+        // Le rechargement est volontaire : il force Google Translate à reconstruire toute
+        // la page dans la langue sélectionnée et garantit que le choix reste après F5.
+        if (target === DEFAULT_LANGUAGE) {
+            window.location.reload();
+            return;
+        }
+
+        // Si Google Translate est déjà prêt, on traduit tout de suite puis on recharge
+        // pour garantir une traduction complète et durable.
+        if (applyGoogleLanguage(target)) {
+            setTimeout(function () { window.location.reload(); }, 150);
+        } else {
+            window.__finveroLoadGoogleTranslate();
+            applyGoogleLanguageWhenReady(target, 60, true);
+        }
     };
 
     window.googleTranslateElementInit = function () {
         if (!window.google || !google.translate) return;
+
         new google.translate.TranslateElement({
             pageLanguage: 'fr',
             includedLanguages: SUPPORTED.join(','),
             autoDisplay: false,
             multilanguagePage: true
         }, 'google_translate_element');
-        const target = getSavedLanguage();
-        saveLanguage(target);
-        // Le sélecteur Google est créé de façon asynchrone.
-        let tries = 0;
-        const apply = function () {
-            if (target === 'fr') return;
-            if (window.__finveroApplyGoogleLanguage(target)) return;
-            if (++tries < 60) setTimeout(apply, 100);
-        };
-        setTimeout(apply, 100);
+
+        const current = readStoredLanguage();
+        persistLanguage(current);
+
+        if (current !== DEFAULT_LANGUAGE) {
+            // Le select Google est créé de manière asynchrone.
+            applyGoogleLanguageWhenReady(current, 80, false);
+        }
     };
 
     window.__finveroLoadGoogleTranslate = function () {
         if (window.__finveroGoogleTranslateLoading || (window.google && window.google.translate)) return;
+
         window.__finveroGoogleTranslateLoading = true;
         const script = document.createElement('script');
         script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
@@ -1087,20 +1157,18 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 
     document.addEventListener('DOMContentLoaded', function () {
         const select = document.getElementById('languageSelect');
-        const current = getSavedLanguage();
-        saveLanguage(current);
+        const current = persistLanguage(readStoredLanguage());
+
         if (select) {
             select.value = current;
             select.addEventListener('change', function () {
-                // IMPORTANT : aucune actualisation de page.
                 window.FINVERO_SET_LANGUAGE(this.value);
             });
         }
-        if (current !== 'fr') window.__finveroLoadGoogleTranslate();
-        else {
-            // Charger quand même l'API pour permettre un changement instantané ultérieur.
-            window.__finveroLoadGoogleTranslate();
-        }
+
+        // Toujours charger Google Translate : au rechargement, le cookie googtrans
+        // indique directement à Google quelle langue doit être affichée.
+        window.__finveroLoadGoogleTranslate();
     });
 })();
 </script>
