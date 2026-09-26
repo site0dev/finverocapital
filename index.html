@@ -200,7 +200,7 @@
         .account-status { color:#5b6f87; font-size:.9rem; }
         .dashboard { display:none; margin:1.2rem 0 2rem; padding:1.7rem; background:#fff; border:1px solid #e3eaf3; border-radius:24px; box-shadow:0 5px 18px rgba(15,43,75,.05); }
         .dashboard.show { display:block; }
-        .dashboard-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:1rem 0 1.5rem; }
+        .dashboard-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin:1rem 0 1.5rem; }
         .dash-card { background:#f7faff; border:1px solid #e5ebf3; border-radius:16px; padding:1rem; }
         .dash-card .label { color:#71839a; font-size:.78rem; text-transform:uppercase; font-weight:700; }
         .dash-card .value { color:#0f2b4b; font-size:1.15rem; font-weight:700; margin-top:.25rem; }
@@ -415,6 +415,19 @@
   "serviceType": "Credit and financing simulation"
 }
     </script>
+
+<style id="clean-professional-ui">
+/* Suppression globale des marqueurs/pictogrammes parasites dans les titres */
+h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::after,h5::before,h5::after,h6::before,h6::after{content:none!important;display:none!important;}
+/* Les blocs d'informations restent côte à côte, y compris sur mobile */
+.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+.admin-application-details{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+.admin-client-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+@media(max-width:480px){
+ .dashboard-grid,.admin-application-details,.admin-client-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+ .dashboard-grid .dash-card,.admin-application-details>*{min-width:0;}
+}
+</style>
 </head>
 <body>
 
