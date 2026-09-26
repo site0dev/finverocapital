@@ -427,12 +427,6 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 .language-switcher .language-label{font-size:1.05rem;line-height:1;}
 .language-switcher select{border:1px solid #dfe6ee;border-radius:10px;background:#fff;color:#233d59;font-weight:700;padding:.45rem 1.8rem .45rem .65rem;cursor:pointer;outline:none;}
 .language-switcher select:focus{border-color:#2a7de1;box-shadow:0 0 0 3px rgba(42,125,225,.12);}
-#google_translate_element{position:fixed!important;left:-10000px!important;top:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:none!important;}
-.goog-te-gadget{font-size:0!important;}
-.goog-te-combo{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0!important;}
-.goog-te-banner-frame,.goog-te-balloon-frame,.goog-tooltip,.goog-tooltip:hover{display:none!important;}
-body{top:0!important;}
-.goog-text-highlight{background:transparent!important;box-shadow:none!important;}
 @media(max-width:600px){.language-switcher{margin-top:.5rem;}.language-switcher select{padding:.4rem 1.6rem .4rem .55rem;}}
 </style>
 </head>
@@ -447,11 +441,10 @@ body{top:0!important;}
             <div class="brand-subtitle">Solutions de financement • Europe</div>
             <div class="language-switcher" aria-label="Choix de la langue">
                 <span class="language-label" aria-hidden="true">🌐</span>
-                <select id="languageSelect" aria-label="Choisir la langue">
-                    <option value="de">DE</option>
+                <select class="lang" id="lang-btn" aria-label="Langue">
                     <option value="fr">FR</option>
+                    <option value="de">DE</option>
                     <option value="it">IT</option>
-                    <option value="en">EN</option>
                 </select>
             </div>
         </div>
@@ -818,7 +811,7 @@ body{top:0!important;}
                 </div>
             </div>
             <button class="btn btn-primary auth-submit" type="submit">🔐 Se connecter</button>
-            <button class="auth-link" type="button" id="forgotPasswordBtn">Mot de passe oublié ?</button>
+            <button class="auth-link" type="button" id="forgotPasswordBtn" data-finvero-i18n="forgot">Mot de passe oublié ?</button>
         </form>
 
         <form class="auth-form" id="registerForm">
@@ -861,7 +854,7 @@ body{top:0!important;}
                 <input type="email" id="forgotEmail" autocomplete="email" required>
             </div>
             <button class="btn btn-primary auth-submit" type="submit">📧 Envoyer le lien de réinitialisation</button>
-            <button class="auth-link" type="button" id="backToLoginBtn">← Retour à la connexion</button>
+            <button class="auth-link" type="button" id="backToLoginBtn" data-finvero-i18n="back">← Retour à la connexion</button>
         </form>
 
         <form class="auth-form" id="resetForm">
@@ -926,11 +919,11 @@ body{top:0!important;}
 
         <button type="button" class="transfer-back-top" id="backTransferBtn" style="display:none;" aria-label="Retour" title="Retour">←</button>
         <button class="transfer-btn" id="confirmTransferBtn">Valider</button>
-        <button type="button" class="transfer-btn transfer-next-btn" id="continueTransferBtn" style="display:none; background:#0f2b4b;">Continuer</button>
+        <button type="button" class="transfer-btn transfer-next-btn" id="continueTransferBtn" data-finvero-i18n="continue" style="display:none; background:#0f2b4b;">Continuer</button>
         
         <button type="button" class="transfer-btn transfer-support-btn" id="supportTransferBtn" style="display:none; background:#0f2b4b;">📞 Contacter le support</button>
 
-        <button type="button" class="close-transfer" id="closeTransferBtn">✕ Annuler</button>
+        <button type="button" class="close-transfer" id="closeTransferBtn" data-finvero-i18n="cancel">✕ Annuler</button>
         <div id="transferStatus" class="transfer-success" style="display:none;"></div>
     </div>
 </div>
@@ -1002,7 +995,10 @@ body{top:0!important;}
         auth: {
             autoRefreshToken: true,
             persistSession: true,
-            detectSessionInUrl: true
+            detectSessionInUrl: true,
+            storage: window.localStorage,
+            storageKey: 'finvero-auth-session',
+            flowType: 'implicit'
         }
     });
 
@@ -3153,7 +3149,16 @@ body{top:0!important;}
     });
 
     (async function restoreClientSession() {
-        const { data: sessionData } = await localDB.auth.getSession();
+        // La session Supabase est conservée dans localStorage. Elle reste donc
+        // disponible après fermeture/rechargement du navigateur jusqu'à une
+        // déconnexion explicite ou l'expiration/révocation réelle de la session.
+        let session = null;
+        try {
+            const { data } = await localDB.auth.getSession();
+            session = data?.session || null;
+        } catch (error) {
+            console.error('[SESSION RESTORE]', error);
+        }
 
         if (passwordRecoveryPending) {
             openAuthModal('reset');
@@ -3161,9 +3166,23 @@ body{top:0!important;}
             return;
         }
 
-        await updateAuthUI(sessionData.session?.user || null);
-        await startSupabaseRealtime(sessionData.session?.user || null);
+        await updateAuthUI(session?.user || null);
+        await startSupabaseRealtime(session?.user || null);
     })();
+
+    // Réhydrate la session lorsque l'utilisateur revient sur l'onglet ou
+    // l'application mobile, sans demander une nouvelle connexion.
+    document.addEventListener('visibilitychange', async () => {
+        if (document.visibilityState !== 'visible' || passwordRecoveryPending) return;
+        try {
+            const { data } = await localDB.auth.getSession();
+            const user = data?.session?.user || null;
+            await updateAuthUI(user);
+            await startSupabaseRealtime(user);
+        } catch (error) {
+            console.error('[SESSION REFRESH]', error);
+        }
+    });
 
 
     };
@@ -3183,117 +3202,94 @@ body{top:0!important;}
 })();
 </script>
 
-<!-- SYSTÈME DE LANGUES : paramètres repris de ethicall bon — FR / DE / IT / EN -->
-<div id="google_translate_element" aria-hidden="true"></div>
+<!-- SYSTÈME DE LANGUES — logique identique à ethicall bon -->
 <script>
 (function(){
-    'use strict';
+  'use strict';
 
-    const SUPPORTED = ['fr','de','it','en'];
-    const DEFAULT_LANGUAGE = 'de';
-    const STORAGE_KEY = 'eh_language';
-    const COOKIE_NAME = 'googtrans';
-
-    function normalizeLanguage(value){
-        value = String(value || '').toLowerCase().split('-')[0];
-        return SUPPORTED.includes(value) ? value : DEFAULT_LANGUAGE;
+  const translations = {
+    fr: {
+      language:'FR',
+      login:'Se connecter',
+      register:'Inscription',
+      forgot:'Mot de passe oublié ?',
+      reset:'Nouveau mot de passe',
+      send:'Envoyer',
+      cancel:'Annuler',
+      continue:'Continuer',
+      back:'Retour',
+      next:'Suivant',
+      previous:'Précédent'
+    },
+    de: {
+      language:'DE',
+      login:'Anmelden',
+      register:'Registrierung',
+      forgot:'Passwort vergessen?',
+      reset:'Neues Passwort',
+      send:'Senden',
+      cancel:'Abbrechen',
+      continue:'Weiter',
+      back:'Zurück',
+      next:'Weiter',
+      previous:'Zurück'
+    },
+    it: {
+      language:'IT',
+      login:'Accedi',
+      register:'Registrazione',
+      forgot:'Password dimenticata?',
+      reset:'Nuova password',
+      send:'Invia',
+      cancel:'Annulla',
+      continue:'Continua',
+      back:'Indietro',
+      next:'Avanti',
+      previous:'Indietro'
     }
+  };
 
-    function getCookie(name){
-        const escaped = name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-        const match = document.cookie.match(new RegExp('(?:^|;\\s*)' + escaped + '=([^;]*)'));
-        return match ? decodeURIComponent(match[1]) : '';
-    }
+  let currentLanguage = localStorage.getItem('eh_language') || 'fr';
+  if(!translations[currentLanguage]) currentLanguage='fr';
 
-    function setCookie(name,value){
-        document.cookie = name + '=' + encodeURIComponent(value) + '; path=/; max-age=31536000; SameSite=Lax';
-    }
+  function applyLanguage(lang){
+    currentLanguage = translations[lang] ? lang : 'fr';
+    localStorage.setItem('eh_language', currentLanguage);
+    document.documentElement.lang = currentLanguage;
+    const langBtn = document.getElementById('lang-btn');
+    if(langBtn) langBtn.value = currentLanguage;
 
-    function getSavedLanguage(){
-        try{
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if(stored) return normalizeLanguage(stored);
-        }catch(e){}
-
-        const cookie = getCookie(COOKIE_NAME);
-        const match = cookie.match(/^\/fr\/([a-z-]+)$/i);
-        return match ? normalizeLanguage(match[1]) : DEFAULT_LANGUAGE;
-    }
-
-    function saveLanguage(lang){
-        lang = normalizeLanguage(lang);
-        try{ localStorage.setItem(STORAGE_KEY, lang); }catch(e){}
-        setCookie(COOKIE_NAME, '/fr/' + lang);
-        window.FINVERO_LANGUAGE = lang;
-        window.FINVERO_LOCALE = lang === 'fr' ? 'fr-FR' : lang;
-        document.documentElement.lang = lang;
-        const select = document.getElementById('languageSelect');
-        if(select) select.value = lang;
-        return lang;
-    }
-
-    function findGoogleCombo(){
-        return document.querySelector('.goog-te-combo');
-    }
-
-    function applyGoogleLanguage(lang, attempt){
-        lang = normalizeLanguage(lang);
-        attempt = attempt || 0;
-        const combo = findGoogleCombo();
-
-        if(combo){
-            combo.value = lang;
-            combo.dispatchEvent(new Event('change', {bubbles:true}));
-            return true;
-        }
-
-        if(attempt < 100){
-            setTimeout(function(){ applyGoogleLanguage(lang, attempt + 1); }, 100);
-        }
-        return false;
-    }
-
-    window.googleTranslateElementInit = function(){
-        if(!window.google || !google.translate) return;
-
-        new google.translate.TranslateElement({
-            pageLanguage: 'fr',
-            includedLanguages: SUPPORTED.join(','),
-            autoDisplay: false,
-            multilanguagePage: true
-        }, 'google_translate_element');
-
-        applyGoogleLanguage(getSavedLanguage());
-    };
-
-    window.__finveroLoadGoogleTranslate = function(){
-        if(window.__finveroGoogleTranslateLoading || (window.google && window.google.translate)) return;
-        window.__finveroGoogleTranslateLoading = true;
-        const script = document.createElement('script');
-        script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-        script.async = true;
-        script.crossOrigin = 'anonymous';
-        document.head.appendChild(script);
-    };
-
-    window.FINVERO_SET_LANGUAGE = function(lang){
-        const selected = saveLanguage(lang);
-        applyGoogleLanguage(selected);
-    };
-
-    document.addEventListener('DOMContentLoaded', function(){
-        const select = document.getElementById('languageSelect');
-        const current = saveLanguage(getSavedLanguage());
-
-        if(select){
-            select.value = current;
-            select.addEventListener('change', function(){
-                window.FINVERO_SET_LANGUAGE(this.value);
-            });
-        }
-
-        window.__finveroLoadGoogleTranslate();
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.dataset.i18n;
+      if(translations[currentLanguage][key] !== undefined){
+        el.innerHTML = translations[currentLanguage][key];
+      }
     });
+
+    // Synchronise les éléments Finvero qui utilisent les clés communes d'Ethicall.
+    document.querySelectorAll('[data-finvero-i18n]').forEach(el=>{
+      const key = el.dataset.finveroI18n;
+      if(translations[currentLanguage][key] !== undefined){
+        el.innerHTML = translations[currentLanguage][key];
+      }
+    });
+
+    window.FINVERO_LANGUAGE = currentLanguage;
+    window.FINVERO_TRANSLATIONS = translations;
+  }
+
+  window.FINVERO_SET_LANGUAGE = applyLanguage;
+  window.currentLanguage = currentLanguage;
+  window.applyLanguage = applyLanguage;
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const langBtn = document.getElementById('lang-btn');
+    if(langBtn){
+      langBtn.value = currentLanguage;
+      langBtn.addEventListener('change', e=>applyLanguage(e.target.value));
+    }
+    applyLanguage(currentLanguage);
+  });
 })();
 </script>
 
