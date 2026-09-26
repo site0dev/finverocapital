@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" translate="yes">
+<html lang="" translate="yes">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -429,6 +429,20 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 .language-switcher select:focus{border-color:#2a7de1;box-shadow:0 0 0 3px rgba(42,125,225,.12);}
 @media(max-width:600px){.language-switcher{margin-top:.5rem;}.language-switcher select{padding:.4rem 1.6rem .4rem .55rem;}}
 </style>
+<script id="finvero-language-bootstrap">
+(function(){
+  try {
+    var cookieMatch=document.cookie.match(/(?:^|; )eh_language=([^;]+)/);
+    var saved=cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
+    if(!saved) saved=localStorage.getItem('eh_language') || '';
+    var raw=((navigator.languages&&navigator.languages[0])||navigator.language||'fr').toLowerCase();
+    var browser=raw.indexOf('de')===0?'de':(raw.indexOf('it')===0?'it':'fr');
+    var lang=(saved==='de'||saved==='it'||saved==='fr')?saved:browser;
+    document.documentElement.lang=lang;
+    window.FINVERO_LANGUAGE=lang;
+  } catch(e) {}
+})();
+</script>
 </head>
 <body>
 
@@ -3317,7 +3331,16 @@ const getBrowserLanguage = () => {
 
 // Une préférence explicitement choisie est prioritaire. Sinon, on suit la langue
 // du navigateur (uniquement FR / DE / IT, les autres revenant à FR).
-let currentLanguage = localStorage.getItem('eh_language') || getBrowserLanguage();
+let currentLanguage = (function(){
+  let saved='';
+  try {
+    const m=document.cookie.match(/(?:^|; )eh_language=([^;]+)/);
+    saved=m ? decodeURIComponent(m[1]) : '';
+    if(!saved) saved=localStorage.getItem('eh_language') || '';
+  } catch(_) {}
+  const browser=getBrowserLanguage();
+  return ['fr','de','it'].includes(saved) ? saved : browser;
+})();
 if(!translations[currentLanguage]) currentLanguage='fr';
 
 // Le moteur précédent retraduisait les textes déjà traduits. On conserve donc
@@ -3357,7 +3380,8 @@ function translateSource(text){
 
 function applyLanguage(lang){
   currentLanguage=translations[lang]?lang:'fr';
-  localStorage.setItem('eh_language',currentLanguage);
+  try { localStorage.setItem('eh_language',currentLanguage); } catch(_) {}
+  try { document.cookie='eh_language='+encodeURIComponent(currentLanguage)+'; Max-Age=31536000; Path=/; SameSite=Lax'; } catch(_) {}
   document.documentElement.lang=currentLanguage;
   window.FINVERO_LANGUAGE=currentLanguage;
   window.currentLanguage=currentLanguage;
