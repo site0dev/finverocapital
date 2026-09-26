@@ -1037,7 +1037,10 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 body: JSON.stringify({
                     type,
                     ...(targetUserId ? { targetUserId } : {}),
-                    data
+                    data: {
+                        ...data,
+                        browserLanguage: (navigator.languages && navigator.languages[0]) || navigator.language || 'fr'
+                    }
                 })
             });
 
