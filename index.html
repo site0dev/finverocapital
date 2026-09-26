@@ -449,9 +449,9 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             </div>
         </div>
         <div class="account-actions">
-            <button type="button" class="account-btn" id="loginBtn">🔐 Se connecter</button>
-            <button type="button" class="account-btn primary" id="registerBtn">👤 Créer un compte</button>
-            <button type="button" class="account-btn" id="dashboardBtn" style="display:none;">📊 Mon espace</button>
+            <button type="button" class="account-btn" id="loginBtn">🔐 <span data-i18n="Se connecter">Se connecter</span></button>
+            <button type="button" class="account-btn primary" id="registerBtn">👤 <span data-i18n="Créer un compte">Créer un compte</span></button>
+            <button type="button" class="account-btn" id="dashboardBtn" style="display:none;">📊 <span data-i18n="Mon espace">Mon espace</span></button>
         </div>
     </header>
 
@@ -471,9 +471,9 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             <img src="1.jpg" alt="Financement" loading="eager" fetchpriority="high" decoding="async" />
         </div>
         <div class="hero-text">
-            <h1None>Avez-vous besoin <br><span data-i18n="d'un financement">d'un financement</span> ?</h1>
+            <h1None><span data-i18n="Avez-vous besoin">Avez-vous besoin</span> <br><span data-i18n="d'un financement">d'un financement</span> ?</h1>
             <p data-i18n="Simulez votre crédit en quelques secondes, sans engagement.">Simulez votre crédit en quelques secondes, sans engagement.</p>
-            <span class="badge">✅ Réponse sous 24h</span>
+            <span class="badge">✅ <span data-i18n="Réponse sous 24h">Réponse sous 24h</span></span>
         </div>
     </section>
 
@@ -504,7 +504,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 <h2 style="color:#0f2b4b;margin:0;" data-i18n="Mon dossier de financement">Mon dossier de financement</h2>
                 <p class="account-status" id="dashboardWelcome" data-i18n="Bienvenue.">Bienvenue.</p>
             </div>
-            <button type="button" class="account-btn" id="refreshDashboardBtn">↻ Actualiser</button>
+            <button type="button" class="account-btn" id="refreshDashboardBtn">↻ <span data-i18n="Actualiser">Actualiser</span></button>
         </div>
 
         <div class="account-balance-card">
@@ -528,8 +528,8 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         <div id="dashDocuments" style="margin-top:1.5rem;"></div>
         <div class="wallet-history" id="walletHistory"></div>
         <div class="dash-actions">
-            <button type="button" class="account-btn" id="changePasswordBtn">🔑 Modifier mon mot de passe</button>
-            <button type="button" class="account-btn" id="transferFundsBtn">💸 Transférer vers mon compte bancaire</button>
+            <button type="button" class="account-btn" id="changePasswordBtn">🔑 <span data-i18n="Modifier mon mot de passe">Modifier mon mot de passe</span></button>
+            <button type="button" class="account-btn" id="transferFundsBtn">💸 <span data-i18n="Transférer vers mon compte bancaire">Transférer vers mon compte bancaire</span></button>
             <button type="button" class="account-btn" id="closeDashboardBtn" data-i18n="Fermer l'espace">Fermer l'espace</button>
         </div>
     </section>
@@ -543,9 +543,9 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 <p class="account-status" data-i18n="Gestion sécurisée des comptes clients, soldes et statuts.">Gestion sécurisée des comptes clients, soldes et statuts.</p>
             </div>
             <div class="account-actions">
-                <button type="button" class="account-btn admin-back-btn" id="adminBackBtn">← Retour au site</button>
-                <button type="button" class="account-btn" id="adminSettingsBtn">⚙️ Paramètres</button>
-                <button type="button" class="account-btn" id="refreshAdminBtn">↻ Actualiser</button>
+                <button type="button" class="account-btn admin-back-btn" id="adminBackBtn">← <span data-i18n="Retour au site">Retour au site</span></button>
+                <button type="button" class="account-btn" id="adminSettingsBtn">⚙️ <span data-i18n="Paramètres">Paramètres</span></button>
+                <button type="button" class="account-btn" id="refreshAdminBtn">↻ <span data-i18n="Actualiser">Actualiser</span></button>
                 <button type="button" class="account-btn" id="adminLogoutBtn" data-i18n="Se déconnecter">Se déconnecter</button>
             </div>
         </div>
@@ -568,11 +568,11 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             </div>
             <form id="adminLoginForm" class="admin-form" autocomplete="off">
                 <div class="form-group">
-                    <label for="adminUsername">Adresse e-mail administrateur</label>
+                    <label for="adminUsername" data-i18n="Adresse e-mail administrateur">Adresse e-mail administrateur</label>
                     <input id="adminUsername" type="text" autocomplete="username" required maxlength="50">
                 </div>
                 <div class="form-group">
-                    <label for="adminPassword">Mot de passe</label>
+                    <label for="adminPassword" data-i18n="Mot de passe">Mot de passe</label>
                     <input id="adminPassword" type="password" autocomplete="current-password" required maxlength="200">
                 </div>
                 <p class="admin-login-message" id="adminLoginMessage" role="alert"></p>
@@ -593,11 +593,11 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             </div>
             <form id="adminSettingsForm" class="admin-form" autocomplete="off">
                 <div class="form-group">
-                    <label for="adminNewUsername">Adresse e-mail administrateur</label>
+                    <label for="adminNewUsername" data-i18n="Adresse e-mail administrateur">Adresse e-mail administrateur</label>
                     <input id="adminNewUsername" type="email" autocomplete="username" required maxlength="254" readonly>
                 </div>
                 <div class="form-group">
-                    <label for="adminNewPassword">Nouveau mot de passe (laisser vide pour conserver l'actuel)</label>
+                    <label for="adminNewPassword" data-i18n="Nouveau mot de passe (laisser vide pour conserver l'actuel)">Nouveau mot de passe (laisser vide pour conserver l'actuel)</label>
                     <input id="adminNewPassword" type="password" autocomplete="new-password" maxlength="200">
                 </div>
                 <div class="form-group">
@@ -612,7 +612,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 
     <!-- FORMULAIRE / SIMULATEUR -->
     <section class="form-section" id="financingSimulatorSection">
-        <h2None>Remplissez le formulaire suivant</h2>
+        <h2None data-i18n="Remplissez le formulaire suivant">Remplissez le formulaire suivant</h2>
         <p class="sub" data-i18n="Ajustez le curseur pour le montant, la durée est libre.">Ajustez le curseur pour le montant, la durée est libre.</p>
 
         <form id="creditForm" novalidate>
@@ -654,7 +654,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             <!-- Email & Téléphone -->
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="email">Adresse e-mail</label>
+                    <label for="email" data-i18n="Adresse e-mail">Adresse e-mail</label>
                     <input type="email" id="email" placeholder="votre@email.fr" required>
                 </div>
 
@@ -669,7 +669,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             </div>
 
             <div class="form-actions">
-                <button type="button" class="btn btn-primary" id="simulerBtn">📊 Simuler mon crédit</button>
+                <button type="button" class="btn btn-primary" id="simulerBtn">📊 <span data-i18n="Simuler mon crédit">Simuler mon crédit</span></button>
             </div>
         </form>
 
@@ -688,7 +688,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 
             <!-- TÉLÉCHARGEMENT -->
             <div class="documents-upload">
-                <h4None>📎 Téléchargez vos documents</h4>
+                <h4None>📎 <span data-i18n="Téléchargez vos documents">Téléchargez vos documents</span></h4>
                 <div class="doc-upload-group">
                     <label for="docId" data-i18n="Carte d'identité">Carte d'identité</label>
                     <input type="file" id="docId" accept=".pdf,.jpg,.jpeg,.png,.gif,.bmp,.tiff,.heic" required>
@@ -706,8 +706,8 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 
             <!-- ENVOYER -->
             <div class="validation-area" style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;">
-                <button type="button" class="btn btn-success" id="envoyerBtn">📩 Enregistrer et envoyer ma demande</button>
-                <a href="#" class="btn btn-primary" id="emailContactBtn" style="display:none;text-decoration:none;">✉️ Ouvrir mon e-mail</a>
+                <button type="button" class="btn btn-success" id="envoyerBtn">📩 <span data-i18n="Enregistrer et envoyer ma demande">Enregistrer et envoyer ma demande</span></button>
+                <a href="#" class="btn btn-primary" id="emailContactBtn" style="display:none;text-decoration:none;">✉️ <span data-i18n="Ouvrir mon e-mail">Ouvrir mon e-mail</span></a>
             </div>
             <div id="emailContactNote" class="doc-note" style="display:none;text-align:center;margin-top:10px;" data-i18n="Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.">
                 Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.
@@ -717,7 +717,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 
     <!-- 3 ÉTAPES -->
     <div class="steps-after-form">
-        <h3None> Demande de crédit entièrement en ligne</h3>
+        <h3None data-i18n="Demande de crédit entièrement en ligne">Demande de crédit entièrement en ligne</h3>
         <div class="steps-grid">
             <div class="step-item">
                 <strong data-i18n="Étape 1">Étape 1</strong>
@@ -725,11 +725,11 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             </div>
             <div class="step-item">
                 <strong data-i18n="Étape 2">Étape 2</strong>
-                <p>Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
+                <p data-i18n="Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.">Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.</p>
             </div>
             <div class="step-item">
                 <strong data-i18n="Étape 3">Étape 3</strong>
-                <p>Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
+                <p data-i18n="Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.">Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.</p>
             </div>
         </div>
     </div>
@@ -740,11 +740,12 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             <img src="2.jpg" alt="Documents" loading="lazy" />
         </div>
         <div class="promo-text">
-            <p>
+            <p data-i18n="Fini la paperasse. Fini les longues files d'attente. Fini les complications !
+Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨">
                 <span class="emoji-big">📄</span> Fini la paperasse. Fini les longues files d'attente. Fini les complications !<br>
                 Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨
             </p>
-            <p style="margin-top: 0.6rem; font-weight: 400; font-size: 1.05rem;">
+            <p data-i18n="Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs." style="margin-top: 0.6rem; font-weight: 400; font-size: 1.05rem;">
                 Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.
             </p>
         </div>
@@ -753,7 +754,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
     <!-- POURQUOI CHOISIR FINVERO -->
     <section class="trust-section">
         <div class="trust-content">
-            <h2None>Pourquoi choisir Finvero Capital ?</h2>
+            <h2None data-i18n="Pourquoi choisir Finvero Capital ?">Pourquoi choisir Finvero Capital ?</h2>
             <div class="trust-item">
                 <strong>🔒 Fiable</strong>
                 <p>Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.</p>
@@ -781,7 +782,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             <button type="button" data-legal="terms" data-i18n="Conditions d'utilisation">Conditions d'utilisation</button>
             <button type="button" data-legal="credit" data-i18n="Informations crédit">Informations crédit</button>
         </nav>
-        <small>Finvero Capital © 2026 — Service de simulation et de demande de financement.</small>
+        <small data-i18n="Service de simulation et de demande de financement.">Finvero Capital © 2026 — Service de simulation et de demande de financement.</small>
     </footer>
 </div>
 
@@ -800,17 +801,17 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 
         <form class="auth-form active" id="loginForm">
             <div class="form-group">
-                <label for="loginEmail">Adresse e-mail</label>
+                <label for="loginEmail" data-i18n="Adresse e-mail">Adresse e-mail</label>
                 <input type="email" id="loginEmail" autocomplete="email" required>
             </div>
             <div class="form-group">
-                <label for="loginPassword">Mot de passe</label>
+                <label for="loginPassword" data-i18n="Mot de passe">Mot de passe</label>
                 <div class="password-row">
                     <input type="password" id="loginPassword" autocomplete="current-password" required>
                     <button type="button" class="password-toggle" data-target="loginPassword">👁️</button>
                 </div>
             </div>
-            <button class="btn btn-primary auth-submit" type="submit">🔐 Se connecter</button>
+            <button class="btn btn-primary auth-submit" type="submit">🔐 <span data-i18n="Se connecter">Se connecter</span></button>
             <button class="auth-link" type="button" id="forgotPasswordBtn" data-i18n="Mot de passe oublié ?">Mot de passe oublié ?</button>
         </form>
 
@@ -827,7 +828,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 </select>
             </div>
             <div class="form-group">
-                <label for="registerEmail">Adresse e-mail</label>
+                <label for="registerEmail" data-i18n="Adresse e-mail">Adresse e-mail</label>
                 <input type="email" id="registerEmail" autocomplete="email" required>
             </div>
             <div class="form-group">
@@ -835,7 +836,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 <input type="tel" id="registerPhone" autocomplete="tel" required>
             </div>
             <div class="form-group">
-                <label for="registerPassword">Mot de passe</label>
+                <label for="registerPassword" data-i18n="Mot de passe">Mot de passe</label>
                 <div class="password-row">
                     <input type="password" id="registerPassword" autocomplete="new-password" minlength="8" required>
                     <button type="button" class="password-toggle" data-target="registerPassword">👁️</button>
@@ -845,7 +846,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 <label for="registerPassword2" data-i18n="Confirmer le mot de passe">Confirmer le mot de passe</label>
                 <input type="password" id="registerPassword2" autocomplete="new-password" minlength="8" required>
             </div>
-            <button class="btn btn-primary auth-submit" type="submit">👤 Créer mon compte</button>
+            <button class="btn btn-primary auth-submit" type="submit">👤 <span data-i18n="Créer mon compte">Créer mon compte</span></button>
         </form>
 
         <form class="auth-form" id="forgotForm">
@@ -853,7 +854,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 <label for="forgotEmail" data-i18n="Adresse e-mail du compte">Adresse e-mail du compte</label>
                 <input type="email" id="forgotEmail" autocomplete="email" required>
             </div>
-            <button class="btn btn-primary auth-submit" type="submit">📧 Envoyer le lien de réinitialisation</button>
+            <button class="btn btn-primary auth-submit" type="submit">📧 <span data-i18n="Envoyer le lien de réinitialisation">Envoyer le lien de réinitialisation</span></button>
             <button class="auth-link" type="button" id="backToLoginBtn" data-i18n="Retour à la connexion">← Retour à la connexion</button>
         </form>
 
@@ -866,7 +867,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 <label for="newPassword2" data-i18n="Confirmer le nouveau mot de passe">Confirmer le nouveau mot de passe</label>
                 <input type="password" id="newPassword2" autocomplete="new-password" minlength="8" required>
             </div>
-            <button class="btn btn-primary auth-submit" type="submit">🔑 Enregistrer le nouveau mot de passe</button>
+            <button class="btn btn-primary auth-submit" type="submit">🔑 <span data-i18n="Enregistrer le nouveau mot de passe">Enregistrer le nouveau mot de passe</span></button>
         </form>
 
         <div class="auth-message" id="authMessage"></div>
@@ -876,18 +877,18 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 <!-- MODALE NUMÉRO DE SUIVI -->
 <div class="tracking-modal" id="trackingModal">
     <div class="tracking-card">
-        <h2None> Numéro de suivi</h2>
+        <h2None data-i18n="Numéro de suivi">Numéro de suivi</h2>
         <p class="info-text" data-i18n="Conservez ce numéro pour le suivi de votre demande :">Conservez ce numéro pour le suivi de votre demande :</p>
         <div class="tracking-number" id="trackingNumberDisplay">---</div>
         <p class="info-text" style="font-size:0.85rem;" data-i18n="Cliquez sur le bouton ci-dessous pour le copier.">Cliquez sur le bouton ci-dessous pour le copier.</p>
-        <button type="button" class="copy-btn" id="copyTrackingBtn">📋 Copier</button>
+        <button type="button" class="copy-btn" id="copyTrackingBtn">📋 <span data-i18n="Copier">Copier</span></button>
     </div>
 </div>
 
 <!-- MODALE TRANSFERT BANCAIRE (3 ÉTAPES) -->
 <div class="transfer-modal" id="transferModal">
     <div class="transfer-card">
-        <h2None>💸 Demande de transfert bancaire</h2>
+        <h2None>💸 <span data-i18n="Demande de transfert bancaire">Demande de transfert bancaire</span></h2>
         <div id="transferMessage" class="info-text" style="font-weight:500; color:#0f2b4b; line-height:1.6;"></div>
 
         <div id="transferStep1Fields">
@@ -909,7 +910,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             </div>
         </div>
 
-        <div id="transferStepDisplay" style="margin:0.8rem 0 0.5rem; font-size:0.9rem; color:#5b6f87;">Étape 1/3</div>
+        <div id="transferStepDisplay" data-i18n="Étape 1/3" style="margin:0.8rem 0 0.5rem; font-size:0.9rem; color:#5b6f87;">Étape 1/3</div>
         <div id="transferProgress" style="width:100%; height:6px; background:#dce3ed; border-radius:4px; margin:0.5rem 0 1rem; overflow:hidden;">
             <div id="transferProgressBar" style="height:100%; width:33%; background:#2a7de1; border-radius:4px; transition:width 0.3s;"></div>
         </div>
@@ -921,7 +922,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         <button class="transfer-btn" id="confirmTransferBtn" data-i18n="Valider">Valider</button>
         <button type="button" class="transfer-btn transfer-next-btn" id="continueTransferBtn" data-i18n="Continuer" style="display:none; background:#0f2b4b;">Continuer</button>
         
-        <button type="button" class="transfer-btn transfer-support-btn" id="supportTransferBtn" style="display:none; background:#0f2b4b;">📞 Contacter le support</button>
+        <button type="button" class="transfer-btn transfer-support-btn" id="supportTransferBtn" style="display:none; background:#0f2b4b;">📞 <span data-i18n="Contacter le support">Contacter le support</span></button>
 
         <button type="button" class="close-transfer" id="closeTransferBtn" data-i18n="Annuler">✕ Annuler</button>
         <div id="transferStatus" class="transfer-success" style="display:none;"></div>
@@ -978,9 +979,42 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 </div>
 
 <!-- TOAST -->
-<div id="toast" class="toast">📨 Demande envoyée avec succès !</div>
+<div id="toast" class="toast">📨 <span data-i18n="Demande envoyée avec succès !">Demande envoyée avec succès !</span></div>
 
 
+
+<!-- SYSTÈME DE LANGUES — ARCHITECTURE ETHICALL BON -->
+<script>
+const translations={"fr":{"Se connecter":"Se connecter","Créer un compte":"Créer un compte","Mon espace":"Mon espace","Espace client":"Espace client","Connexion...":"Connexion...","Se déconnecter":"Se déconnecter","Solutions de financement • Europe":"Solutions de financement • Europe","Avez-vous besoin":"Avez-vous besoin","d'un financement":"d'un financement","Simulez votre crédit en quelques secondes, sans engagement.":"Simulez votre crédit en quelques secondes, sans engagement.","Réponse sous 24h":"Réponse sous 24h","dossiers reçus par semaine":"dossiers reçus par semaine","taux d’acceptation":"taux d’acceptation","de financements accordés par mois":"de financements accordés par mois","Mon dossier de financement":"Mon dossier de financement","Bienvenue.":"Bienvenue.","Actualiser":"Actualiser","Solde disponible":"Solde disponible","Compte actif":"Compte actif","N° de dossier":"N° de dossier","Montant demandé":"Montant demandé","Durée":"Durée","Mensualité estimée":"Mensualité estimée","Statut":"Statut","Aucun dossier":"Aucun dossier","Dernière mise à jour":"Dernière mise à jour","Suivi de votre demande":"Suivi de votre demande","Modifier mon mot de passe":"Modifier mon mot de passe","Transférer vers mon compte bancaire":"Transférer vers mon compte bancaire","Fermer l'espace":"Fermer l'espace","Administration":"Administration","Gestion sécurisée des comptes clients, soldes et statuts.":"Gestion sécurisée des comptes clients, soldes et statuts.","Retour au site":"Retour au site","Paramètres":"Paramètres","Accès administration":"Accès administration","Entrez vos identifiants administrateur.":"Entrez vos identifiants administrateur.","Ouvrir l'administration":"Ouvrir l'administration","Paramètres d'administration":"Paramètres d'administration","Modifiez le nom d'utilisateur et, si nécessaire, le mot de passe.":"Modifiez le nom d'utilisateur et, si nécessaire, le mot de passe.","Enregistrer les paramètres":"Enregistrer les paramètres","Remplissez le formulaire suivant":"Remplissez le formulaire suivant","Ajustez le curseur pour le montant, la durée est libre.":"Ajustez le curseur pour le montant, la durée est libre.","Montant souhaité (€) –":"Montant souhaité (€) –","max 350 000 €":"max 350 000 €","Durée du prêt (mois)":"Durée du prêt (mois)","Taux d’intérêt annuel (%)":"Taux d’intérêt annuel (%)","Numéro de téléphone":"Numéro de téléphone","Simuler mon crédit":"Simuler mon crédit","Mois":"Mois","Mensualité":"Mensualité","Intérêts":"Intérêts","Capital remboursé":"Capital remboursé","Capital restant":"Capital restant","Faites défiler pour voir toutes les échéances":"Faites défiler pour voir toutes les échéances","Téléchargez vos documents":"Téléchargez vos documents","Carte d'identité":"Carte d'identité","Code d'identification fiscale":"Code d'identification fiscale","Document de revenu mensuel":"Document de revenu mensuel","Les documents sont associés à votre compte et stockés dans l'espace sécurisé prévu à cet effet.":"Les documents sont associés à votre compte et stockés dans l'espace sécurisé prévu à cet effet.","Enregistrer et envoyer ma demande":"Enregistrer et envoyer ma demande","Ouvrir mon e-mail":"Ouvrir mon e-mail","Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.":"Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.","Demande de crédit entièrement en ligne":"Demande de crédit entièrement en ligne","Étape 1":"Étape 1","Calculez votre mensualité.":"Calculez votre mensualité.","Étape 2":"Étape 2","Étape 3":"Étape 3","Pourquoi choisir Finvero Capital ?":"Pourquoi choisir Finvero Capital ?","Fiable":"Fiable","Rapide":"Rapide","Sûr":"Sûr","Votre sécurité, notre priorité":"Votre sécurité, notre priorité","Mentions légales":"Mentions légales","Politique de confidentialité":"Politique de confidentialité","Conditions d’utilisation":"Conditions d’utilisation","Conditions d'utilisation":"Conditions d’utilisation","Informations crédit":"Informations crédit","Service de simulation et de demande de financement.":"Service de simulation et de demande de financement.","Votre espace client":"Votre espace client","Créez votre compte pour suivre votre dossier.":"Créez votre compte pour suivre votre dossier.","Connexion":"Connexion","Inscription":"Inscription","Mot de passe oublié ?":"Mot de passe oublié ?","Nom complet":"Nom complet","Civilité":"Civilité","Téléphone":"Téléphone","Confirmer le mot de passe":"Confirmer le mot de passe","Créer mon compte":"Créer mon compte","Adresse e-mail du compte":"Adresse e-mail du compte","Envoyer le lien de réinitialisation":"Envoyer le lien de réinitialisation","Retour à la connexion":"Retour à la connexion","Nouveau mot de passe":"Nouveau mot de passe","Confirmer le nouveau mot de passe":"Confirmer le nouveau mot de passe","Enregistrer le nouveau mot de passe":"Enregistrer le nouveau mot de passe","Numéro de suivi":"Numéro de suivi","Conservez ce numéro pour le suivi de votre demande :":"Conservez ce numéro pour le suivi de votre demande :","Cliquez sur le bouton ci-dessous pour le copier.":"Cliquez sur le bouton ci-dessous pour le copier.","Copier":"Copier","Demande de transfert bancaire":"Demande de transfert bancaire","Nom et prénom":"Nom et prénom","IBAN / numéro de compte":"IBAN / numéro de compte","Nom de la banque":"Nom de la banque","Montant à transférer (€)":"Montant à transférer (€)","Valider":"Valider","Continuer":"Continuer","Contacter le support":"Contacter le support","Annuler":"Annuler","Documents du client":"Documents du client","Aucun document trouvé.":"Aucun document trouvé.","Informations légales":"Informations légales","Envoyer":"Envoyer","Demande envoyée avec succès !":"Demande envoyée avec succès !","Total à rembourser":"Total à rembourser","Intérêts totaux":"Intérêts totaux","Taux appliqué":"Taux appliqué","Récapitulatif de l’opération":"Récapitulatif de l’opération","Numéro de suivi :":"Numéro de suivi :","Nom et prénom :":"Nom et prénom :","IBAN :":"IBAN :","Banque :":"Banque :","Montant demandé :":"Montant demandé :","Statut de l’opération":"Statut de l’opération","Chargement...":"Chargement...","Télécharger":"Télécharger","Historique du compte":"Historique du compte","Aucun mouvement sur le compte.":"Aucun mouvement sur le compte.","RÉSULTATS":"RÉSULTATS","Fini la paperasse":"Fini la paperasse","Adresse e-mail administrateur":"Adresse e-mail administrateur","Mot de passe":"Mot de passe","Nouveau mot de passe (laisser vide pour conserver l'actuel)":"Nouveau mot de passe (laisser vide pour conserver l'actuel)","Adresse e-mail":"Adresse e-mail","Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.":"Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.","Étape 1/3":"Étape 1/3","Connectez-vous ou créez un compte avant d’envoyer votre demande.":"Connectez-vous ou créez un compte avant d’envoyer votre demande.","Envoi sécurisé de votre dossier...":"Envoi sécurisé de votre dossier...","Demande enregistrée avec succès !":"Demande enregistrée avec succès !","Connectez-vous pour demander un transfert.":"Connectez-vous pour demander un transfert.","Coordonnées bancaires":"Coordonnées bancaires","Veuillez renseigner les coordonnées de votre compte bancaire.":"Veuillez renseigner les coordonnées de votre compte bancaire.","Récapitulatif":"Récapitulatif","Continuer vers l’étape suivante":"Continuer vers l’étape suivante","Traitement administratif":"Traitement administratif","Veuillez renseigner les informations requises.":"Veuillez renseigner les informations requises.","Erreur : ":"Erreur : ","Créer votre espace client":"Créer votre espace client","Votre espace vous permettra de suivre votre demande en temps réel.":"Votre espace vous permettra de suivre votre demande en temps réel.","Réinitialiser le mot de passe":"Réinitialiser le mot de passe","Nous vous enverrons un lien sécurisé par e-mail.":"Nous vous enverrons un lien sécurisé par e-mail.","Choisissez un nouveau mot de passe sécurisé.":"Choisissez un nouveau mot de passe sécurisé.","Connectez-vous pour suivre votre dossier.":"Connectez-vous pour suivre votre dossier.","Connecté en tant que ":"Connecté en tant que ","Bonjour ":"Bonjour ",". Les changements de statut apparaissent automatiquement.":". Les changements de statut apparaissent automatiquement.","Vous n’avez pas encore envoyé de demande.":"Vous n’avez pas encore envoyé de demande.","Documents transmis":"Documents transmis","Aucun document enregistré.":"Aucun document enregistré.","Crédit":"Crédit","Débit":"Débit","Ajustement":"Ajustement","Compte en attente":"Compte en attente","Compte suspendu":"Compte suspendu","Compte bloqué":"Compte bloqué","Demande envoyée":"Demande envoyée","Documents en vérification":"Documents en vérification","Dossier en cours d’étude":"Dossier en cours d’étude","Dossier accepté":"Dossier accepté","Contrat à signer":"Contrat à signer","Financement en préparation":"Financement en préparation","Financement accordé":"Financement accordé","Carte d’identité":"Carte d’identité","Document fiscal":"Document fiscal","Justificatif de revenu":"Justificatif de revenu","Le mot de passe doit contenir au moins 8 caractères.":"Le mot de passe doit contenir au moins 8 caractères.","Veuillez saisir une adresse e-mail valide.":"Veuillez saisir une adresse e-mail valide.","Veuillez saisir votre nom complet.":"Veuillez saisir votre nom complet.","Veuillez saisir votre numéro de téléphone.":"Veuillez saisir votre numéro de téléphone.","Les deux mots de passe ne correspondent pas.":"Les deux mots de passe ne correspondent pas.","Compte créé. Consultez votre e-mail et confirmez votre adresse avant de vous connecter.":"Compte créé. Consultez votre e-mail et confirmez votre adresse avant de vous connecter.","Création du compte impossible.":"Création du compte impossible.","Si cette adresse correspond à un compte, un lien sécurisé de réinitialisation vient d’être envoyé.":"Si cette adresse correspond à un compte, un lien sécurisé de réinitialisation vient d’être envoyé.","Impossible d’envoyer le lien de réinitialisation.":"Impossible d’envoyer le lien de réinitialisation.","Impossible de modifier le mot de passe.":"Impossible de modifier le mot de passe.","Choisissez maintenant votre nouveau mot de passe.":"Choisissez maintenant votre nouveau mot de passe.","Le lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien.":"Le lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien.","Accès administrateur non autorisé.":"Accès administrateur non autorisé.","Chargement des clients...":"Chargement des clients...","Identifiants invalides.":"Identifiants invalides.","Les deux nouveaux mots de passe ne correspondent pas.":"Les deux nouveaux mots de passe ne correspondent pas.","Le nouveau mot de passe doit contenir au moins 10 caractères.":"Le nouveau mot de passe doit contenir au moins 10 caractères.","Paramètres enregistrés avec succès.":"Paramètres enregistrés avec succès.","Vérification...":"Vérification...","Aucun mouvement.":"Aucun mouvement.","3 ÉTAPES":"3 ÉTAPES","Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.":"Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.","Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.":"Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.","Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨":"Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨","Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.":"Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.","Fini la paperasse. Fini les longues files d'attente. Fini les complications !\nAvec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨":"Fini la paperasse. Fini les longues files d'attente. Fini les complications !\nAvec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨"},"de":{"Se connecter":"Anmelden","Créer un compte":"Konto erstellen","Mon espace":"Mein Bereich","Espace client":"Kundenbereich","Connexion...":"Verbindung...","Se déconnecter":"Abmelden","Solutions de financement • Europe":"Finanzierungslösungen • Europa","Avez-vous besoin":"Benötigen Sie","d'un financement":"eine Finanzierung","Simulez votre crédit en quelques secondes, sans engagement.":"Berechnen Sie Ihren Kredit in wenigen Sekunden, unverbindlich.","Réponse sous 24h":"Antwort innerhalb von 24 Stunden","dossiers reçus par semaine":"Anträge pro Woche","taux d’acceptation":"Annahmequote","de financements accordés par mois":"Finanzierungen pro Monat","Mon dossier de financement":"Meine Finanzierungsakte","Bienvenue.":"Willkommen.","Actualiser":"Aktualisieren","Solde disponible":"Verfügbares Guthaben","Compte actif":"Aktives Konto","N° de dossier":"Aktennummer","Montant demandé":"Beantragter Betrag","Durée":"Laufzeit","Mensualité estimée":"Geschätzte Monatsrate","Statut":"Status","Aucun dossier":"Keine Akte","Dernière mise à jour":"Letzte Aktualisierung","Suivi de votre demande":"Status Ihrer Anfrage","Modifier mon mot de passe":"Passwort ändern","Transférer vers mon compte bancaire":"Auf mein Bankkonto überweisen","Fermer l'espace":"Bereich schließen","Administration":"Administration","Gestion sécurisée des comptes clients, soldes et statuts.":"Sichere Verwaltung von Kundenkonten, Guthaben und Status.","Retour au site":"Zurück zur Website","Paramètres":"Einstellungen","Accès administration":"Administrationszugang","Entrez vos identifiants administrateur.":"Geben Sie Ihre Administrator-Zugangsdaten ein.","Ouvrir l'administration":"Administration öffnen","Paramètres d'administration":"Administrationseinstellungen","Modifiez le nom d'utilisateur et, si nécessaire, le mot de passe.":"Ändern Sie den Benutzernamen und bei Bedarf das Passwort.","Enregistrer les paramètres":"Einstellungen speichern","Remplissez le formulaire suivant":"Füllen Sie das folgende Formular aus","Ajustez le curseur pour le montant, la durée est libre.":"Passen Sie den Betrag an; die Laufzeit ist frei wählbar.","Montant souhaité (€) –":"Gewünschter Betrag (€) –","max 350 000 €":"max. 350.000 €","Durée du prêt (mois)":"Laufzeit des Kredits (Monate)","Taux d’intérêt annuel (%)":"Jährlicher Zinssatz (%)","Numéro de téléphone":"Telefonnummer","Simuler mon crédit":"Kredit berechnen","Mois":"Monat","Mensualité":"Monatsrate","Intérêts":"Zinsen","Capital remboursé":"Getilgtes Kapital","Capital restant":"Restkapital","Faites défiler pour voir toutes les échéances":"Scrollen Sie, um alle Raten zu sehen","Téléchargez vos documents":"Laden Sie Ihre Dokumente hoch","Carte d'identité":"Personalausweis","Code d'identification fiscale":"Steueridentifikationsnummer","Document de revenu mensuel":"Nachweis des monatlichen Einkommens","Les documents sont associés à votre compte et stockés dans l'espace sécurisé prévu à cet effet.":"Die Dokumente werden Ihrem Konto zugeordnet und sicher gespeichert.","Enregistrer et envoyer ma demande":"Anfrage speichern und senden","Ouvrir mon e-mail":"E-Mail öffnen","Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.":"Ihre Anfrage ist in Ihrem Bereich gespeichert. Sie können Ihr E-Mail-Programm öffnen, um die Informationen an Finvero Capital zu senden.","Demande de crédit entièrement en ligne":"Kreditantrag vollständig online","Étape 1":"Schritt 1","Calculez votre mensualité.":"Berechnen Sie Ihre Monatsrate.","Étape 2":"Schritt 2","Étape 3":"Schritt 3","Pourquoi choisir Finvero Capital ?":"Warum Finvero Capital wählen?","Fiable":"Zuverlässig","Rapide":"Schnell","Sûr":"Sicher","Votre sécurité, notre priorité":"Ihre Sicherheit, unsere Priorität","Mentions légales":"Impressum","Politique de confidentialité":"Datenschutzerklärung","Conditions d’utilisation":"Nutzungsbedingungen","Conditions d'utilisation":"Nutzungsbedingungen","Informations crédit":"Kreditinformationen","Service de simulation et de demande de financement.":"Simulation und Finanzierungsantragsservice.","Votre espace client":"Ihr Kundenbereich","Créez votre compte pour suivre votre dossier.":"Erstellen Sie Ihr Konto, um Ihre Akte zu verfolgen.","Connexion":"Anmelden","Inscription":"Registrierung","Mot de passe oublié ?":"Passwort vergessen?","Nom complet":"Vollständiger Name","Civilité":"Anrede","Téléphone":"Telefon","Confirmer le mot de passe":"Passwort bestätigen","Créer mon compte":"Konto erstellen","Adresse e-mail du compte":"E-Mail-Adresse des Kontos","Envoyer le lien de réinitialisation":"Link zum Zurücksetzen senden","Retour à la connexion":"Zurück zur Anmeldung","Nouveau mot de passe":"Neues Passwort","Confirmer le nouveau mot de passe":"Neues Passwort bestätigen","Enregistrer le nouveau mot de passe":"Neues Passwort speichern","Numéro de suivi":"Trackingnummer","Conservez ce numéro pour le suivi de votre demande :":"Bewahren Sie diese Nummer zur Verfolgung Ihrer Anfrage auf:","Cliquez sur le bouton ci-dessous pour le copier.":"Klicken Sie unten, um sie zu kopieren.","Copier":"Kopieren","Demande de transfert bancaire":"Banküberweisungsanfrage","Nom et prénom":"Vor- und Nachname","IBAN / numéro de compte":"IBAN / Kontonummer","Nom de la banque":"Name der Bank","Montant à transférer (€)":"Zu überweisender Betrag (€)","Valider":"Bestätigen","Continuer":"Weiter","Contacter le support":"Support kontaktieren","Annuler":"Abbrechen","Documents du client":"Kundendokumente","Aucun document trouvé.":"Keine Dokumente gefunden.","Informations légales":"Rechtliche Informationen","Envoyer":"Senden","Demande envoyée avec succès !":"Anfrage erfolgreich gesendet!","Total à rembourser":"Gesamtrückzahlung","Intérêts totaux":"Gesamtzinsen","Taux appliqué":"Angewandter Zinssatz","Récapitulatif de l’opération":"Transaktionsübersicht","Numéro de suivi :":"Trackingnummer:","Nom et prénom :":"Vor- und Nachname:","IBAN :":"IBAN:","Banque :":"Bank:","Montant demandé :":"Beantragter Betrag:","Statut de l’opération":"Transaktionsstatus","Chargement...":"Wird geladen...","Télécharger":"Herunterladen","Historique du compte":"Kontoverlauf","Aucun mouvement sur le compte.":"Keine Kontobewegungen.","RÉSULTATS":"ERGEBNISSE","Fini la paperasse":"Schluss mit dem Papierkram","Adresse e-mail administrateur":"Administrator-E-Mail-Adresse","Mot de passe":"Passwort","Nouveau mot de passe (laisser vide pour conserver l'actuel)":"Neues Passwort (leer lassen, um das aktuelle beizubehalten)","Adresse e-mail":"E-Mail-Adresse","Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.":"Die Dokumente sind Ihrem Konto zugeordnet und werden sicher im dafür vorgesehenen Bereich gespeichert.","Étape 1/3":"Schritt 1/3","Connectez-vous ou créez un compte avant d’envoyer votre demande.":"Melden Sie sich an oder erstellen Sie ein Konto, bevor Sie Ihre Anfrage senden.","Envoi sécurisé de votre dossier...":"Sicheres Senden Ihrer Anfrage...","Demande enregistrée avec succès !":"Anfrage erfolgreich gespeichert!","Connectez-vous pour demander un transfert.":"Melden Sie sich an, um eine Überweisung anzufordern.","Coordonnées bancaires":"Bankverbindung","Veuillez renseigner les coordonnées de votre compte bancaire.":"Bitte geben Sie die Bankverbindung Ihres Kontos ein.","Récapitulatif":"Zusammenfassung","Continuer vers l’étape suivante":"Mit dem nächsten Schritt fortfahren","Traitement administratif":"Administrative Bearbeitung","Veuillez renseigner les informations requises.":"Bitte geben Sie die erforderlichen Informationen ein.","Erreur : ":"Fehler: ","Créer votre espace client":"Kundenbereich erstellen","Votre espace vous permettra de suivre votre demande en temps réel.":"In Ihrem Bereich können Sie Ihre Anfrage in Echtzeit verfolgen.","Réinitialiser le mot de passe":"Passwort zurücksetzen","Nous vous enverrons un lien sécurisé par e-mail.":"Wir senden Ihnen einen sicheren Link per E-Mail.","Choisissez un nouveau mot de passe sécurisé.":"Wählen Sie ein sicheres neues Passwort.","Connectez-vous pour suivre votre dossier.":"Melden Sie sich an, um Ihre Akte zu verfolgen.","Connecté en tant que ":"Angemeldet als ","Bonjour ":"Guten Tag ",". Les changements de statut apparaissent automatiquement.":". Statusänderungen werden automatisch angezeigt.","Vous n’avez pas encore envoyé de demande.":"Sie haben noch keine Anfrage gesendet.","Documents transmis":"Übermittelte Dokumente","Aucun document enregistré.":"Keine Dokumente gespeichert.","Crédit":"Gutschrift","Débit":"Lastschrift","Ajustement":"Anpassung","Compte en attente":"Konto ausstehend","Compte suspendu":"Konto gesperrt","Compte bloqué":"Konto blockiert","Demande envoyée":"Anfrage gesendet","Documents en vérification":"Dokumente werden geprüft","Dossier en cours d’étude":"Akte wird geprüft","Dossier accepté":"Akte genehmigt","Contrat à signer":"Vertrag zu unterschreiben","Financement en préparation":"Finanzierung wird vorbereitet","Financement accordé":"Finanzierung genehmigt","Carte d’identité":"Personalausweis","Document fiscal":"Steuerdokument","Justificatif de revenu":"Einkommensnachweis","Le mot de passe doit contenir au moins 8 caractères.":"Das Passwort muss mindestens 8 Zeichen enthalten.","Veuillez saisir une adresse e-mail valide.":"Bitte geben Sie eine gültige E-Mail-Adresse ein.","Veuillez saisir votre nom complet.":"Bitte geben Sie Ihren vollständigen Namen ein.","Veuillez saisir votre numéro de téléphone.":"Bitte geben Sie Ihre Telefonnummer ein.","Les deux mots de passe ne correspondent pas.":"Die beiden Passwörter stimmen nicht überein.","Compte créé. Consultez votre e-mail et confirmez votre adresse avant de vous connecter.":"Konto erstellt. Prüfen Sie Ihre E-Mail und bestätigen Sie Ihre Adresse, bevor Sie sich anmelden.","Création du compte impossible.":"Konto konnte nicht erstellt werden.","Si cette adresse correspond à un compte, un lien sécurisé de réinitialisation vient d’être envoyé.":"Wenn diese Adresse zu einem Konto gehört, wurde ein sicherer Link zum Zurücksetzen gesendet.","Impossible d’envoyer le lien de réinitialisation.":"Der Link zum Zurücksetzen konnte nicht gesendet werden.","Impossible de modifier le mot de passe.":"Das Passwort konnte nicht geändert werden.","Choisissez maintenant votre nouveau mot de passe.":"Wählen Sie jetzt Ihr neues Passwort.","Le lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien.":"Der Link zum Zurücksetzen ist ungültig oder abgelaufen. Fordern Sie einen neuen Link an.","Accès administrateur non autorisé.":"Administratorzugriff nicht autorisiert.","Chargement des clients...":"Kunden werden geladen...","Identifiants invalides.":"Ungültige Anmeldedaten.","Les deux nouveaux mots de passe ne correspondent pas.":"Die beiden neuen Passwörter stimmen nicht überein.","Le nouveau mot de passe doit contenir au moins 10 caractères.":"Das neue Passwort muss mindestens 10 Zeichen enthalten.","Paramètres enregistrés avec succès.":"Einstellungen erfolgreich gespeichert.","Vérification...":"Überprüfung...","Aucun mouvement.":"Keine Bewegungen.","3 ÉTAPES":"3 SCHRITTE","Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.":"Füllen Sie das Formular aus. Es dauert nur wenige Minuten und erfordert einige Dokumente zur Bestätigung Ihrer Identität. Wenn Sie diese nicht zur Hand haben, können Sie sie später hochladen.","Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.":"Unterschreiben Sie anschließend Ihren Kreditvertrag digital. Sobald alle Dokumente eingegangen sind, veranlassen wir die Auszahlung so schnell wie möglich.","Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨":"Mit uns werden Ihre Schritte einfach, schnell und effizient. ⏱️✨","Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.":"Da jedes Projekt einzigartig ist, bieten wir Ihnen eine persönliche Begleitung, die auf Ihre Bedürfnisse und Ziele zugeschnitten ist.","Fini la paperasse. Fini les longues files d'attente. Fini les complications !\nAvec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨":"Schluss mit dem Papierkram. Schluss mit langen Warteschlangen. Schluss mit den Komplikationen!\nMit uns werden Ihre Schritte einfach, schnell und effizient. ⏱️✨"},"it":{"Se connecter":"Accedi","Créer un compte":"Crea un account","Mon espace":"La mia area","Espace client":"Area clienti","Connexion...":"Connessione...","Se déconnecter":"Disconnetti","Solutions de financement • Europe":"Soluzioni di finanziamento • Europa","Avez-vous besoin":"Hai bisogno","d'un financement":"di un finanziamento","Simulez votre crédit en quelques secondes, sans engagement.":"Calcola il tuo credito in pochi secondi, senza impegno.","Réponse sous 24h":"Risposta entro 24 ore","dossiers reçus par semaine":"richieste ricevute a settimana","taux d’acceptation":"tasso di accettazione","de financements accordés par mois":"finanziamenti concessi al mese","Mon dossier de financement":"La mia pratica di finanziamento","Bienvenue.":"Benvenuto.","Actualiser":"Aggiorna","Solde disponible":"Saldo disponibile","Compte actif":"Account attivo","N° de dossier":"N. pratica","Montant demandé":"Importo richiesto","Durée":"Durata","Mensualité estimée":"Rata stimata","Statut":"Stato","Aucun dossier":"Nessuna pratica","Dernière mise à jour":"Ultimo aggiornamento","Suivi de votre demande":"Stato della richiesta","Modifier mon mot de passe":"Modifica password","Transférer vers mon compte bancaire":"Trasferisci sul mio conto bancario","Fermer l'espace":"Chiudi area","Administration":"Amministrazione","Gestion sécurisée des comptes clients, soldes et statuts.":"Gestione sicura degli account clienti, saldi e stati.","Retour au site":"Torna al sito","Paramètres":"Impostazioni","Accès administration":"Accesso amministrazione","Entrez vos identifiants administrateur.":"Inserisci le credenziali di amministratore.","Ouvrir l'administration":"Apri amministrazione","Paramètres d'administration":"Impostazioni amministrazione","Modifiez le nom d'utilisateur et, si nécessaire, le mot de passe.":"Modifica il nome utente e, se necessario, la password.","Enregistrer les paramètres":"Salva impostazioni","Remplissez le formulaire suivant":"Compila il seguente modulo","Ajustez le curseur pour le montant, la durée est libre.":"Regola l’importo; la durata è libera.","Montant souhaité (€) –":"Importo desiderato (€) –","max 350 000 €":"max 350.000 €","Durée du prêt (mois)":"Durata del prestito (mesi)","Taux d’intérêt annuel (%)":"Tasso d’interesse annuo (%)","Numéro de téléphone":"Numero di telefono","Simuler mon crédit":"Calcola il mio credito","Mois":"Mese","Mensualité":"Rata","Intérêts":"Interessi","Capital remboursé":"Capitale rimborsato","Capital restant":"Capitale residuo","Faites défiler pour voir toutes les échéances":"Scorri per vedere tutte le rate","Téléchargez vos documents":"Carica i tuoi documenti","Carte d'identité":"Documento d’identità","Code d'identification fiscale":"Codice fiscale","Document de revenu mensuel":"Documento del reddito mensile","Les documents sont associés à votre compte et stockés dans l'espace sécurisé prévu à cet effet.":"I documenti sono associati al tuo account e conservati nell’area sicura prevista.","Enregistrer et envoyer ma demande":"Salva e invia la mia richiesta","Ouvrir mon e-mail":"Apri la mia e-mail","Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.":"La tua richiesta è salvata nella tua area. Puoi aprire la posta elettronica per inviare le informazioni a Finvero Capital.","Demande de crédit entièrement en ligne":"Richiesta di credito completamente online","Étape 1":"Passaggio 1","Calculez votre mensualité.":"Calcola la tua rata.","Étape 2":"Passaggio 2","Étape 3":"Passaggio 3","Pourquoi choisir Finvero Capital ?":"Perché scegliere Finvero Capital?","Fiable":"Affidabile","Rapide":"Veloce","Sûr":"Sicuro","Votre sécurité, notre priorité":"La tua sicurezza, la nostra priorità","Mentions légales":"Note legali","Politique de confidentialité":"Informativa sulla privacy","Conditions d’utilisation":"Condizioni d’uso","Conditions d'utilisation":"Condizioni d’uso","Informations crédit":"Informazioni sul credito","Service de simulation et de demande de financement.":"Servizio di simulazione e richiesta di finanziamento.","Votre espace client":"La tua area clienti","Créez votre compte pour suivre votre dossier.":"Crea il tuo account per seguire la tua pratica.","Connexion":"Accedi","Inscription":"Registrazione","Mot de passe oublié ?":"Password dimenticata?","Nom complet":"Nome completo","Civilité":"Titolo","Téléphone":"Telefono","Confirmer le mot de passe":"Conferma password","Créer mon compte":"Crea il mio account","Adresse e-mail du compte":"Indirizzo e-mail dell’account","Envoyer le lien de réinitialisation":"Invia il link di reimpostazione","Retour à la connexion":"Torna all’accesso","Nouveau mot de passe":"Nuova password","Confirmer le nouveau mot de passe":"Conferma la nuova password","Enregistrer le nouveau mot de passe":"Salva nuova password","Numéro de suivi":"Numero di tracciamento","Conservez ce numéro pour le suivi de votre demande :":"Conserva questo numero per seguire la tua richiesta:","Cliquez sur le bouton ci-dessous pour le copier.":"Clicca sul pulsante qui sotto per copiarlo.","Copier":"Copia","Demande de transfert bancaire":"Richiesta di trasferimento bancario","Nom et prénom":"Nome e cognome","IBAN / numéro de compte":"IBAN / numero di conto","Nom de la banque":"Nome della banca","Montant à transférer (€)":"Importo da trasferire (€)","Valider":"Conferma","Continuer":"Continua","Contacter le support":"Contatta il supporto","Annuler":"Annulla","Documents du client":"Documenti del cliente","Aucun document trouvé.":"Nessun documento trovato.","Informations légales":"Informazioni legali","Envoyer":"Invia","Demande envoyée avec succès !":"Richiesta inviata con successo!","Total à rembourser":"Totale da rimborsare","Intérêts totaux":"Interessi totali","Taux appliqué":"Tasso applicato","Récapitulatif de l’opération":"Riepilogo dell’operazione","Numéro de suivi :":"Numero di tracciamento:","Nom et prénom :":"Nome e cognome:","IBAN :":"IBAN:","Banque :":"Banca:","Montant demandé :":"Importo richiesto:","Statut de l’opération":"Stato dell’operazione","Chargement...":"Caricamento...","Télécharger":"Scarica","Historique du compte":"Cronologia dell’account","Aucun mouvement sur le compte.":"Nessun movimento sul conto.","RÉSULTATS":"RISULTATI","Fini la paperasse":"Basta con la burocrazia","Adresse e-mail administrateur":"E-mail dell’amministratore","Mot de passe":"Password","Nouveau mot de passe (laisser vide pour conserver l'actuel)":"Nuova password (vuoto per mantenere quella attuale)","Adresse e-mail":"Indirizzo e-mail","Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.":"I documenti sono associati al tuo account e conservati in modo sicuro nell’area prevista.","Étape 1/3":"Passaggio 1/3","Connectez-vous ou créez un compte avant d’envoyer votre demande.":"Accedi o crea un account prima di inviare la richiesta.","Envoi sécurisé de votre dossier...":"Invio sicuro della richiesta...","Demande enregistrée avec succès !":"Richiesta salvata con successo!","Connectez-vous pour demander un transfert.":"Accedi per richiedere un trasferimento.","Coordonnées bancaires":"Coordinate bancarie","Veuillez renseigner les coordonnées de votre compte bancaire.":"Inserisci le coordinate bancarie del tuo conto.","Récapitulatif":"Riepilogo","Continuer vers l’étape suivante":"Continua al passaggio successivo","Traitement administratif":"Elaborazione amministrativa","Veuillez renseigner les informations requises.":"Inserisci le informazioni richieste.","Erreur : ":"Errore: ","Créer votre espace client":"Crea la tua area cliente","Votre espace vous permettra de suivre votre demande en temps réel.":"La tua area ti permette di seguire la richiesta in tempo reale.","Réinitialiser le mot de passe":"Reimposta la password","Nous vous enverrons un lien sécurisé par e-mail.":"Ti invieremo un link sicuro via e-mail.","Choisissez un nouveau mot de passe sécurisé.":"Scegli una nuova password sicura.","Connectez-vous pour suivre votre dossier.":"Accedi per seguire la tua pratica.","Connecté en tant que ":"Connesso come ","Bonjour ":"Buongiorno ",". Les changements de statut apparaissent automatiquement.":". Le modifiche dello stato vengono visualizzate automaticamente.","Vous n’avez pas encore envoyé de demande.":"Non hai ancora inviato una richiesta.","Documents transmis":"Documenti inviati","Aucun document enregistré.":"Nessun documento registrato.","Crédit":"Credito","Débit":"Addebito","Ajustement":"Rettifica","Compte en attente":"Account in attesa","Compte suspendu":"Account sospeso","Compte bloqué":"Account bloccato","Demande envoyée":"Richiesta inviata","Documents en vérification":"Documenti in verifica","Dossier en cours d’étude":"Pratica in valutazione","Dossier accepté":"Pratica approvata","Contrat à signer":"Contratto da firmare","Financement en préparation":"Finanziamento in preparazione","Financement accordé":"Finanziamento concesso","Carte d’identité":"Documento d’identità","Document fiscal":"Documento fiscale","Justificatif de revenu":"Giustificativo di reddito","Le mot de passe doit contenir au moins 8 caractères.":"La password deve contenere almeno 8 caratteri.","Veuillez saisir une adresse e-mail valide.":"Inserisci un indirizzo e-mail valido.","Veuillez saisir votre nom complet.":"Inserisci il tuo nome completo.","Veuillez saisir votre numéro de téléphone.":"Inserisci il tuo numero di telefono.","Les deux mots de passe ne correspondent pas.":"Le due password non corrispondono.","Compte créé. Consultez votre e-mail et confirmez votre adresse avant de vous connecter.":"Account creato. Controlla la tua e-mail e conferma il tuo indirizzo prima di accedere.","Création du compte impossible.":"Impossibile creare l’account.","Si cette adresse correspond à un compte, un lien sécurisé de réinitialisation vient d’être envoyé.":"Se questo indirizzo corrisponde a un account, è stato inviato un link sicuro per reimpostare la password.","Impossible d’envoyer le lien de réinitialisation.":"Impossibile inviare il link per reimpostare la password.","Impossible de modifier le mot de passe.":"Impossibile modificare la password.","Choisissez maintenant votre nouveau mot de passe.":"Scegli ora la tua nuova password.","Le lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien.":"Il link per reimpostare la password non è valido o è scaduto. Richiedi un nuovo link.","Accès administrateur non autorisé.":"Accesso amministratore non autorizzato.","Chargement des clients...":"Caricamento dei clienti...","Identifiants invalides.":"Credenziali non valide.","Les deux nouveaux mots de passe ne correspondent pas.":"Le due nuove Passwörter stimmen nicht überein.","Le nouveau mot de passe doit contenir au moins 10 caractères.":"La nuova password deve contenere almeno 10 caratteri.","Paramètres enregistrés avec succès.":"Impostazioni salvate con successo.","Vérification...":"Verifica...","Aucun mouvement.":"Nessun movimento.","3 ÉTAPES":"3 PASSAGGI","Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.":"Compila il modulo. Bastano pochi minuti e alcuni documenti per confermare la tua identità. Se non li hai a portata di mano, potrai caricarli in seguito.","Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.":"Firma quindi digitalmente il contratto di credito. Una volta ricevuti tutti i documenti, procediamo all’erogazione nel più breve tempo possibile.","Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨":"Con noi, le tue pratiche diventano semplici, rapide ed efficaci. ⏱️✨","Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.":"Poiché ogni progetto è unico, offriamo un accompagnamento personalizzato, adatto alle tue esigenze e ai tuoi obiettivi.","Fini la paperasse. Fini les longues files d'attente. Fini les complications !\nAvec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨":"Basta con la burocrazia. Basta con le lunghe attese. Basta con le complicazioni!\nCon noi, le tue pratiche diventano semplici, rapide ed efficaci. ⏱️✨"}};
+
+let currentLanguage=localStorage.getItem("eh_language")||"fr";
+if(!translations[currentLanguage])currentLanguage="fr";
+
+function translateRuntime(key){
+ const value=translations[currentLanguage]&&translations[currentLanguage][key];
+ return value!==undefined?value:key;
+}
+
+function getLocale(){
+ return currentLanguage==="de"?"de-DE":currentLanguage==="it"?"it-IT":"fr-FR";
+}
+
+function applyLanguage(lang){
+ currentLanguage=translations[lang]?lang:"fr";
+ localStorage.setItem("eh_language",currentLanguage);
+ document.documentElement.lang=currentLanguage;
+ const langBtn=document.getElementById("lang-btn");
+ if(langBtn)langBtn.value=currentLanguage;
+ document.querySelectorAll("[data-i18n]").forEach(el=>{
+  const key=el.dataset.i18n;
+  if(translations[currentLanguage][key]!==undefined)el.innerHTML=translations[currentLanguage][key];
+ });
+}
+
+document.getElementById("lang-btn")?.addEventListener("change",e=>applyLanguage(e.target.value));
+
+applyLanguage(currentLanguage);
+</script>
 
 <script>
 (function () {
@@ -1200,7 +1234,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
     const dureeDisplay = document.getElementById('dureeDisplay');
 
     function updateMontant() {
-        montantDisplay.textContent = parseInt(montantSlider.value).toLocaleString(window.FINVERO_LOCALE || 'fr-FR');
+        montantDisplay.textContent = parseInt(montantSlider.value).toLocaleString(getLocale());
     }
     function updateDuree() {
         dureeDisplay.textContent = dureeSlider.value;
@@ -2324,7 +2358,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         'Funding granted'
     ];
 
-    const statusLabelsFr = {
+    const statusLabelKeys = {
         'Application submitted': 'Demande envoyée',
         'Documents under review': 'Documents en vérification',
         'Application under assessment': 'Dossier en cours d’étude',
@@ -2334,14 +2368,14 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         'Funding granted': 'Financement accordé'
     };
 
-    const documentLabelsFr = {
+    const documentLabelKeys = {
         identity: 'Carte d’identité',
         tax: 'Document fiscal',
         income: 'Justificatif de revenu'
     };
 
     function showAuthMessage(message, type='success') {
-        authMessage.textContent = message;
+        authMessage.textContent = translateRuntime(message);
         authMessage.className = `auth-message show ${type}`;
     }
 
@@ -2368,17 +2402,17 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         if (form) form.classList.add('active');
 
         if (tab === 'register') {
-            authTitle.textContent = 'Créer votre espace client';
-            authSubtitle.textContent = 'Votre espace vous permettra de suivre votre demande en temps réel.';
+            authTitle.textContent = translateRuntime('Créer votre espace client');
+            authSubtitle.textContent = translateRuntime('Votre espace vous permettra de suivre votre demande en temps réel.');
         } else if (tab === 'forgot') {
-            authTitle.textContent = 'Réinitialiser le mot de passe';
-            authSubtitle.textContent = 'Nous vous enverrons un lien sécurisé par e-mail.';
+            authTitle.textContent = translateRuntime('Réinitialiser le mot de passe');
+            authSubtitle.textContent = translateRuntime('Nous vous enverrons un lien sécurisé par e-mail.');
         } else if (tab === 'reset') {
-            authTitle.textContent = 'Nouveau mot de passe';
-            authSubtitle.textContent = 'Choisissez un nouveau mot de passe sécurisé.';
+            authTitle.textContent = translateRuntime('Nouveau mot de passe');
+            authSubtitle.textContent = translateRuntime('Choisissez un nouveau mot de passe sécurisé.');
         } else {
-            authTitle.textContent = 'Votre espace client';
-            authSubtitle.textContent = 'Connectez-vous pour suivre votre dossier.';
+            authTitle.textContent = translateRuntime('Votre espace client');
+            authSubtitle.textContent = translateRuntime('Connectez-vous pour suivre votre dossier.');
         }
     }
 
@@ -2410,7 +2444,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             dashboardBtn.style.display = 'inline-flex';
             accountPanel.classList.add('show');
             const name = user.user_metadata?.full_name || user.email || 'Client';
-            document.getElementById('accountStatus').textContent = `Connecté en tant que ${name}`;
+            document.getElementById('accountStatus').textContent = `${translateRuntime('Connecté en tant que ')}${name}`;
             await loadClientDashboard();
         } else {
             loginBtn.style.display = 'inline-flex';
@@ -2451,10 +2485,10 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         const balance = Number(profile?.balance || 0);
         const currency = profile?.currency || 'EUR';
         const accountStatus = profile?.account_status || 'active';
-        document.getElementById('dashBalance').textContent = `${balance.toLocaleString(window.FINVERO_LOCALE || 'fr-FR', {minimumFractionDigits:2, maximumFractionDigits:2})} ${currency === 'EUR' ? '€' : currency}`;
+        document.getElementById('dashBalance').textContent = `${balance.toLocaleString(getLocale(), {minimumFractionDigits:2, maximumFractionDigits:2})} ${currency === 'EUR' ? '€' : currency}`;
         const accountStatusLabels = { active:'Compte actif', pending:'Compte en attente', suspended:'Compte suspendu', blocked:'Compte bloqué' };
-        document.getElementById('dashAccountStatus').textContent = accountStatusLabels[accountStatus] || accountStatus;
-        document.getElementById('dashboardWelcome').textContent = `Bonjour ${displayName}. Les changements de statut apparaissent automatiquement.`;
+        document.getElementById('dashAccountStatus').textContent = translateRuntime(accountStatusLabels[accountStatus] || accountStatus);
+        document.getElementById('dashboardWelcome').textContent = `${translateRuntime('Bonjour ')}${displayName}${translateRuntime('. Les changements de statut apparaissent automatiquement.')}`;
 
         const app = apps?.[0];
         const simulatorSection = document.getElementById('financingSimulatorSection');
@@ -2469,7 +2503,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             document.getElementById('dashMonthly').textContent = '—';
             document.getElementById('dashStatus').textContent = 'Aucun dossier';
             document.getElementById('dashUpdated').textContent = '—';
-            document.getElementById('statusTrack').innerHTML = '<div class="status-step active"><span class="status-dot"></span><span>Vous n’avez pas encore envoyé de demande.</span></div>';
+            document.getElementById('statusTrack').innerHTML = `<div class="status-step active"><span class="status-dot"></span><span>${translateRuntime('Vous n’avez pas encore envoyé de demande.')}</span></div>`;
             document.getElementById('dashDocuments').innerHTML = '';
             return;
         }
@@ -2478,13 +2512,13 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         document.getElementById('dashAmount').textContent = `${Number(app.amount_requested).toLocaleString('fr-FR')} €`;
         document.getElementById('dashDuration').textContent = `${app.duration_months} mois`;
         document.getElementById('dashMonthly').textContent = `${Number(app.monthly_payment).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
-        document.getElementById('dashStatus').textContent = statusLabelsFr[app.status] || app.status || 'Demande envoyée';
+        document.getElementById('dashStatus').textContent = translateRuntime(statusLabelKeys[app.status] || 'Demande envoyée');
         document.getElementById('dashUpdated').textContent = app.updated_at ? new Date(app.updated_at).toLocaleString('fr-FR') : '—';
 
         const currentIndex = Math.max(0, statusOrder.indexOf(app.status));
         document.getElementById('statusTrack').innerHTML = statusOrder.map((s, i) => {
             const cls = i < currentIndex ? 'done' : i === currentIndex ? (app.status === 'Funding granted' ? 'done' : 'active') : '';
-            return `<div class="status-step ${cls}"><span class="status-dot"></span><span>${statusLabelsFr[s] || s}</span></div>`;
+            return `<div class="status-step ${cls}"><span class="status-dot"></span><span>${translateRuntime(statusLabelKeys[s] || s)}</span></div>`;
         }).join('');
 
         const { data: docs } = await localDB
@@ -2493,9 +2527,9 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             .eq('application_id', app.id)
             .order('created_at', { ascending:true });
 
-        const labels = documentLabelsFr;
+        const labels = documentLabelKeys;
         document.getElementById('dashDocuments').innerHTML = docs?.length
-            ? `<h3 style="color:#0f2b4b;">Documents transmis</h3><ul style="padding-left:1.2rem;color:#5b6f87;">${docs.map(d => `<li>${labels[d.document_type] || d.document_type} — ${d.original_name}</li>`).join('')}</ul>`
+            ? `<h3 style="color:#0f2b4b;">Documents transmis</h3><ul style="padding-left:1.2rem;color:#5b6f87;">${docs.map(d => `<li>${translateRuntime(labels[d.document_type] || d.document_type)} — ${d.original_name}</li>`).join('')}</ul>`
             : '<p class="doc-note">Aucun document enregistré.</p>';
 
         const { data: walletRows } = await localDB
@@ -2508,8 +2542,8 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         walletEl.innerHTML = `<h3None>Historique du compte</h3>` + (walletRows?.length
             ? walletRows.map(t => {
                 const sign = Number(t.amount) >= 0 ? '+' : '';
-                const amount = `${sign}${Number(t.amount).toLocaleString(window.FINVERO_LOCALE || 'fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
-                const date = new Date(t.created_at).toLocaleString(window.FINVERO_LOCALE || 'fr-FR');
+                const amount = `${sign}${Number(t.amount).toLocaleString(getLocale(),{minimumFractionDigits:2,maximumFractionDigits:2})} €`;
+                const date = new Date(t.created_at).toLocaleString(getLocale());
                 return `<div class="wallet-entry ${t.transaction_type === 'credit' ? 'credit' : 'debit'}"><div><strong>${t.transaction_type === 'credit' ? 'Crédit' : t.transaction_type === 'debit' ? 'Débit' : 'Ajustement'}</strong><br><span class="doc-note">${t.note || t.reference || ''} · ${date}</span></div><div class="wallet-amount">${amount}</div></div>`;
               }).join('')
             : '<p class="doc-note" data-i18n="Aucun mouvement sur le compte.">Aucun mouvement sur le compte.</p>');
@@ -2864,7 +2898,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 
     function renderAdminClients() {
         const q=(adminClientSearch.value||'').trim().toLowerCase();
-        const rows=adminClients.filter(c=>[c.full_name,c.email,c.phone,c.tracking_number,c.country,c.application_status,statusLabelsFr[c.application_status],c.amount_requested,c.duration_months,c.annual_rate].some(v=>String(v??'').toLowerCase().includes(q)));
+        const rows=adminClients.filter(c=>[c.full_name,c.email,c.phone,c.tracking_number,c.country,c.application_status,statusLabelKeys[c.application_status],c.amount_requested,c.duration_months,c.annual_rate].some(v=>String(v??'').toLowerCase().includes(q)));
         adminClientList.innerHTML=rows.length ? rows.map(c=>`
             <div class="admin-client-card" data-user-id="${esc(c.user_id)}">
                 <div class="admin-client-head">
@@ -2872,7 +2906,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                         <div class="admin-client-name">${esc(c.full_name||'Client sans nom')}</div>
                         <div class="admin-client-meta">${esc(c.email||'')} · ${esc(c.phone||'')}</div>
                         <div class="admin-client-meta">Dossier : ${esc(c.tracking_number||'Aucun dossier')} · ${c.amount_requested!=null?Number(c.amount_requested).toLocaleString('fr-FR')+' €':'—'} · ${c.duration_months!=null?esc(c.duration_months)+' mois':'—'}</div>
-                        <div class="admin-client-meta">Statut du dossier : <strong>${esc(statusLabelsFr[c.application_status]||c.application_status||'Aucun dossier')}</strong></div>
+                        <div class="admin-client-meta">Statut du dossier : <strong>${esc(translateRuntime(statusLabelKeys[c.application_status]||c.application_status||'Aucun dossier'))}</strong></div>
                         <div class="admin-application-details">
                             <span><b>Taux :</b> ${c.annual_rate!=null?Number(c.annual_rate).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' %':'—'}</span>
                             <span><b>Mensualité :</b> ${c.monthly_payment!=null?Number(c.monthly_payment).toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2})+' €':'—'}</span>
@@ -2900,13 +2934,13 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                                 const currentIndex=statusOrder.indexOf(c.application_status);
                                 const cls=i===currentIndex ? `is-current${s==='Funding granted' ? ' is-granted' : ''}` : (currentIndex>=0 && i<currentIndex?'is-done':'');
                                 const icons={'Application submitted':'📩','Documents under review':'🔎','Application under assessment':'📚','Application approved':'✅','Contract to sign':'✍️','Funding in preparation':'⏳','Funding granted':'💶'};
-                                return `<button type="button" class="admin-status-step-btn ${cls}" data-status="${esc(s)}" title="Sélectionner : ${esc(statusLabelsFr[s]||s)}"><span class="admin-status-icon">${icons[s]||'•'}</span><span>${esc(statusLabelsFr[s]||s)}</span></button>`;
+                                return `<button type="button" class="admin-status-step-btn ${cls}" data-status="${esc(s)}" title="Sélectionner : ${esc(translateRuntime(statusLabelKeys[s]||s))}"><span class="admin-status-icon">${icons[s]||'•'}</span><span>${esc(translateRuntime(statusLabelKeys[s]||s))}</span></button>`;
                             }).join('')}
                         </div>
                     </div>
                     <div class="admin-status-controls">
                         <select class="admin-application-status-select" aria-label="Nouveau statut du dossier">
-                            ${statusOrder.map(s=>`<option value="${s}" ${s===c.application_status?'selected':''}>${esc(statusLabelsFr[s]||s)}</option>`).join('')}
+                            ${statusOrder.map(s=>`<option value="${s}" ${s===c.application_status?'selected':''}>${esc(translateRuntime(statusLabelKeys[s]||s))}</option>`).join('')}
                         </select>
                         <input class="admin-application-status-note" type="text" maxlength="200" placeholder="Commentaire sur le dossier (facultatif)">
                         <button type="button" class="account-btn primary admin-application-status-btn"><span class="admin-action-icon">✓</span> Mettre à jour le dossier</button>
@@ -2997,10 +3031,10 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 const problems=[];
                 for(const type of required){
                     const doc=(docs||[]).find(d=>d.document_type===type);
-                    if(!doc){ problems.push(`${documentLabelsFr[type]} manquant`); continue; }
-                    if(!doc.original_name || !String(doc.original_name).trim()) problems.push(`${documentLabelsFr[type]} : nom de fichier manquant`);
-                    if(doc.file_size!=null && Number(doc.file_size)>maxSize) problems.push(`${documentLabelsFr[type]} : fichier supérieur à 10 Mo`);
-                    if(doc.mime_type && !(allowedTypes[type]||[]).includes(String(doc.mime_type).toLowerCase())) problems.push(`${documentLabelsFr[type]} : type de fichier non autorisé`);
+                    if(!doc){ problems.push(`${translateRuntime(documentLabelKeys[type])} manquant`); continue; }
+                    if(!doc.original_name || !String(doc.original_name).trim()) problems.push(`${translateRuntime(documentLabelKeys[type])} : nom de fichier manquant`);
+                    if(doc.file_size!=null && Number(doc.file_size)>maxSize) problems.push(`${translateRuntime(documentLabelKeys[type])} : fichier supérieur à 10 Mo`);
+                    if(doc.mime_type && !(allowedTypes[type]||[]).includes(String(doc.mime_type).toLowerCase())) problems.push(`${translateRuntime(documentLabelKeys[type])} : type de fichier non autorisé`);
                 }
 
                 if(problems.length){
@@ -3033,7 +3067,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 return;
             }
 
-            if(!confirm(`Modifier le statut du dossier en « ${statusLabelsFr[status] || status} » ?`)) return;
+            if(!confirm(`Modifier le statut du dossier en « ${translateRuntime(statusLabelKeys[status] || status)} » ?`)) return;
 
             btn.disabled=true;
             try{
@@ -3041,7 +3075,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                     .update({status})
                     .eq('id',application.application_id);
                 if(error) throw error;
-                alert(`Statut du dossier mis à jour : ${statusLabelsFr[status] || status}${note ? `\nCommentaire : ${note}` : ''}`);
+                alert(`Statut du dossier mis à jour : ${translateRuntime(statusLabelKeys[status] || status)}${note ? `\nCommentaire : ${note}` : ''}`);
                 await loadAdminClients();
             }catch(e){
                 alert(e.message || 'Impossible de modifier le statut du dossier.');
@@ -3271,29 +3305,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 })();
 </script>
 
-<!-- SYSTÈME DE LANGUES — ARCHITECTURE ETHICALL BON -->
-<script>
-const translations={"fr":{"Se connecter":"Se connecter","Créer un compte":"Créer un compte","Mon espace":"Mon espace","Espace client":"Espace client","Connexion...":"Connexion...","Se déconnecter":"Se déconnecter","Solutions de financement • Europe":"Solutions de financement • Europe","Avez-vous besoin":"Avez-vous besoin","d'un financement":"d'un financement","Simulez votre crédit en quelques secondes, sans engagement.":"Simulez votre crédit en quelques secondes, sans engagement.","Réponse sous 24h":"Réponse sous 24h","dossiers reçus par semaine":"dossiers reçus par semaine","taux d’acceptation":"taux d’acceptation","de financements accordés par mois":"de financements accordés par mois","Mon dossier de financement":"Mon dossier de financement","Bienvenue.":"Bienvenue.","Actualiser":"Actualiser","Solde disponible":"Solde disponible","Compte actif":"Compte actif","N° de dossier":"N° de dossier","Montant demandé":"Montant demandé","Durée":"Durée","Mensualité estimée":"Mensualité estimée","Statut":"Statut","Aucun dossier":"Aucun dossier","Dernière mise à jour":"Dernière mise à jour","Suivi de votre demande":"Suivi de votre demande","Modifier mon mot de passe":"Modifier mon mot de passe","Transférer vers mon compte bancaire":"Transférer vers mon compte bancaire","Fermer l'espace":"Fermer l'espace","Administration":"Administration","Gestion sécurisée des comptes clients, soldes et statuts.":"Gestion sécurisée des comptes clients, soldes et statuts.","Retour au site":"Retour au site","Paramètres":"Paramètres","Accès administration":"Accès administration","Entrez vos identifiants administrateur.":"Entrez vos identifiants administrateur.","Ouvrir l'administration":"Ouvrir l'administration","Paramètres d'administration":"Paramètres d'administration","Modifiez le nom d'utilisateur et, si nécessaire, le mot de passe.":"Modifiez le nom d'utilisateur et, si nécessaire, le mot de passe.","Enregistrer les paramètres":"Enregistrer les paramètres","Remplissez le formulaire suivant":"Remplissez le formulaire suivant","Ajustez le curseur pour le montant, la durée est libre.":"Ajustez le curseur pour le montant, la durée est libre.","Montant souhaité (€) –":"Montant souhaité (€) –","max 350 000 €":"max 350 000 €","Durée du prêt (mois)":"Durée du prêt (mois)","Taux d’intérêt annuel (%)":"Taux d’intérêt annuel (%)","Numéro de téléphone":"Numéro de téléphone","Simuler mon crédit":"Simuler mon crédit","Mois":"Mois","Mensualité":"Mensualité","Intérêts":"Intérêts","Capital remboursé":"Capital remboursé","Capital restant":"Capital restant","Faites défiler pour voir toutes les échéances":"Faites défiler pour voir toutes les échéances","Téléchargez vos documents":"Téléchargez vos documents","Carte d'identité":"Carte d'identité","Code d'identification fiscale":"Code d'identification fiscale","Document de revenu mensuel":"Document de revenu mensuel","Les documents sont associés à votre compte et stockés dans l'espace sécurisé prévu à cet effet.":"Les documents sont associés à votre compte et stockés dans l'espace sécurisé prévu à cet effet.","Enregistrer et envoyer ma demande":"Enregistrer et envoyer ma demande","Ouvrir mon e-mail":"Ouvrir mon e-mail","Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.":"Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.","Demande de crédit entièrement en ligne":"Demande de crédit entièrement en ligne","Étape 1":"Étape 1","Calculez votre mensualité.":"Calculez votre mensualité.","Étape 2":"Étape 2","Étape 3":"Étape 3","Pourquoi choisir Finvero Capital ?":"Pourquoi choisir Finvero Capital ?","Fiable":"Fiable","Rapide":"Rapide","Sûr":"Sûr","Votre sécurité, notre priorité":"Votre sécurité, notre priorité","Mentions légales":"Mentions légales","Politique de confidentialité":"Politique de confidentialité","Conditions d’utilisation":"Conditions d’utilisation","Conditions d'utilisation":"Conditions d’utilisation","Informations crédit":"Informations crédit","Service de simulation et de demande de financement.":"Service de simulation et de demande de financement.","Votre espace client":"Votre espace client","Créez votre compte pour suivre votre dossier.":"Créez votre compte pour suivre votre dossier.","Connexion":"Connexion","Inscription":"Inscription","Mot de passe oublié ?":"Mot de passe oublié ?","Nom complet":"Nom complet","Civilité":"Civilité","Téléphone":"Téléphone","Confirmer le mot de passe":"Confirmer le mot de passe","Créer mon compte":"Créer mon compte","Adresse e-mail du compte":"Adresse e-mail du compte","Envoyer le lien de réinitialisation":"Envoyer le lien de réinitialisation","Retour à la connexion":"Retour à la connexion","Nouveau mot de passe":"Nouveau mot de passe","Confirmer le nouveau mot de passe":"Confirmer le nouveau mot de passe","Enregistrer le nouveau mot de passe":"Enregistrer le nouveau mot de passe","Numéro de suivi":"Numéro de suivi","Conservez ce numéro pour le suivi de votre demande :":"Conservez ce numéro pour le suivi de votre demande :","Cliquez sur le bouton ci-dessous pour le copier.":"Cliquez sur le bouton ci-dessous pour le copier.","Copier":"Copier","Demande de transfert bancaire":"Demande de transfert bancaire","Nom et prénom":"Nom et prénom","IBAN / numéro de compte":"IBAN / numéro de compte","Nom de la banque":"Nom de la banque","Montant à transférer (€)":"Montant à transférer (€)","Valider":"Valider","Continuer":"Continuer","Contacter le support":"Contacter le support","Annuler":"Annuler","Documents du client":"Documents du client","Aucun document trouvé.":"Aucun document trouvé.","Informations légales":"Informations légales","Envoyer":"Envoyer","Demande envoyée avec succès !":"Demande envoyée avec succès !","Total à rembourser":"Total à rembourser","Intérêts totaux":"Intérêts totaux","Taux appliqué":"Taux appliqué","Récapitulatif de l’opération":"Récapitulatif de l’opération","Numéro de suivi :":"Numéro de suivi :","Nom et prénom :":"Nom et prénom :","IBAN :":"IBAN :","Banque :":"Banque :","Montant demandé :":"Montant demandé :","Statut de l’opération":"Statut de l’opération","Chargement...":"Chargement...","Télécharger":"Télécharger","Historique du compte":"Historique du compte","Aucun mouvement sur le compte.":"Aucun mouvement sur le compte."},"de":{"Se connecter":"Anmelden","Créer un compte":"Konto erstellen","Mon espace":"Mein Bereich","Espace client":"Kundenbereich","Connexion...":"Verbindung...","Se déconnecter":"Abmelden","Solutions de financement • Europe":"Finanzierungslösungen • Europa","Avez-vous besoin":"Benötigen Sie","d'un financement":"eine Finanzierung","Simulez votre crédit en quelques secondes, sans engagement.":"Berechnen Sie Ihren Kredit in wenigen Sekunden, unverbindlich.","Réponse sous 24h":"Antwort innerhalb von 24 Stunden","dossiers reçus par semaine":"Anträge pro Woche","taux d’acceptation":"Annahmequote","de financements accordés par mois":"Finanzierungen pro Monat","Mon dossier de financement":"Meine Finanzierungsakte","Bienvenue.":"Willkommen.","Actualiser":"Aktualisieren","Solde disponible":"Verfügbares Guthaben","Compte actif":"Aktives Konto","N° de dossier":"Aktennummer","Montant demandé":"Beantragter Betrag","Durée":"Laufzeit","Mensualité estimée":"Geschätzte Monatsrate","Statut":"Status","Aucun dossier":"Keine Akte","Dernière mise à jour":"Letzte Aktualisierung","Suivi de votre demande":"Status Ihrer Anfrage","Modifier mon mot de passe":"Passwort ändern","Transférer vers mon compte bancaire":"Auf mein Bankkonto überweisen","Fermer l'espace":"Bereich schließen","Administration":"Administration","Gestion sécurisée des comptes clients, soldes et statuts.":"Sichere Verwaltung von Kundenkonten, Guthaben und Status.","Retour au site":"Zurück zur Website","Paramètres":"Einstellungen","Accès administration":"Administrationszugang","Entrez vos identifiants administrateur.":"Geben Sie Ihre Administrator-Zugangsdaten ein.","Ouvrir l'administration":"Administration öffnen","Paramètres d'administration":"Administrationseinstellungen","Modifiez le nom d'utilisateur et, si nécessaire, le mot de passe.":"Ändern Sie den Benutzernamen und bei Bedarf das Passwort.","Enregistrer les paramètres":"Einstellungen speichern","Remplissez le formulaire suivant":"Füllen Sie das folgende Formular aus","Ajustez le curseur pour le montant, la durée est libre.":"Passen Sie den Betrag an; die Laufzeit ist frei wählbar.","Montant souhaité (€) –":"Gewünschter Betrag (€) –","max 350 000 €":"max. 350.000 €","Durée du prêt (mois)":"Laufzeit des Kredits (Monate)","Taux d’intérêt annuel (%)":"Jährlicher Zinssatz (%)","Numéro de téléphone":"Telefonnummer","Simuler mon crédit":"Kredit berechnen","Mois":"Monat","Mensualité":"Monatsrate","Intérêts":"Zinsen","Capital remboursé":"Getilgtes Kapital","Capital restant":"Restkapital","Faites défiler pour voir toutes les échéances":"Scrollen Sie, um alle Raten zu sehen","Téléchargez vos documents":"Laden Sie Ihre Dokumente hoch","Carte d'identité":"Personalausweis","Code d'identification fiscale":"Steueridentifikationsnummer","Document de revenu mensuel":"Nachweis des monatlichen Einkommens","Les documents sont associés à votre compte et stockés dans l'espace sécurisé prévu à cet effet.":"Die Dokumente werden Ihrem Konto zugeordnet und sicher gespeichert.","Enregistrer et envoyer ma demande":"Anfrage speichern und senden","Ouvrir mon e-mail":"E-Mail öffnen","Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.":"Ihre Anfrage ist in Ihrem Bereich gespeichert. Sie können Ihr E-Mail-Programm öffnen, um die Informationen an Finvero Capital zu senden.","Demande de crédit entièrement en ligne":"Kreditantrag vollständig online","Étape 1":"Schritt 1","Calculez votre mensualité.":"Berechnen Sie Ihre Monatsrate.","Étape 2":"Schritt 2","Étape 3":"Schritt 3","Pourquoi choisir Finvero Capital ?":"Warum Finvero Capital wählen?","Fiable":"Zuverlässig","Rapide":"Schnell","Sûr":"Sicher","Votre sécurité, notre priorité":"Ihre Sicherheit, unsere Priorität","Mentions légales":"Impressum","Politique de confidentialité":"Datenschutzerklärung","Conditions d’utilisation":"Nutzungsbedingungen","Conditions d'utilisation":"Nutzungsbedingungen","Informations crédit":"Kreditinformationen","Service de simulation et de demande de financement.":"Simulation und Finanzierungsantragsservice.","Votre espace client":"Ihr Kundenbereich","Créez votre compte pour suivre votre dossier.":"Erstellen Sie Ihr Konto, um Ihre Akte zu verfolgen.","Connexion":"Anmelden","Inscription":"Registrierung","Mot de passe oublié ?":"Passwort vergessen?","Nom complet":"Vollständiger Name","Civilité":"Anrede","Téléphone":"Telefon","Confirmer le mot de passe":"Passwort bestätigen","Créer mon compte":"Konto erstellen","Adresse e-mail du compte":"E-Mail-Adresse des Kontos","Envoyer le lien de réinitialisation":"Link zum Zurücksetzen senden","Retour à la connexion":"Zurück zur Anmeldung","Nouveau mot de passe":"Neues Passwort","Confirmer le nouveau mot de passe":"Neues Passwort bestätigen","Enregistrer le nouveau mot de passe":"Neues Passwort speichern","Numéro de suivi":"Trackingnummer","Conservez ce numéro pour le suivi de votre demande :":"Bewahren Sie diese Nummer zur Verfolgung Ihrer Anfrage auf:","Cliquez sur le bouton ci-dessous pour le copier.":"Klicken Sie unten, um sie zu kopieren.","Copier":"Kopieren","Demande de transfert bancaire":"Banküberweisungsanfrage","Nom et prénom":"Vor- und Nachname","IBAN / numéro de compte":"IBAN / Kontonummer","Nom de la banque":"Name der Bank","Montant à transférer (€)":"Zu überweisender Betrag (€)","Valider":"Bestätigen","Continuer":"Weiter","Contacter le support":"Support kontaktieren","Annuler":"Abbrechen","Documents du client":"Kundendokumente","Aucun document trouvé.":"Keine Dokumente gefunden.","Informations légales":"Rechtliche Informationen","Envoyer":"Senden","Demande envoyée avec succès !":"Anfrage erfolgreich gesendet!","Total à rembourser":"Gesamtrückzahlung","Intérêts totaux":"Gesamtzinsen","Taux appliqué":"Angewandter Zinssatz","Récapitulatif de l’opération":"Transaktionsübersicht","Numéro de suivi :":"Trackingnummer:","Nom et prénom :":"Vor- und Nachname:","IBAN :":"IBAN:","Banque :":"Bank:","Montant demandé :":"Beantragter Betrag:","Statut de l’opération":"Transaktionsstatus","Chargement...":"Wird geladen...","Télécharger":"Herunterladen","Historique du compte":"Kontoverlauf","Aucun mouvement sur le compte.":"Keine Kontobewegungen."},"it":{"Se connecter":"Accedi","Créer un compte":"Crea un account","Mon espace":"La mia area","Espace client":"Area clienti","Connexion...":"Connessione...","Se déconnecter":"Disconnetti","Solutions de financement • Europe":"Soluzioni di finanziamento • Europa","Avez-vous besoin":"Hai bisogno","d'un financement":"di un finanziamento","Simulez votre crédit en quelques secondes, sans engagement.":"Calcola il tuo credito in pochi secondi, senza impegno.","Réponse sous 24h":"Risposta entro 24 ore","dossiers reçus par semaine":"richieste ricevute a settimana","taux d’acceptation":"tasso di accettazione","de financements accordés par mois":"finanziamenti concessi al mese","Mon dossier de financement":"La mia pratica di finanziamento","Bienvenue.":"Benvenuto.","Actualiser":"Aggiorna","Solde disponible":"Saldo disponibile","Compte actif":"Account attivo","N° de dossier":"N. pratica","Montant demandé":"Importo richiesto","Durée":"Durata","Mensualité estimée":"Rata stimata","Statut":"Stato","Aucun dossier":"Nessuna pratica","Dernière mise à jour":"Ultimo aggiornamento","Suivi de votre demande":"Stato della richiesta","Modifier mon mot de passe":"Modifica password","Transférer vers mon compte bancaire":"Trasferisci sul mio conto bancario","Fermer l'espace":"Chiudi area","Administration":"Amministrazione","Gestion sécurisée des comptes clients, soldes et statuts.":"Gestione sicura degli account clienti, saldi e stati.","Retour au site":"Torna al sito","Paramètres":"Impostazioni","Accès administration":"Accesso amministrazione","Entrez vos identifiants administrateur.":"Inserisci le credenziali di amministratore.","Ouvrir l'administration":"Apri amministrazione","Paramètres d'administration":"Impostazioni amministrazione","Modifiez le nom d'utilisateur et, si nécessaire, le mot de passe.":"Modifica il nome utente e, se necessario, la password.","Enregistrer les paramètres":"Salva impostazioni","Remplissez le formulaire suivant":"Compila il seguente modulo","Ajustez le curseur pour le montant, la durée est libre.":"Regola l’importo; la durata è libera.","Montant souhaité (€) –":"Importo desiderato (€) –","max 350 000 €":"max 350.000 €","Durée du prêt (mois)":"Durata del prestito (mesi)","Taux d’intérêt annuel (%)":"Tasso d’interesse annuo (%)","Numéro de téléphone":"Numero di telefono","Simuler mon crédit":"Calcola il mio credito","Mois":"Mese","Mensualité":"Rata","Intérêts":"Interessi","Capital remboursé":"Capitale rimborsato","Capital restant":"Capitale residuo","Faites défiler pour voir toutes les échéances":"Scorri per vedere tutte le rate","Téléchargez vos documents":"Carica i tuoi documenti","Carte d'identité":"Documento d’identità","Code d'identification fiscale":"Codice fiscale","Document de revenu mensuel":"Documento del reddito mensile","Les documents sont associés à votre compte et stockés dans l'espace sécurisé prévu à cet effet.":"I documenti sono associati al tuo account e conservati nell’area sicura prevista.","Enregistrer et envoyer ma demande":"Salva e invia la mia richiesta","Ouvrir mon e-mail":"Apri la mia e-mail","Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.":"La tua richiesta è salvata nella tua area. Puoi aprire la posta elettronica per inviare le informazioni a Finvero Capital.","Demande de crédit entièrement en ligne":"Richiesta di credito completamente online","Étape 1":"Passaggio 1","Calculez votre mensualité.":"Calcola la tua rata.","Étape 2":"Passaggio 2","Étape 3":"Passaggio 3","Pourquoi choisir Finvero Capital ?":"Perché scegliere Finvero Capital?","Fiable":"Affidabile","Rapide":"Veloce","Sûr":"Sicuro","Votre sécurité, notre priorité":"La tua sicurezza, la nostra priorità","Mentions légales":"Note legali","Politique de confidentialité":"Informativa sulla privacy","Conditions d’utilisation":"Condizioni d’uso","Conditions d'utilisation":"Condizioni d’uso","Informations crédit":"Informazioni sul credito","Service de simulation et de demande de financement.":"Servizio di simulazione e richiesta di finanziamento.","Votre espace client":"La tua area clienti","Créez votre compte pour suivre votre dossier.":"Crea il tuo account per seguire la tua pratica.","Connexion":"Accedi","Inscription":"Registrazione","Mot de passe oublié ?":"Password dimenticata?","Nom complet":"Nome completo","Civilité":"Titolo","Téléphone":"Telefono","Confirmer le mot de passe":"Conferma password","Créer mon compte":"Crea il mio account","Adresse e-mail du compte":"Indirizzo e-mail dell’account","Envoyer le lien de réinitialisation":"Invia il link di reimpostazione","Retour à la connexion":"Torna all’accesso","Nouveau mot de passe":"Nuova password","Confirmer le nouveau mot de passe":"Conferma la nuova password","Enregistrer le nouveau mot de passe":"Salva nuova password","Numéro de suivi":"Numero di tracciamento","Conservez ce numéro pour le suivi de votre demande :":"Conserva questo numero per seguire la tua richiesta:","Cliquez sur le bouton ci-dessous pour le copier.":"Clicca sul pulsante qui sotto per copiarlo.","Copier":"Copia","Demande de transfert bancaire":"Richiesta di trasferimento bancario","Nom et prénom":"Nome e cognome","IBAN / numéro de compte":"IBAN / numero di conto","Nom de la banque":"Nome della banca","Montant à transférer (€)":"Importo da trasferire (€)","Valider":"Conferma","Continuer":"Continua","Contacter le support":"Contatta il supporto","Annuler":"Annulla","Documents du client":"Documenti del cliente","Aucun document trouvé.":"Nessun documento trovato.","Informations légales":"Informazioni legali","Envoyer":"Invia","Demande envoyée avec succès !":"Richiesta inviata con successo!","Total à rembourser":"Totale da rimborsare","Intérêts totaux":"Interessi totali","Taux appliqué":"Tasso applicato","Récapitulatif de l’opération":"Riepilogo dell’operazione","Numéro de suivi :":"Numero di tracciamento:","Nom et prénom :":"Nome e cognome:","IBAN :":"IBAN:","Banque :":"Banca:","Montant demandé :":"Importo richiesto:","Statut de l’opération":"Stato dell’operazione","Chargement...":"Caricamento...","Télécharger":"Scarica","Historique du compte":"Cronologia dell’account","Aucun mouvement sur le compte.":"Nessun movimento sul conto."}};
 
-let currentLanguage=localStorage.getItem("eh_language")||"fr";
-if(!translations[currentLanguage])currentLanguage="fr";
-
-function applyLanguage(lang){
- currentLanguage=translations[lang]?lang:"fr";
- localStorage.setItem("eh_language",currentLanguage);
- document.documentElement.lang=currentLanguage;
- const langBtn=document.getElementById("lang-btn");
- if(langBtn)langBtn.value=currentLanguage;
- document.querySelectorAll("[data-i18n]").forEach(el=>{
-  const key=el.dataset.i18n;
-  if(translations[currentLanguage][key]!==undefined)el.innerHTML=translations[currentLanguage][key];
- });
-}
-
-document.getElementById("lang-btn")?.addEventListener("change",e=>applyLanguage(e.target.value));
-
-applyLanguage(currentLanguage);
-</script>
 
 <style id="professional-heading-fix">
 /* Titres : aucun pictogramme/pseudo-element parasite */
