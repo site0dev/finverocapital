@@ -996,92 +996,115 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 <!-- TOAST -->
 <div id="toast" class="toast">📨 Demande envoyée avec succès !</div>
 
-<!-- TRADUCTION -->
+<!-- TRADUCTION MULTILINGUE FINVERO -->
 <div id="google_translate_element" aria-hidden="true"></div>
 <script>
-function googleTranslateElementInit() {
-    if (!window.google || !google.translate) return;
-    new google.translate.TranslateElement({
-        pageLanguage: 'fr',
-        includedLanguages: 'fr,en,es,pt,de,it,nl,pl,ro,cs,el,sv,da,fi,no,hu,bg,sk,uk,tr',
-        autoDisplay: false,
-        multilanguagePage: true
-    }, 'google_translate_element');
-    setTimeout(function () {
-        if (window.__finveroPendingLanguage && window.__finveroApplyGoogleLanguage) {
-            window.__finveroApplyGoogleLanguage(window.__finveroPendingLanguage);
-        }
-    }, 0);
-}
-</script>
-<script>
 (function () {
-    function loadGoogleTranslate() {
-        if (window.__finveroGoogleTranslateLoading || window.google?.translate) return;
+    'use strict';
+    const SUPPORTED = ['fr','en','es','pt','de','it','nl','pl','ro','cs','el','sv','da','fi','no','hu','bg','sk','uk','tr'];
+    const DEFAULT_LANGUAGE = 'fr';
+    const COOKIE_NAME = 'googtrans';
+
+    function getCookie(name) {
+        const m = document.cookie.match(new RegExp('(?:^|;\\s*)' + name.replace(/[.*+?^${}()|[\\]\\]/g,'\\$&') + '=([^;]*)'));
+        return m ? decodeURIComponent(m[1]) : '';
+    }
+    function setCookie(name, value) {
+        document.cookie = name + '=' + encodeURIComponent(value) + '; path=/; max-age=31536000; SameSite=Lax';
+    }
+    function normalizeLanguage(value) {
+        value = String(value || '').toLowerCase().split('-')[0];
+        return SUPPORTED.includes(value) ? value : DEFAULT_LANGUAGE;
+    }
+    function getSavedLanguage() {
+        const cookie = getCookie(COOKIE_NAME);
+        const m = cookie.match(/^\/fr\/([a-z-]+)$/i);
+        if (m && SUPPORTED.includes(m[1])) return m[1];
+        try { return normalizeLanguage(localStorage.getItem('finvero_language')); } catch (_) { return DEFAULT_LANGUAGE; }
+    }
+    function saveLanguage(lang) {
+        lang = normalizeLanguage(lang);
+        setCookie(COOKIE_NAME, '/fr/' + lang);
+        try { localStorage.setItem('finvero_language', lang); } catch (_) {}
+        window.FINVERO_LANGUAGE = lang;
+        window.FINVERO_LOCALE = lang === 'fr' ? 'fr-FR' : lang;
+        document.documentElement.lang = lang;
+        return lang;
+    }
+
+    window.FINVERO_SET_LANGUAGE = function (lang) {
+        const target = saveLanguage(lang);
+        if (target === 'fr') {
+            // Revenir au français sans recharger : Google Translate accepte 'fr' comme langue source.
+            const combo = document.querySelector('.goog-te-combo');
+            if (combo) { combo.value = 'fr'; combo.dispatchEvent(new Event('change', {bubbles:true})); }
+            return;
+        }
+        window.__finveroApplyGoogleLanguage(target);
+    };
+
+    function findGoogleCombo() {
+        return document.querySelector('.goog-te-combo');
+    }
+    window.__finveroApplyGoogleLanguage = function (target) {
+        target = normalizeLanguage(target);
+        const combo = findGoogleCombo();
+        if (!combo) return false;
+        combo.value = target;
+        combo.dispatchEvent(new Event('change', { bubbles: true }));
+        return true;
+    };
+
+    window.googleTranslateElementInit = function () {
+        if (!window.google || !google.translate) return;
+        new google.translate.TranslateElement({
+            pageLanguage: 'fr',
+            includedLanguages: SUPPORTED.join(','),
+            autoDisplay: false,
+            multilanguagePage: true
+        }, 'google_translate_element');
+        const target = getSavedLanguage();
+        saveLanguage(target);
+        // Le sélecteur Google est créé de façon asynchrone.
+        let tries = 0;
+        const apply = function () {
+            if (target === 'fr') return;
+            if (window.__finveroApplyGoogleLanguage(target)) return;
+            if (++tries < 60) setTimeout(apply, 100);
+        };
+        setTimeout(apply, 100);
+    };
+
+    window.__finveroLoadGoogleTranslate = function () {
+        if (window.__finveroGoogleTranslateLoading || (window.google && window.google.translate)) return;
         window.__finveroGoogleTranslateLoading = true;
         const script = document.createElement('script');
         script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
         script.async = true;
         script.crossOrigin = 'anonymous';
         document.head.appendChild(script);
-    }
-    window.__finveroLoadGoogleTranslate = loadGoogleTranslate;
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const select = document.getElementById('languageSelect');
+        const current = getSavedLanguage();
+        saveLanguage(current);
+        if (select) {
+            select.value = current;
+            select.addEventListener('change', function () {
+                // IMPORTANT : aucune actualisation de page.
+                window.FINVERO_SET_LANGUAGE(this.value);
+            });
+        }
+        if (current !== 'fr') window.__finveroLoadGoogleTranslate();
+        else {
+            // Charger quand même l'API pour permettre un changement instantané ultérieur.
+            window.__finveroLoadGoogleTranslate();
+        }
+    });
 })();
 </script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const select = document.getElementById('languageSelect');
-    const supported = ['fr','en','es','pt','de','it','nl','pl','ro','cs','el','sv','da','fi','no','hu','bg','sk','uk','tr'];
-    function setLanguageCookie(lang) {
-        document.cookie = 'googtrans=/fr/' + lang + ';path=/;SameSite=Lax';
-        try { document.cookie = 'googtrans=/fr/' + lang + ';path=/;domain=' + location.hostname + ';SameSite=Lax'; } catch (_) {}
-    }
-    function getSavedLanguage() {
-        const match = document.cookie.match(/(?:^|;\s*)googtrans=\/fr\/([^;]+)/);
-        return match && supported.includes(match[1]) ? match[1] : null;
-    }
-    function getBrowserLanguage() {
-        const langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'fr'];
-        return langs.map(lang => String(lang).toLowerCase().split('-')[0]).find(lang => supported.includes(lang)) || 'fr';
-    }
-    function applyGoogleLanguage(lang) {
-        lang = supported.includes(lang) ? lang : 'fr';
-        window.__finveroPendingLanguage = lang;
-        window.FINVERO_LANGUAGE = lang;
-        window.FINVERO_LOCALE = lang === 'fr' ? 'fr-FR' : lang;
-        document.documentElement.lang = lang;
-        setLanguageCookie(lang);
-        if (select) select.value = lang;
-        const combo = document.querySelector('.goog-te-combo');
-        if (combo) {
-            combo.value = lang;
-            combo.dispatchEvent(new Event('change', { bubbles: true }));
-            window.__finveroPendingLanguage = null;
-            return true;
-        }
-        return false;
-    }
-    window.__finveroApplyGoogleLanguage = applyGoogleLanguage;
-    const saved = getSavedLanguage();
-    const current = saved || getBrowserLanguage();
-    window.FINVERO_LANGUAGE = current;
-    window.FINVERO_LOCALE = current === 'fr' ? 'fr-FR' : current;
-    document.documentElement.lang = current;
-    if (!saved) setLanguageCookie(current);
-    if (select) {
-        select.value = current;
-        select.addEventListener('change', function () {
-            const target = this.value;
-            applyGoogleLanguage(target);
-            if (window.__finveroLoadGoogleTranslate) window.__finveroLoadGoogleTranslate();
-            setTimeout(() => applyGoogleLanguage(target), 100);
-            setTimeout(() => applyGoogleLanguage(target), 500);
-        });
-    }
-    if (window.__finveroLoadGoogleTranslate) window.__finveroLoadGoogleTranslate();
-});
-</script>
 <script>
 (function () {
     const runFinveroApp = function () {
