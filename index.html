@@ -461,7 +461,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             <div class="language-switcher" aria-label="Choix de la langue">
                 <span class="language-label" aria-hidden="true">🌐</span>
                 <select class="lang" id="lang-btn" aria-label="Langue">
-                    <option value="" disabled selected>—</option>
+                    <option value="" disabled>—</option>
                     <option value="fr">FR</option>
                     <option value="de">DE</option>
                     <option value="it">IT</option>
@@ -3400,18 +3400,31 @@ function translateSource(text){
   return out;
 }
 
-function applyLanguage(lang){
-  if(!translations[lang]) return;
+function persistLanguage(lang){
+  try { localStorage.setItem('eh_language',lang); } catch(_) {}
+  try { document.cookie='eh_language='+encodeURIComponent(lang)+'; Max-Age=31536000; Path=/; SameSite=Lax'; } catch(_) {}
+}
+
+function applyLanguage(lang, options={}){
+  if(!translations[lang]) return false;
+
   currentLanguage=lang;
-  try { localStorage.setItem('eh_language',currentLanguage); } catch(_) {}
-  try { document.cookie='eh_language='+encodeURIComponent(currentLanguage)+'; Max-Age=31536000; Path=/; SameSite=Lax'; } catch(_) {}
+
+  // Un choix manuel est toujours persistant et prioritaire sur la langue du navigateur.
+  if(options.persist !== false){
+    persistLanguage(currentLanguage);
+  }
+
   document.documentElement.lang=currentLanguage;
   window.FINVERO_LANGUAGE=currentLanguage;
-  window.FINVERO_LOCALE={fr:'fr-FR',de:'de-DE',it:'it-IT'}[currentLanguage] || navigator.language;
+  window.FINVERO_LOCALE={fr:'fr-FR',de:'de-DE',it:'it-IT'}[currentLanguage];
   window.currentLanguage=currentLanguage;
-  const btn=document.getElementById('lang-btn'); if(btn) btn.value=currentLanguage;
+
+  const btn=document.getElementById('lang-btn');
+  if(btn) btn.value=currentLanguage;
+
   const root=document.body;
-  if(!root) return;
+  if(!root) return true;
 
   // Important : ne jamais reprendre le texte actuellement affiché comme source.
   rememberSources(root);
@@ -3454,7 +3467,12 @@ if(!window.__FINVERO_DIALOG_I18N){
   window.confirm=(message)=>nativeConfirm(translateSource(String(message ?? '')));
   window.__FINVERO_DIALOG_I18N=true;
 }
-document.getElementById('lang-btn')?.addEventListener('change',e=>applyLanguage(e.target.value));
+document.getElementById('lang-btn')?.addEventListener('change',e=>{
+  const lang=e.target.value;
+  if(translations[lang]){
+    applyLanguage(lang, {persist:true});
+  }
+});
 
 let translating=false;
 const observer=new MutationObserver((mutations)=>{
@@ -3479,7 +3497,7 @@ const observer=new MutationObserver((mutations)=>{
 });
 if(document.body) observer.observe(document.body,{childList:true,subtree:true});
 
-if(currentLanguage) applyLanguage(currentLanguage);
+if(currentLanguage) applyLanguage(currentLanguage, {persist:false});
 
 </body>
 </html>
