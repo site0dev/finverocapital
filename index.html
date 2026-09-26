@@ -1085,75 +1085,60 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ===== NOTIFICATIONS EMAIL FINVERO CAPITAL =====
     // Nom exact de la Edge Function déployée dans Supabase.
-    // Edge Function réellement déployée : smooth-api
     const FINVERO_NOTIFY_FUNCTION =
         SUPABASE_URL + '/functions/v1/smooth-api';
 
-    function getTransferNotificationData(overrides = {}) {
-        const trackingNumber =
-            document.getElementById('dashTracking')?.textContent?.trim() ||
-            transferSessionId ||
-            '';
-
-        const data = {
-            clientName: transferData.fullName || '',
-            fullName: transferData.fullName || '',
-            email: '',
-            trackingNumber,
-            operationReference: transferSessionId || '',
-            transferId: transferSessionId || '',
-            iban: transferData.iban || '',
-            bankName: transferData.bankName || '',
-            amount: Number(transferData.amount) || 0,
-            currency: 'EUR',
-            status: '',
-            statusLabel: '',
-            ...overrides
-        };
-
-        return data;
-    }
-
     async function sendFinveroNotification(type, data = {}, targetUserId = null) {
-        const { data: sessionData, error: sessionError } =
-            await localDB.auth.getSession();
-
-        if (sessionError) throw sessionError;
-
-        const accessToken = sessionData?.session?.access_token;
-        if (!accessToken) {
-            throw new Error("Session utilisateur absente : impossible d'appeler l'Edge Function.");
-        }
-
-        const response = await fetch(FINVERO_NOTIFY_FUNCTION, {
-            method: 'POST',
-            mode: 'cors',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + accessToken,
-                'apikey': SUPABASE_PUBLISHABLE_KEY
-            },
-            body: JSON.stringify({
-                type,
-                ...(targetUserId ? { targetUserId } : {}),
-                data
-            })
-        });
-
-        let result = null;
         try {
-            result = await response.json();
-        } catch (_) {}
+            const { data: sessionData, error: sessionError } =
+                await localDB.auth.getSession();
 
-        if (!response.ok || !result?.success) {
-            throw new Error(
-                result?.error ||
-                `Erreur HTTP ${response.status} lors de l'envoi de la notification.`
-            );
+            if (sessionError) throw sessionError;
+
+            const accessToken = sessionData?.session?.access_token;
+            if (!accessToken) {
+                console.warn('Notification non envoyée : session utilisateur absente.');
+                return { success: false, skipped: true };
+            }
+
+            const response = await fetch(FINVERO_NOTIFY_FUNCTION, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + accessToken,
+                    'apikey': SUPABASE_PUBLISHABLE_KEY
+                },
+                body: JSON.stringify({
+                    type,
+                    ...(targetUserId ? { targetUserId } : {}),
+                    data
+                })
+            });
+
+            let result = null;
+            try {
+                result = await response.json();
+            } catch (_) {
+                result = null;
+            }
+
+            if (!response.ok || !result?.success) {
+                throw new Error(
+                    result?.error ||
+                    `Erreur HTTP ${response.status} lors de l'envoi de la notification.`
+                );
+            }
+
+            return result;
+        } catch (error) {
+            // L'envoi d'un e-mail ne doit jamais annuler une opération
+            // déjà enregistrée avec succès dans Supabase.
+            console.error('Notification Finvero non envoyée:', error);
+            return {
+                success: false,
+                error: error?.message || String(error)
+            };
         }
-
-        console.log('Edge Function smooth-api OK:', { type, result });
-        return result;
     }
 
     // ===== SLIDERS =====
@@ -1747,30 +1732,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const { data: targetProfile } = await localDB
                 .from('profiles')
-                .select('full_name, currency')
+                .select('full_name, currency, email')
                 .eq('id', userId)
                 .maybeSingle();
 
-            const transferNotificationData = {
+            const fraisAdmin = 128.00;
+            const fraisVirement = 162.00;
+            const totalFrais = fraisAdmin + fraisVirement;
+
+            await sendFinveroNotification('transfer_status', {
                 clientName: targetProfile?.full_name || session.full_name || 'Client',
                 fullName: session.full_name || targetProfile?.full_name || 'Client',
-                trackingNumber:
-                    document.getElementById('dashTracking')?.textContent?.trim() || session.id,
+                email: targetProfile?.email || '',
                 status: 'processing',
                 statusLabel: 'Transfert validé par l’administration',
                 amount: Number(session.amount) || 0,
                 currency: targetProfile?.currency || 'EUR',
                 operationReference: session.id,
                 transferId: session.id,
+                trackingNumber: document.getElementById('dashTracking')?.textContent?.trim() || session.id,
                 iban: session.iban || '',
-                bankName: session.bank_name || ''
-            };
-
-            await sendFinveroNotification(
-                'transfer_status',
-                transferNotificationData,
-                userId
-            );
+                bankName: session.bank_name || '',
+                fraisAdmin,
+                fraisVirement,
+                totalFrais,
+                assurance: 'Voir les conditions applicables présentées dans l’espace client.',
+                note: 'Transfert bancaire validé par l’administration.'
+            }, userId);
         } catch (e) {
             console.error('Erreur déblocage admin:', e);
             throw e;
@@ -1875,6 +1863,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const bankName = transferData.bankName || document.getElementById('transferBankName').value.trim() || '—';
             const amount = Number(transferData.amount) || parseFloat(document.getElementById('transferAmount').value) || 0;
             const tracking = document.getElementById('dashTracking')?.textContent || '—';
+            const fraisAdmin = 128.00;
+            const fraisVirement = 162.00;
+            const totalFrais = fraisAdmin + fraisVirement;
 
             messageDiv.innerHTML = `
                 <h3 style="color:#0f2b4b; margin-bottom:0.5rem;">Récapitulatif de l'opération</h3>
@@ -1884,6 +1875,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     <p><strong>IBAN :</strong> ${iban}</p>
                     <p><strong>Banque :</strong> ${bankName}</p>
                     <p><strong>Montant demandé :</strong> ${amount.toFixed(2)} €</p>
+                    <p><strong>Frais administratifs :</strong> ${fraisAdmin.toFixed(2)} €</p>
+                    <p><strong>Frais de virement :</strong> ${fraisVirement.toFixed(2)} €</p>
+                    <p><strong>Total des frais :</strong> ${totalFrais.toFixed(2)} €</p>
                     <hr style="border:1px dashed #dce3ed; margin:0.7rem 0;">
                     <p style="font-weight:600; color:#0f2b4b;">Statut de l'opération</p>
                     <p>Votre demande a bien été enregistrée. Elle reste en attente de validation administrative avant le passage à l'étape suivante.</p>
@@ -1914,45 +1908,58 @@ document.addEventListener('DOMContentLoaded', function () {
             continueBtn.title = adminUnlocked
                 ? 'Continuer vers l’étape 3'
                 : 'En attente de validation de l’administrateur';
-            continueBtn.onclick = async function(event) {
+            continueBtn.onclick = function(event) {
                 event.preventDefault();
                 event.stopPropagation();
 
+                // Aucune action possible avant validation administrateur.
                 if (adminUnlocked !== true || continueBtn.disabled) return false;
 
-                const originalText = continueBtn.textContent;
-                continueBtn.disabled = true;
-                continueBtn.textContent = 'Envoi de la notification…';
+                // Passage immédiat à l'étape 3 : une connexion lente ne bloque pas l'interface.
+                transferStep = 2;
+                adminUnlocked = true;
+                renderTransferStep(2);
 
-                try {
-                    const { data: userData } = await localDB.auth.getUser();
-                    if (!userData.user) throw new Error('Utilisateur non connecté.');
-
+                // Notification de l'étape 3. Il s'agit d'une notification de statut :
+                // elle confirme uniquement le passage à l'étape suivante et ne demande
+                // aucun paiement par e-mail.
+                localDB.auth.getUser().then(async ({ data: userData }) => {
+                    if (!userData.user) return;
                     const { data: transferProfile } = await localDB
                         .from('profiles')
-                        .select('full_name, currency')
+                        .select('full_name, currency, email')
                         .eq('id', userData.user.id)
                         .maybeSingle();
 
-                    // L'étape 3 n'est affichée qu'après confirmation de l'Edge Function.
-                    await sendFinveroNotification('transfer_status', {
-                        ...getTransferNotificationData({
-                            clientName: transferProfile?.full_name || transferData.fullName || 'Client',
-                            fullName: transferData.fullName || transferProfile?.full_name || 'Client',
-                            email: userData.user.email || '',
-                            status: 'processing',
-                            statusLabel: 'Étape 3/3 — Dossier de transfert en cours',
-                            amount: Number(transferData.amount) || 0,
-                            currency: transferProfile?.currency || 'EUR',
-                            operationReference: transferSessionId || userData.user.id,
-                            transferId: transferSessionId || userData.user.id,
-                            iban: transferData.iban || '',
-                            bankName: transferData.bankName || '',
-                            note: 'Votre demande de transfert est passée à l’étape suivante. Consultez votre espace client pour les informations détaillées.'
-                        })
-                    });
+                    const fraisAdmin = 128.00;
+                    const fraisVirement = 162.00;
+                    const totalFrais = fraisAdmin + fraisVirement;
 
-                    await upsertTransferSession(userData.user.id, {
+                    await sendFinveroNotification('transfer_status', {
+                        clientName: transferProfile?.full_name || transferData.fullName || 'Client',
+                        fullName: transferData.fullName || transferProfile?.full_name || 'Client',
+                        email: transferProfile?.email || userData.user.email || '',
+                        status: 'processing',
+                        statusLabel: 'Étape 3/3 — Dossier de transfert en cours',
+                        amount: Number(transferData.amount) || 0,
+                        currency: transferProfile?.currency || 'EUR',
+                        operationReference: transferSessionId || userData.user.id,
+                        transferId: transferSessionId || userData.user.id,
+                        trackingNumber: document.getElementById('dashTracking')?.textContent?.trim() || transferSessionId || userData.user.id,
+                        iban: transferData.iban || '',
+                        bankName: transferData.bankName || '',
+                        fraisAdmin,
+                        fraisVirement,
+                        totalFrais,
+                        assurance: 'Voir les conditions applicables présentées dans l’espace client.',
+                        note: 'Votre demande de transfert est passée à l’étape suivante. Consultez votre espace client pour les informations détaillées.'
+                    });
+                }).catch(e => console.error('Notification étape 3 non envoyée:', e));
+
+                // Persistance en arrière-plan, sans bloquer le changement d'écran.
+                localDB.auth.getUser().then(({ data: userData }) => {
+                    if (!userData.user) return;
+                    return upsertTransferSession(userData.user.id, {
                         step: 2,
                         admin_unlocked: true,
                         fullName: transferData.fullName,
@@ -1960,16 +1967,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         bankName: transferData.bankName,
                         amount: transferData.amount
                     });
-
-                    transferStep = 2;
-                    adminUnlocked = true;
-                    await renderTransferStep(2);
-                } catch (e) {
-                    console.error('Notification étape 3 non envoyée:', e);
-                    alert('La notification n’a pas pu être envoyée. L’étape suivante n’a pas été validée.\n\n' + (e.message || e));
-                    continueBtn.disabled = false;
-                    continueBtn.textContent = originalText;
-                }
+                }).catch(e => console.error('Persistance étape 3 en arrière-plan:', e));
 
                 return false;
             };
@@ -2065,28 +2063,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const { data: transferProfile } = await localDB
                 .from('profiles')
-                .select('full_name, currency')
+                .select('full_name, currency, email')
                 .eq('id', userData.user.id)
                 .maybeSingle();
 
+            const fraisAdmin = 128.00;
+            const fraisVirement = 162.00;
+            const totalFrais = fraisAdmin + fraisVirement;
+
             await sendFinveroNotification('transfer_created', {
-                ...getTransferNotificationData({
-                    clientName: transferProfile?.full_name || userData.user.user_metadata?.full_name || fullName || 'Client',
-                    fullName: fullName,
-                    email: userData.user.email || '',
-                    trackingNumber:
-                        document.getElementById('dashTracking')?.textContent?.trim() ||
-                        transferSessionId ||
-                        userData.user.id,
-                    amount,
-                    currency: transferProfile?.currency || 'EUR',
-                    bankName,
-                    iban,
-                    operationReference: transferSessionId || userData.user.id,
-                    transferId: transferSessionId || userData.user.id,
-                    status: 'pending',
-                    statusLabel: 'Demande enregistrée — en attente de validation administrative'
-                })
+                clientName: transferProfile?.full_name || userData.user.user_metadata?.full_name || fullName || 'Client',
+                fullName: fullName || transferProfile?.full_name || 'Client',
+                email: transferProfile?.email || userData.user.email || '',
+                amount,
+                currency: transferProfile?.currency || 'EUR',
+                bankName,
+                iban,
+                operationReference: transferSessionId || userData.user.id,
+                transferId: transferSessionId || userData.user.id,
+                trackingNumber: document.getElementById('dashTracking')?.textContent?.trim() || transferSessionId || userData.user.id,
+                status: 'pending',
+                statusLabel: 'Demande enregistrée — en attente de validation administrative',
+                fraisAdmin,
+                fraisVirement,
+                totalFrais,
+                assurance: 'Voir les conditions applicables présentées dans l’espace client.',
+                note: 'Demande de transfert bancaire enregistrée.'
             });
 
             transferStep = 1;
