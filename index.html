@@ -428,6 +428,8 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 .language-switcher select{border:1px solid #dfe6ee;border-radius:10px;background:#fff;color:#233d59;font-weight:700;padding:.45rem 1.8rem .45rem .65rem;cursor:pointer;outline:none;}
 .language-switcher select:focus{border-color:#2a7de1;box-shadow:0 0 0 3px rgba(42,125,225,.12);}
 #google_translate_element{position:fixed!important;left:-10000px!important;top:-10000px!important;width:1px!important;height:1px!important;overflow:hidden!important;opacity:0!important;pointer-events:none!important;}
+.goog-te-gadget{font-size:0!important;}
+.goog-te-combo{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important;opacity:0!important;}
 .goog-te-banner-frame,.goog-te-balloon-frame,.goog-tooltip,.goog-tooltip:hover{display:none!important;}
 body{top:0!important;}
 .goog-text-highlight{background:transparent!important;box-shadow:none!important;}
@@ -2594,11 +2596,9 @@ body{top:0!important;}
         });
         if (error) return showAuthMessage(error.message, 'error');
 
-        // On garde un indicateur temporaire local. Il couvre le cas où
-        // Supabase consomme le fragment de récupération avant que
-        // onAuthStateChange() soit installé ou que PASSWORD_RECOVERY soit
-        // délivré au navigateur. Il expire automatiquement.
-        localStorage.setItem('finvero_password_recovery_pending', String(Date.now()));
+        // L'envoi du mail ne déclenche PAS le formulaire « Nouveau mot de passe ».
+        // Celui-ci ne peut être ouvert qu'après validation du lien de récupération
+        // par Supabase (PASSWORD_RECOVERY / URL de récupération valide).
         showAuthMessage('Un lien sécurisé de réinitialisation vient de vous être envoyé par e-mail.', 'success');
     });
 
@@ -2683,13 +2683,24 @@ body{top:0!important;}
         document.getElementById('dashboardBtn')?.focus();
     });
 
+    // Une modification de mot de passe passe toujours par le parcours sécurisé
+    // « Mot de passe oublié » : le formulaire « Nouveau mot de passe » ne doit
+    // jamais être ouvert directement depuis l'espace client.
     document.getElementById('changePasswordBtn').addEventListener('click', () => {
-        openAuthModal('reset');
+        openAuthModal('forgot');
+        const emailInput = document.getElementById('forgotEmail');
+        const currentEmail = localDB.auth.getUser().then(({ data }) => {
+            if (data?.user?.email && emailInput) emailInput.value = data.user.email;
+        }).catch(() => {});
     });
 
     document.getElementById('logoutBtn').addEventListener('click', async () => {
+        // Nettoyage explicite de tout état de récupération résiduel.
+        passwordRecoveryPending = false;
+        try { localStorage.removeItem('finvero_password_recovery_pending'); } catch (_) {}
         await localDB.auth.signOut();
         clientDashboard.classList.remove('show');
+        closeAuthModal();
     });
 
     // ===== ADMINISTRATION VIA SUPABASE =====
@@ -3107,22 +3118,14 @@ body{top:0!important;}
     function hasPasswordRecoveryContext() {
         const hash = String(window.location.hash || '');
         const search = String(window.location.search || '');
-        const hasRecoveryUrl = hash.includes('reset-password')
+
+        // Le formulaire « Nouveau mot de passe » est réservé à un véritable
+        // retour de récupération Supabase. Un simple envoi de mail, une
+        // déconnexion ou une ancienne session ne doit jamais suffire.
+        return hash.includes('reset-password')
             || /(?:^|[&#])type=recovery(?:[&#]|$)/i.test(hash)
             || /(?:^|[?&#])type=recovery(?:[&#]|$)/i.test(search)
             || /(?:^|[&#])access_token=[^&#]+/i.test(hash);
-
-        // Supabase peut consommer/normaliser le fragment de récupération
-        // très tôt. Le marqueur local permet alors de ne jamais retomber
-        // directement sur l'accueil après un clic sur le lien e-mail.
-        let recentLocalRecovery = false;
-        try {
-            const raw = Number(localStorage.getItem('finvero_password_recovery_pending') || 0);
-            recentLocalRecovery = Number.isFinite(raw) && raw > 0 && (Date.now() - raw) < (30 * 60 * 1000);
-            if (!recentLocalRecovery && raw) localStorage.removeItem('finvero_password_recovery_pending');
-        } catch (_) {}
-
-        return hasRecoveryUrl || recentLocalRecovery;
     }
 
     let passwordRecoveryPending = hasPasswordRecoveryContext();
@@ -3180,14 +3183,15 @@ body{top:0!important;}
 })();
 </script>
 
-<!-- SYSTÈME DE LANGUES : FR / DE / IT / EN — traduction sans rechargement -->
+<!-- SYSTÈME DE LANGUES : paramètres repris de ethicall bon — FR / DE / IT / EN -->
 <div id="google_translate_element" aria-hidden="true"></div>
 <script>
 (function(){
     'use strict';
+
     const SUPPORTED = ['fr','de','it','en'];
     const DEFAULT_LANGUAGE = 'de';
-    const STORAGE_KEY = 'finvero_language';
+    const STORAGE_KEY = 'eh_language';
     const COOKIE_NAME = 'googtrans';
 
     function normalizeLanguage(value){
@@ -3207,9 +3211,10 @@ body{top:0!important;}
 
     function getSavedLanguage(){
         try{
-            const saved = normalizeLanguage(localStorage.getItem(STORAGE_KEY));
-            if(localStorage.getItem(STORAGE_KEY)) return saved;
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if(stored) return normalizeLanguage(stored);
         }catch(e){}
+
         const cookie = getCookie(COOKIE_NAME);
         const match = cookie.match(/^\/fr\/([a-z-]+)$/i);
         return match ? normalizeLanguage(match[1]) : DEFAULT_LANGUAGE;
@@ -3217,9 +3222,10 @@ body{top:0!important;}
 
     function saveLanguage(lang){
         lang = normalizeLanguage(lang);
-        try{localStorage.setItem(STORAGE_KEY,lang);}catch(e){}
-        setCookie(COOKIE_NAME,'/fr/' + lang);
+        try{ localStorage.setItem(STORAGE_KEY, lang); }catch(e){}
+        setCookie(COOKIE_NAME, '/fr/' + lang);
         window.FINVERO_LANGUAGE = lang;
+        window.FINVERO_LOCALE = lang === 'fr' ? 'fr-FR' : lang;
         document.documentElement.lang = lang;
         const select = document.getElementById('languageSelect');
         if(select) select.value = lang;
@@ -3230,59 +3236,62 @@ body{top:0!important;}
         return document.querySelector('.goog-te-combo');
     }
 
-    function applyGoogleLanguage(lang,attempt){
+    function applyGoogleLanguage(lang, attempt){
         lang = normalizeLanguage(lang);
         attempt = attempt || 0;
         const combo = findGoogleCombo();
+
         if(combo){
             combo.value = lang;
-            combo.dispatchEvent(new Event('change',{bubbles:true}));
+            combo.dispatchEvent(new Event('change', {bubbles:true}));
             return true;
         }
-        if(attempt < 80){
-            setTimeout(function(){applyGoogleLanguage(lang,attempt+1);},100);
+
+        if(attempt < 100){
+            setTimeout(function(){ applyGoogleLanguage(lang, attempt + 1); }, 100);
         }
         return false;
     }
 
     window.googleTranslateElementInit = function(){
         if(!window.google || !google.translate) return;
+
         new google.translate.TranslateElement({
-            pageLanguage:'fr',
-            includedLanguages:SUPPORTED.join(','),
-            autoDisplay:false,
-            multilanguagePage:true
-        },'google_translate_element');
-        const current = getSavedLanguage();
-        saveLanguage(current);
-        applyGoogleLanguage(current);
+            pageLanguage: 'fr',
+            includedLanguages: SUPPORTED.join(','),
+            autoDisplay: false,
+            multilanguagePage: true
+        }, 'google_translate_element');
+
+        applyGoogleLanguage(getSavedLanguage());
     };
 
     window.__finveroLoadGoogleTranslate = function(){
         if(window.__finveroGoogleTranslateLoading || (window.google && window.google.translate)) return;
         window.__finveroGoogleTranslateLoading = true;
         const script = document.createElement('script');
-        script.src='https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-        script.async=true;
-        script.crossOrigin='anonymous';
+        script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        script.async = true;
+        script.crossOrigin = 'anonymous';
         document.head.appendChild(script);
     };
 
     window.FINVERO_SET_LANGUAGE = function(lang){
-        lang = saveLanguage(lang);
-        applyGoogleLanguage(lang);
+        const selected = saveLanguage(lang);
+        applyGoogleLanguage(selected);
     };
 
-    document.addEventListener('DOMContentLoaded',function(){
+    document.addEventListener('DOMContentLoaded', function(){
         const select = document.getElementById('languageSelect');
-        const current = getSavedLanguage();
-        saveLanguage(current);
+        const current = saveLanguage(getSavedLanguage());
+
         if(select){
             select.value = current;
-            select.addEventListener('change',function(){
+            select.addEventListener('change', function(){
                 window.FINVERO_SET_LANGUAGE(this.value);
             });
         }
+
         window.__finveroLoadGoogleTranslate();
     });
 })();
