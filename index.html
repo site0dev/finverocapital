@@ -998,7 +998,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             detectSessionInUrl: true,
             storage: window.localStorage,
             storageKey: 'finvero-auth-session',
-            flowType: 'implicit'
+            flowType: 'pkce'
         }
     });
 
@@ -2532,47 +2532,108 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         });
     });
 
+    // ===== AUTHENTIFICATION CLIENT — SUPABASE =====
+    function authErrorMessage(error, fallback = 'Une erreur est survenue. Veuillez réessayer.') {
+        const message = String(error?.message || '').trim();
+        const lower = message.toLowerCase();
+        if (lower.includes('invalid login credentials')) return 'Adresse e-mail ou mot de passe incorrect.';
+        if (lower.includes('email not confirmed')) return 'Votre adresse e-mail n’est pas encore confirmée. Consultez votre boîte e-mail.';
+        if (lower.includes('user already registered')) return 'Un compte existe déjà avec cette adresse e-mail. Connectez-vous ou utilisez « Mot de passe oublié ? ». ';
+        if (lower.includes('password should be at least')) return 'Le mot de passe doit contenir au moins 8 caractères.';
+        if (lower.includes('rate limit')) return 'Trop de tentatives. Veuillez patienter quelques instants puis réessayer.';
+        if (lower.includes('session') && lower.includes('missing')) return 'La session sécurisée n’est plus disponible. Demandez un nouveau lien de réinitialisation.';
+        return message || fallback;
+    }
+
+    function setAuthSubmitState(form, busy, busyText = 'Veuillez patienter…') {
+        const button = form?.querySelector('button[type="submit"]');
+        if (!button) return;
+        if (busy) {
+            if (!button.dataset.originalText) button.dataset.originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = busyText;
+        } else {
+            button.disabled = false;
+            if (button.dataset.originalText) {
+                button.textContent = button.dataset.originalText;
+                delete button.dataset.originalText;
+            }
+        }
+    }
+
     document.getElementById('loginForm').addEventListener('submit', async e => {
         e.preventDefault();
         clearAuthMessage();
-        const email = document.getElementById('loginEmail').value.trim();
+        const form = e.currentTarget;
+        const email = document.getElementById('loginEmail').value.trim().toLowerCase();
         const password = document.getElementById('loginPassword').value;
-        const { data, error } = await localDB.auth.signInWithPassword({ email, password });
-        if (error) return showAuthMessage(error.message, 'error');
-        closeAuthModal();
-        await updateAuthUI(data.user);
+        if (!email || !password) return showAuthMessage('Veuillez renseigner votre e-mail et votre mot de passe.', 'error');
+
+        setAuthSubmitState(form, true, 'Connexion…');
+        try {
+            const { data, error } = await localDB.auth.signInWithPassword({ email, password });
+            if (error) throw error;
+            if (!data?.session || !data?.user) throw new Error('Connexion non confirmée par Supabase.');
+
+            passwordRecoveryPending = false;
+            closeAuthModal();
+            await updateAuthUI(data.user);
+            await startSupabaseRealtime(data.user);
+        } catch (error) {
+            showAuthMessage(authErrorMessage(error, 'Connexion impossible.'), 'error');
+        } finally {
+            setAuthSubmitState(form, false);
+        }
     });
 
     document.getElementById('registerForm').addEventListener('submit', async e => {
         e.preventDefault();
         clearAuthMessage();
+        const form = e.currentTarget;
 
         const fullName = document.getElementById('registerName').value.trim();
         const gender = document.getElementById('registerGender').value;
-        const email = document.getElementById('registerEmail').value.trim();
+        const email = document.getElementById('registerEmail').value.trim().toLowerCase();
         const phone = document.getElementById('registerPhone').value.trim();
         const password = document.getElementById('registerPassword').value;
         const password2 = document.getElementById('registerPassword2').value;
 
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showAuthMessage('Veuillez saisir une adresse e-mail valide.', 'error');
-        if (!fullName) return showAuthMessage('Veuillez saisir votre nom complet.', 'error');
+        if (fullName.length < 2) return showAuthMessage('Veuillez saisir votre nom complet.', 'error');
+        if (!phone) return showAuthMessage('Veuillez saisir votre numéro de téléphone.', 'error');
         if (password !== password2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
         if (password.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
 
-        const { data, error } = await localDB.auth.signUp({
-            email, password,
-            options: {
-                data: { full_name: fullName, phone, gender },
-                emailRedirectTo: 'https://finverocapital.de/'
+        setAuthSubmitState(form, true, 'Création du compte…');
+        try {
+            // L’URL de retour doit être une URL autorisée dans Supabase.
+            const emailRedirectTo = window.location.origin + window.location.pathname;
+            const { data, error } = await localDB.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: { full_name: fullName, phone, gender },
+                    emailRedirectTo
+                }
+            });
+            if (error) throw error;
+
+            if (data?.session && data?.user) {
+                // Confirmation e-mail désactivée dans Supabase : la session est
+                // immédiatement persistée par Supabase dans localStorage.
+                passwordRecoveryPending = false;
+                closeAuthModal();
+                await updateAuthUI(data.user);
+                await startSupabaseRealtime(data.user);
+            } else {
+                // Confirmation e-mail activée : aucune session n’est créée avant
+                // validation de l’e-mail. On ne simule donc jamais une connexion.
+                showAuthMessage('Compte créé. Consultez votre e-mail et confirmez votre adresse avant de vous connecter.', 'success');
             }
-        });
-
-        if (error) return showAuthMessage(error.message, 'error');
-
-        if (data.session) {
-            closeAuthModal();
-        } else {
-            showAuthMessage('Compte créé. Consultez votre e-mail pour confirmer votre adresse avant de vous connecter.', 'success');
+        } catch (error) {
+            showAuthMessage(authErrorMessage(error, 'Création du compte impossible.'), 'error');
+        } finally {
+            setAuthSubmitState(form, false);
         }
     });
 
@@ -2582,26 +2643,28 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
     document.getElementById('forgotForm').addEventListener('submit', async e => {
         e.preventDefault();
         clearAuthMessage();
-        const email = document.getElementById('forgotEmail').value.trim();
-        // Le retour de Supabase doit utiliser l'URL de la page sans ajouter
-        // un second fragment (#reset-password). Supabase utilise déjà le
-        // fragment de retour pour ses paramètres de récupération.
-        const resetRedirect = window.location.origin + window.location.pathname;
-        const { error } = await localDB.auth.resetPasswordForEmail(email, {
-            redirectTo: resetRedirect
-        });
-        if (error) return showAuthMessage(error.message, 'error');
+        const form = e.currentTarget;
+        const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showAuthMessage('Veuillez saisir une adresse e-mail valide.', 'error');
 
-        // L'envoi du mail ne déclenche PAS le formulaire « Nouveau mot de passe ».
-        // Celui-ci ne peut être ouvert qu'après validation du lien de récupération
-        // par Supabase (PASSWORD_RECOVERY / URL de récupération valide).
-        showAuthMessage('Un lien sécurisé de réinitialisation vient de vous être envoyé par e-mail.', 'success');
+        setAuthSubmitState(form, true, 'Envoi…');
+        try {
+            const resetRedirect = window.location.origin + window.location.pathname;
+            const { error } = await localDB.auth.resetPasswordForEmail(email, {
+                redirectTo: resetRedirect
+            });
+            if (error) throw error;
+
+            // Important : l’envoi du mail ne donne jamais accès au formulaire
+            // « Nouveau mot de passe ». Celui-ci est réservé au lien de recovery.
+            showAuthMessage('Si cette adresse correspond à un compte, un lien sécurisé de réinitialisation vient d’être envoyé.', 'success');
+        } catch (error) {
+            showAuthMessage(authErrorMessage(error, 'Impossible d’envoyer le lien de réinitialisation.'), 'error');
+        } finally {
+            setAuthSubmitState(form, false);
+        }
     });
 
-    // Récupère explicitement la session de récupération avant updateUser().
-    // Cela évite l'erreur "Auth session missing" lorsque le navigateur mobile
-    // a ouvert le lien depuis Gmail et que le fragment de récupération n'a pas
-    // encore été consommé par le client Supabase.
     async function ensureRecoverySession() {
         let current = null;
         try {
@@ -2615,19 +2678,15 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         const hash = new URLSearchParams((window.location.hash || '').replace(/^#/, ''));
         const accessToken = hash.get('access_token') || params.get('access_token');
         const refreshToken = hash.get('refresh_token') || params.get('refresh_token');
+        const code = params.get('code');
 
         if (accessToken && refreshToken) {
             try {
-                const result = await localDB.auth.setSession({
-                    access_token: accessToken,
-                    refresh_token: refreshToken
-                });
+                const result = await localDB.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
                 if (!result.error && result.data?.session?.user) return result.data.session;
             } catch (_) {}
         }
 
-        // Supporte également un retour PKCE éventuel (?code=...).
-        const code = params.get('code');
         if (code) {
             try {
                 const result = await localDB.auth.exchangeCodeForSession(code);
@@ -2635,9 +2694,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             } catch (_) {}
         }
 
-        // Le navigateur peut avoir besoin de quelques millisecondes pour traiter
-        // l'URL de récupération et déclencher l'événement Supabase.
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 10; i++) {
             await new Promise(resolve => setTimeout(resolve, 150));
             try {
                 const result = await localDB.auth.getSession();
@@ -2651,52 +2708,55 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
     document.getElementById('resetForm').addEventListener('submit', async e => {
         e.preventDefault();
         clearAuthMessage();
+        const form = e.currentTarget;
         const p1 = document.getElementById('newPassword').value;
         const p2 = document.getElementById('newPassword2').value;
         if (p1 !== p2) return showAuthMessage('Les deux mots de passe ne correspondent pas.', 'error');
         if (p1.length < 8) return showAuthMessage('Le mot de passe doit contenir au moins 8 caractères.', 'error');
 
-        const session = await ensureRecoverySession();
-        if (!session?.user) {
-            return showAuthMessage('La session sécurisée de réinitialisation a expiré ou n’a pas été transmise par le lien. Demandez un nouveau lien de réinitialisation puis ouvrez-le directement dans votre navigateur.', 'error');
+        setAuthSubmitState(form, true, 'Enregistrement…');
+        try {
+            const session = await ensureRecoverySession();
+            if (!session?.user) throw new Error('La session sécurisée de réinitialisation est absente ou expirée. Demandez un nouveau lien puis ouvrez-le directement dans votre navigateur.');
+
+            const { data, error } = await localDB.auth.updateUser({ password: p1 });
+            if (error) throw error;
+
+            passwordRecoveryPending = false;
+            try { localStorage.removeItem('finvero_password_recovery_pending'); } catch (_) {}
+            window.history.replaceState({}, document.title, window.location.pathname);
+
+            const user = data?.user || session.user;
+            closeAuthModal();
+            await updateAuthUI(user);
+            await startSupabaseRealtime(user);
+        } catch (error) {
+            showAuthMessage(authErrorMessage(error, 'Impossible de modifier le mot de passe.'), 'error');
+        } finally {
+            setAuthSubmitState(form, false);
         }
-
-        const { data, error } = await localDB.auth.updateUser({ password: p1 });
-        if (error) return showAuthMessage(error.message, 'error');
-
-        // Après la modification, on conserve la session authentifiée retournée
-        // par Supabase et on ne fait surtout pas signOut(). Le tableau de bord
-        // doit être accessible immédiatement avec cette nouvelle session.
-        passwordRecoveryPending = false;
-        try { localStorage.removeItem('finvero_password_recovery_pending'); } catch (_) {}
-        window.history.replaceState({}, document.title, window.location.pathname);
-        showAuthMessage('Mot de passe modifié avec succès. Ouverture de votre espace client…', 'success');
-
-        const user = data?.user || session.user;
-        closeAuthModal();
-        await updateAuthUI(user);
-        document.getElementById('clientDashboard')?.classList.add('show');
-        document.getElementById('dashboardBtn')?.focus();
     });
 
     // Une modification de mot de passe passe toujours par le parcours sécurisé
-    // « Mot de passe oublié » : le formulaire « Nouveau mot de passe » ne doit
-    // jamais être ouvert directement depuis l'espace client.
-    document.getElementById('changePasswordBtn').addEventListener('click', () => {
+    // « Mot de passe oublié ». Le formulaire « Nouveau mot de passe » n’est
+    // jamais affiché simplement parce que l’utilisateur est déjà connecté.
+    document.getElementById('changePasswordBtn').addEventListener('click', async () => {
         openAuthModal('forgot');
         const emailInput = document.getElementById('forgotEmail');
-        const currentEmail = localDB.auth.getUser().then(({ data }) => {
+        try {
+            const { data } = await localDB.auth.getUser();
             if (data?.user?.email && emailInput) emailInput.value = data.user.email;
-        }).catch(() => {});
+        } catch (_) {}
     });
 
     document.getElementById('logoutBtn').addEventListener('click', async () => {
-        // Nettoyage explicite de tout état de récupération résiduel.
         passwordRecoveryPending = false;
         try { localStorage.removeItem('finvero_password_recovery_pending'); } catch (_) {}
-        await localDB.auth.signOut();
+        try { await localDB.auth.signOut({ scope: 'local' }); } catch (_) { await localDB.auth.signOut(); }
+        stopSupabaseRealtime();
         clientDashboard.classList.remove('show');
         closeAuthModal();
+        await updateAuthUI(null);
     });
 
     // ===== ADMINISTRATION VIA SUPABASE =====
@@ -3114,44 +3174,42 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
     function hasPasswordRecoveryContext() {
         const hash = String(window.location.hash || '');
         const search = String(window.location.search || '');
-
-        // Le formulaire « Nouveau mot de passe » est réservé à un véritable
-        // retour de récupération Supabase. Un simple envoi de mail, une
-        // déconnexion ou une ancienne session ne doit jamais suffire.
-        return hash.includes('reset-password')
-            || /(?:^|[&#])type=recovery(?:[&#]|$)/i.test(hash)
-            || /(?:^|[?&#])type=recovery(?:[&#]|$)/i.test(search)
-            || /(?:^|[&#])access_token=[^&#]+/i.test(hash);
+        // Le formulaire « Nouveau mot de passe » n’est accessible que dans un
+        // contexte de récupération Supabase explicite. Un access_token isolé
+        // ne suffit pas : cela évite d’ouvrir ce formulaire lors d’une connexion
+        // normale ou d’un ancien lien présent dans l’URL.
+        return /(?:^|[#?&])type=recovery(?:[&#]|$)/i.test(hash)
+            || /(?:^|[?&#])type=recovery(?:[&#]|$)/i.test(search);
     }
 
     let passwordRecoveryPending = hasPasswordRecoveryContext();
 
-    localDB.auth.onAuthStateChange(async (event, session) => {
-        if (event === 'PASSWORD_RECOVERY') {
-            passwordRecoveryPending = true;
-            openAuthModal('reset');
-            showAuthMessage('Choisissez maintenant votre nouveau mot de passe.', 'success');
-            return;
-        }
-
-        // Ne jamais afficher le tableau de bord tant que le parcours de
-        // récupération de mot de passe n'est pas terminé.
-        if (passwordRecoveryPending) {
-            if (session?.user) {
+    localDB.auth.onAuthStateChange((event, session) => {
+        // Ne pas faire d’appels Supabase lourds directement dans le callback
+        // onAuthStateChange. On laisse Supabase terminer son traitement puis on
+        // met l’interface à jour au tour suivant de la boucle.
+        setTimeout(async () => {
+            if (event === 'PASSWORD_RECOVERY') {
+                passwordRecoveryPending = true;
                 openAuthModal('reset');
                 showAuthMessage('Choisissez maintenant votre nouveau mot de passe.', 'success');
+                return;
             }
-            return;
-        }
 
-        await updateAuthUI(session?.user || null);
-        await startSupabaseRealtime(session?.user || null);
+            if (passwordRecoveryPending) {
+                if (session?.user) {
+                    openAuthModal('reset');
+                    showAuthMessage('Choisissez maintenant votre nouveau mot de passe.', 'success');
+                }
+                return;
+            }
+
+            await updateAuthUI(session?.user || null);
+            await startSupabaseRealtime(session?.user || null);
+        }, 0);
     });
 
     (async function restoreClientSession() {
-        // La session Supabase est conservée dans localStorage. Elle reste donc
-        // disponible après fermeture/rechargement du navigateur jusqu'à une
-        // déconnexion explicite ou l'expiration/révocation réelle de la session.
         let session = null;
         try {
             const { data } = await localDB.auth.getSession();
@@ -3161,17 +3219,26 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         }
 
         if (passwordRecoveryPending) {
-            openAuthModal('reset');
-            showAuthMessage('Choisissez maintenant votre nouveau mot de passe.', 'success');
+            // Avec PKCE, le code doit être échangé avant d’afficher le formulaire.
+            // Avec le flux implicite, Supabase consomme automatiquement le hash.
+            const recovered = await ensureRecoverySession();
+            if (recovered?.user) {
+                passwordRecoveryPending = true;
+                openAuthModal('reset');
+                showAuthMessage('Choisissez maintenant votre nouveau mot de passe.', 'success');
+            } else {
+                openAuthModal('reset');
+                showAuthMessage('Le lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien.', 'error');
+            }
             return;
         }
 
+        // Une session existante est restaurée automatiquement depuis localStorage.
+        // Aucune nouvelle connexion n’est demandée après fermeture/rechargement.
         await updateAuthUI(session?.user || null);
         await startSupabaseRealtime(session?.user || null);
     })();
 
-    // Réhydrate la session lorsque l'utilisateur revient sur l'onglet ou
-    // l'application mobile, sans demander une nouvelle connexion.
     document.addEventListener('visibilitychange', async () => {
         if (document.visibilityState !== 'visible' || passwordRecoveryPending) return;
         try {
@@ -3183,7 +3250,6 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             console.error('[SESSION REFRESH]', error);
         }
     });
-
 
     };
     if (window.supabase) {
