@@ -3268,82 +3268,82 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 })();
 </script>
 
-<!-- SYSTÈME DE LANGUES — Ethicall bon -->
+<!-- SYSTÈME DE LANGUES — FR / DE / IT -->
 <script>
-const translations={
-fr:{
- language:"FR",
- login:"Se connecter",
- register:"Inscription",
- forgot:"Mot de passe oublié ?",
- reset:"Nouveau mot de passe",
- send:"Envoyer",
- cancel:"Annuler",
- continue:"Continuer",
- back:"Retour",
- next:"Suivant",
- previous:"Précédent"
+(function(){
+'use strict';
+
+const translations = {
+fr: {
+ 'Se connecter':'Se connecter','Créer un compte':'Créer un compte','Mon espace':'Mon espace','Espace client':'Espace client','Connexion...':'Connexion...','Se déconnecter':'Se déconnecter','Solutions de financement • Europe':'Solutions de financement • Europe',
+ 'Avez-vous besoin':'Avez-vous besoin','d\'un financement':'d\'un financement','Simulez votre crédit en quelques secondes, sans engagement.':'Simulez votre crédit en quelques secondes, sans engagement.','Réponse sous 24h':'Réponse sous 24h','dossiers reçus par semaine':'dossiers reçus par semaine','taux d’acceptation':'taux d’acceptation','de financements accordés par mois':'de financements accordés par mois',
+ 'Mon dossier de financement':'Mon dossier de financement','Bienvenue.':'Bienvenue.','Actualiser':'Actualiser','Solde disponible':'Solde disponible','Compte actif':'Compte actif','N° de dossier':'N° de dossier','Montant demandé':'Montant demandé','Durée':'Durée','Mensualité estimée':'Mensualité estimée','Statut':'Statut','Aucun dossier':'Aucun dossier','Dernière mise à jour':'Dernière mise à jour','Suivi de votre demande':'Suivi de votre demande','Modifier mon mot de passe':'Modifier mon mot de passe','Transférer vers mon compte bancaire':'Transférer vers mon compte bancaire','Fermer l\'espace':'Fermer l\'espace',
+ 'Administration':'Administration','Gestion sécurisée des comptes clients, soldes et statuts.':'Gestion sécurisée des comptes clients, soldes et statuts.','Retour au site':'Retour au site','Paramètres':'Paramètres','Accès administration':'Accès administration','Entrez vos identifiants administrateur.':'Entrez vos identifiants administrateur.','Ouvrir l\'administration':'Ouvrir l\'administration','Paramètres d\'administration':'Paramètres d\'administration','Modifiez le nom d\'utilisateur et, si nécessaire, le mot de passe.':'Modifiez le nom d\'utilisateur et, si nécessaire, le mot de passe.','Enregistrer les paramètres':'Enregistrer les paramètres',
+ 'Remplissez le formulaire suivant':'Remplissez le formulaire suivant','Ajustez le curseur pour le montant, la durée est libre.':'Ajustez le curseur pour le montant, la durée est libre.','Montant souhaité (€) –':'Montant souhaité (€) –','max 350 000 €':'max 350 000 €','Durée du prêt (mois)':'Durée du prêt (mois)','Taux d’intérêt annuel (%)':'Taux d’intérêt annuel (%)','Numéro de téléphone':'Numéro de téléphone','Simuler mon crédit':'Simuler mon crédit','Mois':'Mois','Mensualité':'Mensualité','Intérêts':'Intérêts','Capital remboursé':'Capital remboursé','Capital restant':'Capital restant','Faites défiler pour voir toutes les échéances':'Faites défiler pour voir toutes les échéances',
+ 'Téléchargez vos documents':'Téléchargez vos documents','Carte d\'identité':'Carte d\'identité','Code d\'identification fiscale':'Code d\'identification fiscale','Document de revenu mensuel':'Document de revenu mensuel','Les documents sont associés à votre compte et stockés dans l\'espace sécurisé prévu à cet effet.':'Les documents sont associés à votre compte et stockés dans l\'espace sécurisé prévu à cet effet.','Enregistrer et envoyer ma demande':'Enregistrer et envoyer ma demande','Ouvrir mon e-mail':'Ouvrir mon e-mail','Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.':'Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.',
+ 'Demande de crédit entièrement en ligne':'Demande de crédit entièrement en ligne','Étape 1':'Étape 1','Calculez votre mensualité.':'Calculez votre mensualité.','Étape 2':'Étape 2','Étape 3':'Étape 3','Pourquoi choisir Finvero Capital ?':'Pourquoi choisir Finvero Capital ?','Fiable':'Fiable','Rapide':'Rapide','Sûr':'Sûr','Votre sécurité, notre priorité':'Votre sécurité, notre priorité',
+ 'Mentions légales':'Mentions légales','Politique de confidentialité':'Politique de confidentialité','Conditions d’utilisation':'Conditions d’utilisation','Conditions d\'utilisation':'Conditions d’utilisation','Informations crédit':'Informations crédit','Service de simulation et de demande de financement.':'Service de simulation et de demande de financement.',
+ 'Votre espace client':'Votre espace client','Créez votre compte pour suivre votre dossier.':'Créez votre compte pour suivre votre dossier.','Connexion':'Connexion','Inscription':'Inscription','Mot de passe oublié ?':'Mot de passe oublié ?','Nom complet':'Nom complet','Civilité':'Civilité','Téléphone':'Téléphone','Confirmer le mot de passe':'Confirmer le mot de passe','Créer mon compte':'Créer mon compte','Adresse e-mail du compte':'Adresse e-mail du compte','Envoyer le lien de réinitialisation':'Envoyer le lien de réinitialisation','Retour à la connexion':'Retour à la connexion','Nouveau mot de passe':'Nouveau mot de passe','Confirmer le nouveau mot de passe':'Confirmer le nouveau mot de passe','Enregistrer le nouveau mot de passe':'Enregistrer le nouveau mot de passe',
+ 'Numéro de suivi':'Numéro de suivi','Conservez ce numéro pour le suivi de votre demande :':'Conservez ce numéro pour le suivi de votre demande :','Cliquez sur le bouton ci-dessous pour le copier.':'Cliquez sur le bouton ci-dessous pour le copier.','Copier':'Copier','Demande de transfert bancaire':'Demande de transfert bancaire','Nom et prénom':'Nom et prénom','IBAN / numéro de compte':'IBAN / numéro de compte','Nom de la banque':'Nom de la banque','Montant à transférer (€)':'Montant à transférer (€)','Valider':'Valider','Continuer':'Continuer','Contacter le support':'Contacter le support','Annuler':'Annuler','Documents du client':'Documents du client','Aucun document trouvé.':'Aucun document trouvé.','Informations légales':'Informations légales',
+ 'Envoyer':'Envoyer','Demande envoyée avec succès !':'Demande envoyée avec succès !','Total à rembourser':'Total à rembourser','Intérêts totaux':'Intérêts totaux','Taux appliqué':'Taux appliqué','Récapitulatif de l’opération':'Récapitulatif de l’opération','Numéro de suivi :':'Numéro de suivi :','Nom et prénom :':'Nom et prénom :','IBAN :':'IBAN :','Banque :':'Banque :','Montant demandé :':'Montant demandé :','Statut de l’opération':'Statut de l’opération','Chargement...':'Chargement...','Télécharger':'Télécharger','Historique du compte':'Historique du compte','Aucun mouvement sur le compte.':'Aucun mouvement sur le compte.'
 },
-de:{
- language:"DE",
- login:"Anmelden",
- register:"Registrierung",
- forgot:"Passwort vergessen?",
- reset:"Neues Passwort",
- send:"Senden",
- cancel:"Abbrechen",
- continue:"Weiter",
- back:"Zurück",
- next:"Weiter",
- previous:"Zurück"
-},
-it:{
- language:"IT",
- login:"Accedi",
- register:"Registrazione",
- forgot:"Password dimenticata?",
- reset:"Nuova password",
- send:"Invia",
- cancel:"Annulla",
- continue:"Continua",
- back:"Indietro",
- next:"Avanti",
- previous:"Indietro"
-}
+de: {}, it: {}
 };
 
-let currentLanguage=localStorage.getItem("eh_language")||"fr";
-if(!translations[currentLanguage])currentLanguage="fr";
+const de = {
+'Se connecter':'Anmelden','Créer un compte':'Konto erstellen','Mon espace':'Mein Bereich','Espace client':'Kundenbereich','Connexion...':'Verbindung...','Se déconnecter':'Abmelden','Solutions de financement • Europe':'Finanzierungslösungen • Europa','Avez-vous besoin':'Benötigen Sie','d\'un financement':'eine Finanzierung','Simulez votre crédit en quelques secondes, sans engagement.':'Berechnen Sie Ihren Kredit in wenigen Sekunden, unverbindlich.','Réponse sous 24h':'Antwort innerhalb von 24 Stunden','dossiers reçus par semaine':'Anträge pro Woche','taux d’acceptation':'Annahmequote','de financements accordés par mois':'Finanzierungen pro Monat','Mon dossier de financement':'Meine Finanzierungsakte','Bienvenue.':'Willkommen.','Actualiser':'Aktualisieren','Solde disponible':'Verfügbares Guthaben','Compte actif':'Aktives Konto','N° de dossier':'Aktennummer','Montant demandé':'Beantragter Betrag','Durée':'Laufzeit','Mensualité estimée':'Geschätzte Monatsrate','Statut':'Status','Aucun dossier':'Keine Akte','Dernière mise à jour':'Letzte Aktualisierung','Suivi de votre demande':'Status Ihrer Anfrage','Modifier mon mot de passe':'Passwort ändern','Transférer vers mon compte bancaire':'Auf mein Bankkonto überweisen','Fermer l\'espace':'Bereich schließen','Administration':'Administration','Gestion sécurisée des comptes clients, soldes et statuts.':'Sichere Verwaltung von Kundenkonten, Guthaben und Status.','Retour au site':'Zurück zur Website','Paramètres':'Einstellungen','Accès administration':'Administrationszugang','Entrez vos identifiants administrateur.':'Geben Sie Ihre Administrator-Zugangsdaten ein.','Ouvrir l\'administration':'Administration öffnen','Paramètres d\'administration':'Administrationseinstellungen','Modifiez le nom d\'utilisateur et, si nécessaire, le mot de passe.':'Ändern Sie den Benutzernamen und bei Bedarf das Passwort.','Enregistrer les paramètres':'Einstellungen speichern','Remplissez le formulaire suivant':'Füllen Sie das folgende Formular aus','Ajustez le curseur pour le montant, la durée est libre.':'Passen Sie den Betrag an; die Laufzeit ist frei wählbar.','Montant souhaité (€) –':'Gewünschter Betrag (€) –','max 350 000 €':'max. 350.000 €','Durée du prêt (mois)':'Laufzeit des Kredits (Monate)','Taux d’intérêt annuel (%)':'Jährlicher Zinssatz (%)','Numéro de téléphone':'Telefonnummer','Simuler mon crédit':'Kredit berechnen','Mois':'Monat','Mensualité':'Monatsrate','Intérêts':'Zinsen','Capital remboursé':'Getilgtes Kapital','Capital restant':'Restkapital','Faites défiler pour voir toutes les échéances':'Scrollen Sie, um alle Raten zu sehen','Téléchargez vos documents':'Laden Sie Ihre Dokumente hoch','Carte d\'identité':'Personalausweis','Code d\'identification fiscale':'Steueridentifikationsnummer','Document de revenu mensuel':'Nachweis des monatlichen Einkommens','Les documents sont associés à votre compte et stockés dans l\'espace sécurisé prévu à cet effet.':'Die Dokumente werden Ihrem Konto zugeordnet und sicher gespeichert.','Enregistrer et envoyer ma demande':'Anfrage speichern und senden','Ouvrir mon e-mail':'E-Mail öffnen','Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.':'Ihre Anfrage ist in Ihrem Bereich gespeichert. Sie können Ihr E-Mail-Programm öffnen, um die Informationen an Finvero Capital zu senden.','Demande de crédit entièrement en ligne':'Kreditantrag vollständig online','Étape 1':'Schritt 1','Calculez votre mensualité.':'Berechnen Sie Ihre Monatsrate.','Étape 2':'Schritt 2','Étape 3':'Schritt 3','Pourquoi choisir Finvero Capital ?':'Warum Finvero Capital wählen?','Fiable':'Zuverlässig','Rapide':'Schnell','Sûr':'Sicher','Votre sécurité, notre priorité':'Ihre Sicherheit, unsere Priorität','Mentions légales':'Impressum','Politique de confidentialité':'Datenschutzerklärung','Conditions d’utilisation':'Nutzungsbedingungen','Conditions d\'utilisation':'Nutzungsbedingungen','Informations crédit':'Kreditinformationen','Service de simulation et de demande de financement.':'Simulation und Finanzierungsantragsservice.','Votre espace client':'Ihr Kundenbereich','Créez votre compte pour suivre votre dossier.':'Erstellen Sie Ihr Konto, um Ihre Akte zu verfolgen.','Connexion':'Anmelden','Inscription':'Registrierung','Mot de passe oublié ?':'Passwort vergessen?','Nom complet':'Vollständiger Name','Civilité':'Anrede','Téléphone':'Telefon','Confirmer le mot de passe':'Passwort bestätigen','Créer mon compte':'Konto erstellen','Adresse e-mail du compte':'E-Mail-Adresse des Kontos','Envoyer le lien de réinitialisation':'Link zum Zurücksetzen senden','Retour à la connexion':'Zurück zur Anmeldung','Nouveau mot de passe':'Neues Passwort','Confirmer le nouveau mot de passe':'Neues Passwort bestätigen','Enregistrer le nouveau mot de passe':'Neues Passwort speichern','Numéro de suivi':'Trackingnummer','Conservez ce numéro pour le suivi de votre demande :':'Bewahren Sie diese Nummer zur Verfolgung Ihrer Anfrage auf:','Cliquez sur le bouton ci-dessous pour le copier.':'Klicken Sie unten, um sie zu kopieren.','Copier':'Kopieren','Demande de transfert bancaire':'Banküberweisungsanfrage','Nom et prénom':'Vor- und Nachname','IBAN / numéro de compte':'IBAN / Kontonummer','Nom de la banque':'Name der Bank','Montant à transférer (€)':'Zu überweisender Betrag (€)','Valider':'Bestätigen','Continuer':'Weiter','Contacter le support':'Support kontaktieren','Annuler':'Abbrechen','Documents du client':'Kundendokumente','Aucun document trouvé.':'Keine Dokumente gefunden.','Informations légales':'Rechtliche Informationen','Envoyer':'Senden','Demande envoyée avec succès !':'Anfrage erfolgreich gesendet!','Total à rembourser':'Gesamtrückzahlung','Intérêts totaux':'Gesamtzinsen','Taux appliqué':'Angewandter Zinssatz','Récapitulatif de l’opération':'Transaktionsübersicht','Numéro de suivi :':'Trackingnummer:','Nom et prénom :':'Vor- und Nachname:','IBAN :':'IBAN:','Banque :':'Bank:','Montant demandé :':'Beantragter Betrag:','Statut de l’opération':'Transaktionsstatus','Chargement...':'Wird geladen...','Télécharger':'Herunterladen','Historique du compte':'Kontoverlauf','Aucun mouvement sur le compte.':'Keine Kontobewegungen.'
+};
+const it = {
+'Se connecter':'Accedi','Créer un compte':'Crea un account','Mon espace':'La mia area','Espace client':'Area clienti','Connexion...':'Connessione...','Se déconnecter':'Disconnetti','Solutions de financement • Europe':'Soluzioni di finanziamento • Europa','Avez-vous besoin':'Hai bisogno','d\'un financement':'di un finanziamento','Simulez votre crédit en quelques secondes, sans engagement.':'Calcola il tuo credito in pochi secondi, senza impegno.','Réponse sous 24h':'Risposta entro 24 ore','dossiers reçus par semaine':'richieste ricevute a settimana','taux d’acceptation':'tasso di accettazione','de financements accordés par mois':'finanziamenti concessi al mese','Mon dossier de financement':'La mia pratica di finanziamento','Bienvenue.':'Benvenuto.','Actualiser':'Aggiorna','Solde disponible':'Saldo disponibile','Compte actif':'Account attivo','N° de dossier':'N. pratica','Montant demandé':'Importo richiesto','Durée':'Durata','Mensualité estimée':'Rata stimata','Statut':'Stato','Aucun dossier':'Nessuna pratica','Dernière mise à jour':'Ultimo aggiornamento','Suivi de votre demande':'Stato della richiesta','Modifier mon mot de passe':'Modifica password','Transférer vers mon compte bancaire':'Trasferisci sul mio conto bancario','Fermer l\'espace':'Chiudi area','Administration':'Amministrazione','Gestion sécurisée des comptes clients, soldes et statuts.':'Gestione sicura degli account clienti, saldi e stati.','Retour au site':'Torna al sito','Paramètres':'Impostazioni','Accès administration':'Accesso amministrazione','Entrez vos identifiants administrateur.':'Inserisci le credenziali di amministratore.','Ouvrir l\'administration':'Apri amministrazione','Paramètres d\'administration':'Impostazioni amministrazione','Modifiez le nom d\'utilisateur et, si nécessaire, le mot de passe.':'Modifica il nome utente e, se necessario, la password.','Enregistrer les paramètres':'Salva impostazioni','Remplissez le formulaire suivant':'Compila il seguente modulo','Ajustez le curseur pour le montant, la durée est libre.':'Regola l’importo; la durata è libera.','Montant souhaité (€) –':'Importo desiderato (€) –','max 350 000 €':'max 350.000 €','Durée du prêt (mois)':'Durata del prestito (mesi)','Taux d’intérêt annuel (%)':'Tasso d’interesse annuo (%)','Numéro de téléphone':'Numero di telefono','Simuler mon crédit':'Calcola il mio credito','Mois':'Mese','Mensualité':'Rata','Intérêts':'Interessi','Capital remboursé':'Capitale rimborsato','Capital restant':'Capitale residuo','Faites défiler pour voir toutes les échéances':'Scorri per vedere tutte le rate','Téléchargez vos documents':'Carica i tuoi documenti','Carte d\'identité':'Documento d’identità','Code d\'identification fiscale':'Codice fiscale','Document de revenu mensuel':'Documento del reddito mensile','Les documents sont associés à votre compte et stockés dans l\'espace sécurisé prévu à cet effet.':'I documenti sono associati al tuo account e conservati nell’area sicura prevista.','Enregistrer et envoyer ma demande':'Salva e invia la mia richiesta','Ouvrir mon e-mail':'Apri la mia e-mail','Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.':'La tua richiesta è salvata nella tua area. Puoi aprire la posta elettronica per inviare le informazioni a Finvero Capital.','Demande de crédit entièrement en ligne':'Richiesta di credito completamente online','Étape 1':'Passaggio 1','Calculez votre mensualité.':'Calcola la tua rata.','Étape 2':'Passaggio 2','Étape 3':'Passaggio 3','Pourquoi choisir Finvero Capital ?':'Perché scegliere Finvero Capital?','Fiable':'Affidabile','Rapide':'Veloce','Sûr':'Sicuro','Votre sécurité, notre priorité':'La tua sicurezza, la nostra priorità','Mentions légales':'Note legali','Politique de confidentialité':'Informativa sulla privacy','Conditions d’utilisation':'Condizioni d’uso','Conditions d\'utilisation':'Condizioni d’uso','Informations crédit':'Informazioni sul credito','Service de simulation et de demande de financement.':'Servizio di simulazione e richiesta di finanziamento.','Votre espace client':'La tua area clienti','Créez votre compte pour suivre votre dossier.':'Crea il tuo account per seguire la tua pratica.','Connexion':'Accedi','Inscription':'Registrazione','Mot de passe oublié ?':'Password dimenticata?','Nom complet':'Nome completo','Civilité':'Titolo','Téléphone':'Telefono','Confirmer le mot de passe':'Conferma password','Créer mon compte':'Crea il mio account','Adresse e-mail du compte':'Indirizzo e-mail dell’account','Envoyer le lien de réinitialisation':'Invia il link di reimpostazione','Retour à la connexion':'Torna all’accesso','Nouveau mot de passe':'Nuova password','Confirmer le nouveau mot de passe':'Conferma la nuova password','Enregistrer le nouveau mot de passe':'Salva nuova password','Numéro de suivi':'Numero di tracciamento','Conservez ce numéro pour le suivi de votre demande :':'Conserva questo numero per seguire la tua richiesta:','Cliquez sur le bouton ci-dessous pour le copier.':'Clicca sul pulsante qui sotto per copiarlo.','Copier':'Copia','Demande de transfert bancaire':'Richiesta di trasferimento bancario','Nom et prénom':'Nome e cognome','IBAN / numéro de compte':'IBAN / numero di conto','Nom de la banque':'Nome della banca','Montant à transférer (€)':'Importo da trasferire (€)','Valider':'Conferma','Continuer':'Continua','Contacter le support':'Contatta il supporto','Annuler':'Annulla','Documents du client':'Documenti del cliente','Aucun document trouvé.':'Nessun documento trovato.','Informations légales':'Informazioni legali','Envoyer':'Invia','Demande envoyée avec succès !':'Richiesta inviata con successo!','Total à rembourser':'Totale da rimborsare','Intérêts totaux':'Interessi totali','Taux appliqué':'Tasso applicato','Récapitulatif de l’opération':'Riepilogo dell’operazione','Numéro de suivi :':'Numero di tracciamento:','Nom et prénom :':'Nome e cognome:','IBAN :':'IBAN:','Banque :':'Banca:','Montant demandé :':'Importo richiesto:','Statut de l’opération':'Stato dell’operazione','Chargement...':'Caricamento...','Télécharger':'Scarica','Historique du compte':'Cronologia dell’account','Aucun mouvement sur le compte.':'Nessun movimento sul conto.'
+};
+translations.de=de; translations.it=it;
 
+let currentLanguage = localStorage.getItem('eh_language') || 'fr';
+if(!translations[currentLanguage]) currentLanguage='fr';
+
+function translateText(text){
+ const t=translations[currentLanguage]||translations.fr;
+ let out=text;
+ const keys=Object.keys(t).sort((a,b)=>b.length-a.length);
+ for(const key of keys){ if(key && out.includes(key)) out=out.split(key).join(t[key]); }
+ return out;
+}
 function applyLanguage(lang){
- currentLanguage=translations[lang]?lang:"fr";
- localStorage.setItem("eh_language",currentLanguage);
+ currentLanguage=translations[lang]?lang:'fr';
+ localStorage.setItem('eh_language',currentLanguage);
  document.documentElement.lang=currentLanguage;
  window.FINVERO_LANGUAGE=currentLanguage;
  window.currentLanguage=currentLanguage;
- const langBtn=document.getElementById("lang-btn");
- if(langBtn)langBtn.value=currentLanguage;
- document.querySelectorAll("[data-i18n]").forEach(el=>{
-  const key=el.dataset.i18n;
-  if(translations[currentLanguage][key]!==undefined)el.innerHTML=translations[currentLanguage][key];
+ const btn=document.getElementById('lang-btn'); if(btn) btn.value=currentLanguage;
+ const root=document.body;
+ if(!root) return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ const nodes=[]; let n; while(n=walker.nextNode()) nodes.push(n);
+ nodes.forEach(node=>{ if(node.parentElement && !['SCRIPT','STYLE','NOSCRIPT'].includes(node.parentElement.tagName)){ const v=node.nodeValue; const x=translateText(v); if(x!==v) node.nodeValue=x; }});
+ document.querySelectorAll('input[placeholder],textarea[placeholder],button[title],button[aria-label],[aria-label]').forEach(el=>{
+   ['placeholder','title','aria-label'].forEach(a=>{ if(el.hasAttribute(a)) el.setAttribute(a,translateText(el.getAttribute(a))); });
  });
+ document.querySelectorAll('[data-i18n]').forEach(el=>{ const key=el.dataset.i18n; const t=translations[currentLanguage]; if(t[key]!==undefined) el.textContent=t[key]; });
 }
-
-// Compatibilité avec les clés déjà présentes dans Finvero.
-document.querySelectorAll("[data-finvero-i18n]").forEach(el=>{
- if(!el.hasAttribute("data-i18n"))el.setAttribute("data-i18n",el.dataset.finveroI18n);
-});
-
 window.FINVERO_LANGUAGE=currentLanguage;
 window.FINVERO_TRANSLATIONS=translations;
 window.FINVERO_SET_LANGUAGE=applyLanguage;
 window.currentLanguage=currentLanguage;
 window.applyLanguage=applyLanguage;
+document.getElementById('lang-btn')?.addEventListener('change',e=>applyLanguage(e.target.value));
 
-document.getElementById("lang-btn")?.addEventListener("change",e=>applyLanguage(e.target.value));
-// Restaurer la langue mémorisée : ne jamais forcer le français au rechargement.
+// Réapplique automatiquement la langue aux contenus créés après connexion,
+// ouverture du dashboard, administration, documents ou transfert.
+let translating=false;
+const observer=new MutationObserver(()=>{
+ if(translating) return;
+ translating=true;
+ try{ applyLanguage(currentLanguage); } finally { translating=false; }
+});
+if(document.body) observer.observe(document.body,{childList:true,subtree:true});
+
 applyLanguage(currentLanguage);
-
+})();
 </script>
 
 </body>
