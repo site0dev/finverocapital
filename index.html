@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de" translate="yes">
+<html lang="fr" translate="yes">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -1039,7 +1039,16 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                     ...(targetUserId ? { targetUserId } : {}),
                     data: {
                         ...data,
-                        browserLanguage: (navigator.languages && navigator.languages[0]) || navigator.language || 'fr'
+                        // Langue réellement sélectionnée sur le site, avec repli sur
+                        // la langue du navigateur normalisée (fr/de/it).
+                        language: window.FINVERO_LANGUAGE || (function () {
+                            const raw = ((navigator.languages && navigator.languages[0]) || navigator.language || 'fr').toLowerCase();
+                            return raw.startsWith('de') ? 'de' : raw.startsWith('it') ? 'it' : 'fr';
+                        })(),
+                        browserLanguage: (function () {
+                            const raw = ((navigator.languages && navigator.languages[0]) || navigator.language || 'fr').toLowerCase();
+                            return raw.startsWith('de') ? 'de' : raw.startsWith('it') ? 'it' : 'fr';
+                        })()
                     }
                 })
             });
@@ -3301,33 +3310,89 @@ const it = {
 };
 translations.de=de; translations.it=it;
 
-let currentLanguage = localStorage.getItem('eh_language') || 'fr';
+const getBrowserLanguage = () => {
+  const raw = ((navigator.languages && navigator.languages[0]) || navigator.language || 'fr').toLowerCase();
+  return raw.startsWith('de') ? 'de' : raw.startsWith('it') ? 'it' : 'fr';
+};
+
+// Une préférence explicitement choisie est prioritaire. Sinon, on suit la langue
+// du navigateur (uniquement FR / DE / IT, les autres revenant à FR).
+let currentLanguage = localStorage.getItem('eh_language') || getBrowserLanguage();
 if(!translations[currentLanguage]) currentLanguage='fr';
 
-function translateText(text){
- const t=translations[currentLanguage]||translations.fr;
- let out=text;
- const keys=Object.keys(t).sort((a,b)=>b.length-a.length);
- for(const key of keys){ if(key && out.includes(key)) out=out.split(key).join(t[key]); }
- return out;
+// Le moteur précédent retraduisait les textes déjà traduits. On conserve donc
+// systématiquement leur valeur source afin que DE <-> IT <-> FR soit réversible.
+const sourceText = new WeakMap();
+const sourceAttributes = new WeakMap();
+const knownTextNodes = new WeakSet();
+const knownElements = new WeakSet();
+
+function rememberSources(root=document.body){
+  if(!root) return;
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  let node;
+  while(node=walker.nextNode()){
+    if(!node.parentElement || ['SCRIPT','STYLE','NOSCRIPT'].includes(node.parentElement.tagName)) continue;
+    if(!knownTextNodes.has(node)){
+      knownTextNodes.add(node);
+      sourceText.set(node,node.nodeValue);
+    }
+  }
+  root.querySelectorAll?.('input[placeholder],textarea[placeholder],button[title],button[aria-label],[aria-label]').forEach(el=>{
+    if(knownElements.has(el)) return;
+    knownElements.add(el);
+    const attrs={};
+    ['placeholder','title','aria-label'].forEach(a=>{ if(el.hasAttribute(a)) attrs[a]=el.getAttribute(a); });
+    sourceAttributes.set(el,attrs);
+  });
 }
+
+function translateSource(text){
+  const t=translations[currentLanguage]||translations.fr;
+  let out=String(text ?? '');
+  const keys=Object.keys(t).filter(Boolean).sort((a,b)=>b.length-a.length);
+  for(const key of keys){ if(out.includes(key)) out=out.split(key).join(t[key]); }
+  return out;
+}
+
 function applyLanguage(lang){
- currentLanguage=translations[lang]?lang:'fr';
- localStorage.setItem('eh_language',currentLanguage);
- document.documentElement.lang=currentLanguage;
- window.FINVERO_LANGUAGE=currentLanguage;
- window.currentLanguage=currentLanguage;
- const btn=document.getElementById('lang-btn'); if(btn) btn.value=currentLanguage;
- const root=document.body;
- if(!root) return;
- const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
- const nodes=[]; let n; while(n=walker.nextNode()) nodes.push(n);
- nodes.forEach(node=>{ if(node.parentElement && !['SCRIPT','STYLE','NOSCRIPT'].includes(node.parentElement.tagName)){ const v=node.nodeValue; const x=translateText(v); if(x!==v) node.nodeValue=x; }});
- document.querySelectorAll('input[placeholder],textarea[placeholder],button[title],button[aria-label],[aria-label]').forEach(el=>{
-   ['placeholder','title','aria-label'].forEach(a=>{ if(el.hasAttribute(a)) el.setAttribute(a,translateText(el.getAttribute(a))); });
- });
- document.querySelectorAll('[data-i18n]').forEach(el=>{ const key=el.dataset.i18n; const t=translations[currentLanguage]; if(t[key]!==undefined) el.textContent=t[key]; });
+  currentLanguage=translations[lang]?lang:'fr';
+  localStorage.setItem('eh_language',currentLanguage);
+  document.documentElement.lang=currentLanguage;
+  window.FINVERO_LANGUAGE=currentLanguage;
+  window.currentLanguage=currentLanguage;
+  const btn=document.getElementById('lang-btn'); if(btn) btn.value=currentLanguage;
+  const root=document.body;
+  if(!root) return;
+
+  // Important : ne jamais reprendre le texte actuellement affiché comme source.
+  rememberSources(root);
+
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  let node;
+  while(node=walker.nextNode()){
+    if(!sourceText.has(node)) continue;
+    const parent=node.parentElement;
+    if(parent && !['SCRIPT','STYLE','NOSCRIPT'].includes(parent.tagName)){
+      node.nodeValue=translateSource(sourceText.get(node));
+    }
+  }
+
+  root.querySelectorAll('input[placeholder],textarea[placeholder],button[title],button[aria-label],[aria-label]').forEach(el=>{
+    const attrs=sourceAttributes.get(el);
+    if(!attrs) return;
+    ['placeholder','title','aria-label'].forEach(a=>{
+      if(Object.prototype.hasOwnProperty.call(attrs,a)) el.setAttribute(a,translateSource(attrs[a]));
+    });
+  });
+
+  root.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.dataset.i18n;
+    const t=translations[currentLanguage];
+    if(t[key]!==undefined) el.textContent=t[key];
+  });
 }
+
 window.FINVERO_LANGUAGE=currentLanguage;
 window.FINVERO_TRANSLATIONS=translations;
 window.FINVERO_SET_LANGUAGE=applyLanguage;
@@ -3335,19 +3400,30 @@ window.currentLanguage=currentLanguage;
 window.applyLanguage=applyLanguage;
 document.getElementById('lang-btn')?.addEventListener('change',e=>applyLanguage(e.target.value));
 
-// Réapplique automatiquement la langue aux contenus créés après connexion,
-// ouverture du dashboard, administration, documents ou transfert.
 let translating=false;
-const observer=new MutationObserver(()=>{
- if(translating) return;
- translating=true;
- try{ applyLanguage(currentLanguage); } finally { translating=false; }
+const observer=new MutationObserver((mutations)=>{
+  if(translating) return;
+  // Capturer uniquement les nouveaux nœuds avant leur première traduction.
+  for(const mutation of mutations){
+    mutation.addedNodes?.forEach(node=>{
+      if(node.nodeType===Node.ELEMENT_NODE || node.nodeType===Node.TEXT_NODE){
+        if(node.nodeType===Node.TEXT_NODE){
+          if(!knownTextNodes.has(node)){
+            knownTextNodes.add(node);
+            sourceText.set(node,node.nodeValue);
+          }
+        } else {
+          rememberSources(node);
+        }
+      }
+    });
+  }
+  translating=true;
+  try{ applyLanguage(currentLanguage); } finally { translating=false; }
 });
 if(document.body) observer.observe(document.body,{childList:true,subtree:true});
 
 applyLanguage(currentLanguage);
-})();
-</script>
 
 </body>
 </html>
