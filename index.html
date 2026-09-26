@@ -626,8 +626,8 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         </div>
     </div>
 
-    <!-- FORMULAIRE -->
-    <section class="form-section">
+    <!-- FORMULAIRE / SIMULATEUR -->
+    <section class="form-section" id="financingSimulatorSection">
         <h2None>Remplissez le formulaire suivant</h2>
         <p class="sub">Ajustez le curseur pour le montant, la durée est libre.</p>
 
@@ -1007,6 +1007,11 @@ function googleTranslateElementInit() {
         autoDisplay: false,
         multilanguagePage: true
     }, 'google_translate_element');
+    setTimeout(function () {
+        if (window.__finveroPendingLanguage && window.__finveroApplyGoogleLanguage) {
+            window.__finveroApplyGoogleLanguage(window.__finveroPendingLanguage);
+        }
+    }, 0);
 }
 </script>
 <script>
@@ -1028,48 +1033,53 @@ function googleTranslateElementInit() {
 document.addEventListener('DOMContentLoaded', function () {
     const select = document.getElementById('languageSelect');
     const supported = ['fr','en','es','pt','de','it','nl','pl','ro','cs','el','sv','da','fi','no','hu','bg','sk','uk','tr'];
-
-    // Automatically use the browser's preferred language.
-    // German is the default when the browser language is not supported.
-    const browserLanguages = (navigator.languages && navigator.languages.length)
-        ? navigator.languages
-        : [navigator.language || 'de'];
-    const browserLanguage = browserLanguages
-        .map(function (lang) { return String(lang).toLowerCase().split('-')[0]; })
-        .find(function (lang) { return supported.includes(lang); }) || 'de';
-
-    const match = document.cookie.match(/(?:^|;\s*)googtrans=\/fr\/([^;]+)/);
-    const saved = match && supported.includes(match[1]) ? match[1] : null;
-    const current = saved || browserLanguage;
-
-    // Persist the browser-language choice automatically unless the user
-    // explicitly changes it with the language selector.
-    if (!saved) {
-        document.cookie = 'googtrans=/fr/' + current + ';path=/;SameSite=Lax';
+    function setLanguageCookie(lang) {
+        document.cookie = 'googtrans=/fr/' + lang + ';path=/;SameSite=Lax';
+        try { document.cookie = 'googtrans=/fr/' + lang + ';path=/;domain=' + location.hostname + ';SameSite=Lax'; } catch (_) {}
     }
-
+    function getSavedLanguage() {
+        const match = document.cookie.match(/(?:^|;\s*)googtrans=\/fr\/([^;]+)/);
+        return match && supported.includes(match[1]) ? match[1] : null;
+    }
+    function getBrowserLanguage() {
+        const langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'fr'];
+        return langs.map(lang => String(lang).toLowerCase().split('-')[0]).find(lang => supported.includes(lang)) || 'fr';
+    }
+    function applyGoogleLanguage(lang) {
+        lang = supported.includes(lang) ? lang : 'fr';
+        window.__finveroPendingLanguage = lang;
+        window.FINVERO_LANGUAGE = lang;
+        window.FINVERO_LOCALE = lang === 'fr' ? 'fr-FR' : lang;
+        document.documentElement.lang = lang;
+        setLanguageCookie(lang);
+        if (select) select.value = lang;
+        const combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+            combo.value = lang;
+            combo.dispatchEvent(new Event('change', { bubbles: true }));
+            window.__finveroPendingLanguage = null;
+            return true;
+        }
+        return false;
+    }
+    window.__finveroApplyGoogleLanguage = applyGoogleLanguage;
+    const saved = getSavedLanguage();
+    const current = saved || getBrowserLanguage();
     window.FINVERO_LANGUAGE = current;
     window.FINVERO_LOCALE = current === 'fr' ? 'fr-FR' : current;
     document.documentElement.lang = current;
-
-    if (current !== 'fr' && window.__finveroLoadGoogleTranslate) {
-        window.__finveroLoadGoogleTranslate();
-    }
-
+    if (!saved) setLanguageCookie(current);
     if (select) {
         select.value = current;
         select.addEventListener('change', function () {
             const target = this.value;
-            document.cookie = 'googtrans=/fr/' + target + ';path=/;SameSite=Lax';
-            window.FINVERO_LANGUAGE = target;
-            window.FINVERO_LOCALE = target === 'fr' ? 'fr-FR' : target;
-            document.documentElement.lang = target;
-            if (target !== 'fr' && window.__finveroLoadGoogleTranslate) {
-                window.__finveroLoadGoogleTranslate();
-            }
-            window.location.reload();
+            applyGoogleLanguage(target);
+            if (window.__finveroLoadGoogleTranslate) window.__finveroLoadGoogleTranslate();
+            setTimeout(() => applyGoogleLanguage(target), 100);
+            setTimeout(() => applyGoogleLanguage(target), 500);
         });
     }
+    if (window.__finveroLoadGoogleTranslate) window.__finveroLoadGoogleTranslate();
 });
 </script>
 <script>
@@ -2541,6 +2551,11 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('dashboardWelcome').textContent = `Bonjour ${displayName}. Les changements de statut apparaissent automatiquement.`;
 
         const app = apps?.[0];
+        const simulatorSection = document.getElementById('financingSimulatorSection');
+        if (simulatorSection) {
+            simulatorSection.classList.toggle('client-has-application', !!app);
+            simulatorSection.setAttribute('aria-hidden', app ? 'true' : 'false');
+        }
         if (!app) {
             document.getElementById('dashTracking').textContent = 'Aucun dossier';
             document.getElementById('dashAmount').textContent = '—';
