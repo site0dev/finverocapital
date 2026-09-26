@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" translate="no">
+<html lang="de" translate="yes">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -1495,7 +1495,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         }
 
         const toast = document.getElementById('toast');
-        toast.textContent = translateFinveroRuntimeText('⏳ Envoi sécurisé de votre dossier...');
+        toast.textContent = '⏳ Envoi sécurisé de votre dossier...';
         toast.classList.add('show');
 
         try {
@@ -1575,7 +1575,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 applicationId: application.id
             });
 
-            toast.textContent = translateFinveroRuntimeText('📨 Demande enregistrée avec succès !');
+            toast.textContent = '📨 Demande enregistrée avec succès !';
             setTimeout(() => toast.classList.remove('show'), 5000);
 
             const subject = `Demande de crédit Finvero Capital — ${trackingNumber}`;
@@ -2341,7 +2341,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
     };
 
     function showAuthMessage(message, type='success') {
-        authMessage.textContent = translateFinveroRuntimeText(message);
+        authMessage.textContent = message;
         authMessage.className = `auth-message show ${type}`;
     }
 
@@ -2579,29 +2579,6 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             if (!data?.session || !data?.user) throw new Error('Connexion non confirmée par Supabase.');
 
             passwordRecoveryPending = false;
-
-            // Mémorise la langue choisie pour les prochains e-mails d'authentification.
-            try {
-                await localDB.auth.updateUser({
-                    data: { ...(data.user.user_metadata || {}), language: currentLanguage }
-                });
-            } catch (languageError) {
-                console.warn('Langue utilisateur non enregistrée:', languageError);
-            }
-
-            // Notification de connexion : si la Edge Function supporte ce type,
-            // le message est envoyé dans la langue actuellement sélectionnée.
-            try {
-                await sendFinveroNotification('login_notification', {
-                    clientName: data.user.user_metadata?.full_name || data.user.email || 'Client',
-                    loginAt: new Date().toISOString(),
-                    language: currentLanguage,
-                    browserLanguage: currentLanguage
-                });
-            } catch (loginNotificationError) {
-                console.warn('Notification de connexion non envoyée:', loginNotificationError);
-            }
-
             closeAuthModal();
             await updateAuthUI(data.user);
             await startSupabaseRealtime(data.user);
@@ -2638,7 +2615,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                 email,
                 password,
                 options: {
-                    data: { full_name: fullName, phone, gender, language: currentLanguage },
+                    data: { full_name: fullName, phone, gender },
                     emailRedirectTo
                 }
             });
@@ -2675,9 +2652,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 
         setAuthSubmitState(form, true, 'Envoi…');
         try {
-            const resetUrl = new URL(window.location.origin + window.location.pathname);
-            resetUrl.searchParams.set('auth_lang', currentLanguage);
-            const resetRedirect = resetUrl.toString();
+            const resetRedirect = window.location.origin + window.location.pathname;
             const { error } = await localDB.auth.resetPasswordForEmail(email, {
                 redirectTo: resetRedirect
             });
@@ -3326,195 +3301,21 @@ const it = {
 };
 translations.de=de; translations.it=it;
 
-// Messages dynamiques et contenus générés après ouverture des modales.
-Object.assign(de, {
- '📨 Demande enregistrée avec succès !':'📨 Anfrage erfolgreich gespeichert!',
- '⏳ Envoi sécurisé de votre dossier...':'⏳ Sichere Übermittlung Ihrer Unterlagen...',
- 'Veuillez renseigner votre e-mail et votre mot de passe.':'Bitte geben Sie Ihre E-Mail-Adresse und Ihr Passwort ein.',
- 'Connexion impossible.':'Anmeldung nicht möglich.',
- 'Adresse e-mail ou mot de passe incorrect.':'E-Mail-Adresse oder Passwort ist falsch.',
- 'Votre adresse e-mail n’est pas encore confirmée. Consultez votre boîte e-mail.':'Ihre E-Mail-Adresse wurde noch nicht bestätigt. Bitte prüfen Sie Ihren Posteingang.',
- 'Un compte existe déjà avec cette adresse e-mail. Connectez-vous ou utilisez « Mot de passe oublié ? ». ':'Mit dieser E-Mail-Adresse existiert bereits ein Konto. Melden Sie sich an oder verwenden Sie „Passwort vergessen?“.',
- 'Le mot de passe doit contenir au moins 8 caractères.':'Das Passwort muss mindestens 8 Zeichen enthalten.',
- 'Trop de tentatives. Veuillez patienter quelques instants puis réessayer.':'Zu viele Versuche. Bitte warten Sie einige Augenblicke und versuchen Sie es erneut.',
- 'La session sécurisée n’est plus disponible. Demandez un nouveau lien de réinitialisation.':'Die sichere Sitzung ist nicht mehr verfügbar. Bitte fordern Sie einen neuen Link zum Zurücksetzen an.',
- 'Veuillez saisir une adresse e-mail valide.':'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
- 'Veuillez saisir votre nom complet.':'Bitte geben Sie Ihren vollständigen Namen ein.',
- 'Veuillez saisir votre numéro de téléphone.':'Bitte geben Sie Ihre Telefonnummer ein.',
- 'Les deux mots de passe ne correspondent pas.':'Die beiden Passwörter stimmen nicht überein.',
- 'Compte créé. Consultez votre e-mail et confirmez votre adresse avant de vous connecter.':'Konto erstellt. Bitte prüfen Sie Ihre E-Mail und bestätigen Sie Ihre Adresse, bevor Sie sich anmelden.',
- 'Création du compte impossible.':'Kontoerstellung nicht möglich.',
- 'Si cette adresse correspond à un compte, un lien sécurisé de réinitialisation vient d’être envoyé.':'Wenn diese Adresse zu einem Konto gehört, wurde ein sicherer Link zum Zurücksetzen gesendet.',
- 'Impossible d’envoyer le lien de réinitialisation.':'Der Link zum Zurücksetzen konnte nicht gesendet werden.',
- 'Impossible de modifier le mot de passe.':'Das Passwort konnte nicht geändert werden.',
- 'Choisissez maintenant votre nouveau mot de passe.':'Wählen Sie jetzt Ihr neues Passwort.',
- 'Le lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien.':'Der Link zum Zurücksetzen ist ungültig oder abgelaufen. Fordern Sie einen neuen Link an.',
- 'Connectez-vous ou créez un compte avant d’envoyer votre demande.':'Melden Sie sich an oder erstellen Sie ein Konto, bevor Sie Ihre Anfrage senden.',
- 'Connectez-vous pour demander un transfert.':'Melden Sie sich an, um eine Überweisung anzufordern.',
- 'Veuillez entrer une adresse e-mail valide.':'Bitte geben Sie eine gültige E-Mail-Adresse ein.',
- 'Veuillez entrer un numéro de téléphone.':'Bitte geben Sie eine Telefonnummer ein.',
- 'Impossible de transmettre votre demande pour le moment.':'Ihre Anfrage konnte derzeit nicht übermittelt werden.',
- 'Veuillez télécharger les trois documents demandés.':'Bitte laden Sie die drei angeforderten Dokumente hoch.',
- 'Impossible d’enregistrer la demande pour le moment. Vérifiez votre connexion puis réessayez.':'Die Anfrage konnte derzeit nicht gespeichert werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.',
- 'Impossible de charger le transfert bancaire.':'Die Banküberweisung konnte nicht geladen werden.',
- 'Veuillez remplir tous les champs correctement.':'Bitte füllen Sie alle Felder korrekt aus.',
- 'Impossible d’enregistrer les coordonnées du transfert.':'Die Überweisungsdaten konnten nicht gespeichert werden.',
- 'Entrez un montant supérieur à zéro.':'Geben Sie einen Betrag größer als null ein.',
- 'Compte crédité. Nouveau solde :':'Konto gutgeschrieben. Neuer Kontostand:',
- 'Compte débité. Nouveau solde :':'Konto belastet. Neuer Kontostand:',
- 'Ce client n’a aucun dossier de crédit à vérifier.':'Für diesen Kunden liegt keine Kreditanfrage zur Prüfung vor.',
- 'Vérification automatique non validée.':'Automatische Prüfung nicht bestanden.',
- 'Vérification automatique terminée. Les trois documents requis sont présents et techniquement conformes.':'Automatische Prüfung abgeschlossen. Die drei erforderlichen Dokumente sind vorhanden und technisch konform.',
- 'Impossible d’effectuer la vérification automatique des documents.':'Die automatische Dokumentenprüfung konnte nicht durchgeführt werden.',
- 'Ce client n’a aucun dossier de crédit à mettre à jour.':'Für diesen Kunden liegt keine Kreditanfrage zur Aktualisierung vor.',
- 'Statut du dossier mis à jour :':'Status der Anfrage aktualisiert:',
- 'Commentaire :':'Kommentar:',
- 'Impossible de modifier le statut du dossier.':'Der Status der Anfrage konnte nicht geändert werden.',
- 'Statut mis à jour et transfert débloqué le cas échéant.':'Status aktualisiert und Überweisung gegebenenfalls freigegeben.',
- 'Session administrateur invalide.':'Ungültige Administratorsitzung.',
- 'Demande envoyée':'Anfrage gesendet','Documents en vérification':'Dokumente werden geprüft','Dossier en cours d’étude':'Anfrage wird geprüft','Dossier accepté':'Anfrage genehmigt','Contrat à signer':'Vertrag zu unterzeichnen','Financement en préparation':'Finanzierung wird vorbereitet','Financement accordé':'Finanzierung gewährt',
- 'Documents transmis':'Übermittelte Dokumente','Aucun document enregistré.':'Keine Dokumente gespeichert.','Aucun mouvement sur le compte.':'Keine Kontobewegungen.','Crédit':'Gutschrift','Débit':'Belastung','Ajustement':'Anpassung','Statut du dossier :':'Status der Anfrage:'
-});
-
-
-Object.assign(it, {
- '📨 Demande enregistrée avec succès !':'📨 Richiesta salvata con successo!',
- '⏳ Envoi sécurisé de votre dossier...':'⏳ Sichere Übermittlung Ihrer Unterlagen...',
- 'Veuillez renseigner votre e-mail et votre mot de passe.':'Inserisci il tuo indirizzo e-mail e la password.',
- 'Connexion impossible.':'Accesso impossibile.',
- 'Adresse e-mail ou mot de passe incorrect.':'Indirizzo e-mail o password non corretti.',
- 'Votre adresse e-mail n’est pas encore confirmée. Consultez votre boîte e-mail.':'Il tuo indirizzo e-mail non è ancora confermato. Controlla la tua casella di posta.',
- 'Un compte existe déjà avec cette adresse e-mail. Connectez-vous ou utilisez « Mot de passe oublié ? ». ':'Esiste già un account con questo indirizzo e-mail. Accedi oppure usa «Password dimenticata?».',
- 'Le mot de passe doit contenir au moins 8 caractères.':'La password deve contenere almeno 8 caratteri.',
- 'Trop de tentatives. Veuillez patienter quelques instants puis réessayer.':'Troppi tentativi. Attendi qualche istante e riprova.',
- 'La session sécurisée n’est plus disponible. Demandez un nouveau lien de réinitialisation.':'La sessione sicura non è più disponibile. Richiedi un nuovo link di reimpostazione.',
- 'Veuillez saisir une adresse e-mail valide.':'Inserisci un indirizzo e-mail valido.',
- 'Veuillez saisir votre nom complet.':'Inserisci il tuo nome completo.',
- 'Veuillez saisir votre numéro de téléphone.':'Inserisci il tuo numero di telefono.',
- 'Les deux mots de passe ne correspondent pas.':'Le due password non corrispondono.',
- 'Compte créé. Consultez votre e-mail et confirmez votre adresse avant de vous connecter.':'Account creato. Controlla la tua e-mail e conferma l’indirizzo prima di accedere.',
- 'Création du compte impossible.':'Impossibile creare l’account.',
- 'Si cette adresse correspond à un compte, un lien sécurisé de réinitialisation vient d’être envoyé.':'Se questo indirizzo corrisponde a un account, è stato inviato un link sicuro per la reimpostazione.',
- 'Impossible d’envoyer le lien de réinitialisation.':'Impossibile inviare il link di reimpostazione.',
- 'Impossible de modifier le mot de passe.':'Impossibile modificare la password.',
- 'Choisissez maintenant votre nouveau mot de passe.':'Scegli ora la tua nuova password.',
- 'Le lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien.':'Il link di reimpostazione non è valido o è scaduto. Richiedi un nuovo link.',
- 'Connectez-vous ou créez un compte avant d’envoyer votre demande.':'Accedi o crea un account prima di inviare la richiesta.',
- 'Connectez-vous pour demander un transfert.':'Accedi per richiedere un trasferimento.',
- 'Veuillez entrer une adresse e-mail valide.':'Inserisci un indirizzo e-mail valido.',
- 'Veuillez entrer un numéro de téléphone.':'Inserisci un numero di telefono.',
- 'Impossible de transmettre votre demande pour le moment.':'Impossibile trasmettere la richiesta al momento.',
- 'Veuillez télécharger les trois documents demandés.':'Carica i tre documenti richiesti.',
- 'Impossible d’enregistrer la demande pour le moment. Vérifiez votre connexion puis réessayez.':'Impossibile salvare la richiesta al momento. Controlla la connessione e riprova.',
- 'Impossible de charger le transfert bancaire.':'Impossibile caricare il trasferimento bancario.',
- 'Veuillez remplir tous les champs correctement.':'Compila correttamente tutti i campi.',
- 'Impossible d’enregistrer les coordonnées du transfert.':'Impossibile salvare i dati del trasferimento.',
- 'Entrez un montant supérieur à zéro.':'Inserisci un importo maggiore di zero.',
- 'Compte crédité. Nouveau solde :':'Conto accreditato. Nuovo saldo:',
- 'Compte débité. Nouveau solde :':'Conto addebitato. Nuovo saldo:',
- 'Ce client n’a aucun dossier de crédit à vérifier.':'Questo cliente non ha alcuna richiesta di credito da verificare.',
- 'Vérification automatique non validée.':'Verifica automatica non superata.',
- 'Vérification automatique terminée. Les trois documents requis sont présents et techniquement conformes.':'Verifica automatica completata. I tre documenti richiesti sono presenti e tecnicamente conformi.',
- 'Impossible d’effectuer la vérification automatique des documents.':'Impossibile eseguire la verifica automatica dei documenti.',
- 'Ce client n’a aucun dossier de crédit à mettre à jour.':'Questo cliente non ha alcuna richiesta di credito da aggiornare.',
- 'Statut du dossier mis à jour :':'Stato della richiesta aggiornato:',
- 'Commentaire :':'Commento:',
- 'Impossible de modifier le statut du dossier.':'Impossibile modificare lo stato della richiesta.',
- 'Statut mis à jour et transfert débloqué le cas échéant.':'Stato aggiornato e trasferimento sbloccato, se applicabile.',
- 'Session administrateur invalide.':'Sessione amministratore non valida.',
- 'Demande envoyée':'Richiesta inviata','Documents en vérification':'Documenti in verifica','Dossier en cours d’étude':'Pratica in valutazione','Dossier accepté':'Pratica approvata','Contrat à signer':'Contratto da firmare','Financement en préparation':'Finanziamento in preparazione','Financement accordé':'Finanziamento concesso',
- 'Documents transmis':'Documenti inviati','Aucun document enregistré.':'Nessun documento registrato.','Aucun mouvement sur le compte.':'Nessun movimento sul conto.','Crédit':'Accredito','Débit':'Addebito','Ajustement':'Rettifica','Statut du dossier :':'Stato della pratica:'
-});
-
-
-const finveroAuthLanguage = (() => {
- try {
-   const value = new URL(window.location.href).searchParams.get('auth_lang');
-   return ['fr','de','it'].includes(value) ? value : null;
- } catch (_) { return null; }
-})();
-
-let currentLanguage = finveroAuthLanguage || localStorage.getItem('eh_language') || 'fr';
+let currentLanguage = localStorage.getItem('eh_language') || 'fr';
 if(!translations[currentLanguage]) currentLanguage='fr';
-if(finveroAuthLanguage) {
- try { localStorage.setItem('eh_language', finveroAuthLanguage); } catch (_) {}
-}
 
 function translateText(text){
  const t=translations[currentLanguage]||translations.fr;
- return translateFinveroRuntimeText(text);
-}
-
-function translateFinveroRuntimeText(value){
- const raw=String(value ?? '');
- const t=translations[currentLanguage]||translations.fr;
- let out=raw;
+ let out=text;
  const keys=Object.keys(t).sort((a,b)=>b.length-a.length);
  for(const key of keys){ if(key && out.includes(key)) out=out.split(key).join(t[key]); }
  return out;
 }
-
-// Les boîtes de dialogue natives ne passent pas par le DOM : elles doivent
-// donc être localisées explicitement pour éviter qu'un message français
-// apparaisse alors que l'interface est en allemand ou en italien.
-const nativeFinveroAlert = window.alert.bind(window);
-window.alert = function(message){
- nativeFinveroAlert(translateFinveroRuntimeText(message));
-};
-const nativeFinveroConfirm = window.confirm.bind(window);
-window.confirm = function(message){
- return nativeFinveroConfirm(translateFinveroRuntimeText(message));
-};
-
-const finveroTextSources = new WeakMap();
-
 function applyLanguage(lang){
  currentLanguage=translations[lang]?lang:'fr';
  localStorage.setItem('eh_language',currentLanguage);
  document.documentElement.lang=currentLanguage;
  window.FINVERO_LANGUAGE=currentLanguage;
- window.currentLanguage=currentLanguage;
- const pageTitles={fr:'Finvero Capital – Simulation de crédit',de:'Finvero Capital – Finanzierungssimulation',it:'Finvero Capital – Simulazione di finanziamento'};
- document.title=pageTitles[currentLanguage]||pageTitles.fr;
- const btn=document.getElementById('lang-btn'); if(btn) btn.value=currentLanguage;
- const root=document.body;
- if(!root) return;
-
- const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
- const nodes=[]; let n; while(n=walker.nextNode()) nodes.push(n);
- nodes.forEach(node=>{
-   if(!node.parentElement || ['SCRIPT','STYLE','NOSCRIPT'].includes(node.parentElement.tagName)) return;
-   let source=finveroTextSources.get(node);
-   if(source===undefined){
-     source=node.nodeValue || '';
-     finveroTextSources.set(node,source);
-   }
-   const translated=translateFinveroRuntimeText(source);
-   if(node.nodeValue!==translated) node.nodeValue=translated;
- });
-
- document.querySelectorAll('input[placeholder],textarea[placeholder],button[title],button[aria-label],[aria-label]').forEach(el=>{
-   ['placeholder','title','aria-label'].forEach(a=>{
-     if(!el.hasAttribute(a)) return;
-     const key='finveroOriginal_'+a;
-     if(!el.dataset[key]) el.dataset[key]=el.getAttribute(a) || '';
-     el.setAttribute(a,translateFinveroRuntimeText(el.dataset[key]));
-   });
- });
-
- document.querySelectorAll('[data-i18n]').forEach(el=>{
-   const key=el.dataset.i18n;
-   const t=translations[currentLanguage];
-   if(t[key]!==undefined) el.textContent=t[key];
- });
-
- // Le sélecteur est la source de vérité : aucune autre traduction automatique
- // ne doit imposer une langue différente à l'interface.
- try {
-   document.cookie='googtrans=/fr/'+currentLanguage+';path=/;SameSite=Lax';
- } catch (_) {}
-}
-window.FINVERO_LANGUAGE=currentLanguage;
  window.currentLanguage=currentLanguage;
  const btn=document.getElementById('lang-btn'); if(btn) btn.value=currentLanguage;
  const root=document.body;
@@ -3532,11 +3333,7 @@ window.FINVERO_TRANSLATIONS=translations;
 window.FINVERO_SET_LANGUAGE=applyLanguage;
 window.currentLanguage=currentLanguage;
 window.applyLanguage=applyLanguage;
-document.getElementById('lang-btn')?.addEventListener('change',e=>{
- const target=e.target.value;
- applyLanguage(target);
- window.location.reload();
-});
+document.getElementById('lang-btn')?.addEventListener('change',e=>applyLanguage(e.target.value));
 
 // Réapplique automatiquement la langue aux contenus créés après connexion,
 // ouverture du dashboard, administration, documents ou transfert.
