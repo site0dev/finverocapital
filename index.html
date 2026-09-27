@@ -432,20 +432,17 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 <script id="finvero-language-bootstrap">
 (function(){
   try {
-    var cookieMatch=document.cookie.match(/(?:^|; )eh_language=([^;]+)/);
-    var saved=cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
-    if(!saved) saved=localStorage.getItem('eh_language') || '';
+    var saved=localStorage.getItem('eh_language') || '';
+    var allowed=['fr','de','es','pt','en'];
     var raw=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();
-    var browser=raw.indexOf('de')===0?'de':(raw.indexOf('it')===0?'it':(raw.indexOf('fr')===0?'fr':''));
-    var lang=(saved==='de'||saved==='it'||saved==='fr')?saved:browser;
-    if(lang){
-      document.documentElement.lang=lang;
-      window.FINVERO_LANGUAGE=lang;
-    } else {
-      document.documentElement.removeAttribute('lang');
-      window.FINVERO_LANGUAGE='';
-    }
-  } catch(e) {}
+    var browser=raw.startsWith('de')?'de':raw.startsWith('es')?'es':raw.startsWith('pt')?'pt':raw.startsWith('en')?'en':'fr';
+    var lang=allowed.includes(saved)?saved:(allowed.includes(browser)?browser:'fr');
+    document.documentElement.lang=lang;
+    window.FINVERO_LANGUAGE=lang;
+  } catch(e) {
+    document.documentElement.lang='fr';
+    window.FINVERO_LANGUAGE='fr';
+  }
 })();
 </script>
 </head>
@@ -461,10 +458,11 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
             <div class="language-switcher" aria-label="Choix de la langue">
                 <span class="language-label" aria-hidden="true">🌐</span>
                 <select class="lang" id="lang-btn" aria-label="Langue">
-                    <option value="" disabled selected>—</option>
                     <option value="fr">FR</option>
                     <option value="de">DE</option>
-                    <option value="it">IT</option>
+                    <option value="es">ES</option>
+                    <option value="pt">PT</option>
+                    <option value="en">EN</option>
                 </select>
             </div>
         </div>
@@ -1054,58 +1052,32 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                     'Authorization': 'Bearer ' + accessToken,
                     'apikey': SUPABASE_PUBLISHABLE_KEY
                 },
-                body: JSON.stringify({
-                    type,
-                    ...(targetUserId ? { targetUserId } : {}),
-                    language: (function () {
-                        const selected = String(
-                            document.documentElement.lang ||
-                            window.FINVERO_LANGUAGE ||
-                            localStorage.getItem('eh_language') ||
-                            'fr'
-                        ).toLowerCase();
-                        return selected.startsWith('de') ? 'de' : selected.startsWith('it') ? 'it' : 'fr';
-                    })(),
-                    selectedLanguage: (function () {
-                        const selected = String(
-                            document.documentElement.lang ||
-                            window.FINVERO_LANGUAGE ||
-                            localStorage.getItem('eh_language') ||
-                            'fr'
-                        ).toLowerCase();
-                        return selected.startsWith('de') ? 'de' : selected.startsWith('it') ? 'it' : 'fr';
-                    })(),
-                    data: {
-                        ...data,
-                        language: (function () {
-                            const selected = String(
-                                document.documentElement.lang ||
-                                window.FINVERO_LANGUAGE ||
-                                localStorage.getItem('eh_language') ||
-                                'fr'
-                            ).toLowerCase();
-                            return selected.startsWith('de') ? 'de' : selected.startsWith('it') ? 'it' : 'fr';
-                        })(),
-                        selectedLanguage: (function () {
-                            const selected = String(
-                                document.documentElement.lang ||
-                                window.FINVERO_LANGUAGE ||
-                                localStorage.getItem('eh_language') ||
-                                'fr'
-                            ).toLowerCase();
-                            return selected.startsWith('de') ? 'de' : selected.startsWith('it') ? 'it' : 'fr';
-                        })(),
-                        browserLanguage: (function () {
-                            const selected = String(
-                                document.documentElement.lang ||
-                                window.FINVERO_LANGUAGE ||
-                                localStorage.getItem('eh_language') ||
-                                'fr'
-                            ).toLowerCase();
-                            return selected.startsWith('de') ? 'de' : selected.startsWith('it') ? 'it' : 'fr';
-                        })()
-                    }
-                })
+                body: JSON.stringify((() => {
+                    const raw = String(
+                        document.documentElement.lang ||
+                        window.FINVERO_LANGUAGE ||
+                        localStorage.getItem('eh_language') ||
+                        'fr'
+                    ).toLowerCase();
+                    const selectedLanguage = raw.startsWith('de') ? 'de'
+                        : raw.startsWith('es') ? 'es'
+                        : raw.startsWith('pt') ? 'pt'
+                        : raw.startsWith('en') ? 'en'
+                        : raw.startsWith('it') ? 'it'
+                        : 'fr';
+                    return {
+                        type,
+                        ...(targetUserId ? { targetUserId } : {}),
+                        language: selectedLanguage,
+                        selectedLanguage,
+                        data: {
+                            ...data,
+                            language: selectedLanguage,
+                            selectedLanguage,
+                            browserLanguage: selectedLanguage
+                        }
+                    };
+                })())
             });
 
             let result = null;
@@ -1326,20 +1298,97 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         { code: "TR", dial: "+90", label: "Turquie" },
         { code: "UA", dial: "+380", label: "Ukraine" },
         { code: "GB", dial: "+44", label: "Royaume-Uni" },
-        { code: "VA", dial: "+39", label: "Vatican" }
+        { code: "VA", dial: "+39", label: "Vatican" },
+        { code: "DZ", dial: "+213", label: "Algérie" }, { code: "AO", dial: "+244", label: "Angola" },
+        { code: "BJ", dial: "+229", label: "Bénin" }, { code: "BW", dial: "+267", label: "Botswana" },
+        { code: "BF", dial: "+226", label: "Burkina Faso" }, { code: "BI", dial: "+257", label: "Burundi" },
+        { code: "CM", dial: "+237", label: "Cameroun" }, { code: "CV", dial: "+238", label: "Cap-Vert" },
+        { code: "CF", dial: "+236", label: "République centrafricaine" }, { code: "TD", dial: "+235", label: "Tchad" },
+        { code: "KM", dial: "+269", label: "Comores" }, { code: "CG", dial: "+242", label: "Congo" },
+        { code: "CD", dial: "+243", label: "République démocratique du Congo" }, { code: "CI", dial: "+225", label: "Côte d’Ivoire" },
+        { code: "DJ", dial: "+253", label: "Djibouti" }, { code: "EG", dial: "+20", label: "Égypte" },
+        { code: "GQ", dial: "+240", label: "Guinée équatoriale" }, { code: "ER", dial: "+291", label: "Érythrée" },
+        { code: "SZ", dial: "+268", label: "Eswatini" }, { code: "ET", dial: "+251", label: "Éthiopie" },
+        { code: "GA", dial: "+241", label: "Gabon" }, { code: "GM", dial: "+220", label: "Gambie" },
+        { code: "GH", dial: "+233", label: "Ghana" }, { code: "GN", dial: "+224", label: "Guinée" },
+        { code: "GW", dial: "+245", label: "Guinée-Bissau" }, { code: "KE", dial: "+254", label: "Kenya" },
+        { code: "LS", dial: "+266", label: "Lesotho" }, { code: "LR", dial: "+231", label: "Liberia" },
+        { code: "LY", dial: "+218", label: "Libye" }, { code: "MG", dial: "+261", label: "Madagascar" },
+        { code: "MW", dial: "+265", label: "Malawi" }, { code: "ML", dial: "+223", label: "Mali" },
+        { code: "MR", dial: "+222", label: "Mauritanie" }, { code: "MU", dial: "+230", label: "Maurice" },
+        { code: "MA", dial: "+212", label: "Maroc" }, { code: "MZ", dial: "+258", label: "Mozambique" },
+        { code: "NA", dial: "+264", label: "Namibie" }, { code: "NE", dial: "+227", label: "Niger" },
+        { code: "NG", dial: "+234", label: "Nigeria" }, { code: "RW", dial: "+250", label: "Rwanda" },
+        { code: "ST", dial: "+239", label: "Sao Tomé-et-Principe" }, { code: "SN", dial: "+221", label: "Sénégal" },
+        { code: "SC", dial: "+248", label: "Seychelles" }, { code: "SL", dial: "+232", label: "Sierra Leone" },
+        { code: "SO", dial: "+252", label: "Somalie" }, { code: "ZA", dial: "+27", label: "Afrique du Sud" },
+        { code: "SS", dial: "+211", label: "Soudan du Sud" }, { code: "SD", dial: "+249", label: "Soudan" },
+        { code: "TZ", dial: "+255", label: "Tanzanie" }, { code: "TG", dial: "+228", label: "Togo" },
+        { code: "TN", dial: "+216", label: "Tunisie" }, { code: "UG", dial: "+256", label: "Ouganda" },
+        { code: "ZM", dial: "+260", label: "Zambie" }, { code: "ZW", dial: "+263", label: "Zimbabwe" },
+        { code: "CA", dial: "+1", label: "Canada" }, { code: "US", dial: "+1", label: "États-Unis" },
+        { code: "MX", dial: "+52", label: "Mexique" }, { code: "GT", dial: "+502", label: "Guatemala" },
+        { code: "BZ", dial: "+501", label: "Belize" }, { code: "CR", dial: "+506", label: "Costa Rica" },
+        { code: "PA", dial: "+507", label: "Panama" }, { code: "CU", dial: "+53", label: "Cuba" },
+        { code: "DO", dial: "+1", label: "République dominicaine" }, { code: "JM", dial: "+1", label: "Jamaïque" },
+        { code: "HT", dial: "+509", label: "Haïti" }, { code: "TT", dial: "+1", label: "Trinité-et-Tobago" },
+        { code: "AR", dial: "+54", label: "Argentine" }, { code: "BO", dial: "+591", label: "Bolivie" },
+        { code: "BR", dial: "+55", label: "Brésil" }, { code: "CL", dial: "+56", label: "Chili" },
+        { code: "CO", dial: "+57", label: "Colombie" }, { code: "EC", dial: "+593", label: "Équateur" },
+        { code: "GY", dial: "+592", label: "Guyana" }, { code: "PY", dial: "+595", label: "Paraguay" },
+        { code: "PE", dial: "+51", label: "Pérou" }, { code: "SR", dial: "+597", label: "Suriname" },
+        { code: "UY", dial: "+598", label: "Uruguay" }, { code: "VE", dial: "+58", label: "Venezuela" },
+        { code: "AF", dial: "+93", label: "Afghanistan" }, { code: "BD", dial: "+880", label: "Bangladesh" },
+        { code: "BT", dial: "+975", label: "Bhoutan" }, { code: "CN", dial: "+86", label: "Chine" },
+        { code: "IN", dial: "+91", label: "Inde" }, { code: "ID", dial: "+62", label: "Indonésie" },
+        { code: "IR", dial: "+98", label: "Iran" }, { code: "IQ", dial: "+964", label: "Irak" },
+        { code: "IL", dial: "+972", label: "Israël" }, { code: "JP", dial: "+81", label: "Japon" },
+        { code: "JO", dial: "+962", label: "Jordanie" }, { code: "KH", dial: "+855", label: "Cambodge" },
+        { code: "KR", dial: "+82", label: "Corée du Sud" }, { code: "KW", dial: "+965", label: "Koweït" },
+        { code: "LA", dial: "+856", label: "Laos" }, { code: "LB", dial: "+961", label: "Liban" },
+        { code: "MY", dial: "+60", label: "Malaisie" }, { code: "MV", dial: "+960", label: "Maldives" },
+        { code: "MN", dial: "+976", label: "Mongolie" }, { code: "MM", dial: "+95", label: "Myanmar" },
+        { code: "NP", dial: "+977", label: "Népal" }, { code: "OM", dial: "+968", label: "Oman" },
+        { code: "PK", dial: "+92", label: "Pakistan" }, { code: "PH", dial: "+63", label: "Philippines" },
+        { code: "QA", dial: "+974", label: "Qatar" }, { code: "SA", dial: "+966", label: "Arabie saoudite" },
+        { code: "SG", dial: "+65", label: "Singapour" }, { code: "LK", dial: "+94", label: "Sri Lanka" },
+        { code: "SY", dial: "+963", label: "Syrie" }, { code: "TW", dial: "+886", label: "Taïwan" },
+        { code: "TH", dial: "+66", label: "Thaïlande" }, { code: "AE", dial: "+971", label: "Émirats arabes unis" },
+        { code: "VN", dial: "+84", label: "Viêt Nam" }, { code: "YE", dial: "+967", label: "Yémen" },
+        { code: "AU", dial: "+61", label: "Australie" }, { code: "FJ", dial: "+679", label: "Fidji" },
+        { code: "NZ", dial: "+64", label: "Nouvelle-Zélande" }, { code: "PG", dial: "+675", label: "Papouasie-Nouvelle-Guinée" },
+        { code: "WS", dial: "+685", label: "Samoa" }, { code: "TO", dial: "+676", label: "Tonga" }
     ];
 
     const countrySelect = document.getElementById('countrySelect');
     const countrySearch = document.getElementById('countrySearch');
     const allOptions = [];
 
-    europeanCountries.forEach(c => {
-        const opt = document.createElement('option');
-        opt.value = c.code + '|' + c.dial;
-        opt.textContent = c.label + ' ' + c.dial;
-        countrySelect.appendChild(opt);
-        allOptions.push(opt);
-    });
+    const countryNames = (lang) => {
+        try { return new Intl.DisplayNames([lang === 'en' ? 'en' : lang], { type: 'region' }); }
+        catch (_) { return null; }
+    };
+
+    const renderCountryOptions = () => {
+        const names = countryNames(window.FINVERO_LANGUAGE || 'fr');
+        const seen = new Set();
+        countrySelect.innerHTML = '';
+        allOptions.length = 0;
+        europeanCountries.forEach(c => {
+            if (seen.has(c.code)) return;
+            seen.add(c.code);
+            const opt = document.createElement('option');
+            opt.value = c.code + '|' + c.dial;
+            const localized = names?.of(c.code) || c.label;
+            opt.textContent = localized + ' ' + c.dial;
+            countrySelect.appendChild(opt);
+            allOptions.push(opt);
+        });
+        const frIndex = europeanCountries.findIndex(c => c.code === 'FR');
+        if (frIndex !== -1) countrySelect.selectedIndex = Math.min(frIndex, countrySelect.options.length - 1);
+    };
+    renderCountryOptions();
+    window.renderCountryOptions = renderCountryOptions;
 
     const frIndex = europeanCountries.findIndex(c => c.code === 'FR');
     if (frIndex !== -1) countrySelect.selectedIndex = frIndex;
@@ -2292,16 +2341,6 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         const content = legalContents[type] || legalContents['mentions'];
         legalTitle.textContent = content.title;
         legalContent.innerHTML = content.html;
-
-        // Le contenu juridique est injecté dynamiquement. On l'enregistre
-        // immédiatement comme contenu source français puis on applique la
-        // langue active, afin qu'il ne puisse pas rester affiché dans la
-        // langue source après l'ouverture de la modale.
-        try {
-            if (typeof rememberSources === 'function') rememberSources(legalModal);
-            if (typeof applyLanguage === 'function') applyLanguage(currentLanguage, false);
-        } catch (_) {}
-
         legalModal.classList.add('open');
     }
 
@@ -2358,26 +2397,8 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
     function addMessage(sender, text) {
         const div = document.createElement('div');
         div.className = `chat-message ${sender}`;
-        const source = String(text ?? '');
-        // Le texte source reste français côté code. La traduction est appliquée
-        // avant l'insertion, puis la valeur source est conservée pour permettre
-        // un changement de langue ultérieur sans double-traduction.
-        const displayText = sender === 'bot' && typeof translateSource === 'function'
-            ? translateSource(source)
-            : source;
-        div.innerHTML = displayText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        div.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         chatMessages.appendChild(div);
-        try {
-            const walker = document.createTreeWalker(div, NodeFilter.SHOW_TEXT);
-            let node;
-            while (node = walker.nextNode()) {
-                if (!sourceText.has(node)) {
-                    sourceText.set(node, source);
-                    knownTextNodes.add(node);
-                    break;
-                }
-            }
-        } catch (_) {}
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
@@ -3397,7 +3418,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 })();
 </script>
 
-<!-- SYSTÈME DE LANGUES — FR / DE / IT -->
+<!-- SYSTÈME DE LANGUES — FR / DE / ES / PT / EN -->
 <script>
 (function(){
 'use strict';
@@ -3437,40 +3458,6 @@ const runtimeTranslations = {
     'Aucun pays trouvé':'Nessun paese trovato','Veuillez entrer une adresse e-mail valide.':'Inserisci un indirizzo e-mail valido.','Veuillez entrer un numéro de téléphone.':'Inserisci un numero di telefono.','Enregistrement en cours...':'Salvataggio in corso...','Impossible de transmettre votre demande pour le moment.':'Impossibile trasmettere la richiesta al momento.','Connectez-vous ou créez un compte avant d’envoyer votre demande.':'Accedi o crea un account prima di inviare la richiesta.','Veuillez télécharger les trois documents demandés.':'Carica i tre documenti richiesti.','Envoi sécurisé de votre dossier...':'Invio sicuro della tua pratica...','📨 Demande enregistrée avec succès !':'📨 Richiesta registrata con successo!','Impossible d’enregistrer la demande pour le moment. Vérifiez votre connexion puis réessayez.':'Impossibile registrare la richiesta al momento. Controlla la connessione e riprova.','Connectez-vous pour demander un transfert.':'Accedi per richiedere un trasferimento.','Veuillez renseigner les coordonnées de votre compte bancaire.':'Inserisci le coordinate del tuo conto bancario.','Veuillez remplir tous les champs correctement.':'Compila correttamente tutti i campi.','Impossible de charger le transfert bancaire.':'Impossibile caricare il trasferimento bancario.','Impossible d’enregistrer les coordonnées du transfert.':'Impossibile salvare i dati del trasferimento.','Chargement...':'Caricamento...','Aucun document trouvé pour ce client.':'Nessun documento trovato per questo cliente.','Aucun mouvement sur le compte.':'Nessun movimento sul conto.','Aucun document enregistré.':'Nessun documento registrato.','Aucun dossier':'Nessuna pratica','Aucun dossier.':'Nessuna pratica.','Aucun client trouvé.':'Nessun cliente trovato.','Rechercher un client, e-mail ou téléphone...':'Cerca cliente, e-mail o telefono...','Nouveau mot de passe (laisser vide pour conserver l’actuel)':'Nuova password (lascia vuoto per mantenere quella attuale)','Montant à créditer':'Importo da accreditare','Montant à débiter':'Importo da addebitare','Commentaire sur le dossier (facultatif)':'Commento sulla pratica (facoltativo)','Motif du changement de statut':'Motivo della modifica dello stato','Nouveau statut du dossier':'Nuovo stato della pratica','Documents transmis':'Documenti trasmessi','Statut de l’opération':'Stato dell’operazione','Informations disponibles dans le dossier de transfert.':'Informazioni disponibili nella pratica di trasferimento.','Demande envoyée':'Richiesta inviata','Documents en vérification':'Documenti in verifica','Dossier en cours d’étude':'Pratica in valutazione','Dossier accepté':'Pratica approvata','Client sans nom':'Cliente senza nome','Dossier :':'Pratica:','Statut du dossier :':'Stato della pratica:','Taux :':'Tasso:','Mensualité :':'Rata:','Total :':'Totale:','Intérêts :':'Interessi:','MAJ :':'Aggiornato:','Date':'Data','Mouvement':'Movimento','Solde après':'Saldo dopo','Motif':'Motivo','Entrez un montant supérieur à zéro.':'Inserisci un importo maggiore di zero.','Ce client n’a aucun dossier de crédit à vérifier.':'Questo cliente non ha pratiche di credito da verificare.','Ce client n’a aucun dossier de crédit à mettre à jour.':'Questo cliente non ha pratiche di credito da aggiornare.','Session administrateur invalide.':'Sessione amministratore non valida.','Accès administrateur non autorisé.':'Accesso amministratore non autorizzato.','Paramètres enregistrés avec succès.':'Impostazioni salvate con successo.','Le nouveau mot de passe doit contenir au moins 10 caractères.':'La nuova password deve contenere almeno 10 caratteri.','Veuillez patienter…':'Attendere…','Veuillez renseigner votre e-mail et votre mot de passe.':'Inserisci e-mail e password.','Connexion…':'Accesso…','Connexion impossible.':'Impossibile accedere.','Veuillez saisir une adresse e-mail valide.':'Inserisci un indirizzo e-mail valido.','Veuillez saisir votre nom complet.':'Inserisci il tuo nome completo.','Veuillez saisir votre numéro de téléphone.':'Inserisci il tuo numero di telefono.','Le mot de passe doit contenir au moins 8 caractères.':'La password deve contenere almeno 8 caratteri.','Compte créé. Consultez votre e-mail et confirmez votre adresse avant de vous connecter.':'Account creato. Controlla la tua e-mail e conferma l’indirizzo prima di accedere.','Création du compte impossible.':'Impossibile creare l’account.','Envoi…':'Invio…','Impossible d’envoyer le lien de réinitialisation.':'Impossibile inviare il link di reimpostazione.','Enregistrement…':'Salvataggio…','Impossible de modifier le mot de passe.':'Impossibile modificare la password.','Choisissez maintenant votre nouveau mot de passe.':'Scegli ora la nuova password.','Le lien de réinitialisation est invalide ou expiré. Demandez un nouveau lien.':'Il link di reimpostazione non è valido o è scaduto. Richiedi un nuovo link.','Erreur lors de la transmission de la demande :':'Errore durante l’invio della richiesta:','Votre demande est enregistrée dans votre espace.':'La tua richiesta è salvata nella tua area.','Étape 1':'Passaggio 1','Étape 2':'Passaggio 2','Étape 3':'Passaggio 3','Mois':'Mesi','Document fiscal':'Documento fiscale','Carte d’identité':'Documento d’identità','Code d’identification fiscale':'Codice fiscale','Document de revenu mensuel':'Documento del reddito mensile'
   }
 }
-
-// Réponses du chatbot : les chaînes françaises restent les sources du code.
-// Elles sont traduites automatiquement comme le reste de l'interface.
-Object.assign(translations.de, {
-  'Notre taux d’intérêt est fixe à **3 %** pour tous nos crédits.':'Unser Zinssatz ist für alle unsere Kredite fest auf **3 %** festgelegt.',
-  'Vous pouvez choisir une durée de remboursement entre **3 et 360 mois** selon votre projet.':'Sie können je nach Projekt eine Rückzahlungsdauer zwischen **3 und 360 Monaten** wählen.',
-  'Le montant maximum que nous finançons est de **350 000 €**. Utilisez le curseur sur la page pour simuler.':'Der maximale Finanzierungsbetrag beträgt **350.000 €**. Verwenden Sie den Schieberegler auf der Seite für eine Simulation.',
-  'Les documents demandés sont : carte d’identité, code fiscal et justificatif de revenu. Vous pouvez les télécharger directement dans le formulaire.':'Die angeforderten Dokumente sind: Ausweisdokument, Steueridentifikationsnummer und Einkommensnachweis. Sie können sie direkt im Formular hochladen.',
-  'La simulation se fait en cliquant sur « Simuler mon crédit » après avoir rempli le formulaire. Vous obtiendrez votre mensualité et le tableau d’amortissement.':'Die Simulation erfolgt nach dem Ausfüllen des Formulars über « Kredit berechnen ». Sie erhalten Ihre Monatsrate und den Tilgungsplan.',
-  'Vous pouvez nous joindre par WhatsApp au +447520682877 ou par e-mail à contact@finverocapital.de.':'Sie erreichen uns per WhatsApp unter +447520682877 oder per E-Mail unter contact@finverocapital.de.',
-  'Après validation de votre dossier, le versement est effectué dans les plus brefs délais (généralement sous 48h).':'Nach Prüfung Ihrer Akte erfolgt die Auszahlung so schnell wie möglich (in der Regel innerhalb von 48 Stunden).',
-  'Pour une urgence, contactez-nous directement par WhatsApp, nous traitons les demandes prioritairement.':'Bei einem dringenden Anliegen kontaktieren Sie uns direkt per WhatsApp; dringende Anfragen werden vorrangig bearbeitet.',
-  'Vos données sont protégées conformément au RGPD. Nous ne partageons aucune information avec des tiers.':'Ihre Daten werden gemäß DSGVO geschützt. Wir geben keine Informationen an Dritte weiter.',
-  'Pour effectuer un transfert bancaire, connectez-vous à votre espace client et cliquez sur « Transférer vers mon compte bancaire ». Vous devrez fournir vos coordonnées bancaires (nom, IBAN, banque) et suivre les 3 étapes de validation et de traitement.':'Für eine Banküberweisung melden Sie sich in Ihrem Kundenbereich an und klicken Sie auf « Auf mein Bankkonto überweisen ». Sie müssen Ihre Bankdaten (Name, IBAN, Bank) angeben und die 3 Prüfungs- und Bearbeitungsschritte durchlaufen.',
-  'Pour toute question concernant d’éventuels frais, consultez les informations contractuelles ou contactez le service administratif. Aucun paiement ne doit être effectué uniquement sur la base d’un message du site ou d’un e-mail.':'Bei Fragen zu möglichen Gebühren prüfen Sie die Vertragsinformationen oder wenden Sie sich an den Verwaltungsservice. Zahlungen dürfen niemals ausschließlich aufgrund einer Nachricht der Website oder einer E-Mail vorgenommen werden.',
-  'Votre IBAN est demandé lors de la procédure de transfert. Assurez-vous de le saisir correctement.':'Ihre IBAN wird während des Überweisungsverfahrens benötigt. Achten Sie darauf, sie korrekt einzugeben.',
-  'Je n’ai pas compris votre question. Pour toute demande précise, n’hésitez pas à contacter notre service client par WhatsApp ou par e-mail.':'Ich habe Ihre Frage nicht verstanden. Bei konkreten Anliegen können Sie unseren Kundenservice gerne per WhatsApp oder E-Mail kontaktieren.'
-});
-Object.assign(translations.it, {
-  'Notre taux d’intérêt est fixe à **3 %** pour tous nos crédits.':'Il nostro tasso d’interesse è fisso al **3 %** per tutti i nostri crediti.',
-  'Vous pouvez choisir une durée de remboursement entre **3 et 360 mois** selon votre projet.':'Puoi scegliere una durata di rimborso compresa tra **3 e 360 mesi**, in base al tuo progetto.',
-  'Le montant maximum que nous finançons est de **350 000 €**. Utilisez le curseur sur la page pour simuler.':'L’importo massimo che finanziamo è di **350.000 €**. Usa il cursore nella pagina per effettuare la simulazione.',
-  'Les documents demandés sont : carte d’identité, code fiscal et justificatif de revenu. Vous pouvez les télécharger directement dans le formulaire.':'I documenti richiesti sono: documento d’identità, codice fiscale e documento di reddito. Puoi caricarli direttamente nel modulo.',
-  'La simulation se fait en cliquant sur « Simuler mon crédit » après avoir rempli le formulaire. Vous obtiendrez votre mensualité et le tableau d’amortissement.':'La simulazione si effettua facendo clic su « Calcola il mio credito » dopo aver compilato il modulo. Otterrai la rata e il piano di ammortamento.',
-  'Vous pouvez nous joindre par WhatsApp au +447520682877 ou par e-mail à contact@finverocapital.de.':'Puoi contattarci tramite WhatsApp al numero +447520682877 o via e-mail all’indirizzo contact@finverocapital.de.',
-  'Après validation de votre dossier, le versement est effectué dans les plus brefs délais (généralement sous 48h).':'Dopo la verifica della pratica, l’erogazione viene effettuata nel più breve tempo possibile (generalmente entro 48 ore).',
-  'Pour une urgence, contactez-nous directement par WhatsApp, nous traitons les demandes prioritairement.':'Per un’urgenza, contattaci direttamente tramite WhatsApp; le richieste urgenti vengono trattate con priorità.',
-  'Vos données sont protégées conformément au RGPD. Nous ne partageons aucune information avec des tiers.':'I tuoi dati sono protetti in conformità al GDPR. Non condividiamo informazioni con terze parti.',
-  'Pour effectuer un transfert bancaire, connectez-vous à votre espace client et cliquez sur « Transférer vers mon compte bancaire ». Vous devrez fournir vos coordonnées bancaires (nom, IBAN, banque) et suivre les 3 étapes de validation et de traitement.':'Per effettuare un trasferimento bancario, accedi alla tua area cliente e fai clic su « Trasferisci sul mio conto bancario ». Dovrai fornire i tuoi dati bancari (nome, IBAN, banca) e seguire i 3 passaggi di verifica e gestione.',
-  'Pour toute question concernant d’éventuels frais, consultez les informations contractuelles ou contactez le service administratif. Aucun paiement ne doit être effectué uniquement sur la base d’un message du site ou d’un e-mail.':'Per qualsiasi domanda su eventuali costi, consulta le informazioni contrattuali o contatta il servizio amministrativo. Non effettuare pagamenti esclusivamente sulla base di un messaggio del sito o di un’e-mail.',
-  'Votre IBAN est demandé lors de la procédure de transfert. Assurez-vous de le saisir correctement.':'Il tuo IBAN viene richiesto durante la procedura di trasferimento. Assicurati di inserirlo correttamente.',
-  'Je n’ai pas compris votre question. Pour toute demande précise, n’hésitez pas à contacter notre service client par WhatsApp ou par e-mail.':'Non ho compreso la tua domanda. Per qualsiasi richiesta specifica, puoi contattare il nostro servizio clienti tramite WhatsApp o e-mail.'
-});
-
 Object.assign(translations.de, runtimeTranslations.de)
 Object.assign(translations.it, runtimeTranslations.it)
 
@@ -3482,22 +3469,18 @@ const getBrowserLanguage = () => {
   return '';
 };
 
-// La langue du navigateur est la langue par défaut. Elle n'est jamais
-// enregistrée comme un choix manuel. Dès que le visiteur utilise le sélecteur,
-// son choix devient prioritaire et est alors mémorisé.
-const getSavedLanguage = () => {
+// Aucune langue n'est imposée par le code : le navigateur est utilisé lors
+// de la première visite, puis le choix manuel de l'utilisateur devient prioritaire.
+let currentLanguage = (function(){
   let saved='';
   try {
     const m=document.cookie.match(/(?:^|; )eh_language=([^;]+)/);
     saved=m ? decodeURIComponent(m[1]) : '';
     if(!saved) saved=localStorage.getItem('eh_language') || '';
   } catch(_) {}
-  return ['fr','de','it'].includes(saved) ? saved : '';
-};
-
-const getActiveLanguage = () => getSavedLanguage() || getBrowserLanguage() || 'fr';
-
-let currentLanguage = getActiveLanguage();
+  if(['fr','de','it'].includes(saved)) return saved;
+  return 'fr';
+})();
 
 // Le moteur précédent retraduisait les textes déjà traduits. On conserve donc
 // systématiquement leur valeur source afin que DE <-> IT <-> FR soit réversible.
@@ -3521,7 +3504,7 @@ function rememberSources(root=document.body){
     if(knownElements.has(el)) return;
     knownElements.add(el);
     const attrs={};
-    ['placeholder','title','aria-label','alt'].forEach(a=>{ if(el.hasAttribute(a)) attrs[a]=el.getAttribute(a); });
+    ['placeholder','title','aria-label'].forEach(a=>{ if(el.hasAttribute(a)) attrs[a]=el.getAttribute(a); });
     sourceAttributes.set(el,attrs);
   });
 }
@@ -3535,16 +3518,11 @@ function translateSource(text){
   return out;
 }
 
-function applyLanguage(lang, persistSelection=false){
+function applyLanguage(lang){
   if(!translations[lang]) return;
   currentLanguage=lang;
-
-  // Seul un choix effectué dans le sélecteur est mémorisé. La langue
-  // détectée automatiquement depuis le navigateur reste temporaire.
-  if(persistSelection){
-    try { localStorage.setItem('eh_language',currentLanguage); } catch(_) {}
-    try { document.cookie='eh_language='+encodeURIComponent(currentLanguage)+'; Max-Age=31536000; Path=/; SameSite=Lax'; } catch(_) {}
-  }
+  try { localStorage.setItem('eh_language',currentLanguage); } catch(_) {}
+  try { document.cookie='eh_language='+encodeURIComponent(currentLanguage)+'; Max-Age=31536000; Path=/; SameSite=Lax'; } catch(_) {}
   document.documentElement.lang=currentLanguage;
   window.FINVERO_LANGUAGE=currentLanguage;
   window.FINVERO_LOCALE={fr:'fr-FR',de:'de-DE',it:'it-IT'}[currentLanguage] || navigator.language;
@@ -3566,10 +3544,10 @@ function applyLanguage(lang, persistSelection=false){
     }
   }
 
-  root.querySelectorAll('input[placeholder],textarea[placeholder],button[title],button[aria-label],[aria-label],[alt]').forEach(el=>{
+  root.querySelectorAll('input[placeholder],textarea[placeholder],button[title],button[aria-label],[aria-label]').forEach(el=>{
     const attrs=sourceAttributes.get(el);
     if(!attrs) return;
-    ['placeholder','title','aria-label','alt'].forEach(a=>{
+    ['placeholder','title','aria-label'].forEach(a=>{
       if(Object.prototype.hasOwnProperty.call(attrs,a)) el.setAttribute(a,translateSource(attrs[a]));
     });
   });
@@ -3594,7 +3572,7 @@ if(!window.__FINVERO_DIALOG_I18N){
   window.confirm=(message)=>nativeConfirm(translateSource(String(message ?? '')));
   window.__FINVERO_DIALOG_I18N=true;
 }
-document.getElementById('lang-btn')?.addEventListener('change',e=>applyLanguage(e.target.value,true));
+document.getElementById('lang-btn')?.addEventListener('change',e=>applyLanguage(e.target.value));
 
 let translating=false;
 const observer=new MutationObserver((mutations)=>{
@@ -3615,11 +3593,127 @@ const observer=new MutationObserver((mutations)=>{
     });
   }
   translating=true;
-  try{ applyLanguage(currentLanguage,false); } finally { translating=false; }
+  try{ applyLanguage(currentLanguage); } finally { translating=false; }
 });
 if(document.body) observer.observe(document.body,{childList:true,subtree:true});
 
-if(currentLanguage) applyLanguage(currentLanguage,false);
+if(currentLanguage) applyLanguage(currentLanguage);
+
+})();
+</script>
+<script id="finvero-language-complete-override">
+(function(){
+'use strict';
+const extra = {
+  es: {
+    'Solutions de financement • Europe':'Soluciones de financiación • Europa','Simulez votre crédit en quelques secondes, sans engagement.':'Simule su crédito en pocos segundos, sin compromiso.','Réponse sous 24h':'Respuesta en 24 h','dossiers reçus par semaine':'solicitudes recibidas por semana','taux d’acceptation':'tasa de aceptación','de financements accordés par mois':'financiaciones concedidas al mes','Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.':'Nos comprometemos a ofrecer soluciones financieras seguras y fiables, garantizando la máxima transparencia.','Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.':'Calcule rápidamente su cuota mensual y solicite su préstamo personalizado en unos sencillos pasos.','Avec Finvero Capital, vos données personnelles et financières sont 100 % sécurisées.':'Con Finvero Capital, sus datos personales y financieros están protegidos al 100 %.','Votre sécurité, notre priorité':'Su seguridad, nuestra prioridad','Pourquoi choisir Finvero Capital ?':'¿Por qué elegir Finvero Capital?','Fini la paperasse. Fini les longues files d’attente. Fini les complications !':'¡Se acabó el papeleo, las largas esperas y las complicaciones!','Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨':'Con nosotros, sus trámites son sencillos, rápidos y eficaces. ⏱️✨','Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.':'Como cada proyecto es único, le ofrecemos un acompañamiento personalizado adaptado a sus necesidades y objetivos.','Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.':'Complete el formulario. Solo se necesitan unos minutos y algunos documentos para confirmar su identidad. Si no los tiene a mano, podrá cargarlos más adelante.','Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.':'Firme digitalmente su contrato de crédito. Una vez recibidos todos los documentos, procederemos al desembolso lo antes posible.','Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.':'Su solicitud está registrada en su área. Puede abrir su correo para enviar la información a Finvero Capital.','Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.':'Los documentos están asociados a su cuenta y almacenados en el espacio seguro previsto para ello.','Conservez ce numéro pour le suivi de votre demande :':'Conserve este número para seguir su solicitud:','Cliquez sur le bouton ci-dessous pour le copier.':'Haga clic en el botón siguiente para copiarlo.','Veuillez remplir tous les champs correctement.':'Complete correctamente todos los campos.','Aucun pays trouvé':'No se encontró ningún país','Enregistrement en cours...':'Guardando...','Impossible de transmettre votre demande pour le moment.':'No se puede enviar su solicitud en este momento.','Connectez-vous ou créez un compte avant d’envoyer votre demande.':'Inicie sesión o cree una cuenta antes de enviar su solicitud.','Veuillez télécharger les trois documents demandés.':'Cargue los tres documentos solicitados.','Envoi sécurisé de votre dossier...':'Enviando su expediente de forma segura...','📨 Demande enregistrée avec succès !':'📨 ¡Solicitud registrada correctamente!','Impossible d’enregistrer la demande pour le moment. Vérifiez votre connexion puis réessayez.':'No se puede registrar la solicitud. Compruebe su conexión e inténtelo de nuevo.','Connectez-vous pour demander un transfert.':'Inicie sesión para solicitar una transferencia.','Veuillez renseigner les coordonnées de votre compte bancaire.':'Introduzca los datos de su cuenta bancaria.','Impossible de charger le transfert bancaire.':'No se puede cargar la transferencia bancaria.','Impossible d’enregistrer les coordonnées du transfert.':'No se pueden guardar los datos de la transferencia.','Aucun document trouvé pour ce client.':'No se encontraron documentos para este cliente.','Aucun mouvement sur le compte.':'No hay movimientos en la cuenta.','Aucun document enregistré.':'No hay documentos registrados.','Aucun dossier.':'No hay ningún expediente.','Aucun client trouvé.':'No se encontró ningún cliente.','Rechercher un client, e-mail ou téléphone...':'Buscar cliente, correo electrónico o teléfono...','Motif du changement de statut':'Motivo del cambio de estado','Nouveau statut du dossier':'Nuevo estado del expediente','Documents transmis':'Documentos enviados','Statut de l’opération':'Estado de la operación','Informations disponibles dans le dossier de transfert.':'Información disponible en el expediente de transferencia.','Erreur lors de la transmission de la demande :':'Error al enviar la solicitud:','Votre demande est enregistrée dans votre espace.':'Su solicitud está registrada en su área.','Mois':'Mes','Document fiscal':'Documento fiscal','Carte d’identité':'Documento de identidad','Code d’identification fiscale':'Código de identificación fiscal','Document de revenu mensuel':'Documento de ingresos mensuales'
+  },
+  pt: {
+    'Solutions de financement • Europe':'Soluções de financiamento • Europa','Simulez votre crédit en quelques secondes, sans engagement.':'Simule o seu crédito em poucos segundos, sem compromisso.','Réponse sous 24h':'Resposta em 24 horas','dossiers reçus par semaine':'pedidos recebidos por semana','taux d’acceptation':'taxa de aceitação','de financements accordés par mois':'financiamentos concedidos por mês','Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.':'Comprometemo-nos a fornecer soluções financeiras seguras e fiáveis, garantindo a máxima transparência.','Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.':'Calcule rapidamente a sua prestação mensal e solicite o seu crédito personalizado em poucos passos.','Avec Finvero Capital, vos données personnelles et financières sont 100 % sécurisées.':'Com a Finvero Capital, os seus dados pessoais e financeiros estão 100 % protegidos.','Votre sécurité, notre priorité':'A sua segurança, a nossa prioridade','Pourquoi choisir Finvero Capital ?':'Porquê escolher a Finvero Capital?','Fini la paperasse. Fini les longues files d’attente. Fini les complications !':'Acabou a burocracia, as longas esperas e as complicações!','Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨':'Connosco, os seus procedimentos tornam-se simples, rápidos e eficazes. ⏱️✨','Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.':'Como cada projeto é único, oferecemos um acompanhamento personalizado, adaptado às suas necessidades e objetivos.','Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.':'Preencha o formulário. São necessários apenas alguns minutos e alguns documentos para confirmar a sua identidade. Se não os tiver consigo, poderá carregá-los mais tarde.','Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.':'Assine digitalmente o seu contrato de crédito. Assim que todos os documentos forem recebidos, procederemos ao desembolso o mais rapidamente possível.','Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.':'O seu pedido está registado na sua área. Pode abrir o seu e-mail para enviar as informações à Finvero Capital.','Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.':'Os documentos estão associados à sua conta e armazenados na área segura prevista para esse fim.','Conservez ce numéro pour le suivi de votre demande :':'Guarde este número para acompanhar o seu pedido:','Cliquez sur le bouton ci-dessous pour le copier.':'Clique no botão abaixo para o copiar.','Veuillez remplir tous les champs correctement.':'Preencha corretamente todos os campos.','Aucun pays trouvé':'Nenhum país encontrado','Enregistrement en cours...':'A guardar...','Impossible de transmettre votre demande pour le moment.':'Não é possível enviar o seu pedido neste momento.','Connectez-vous ou créez un compte avant d’envoyer votre demande.':'Inicie sessão ou crie uma conta antes de enviar o pedido.','Veuillez télécharger les trois documents demandés.':'Carregue os três documentos solicitados.','Envoi sécurisé de votre dossier...':'A enviar o seu processo de forma segura...','📨 Demande enregistrée avec succès !':'📨 Pedido registado com sucesso!','Impossible d’enregistrer la demande pour le moment. Vérifiez votre connexion puis réessayez.':'Não foi possível registar o pedido. Verifique a ligação e tente novamente.','Connectez-vous pour demander un transfert.':'Inicie sessão para solicitar uma transferência.','Veuillez renseigner les coordonnées de votre compte bancaire.':'Introduza os dados da sua conta bancária.','Impossible de charger le transfert bancaire.':'Não foi possível carregar a transferência bancária.','Impossible d’enregistrer les coordonnées du transfert.':'Não foi possível guardar os dados da transferência.','Aucun document trouvé pour ce client.':'Nenhum documento encontrado para este cliente.','Aucun mouvement sur le compte.':'Nenhum movimento na conta.','Aucun document enregistré.':'Nenhum documento registado.','Aucun dossier.':'Nenhum processo.','Aucun client trouvé.':'Nenhum cliente encontrado.','Rechercher un client, e-mail ou téléphone...':'Pesquisar cliente, e-mail ou telefone...','Motif du changement de statut':'Motivo da alteração do estado','Nouveau statut du dossier':'Novo estado do processo','Documents transmis':'Documentos enviados','Statut de l’opération':'Estado da operação','Informations disponibles dans le dossier de transfert.':'Informações disponíveis no processo de transferência.','Erreur lors de la transmission de la demande :':'Erro ao enviar o pedido:','Votre demande est enregistrée dans votre espace.':'O seu pedido está registado na sua área.','Mois':'Mês','Document fiscal':'Documento fiscal','Carte d’identité':'Documento de identidade','Code d’identification fiscale':'Código de identificação fiscal','Document de revenu mensuel':'Comprovativo de rendimento mensal'
+  },
+  en: {
+    'Solutions de financement • Europe':'Financing solutions • Europe','Simulez votre crédit en quelques secondes, sans engagement.':'Simulate your credit in seconds, with no obligation.','Réponse sous 24h':'Response within 24 hours','dossiers reçus par semaine':'applications received per week','taux d’acceptation':'acceptance rate','de financements accordés par mois':'financings granted per month','Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.':'We provide secure and reliable financial solutions with maximum transparency.','Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.':'Quickly calculate your monthly payment and request your personalised loan in a few simple steps.','Avec Finvero Capital, vos données personnelles et financières sont 100 % sécurisées.':'With Finvero Capital, your personal and financial data is 100% protected.','Votre sécurité, notre priorité':'Your security, our priority','Pourquoi choisir Finvero Capital ?':'Why choose Finvero Capital?','Fini la paperasse. Fini les longues files d’attente. Fini les complications !':'No more paperwork, long queues or complications!','Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨':'With us, your procedures become simple, fast and efficient. ⏱️✨','Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.':'Every project is unique, so we provide personalised support tailored to your needs and goals.','Remplissez le formulaire. Cela ne prend que quelques minutes et quelques documents pour confirmer votre identité. Si vous ne les avez pas sous la main, vous pourrez les télécharger ultérieurement.':'Complete the form. It only takes a few minutes and a few documents to confirm your identity. If you do not have them at hand, you can upload them later.','Signez ensuite numériquement votre contrat de crédit. Une fois tous les documents reçus, nous procédons au versement dans les plus brefs délais.':'Then sign your credit agreement digitally. Once all documents are received, we will proceed with the payment as soon as possible.','Votre demande est enregistrée dans votre espace. Vous pouvez ouvrir votre messagerie pour envoyer les informations à Finvero Capital.':'Your application is saved in your client area. You can open your email to send the information to Finvero Capital.','Les documents sont associés à votre compte et stockés dans l’espace sécurisé prévu à cet effet.':'The documents are linked to your account and stored in the secure area provided for this purpose.','Conservez ce numéro pour le suivi de votre demande :':'Keep this number to track your application:','Cliquez sur le bouton ci-dessous pour le copier.':'Click the button below to copy it.','Veuillez remplir tous les champs correctement.':'Please complete all fields correctly.','Aucun pays trouvé':'No country found','Enregistrement en cours...':'Saving...','Impossible de transmettre votre demande pour le moment.':'Your application cannot be submitted at this time.','Connectez-vous ou créez un compte avant d’envoyer votre demande.':'Sign in or create an account before submitting your application.','Veuillez télécharger les trois documents demandés.':'Please upload the three requested documents.','Envoi sécurisé de votre dossier...':'Securely submitting your application...','📨 Demande enregistrée avec succès !':'📨 Application saved successfully!','Impossible d’enregistrer la demande pour le moment. Vérifiez votre connexion puis réessayez.':'The application could not be saved. Check your connection and try again.','Connectez-vous pour demander un transfert.':'Sign in to request a transfer.','Veuillez renseigner les coordonnées de votre compte bancaire.':'Please enter your bank account details.','Impossible de charger le transfert bancaire.':'The bank transfer could not be loaded.','Impossible d’enregistrer les coordonnées du transfert.':'The transfer details could not be saved.','Aucun document trouvé pour ce client.':'No documents found for this client.','Aucun mouvement sur le compte.':'No account movements.','Aucun document enregistré.':'No documents saved.','Aucun dossier.':'No application.','Aucun client trouvé.':'No client found.','Rechercher un client, e-mail ou téléphone...':'Search client, email or phone...','Motif du changement de statut':'Reason for status change','Nouveau statut du dossier':'New application status','Documents transmis':'Documents submitted','Statut de l’opération':'Operation status','Informations disponibles dans le dossier de transfert.':'Information available in the transfer application.','Erreur lors de la transmission de la demande :':'Error submitting the application:','Votre demande est enregistrée dans votre espace.':'Your application is saved in your client area.','Mois':'Month','Document fiscal':'Tax document','Carte d’identité':'Identity document','Code d’identification fiscale':'Tax identification code','Document de revenu mensuel':'Monthly income document'
+  }
+};
+
+Object.keys(extra).forEach(lang=>{
+  if(!window.FINVERO_TRANSLATIONS) return;
+  window.FINVERO_TRANSLATIONS[lang] = Object.assign(window.FINVERO_TRANSLATIONS[lang] || {}, extra[lang]);
+});
+
+const localTranslate=(text)=>{
+  const source=String(text ?? '');
+  const table=window.FINVERO_TRANSLATIONS?.[window.currentLanguage || 'fr'] || {};
+  let out=source;
+  Object.keys(table).sort((a,b)=>b.length-a.length).forEach(key=>{
+    if(key && out.includes(key)) out=out.split(key).join(table[key]);
+  });
+  return out;
+};
+
+const autoCache=new Map();
+const autoTranslate=async(source,target)=>{
+  if(!source || target==='fr') return source;
+  const key=target+'|'+source;
+  if(autoCache.has(key)) return autoCache.get(key);
+  try{
+    const url='https://translate.googleapis.com/translate_a/single?client=gtx&sl=fr&tl='+encodeURIComponent(target)+'&dt=t&q='+encodeURIComponent(source);
+    const response=await fetch(url,{cache:'force-cache'});
+    if(!response.ok) throw new Error('translation http '+response.status);
+    const data=await response.json();
+    const translated=Array.isArray(data?.[0]) ? data[0].map(x=>x?.[0]||'').join('') : '';
+    if(!translated) throw new Error('empty translation');
+    autoCache.set(key,translated);
+    return translated;
+  }catch(_){
+    return source;
+  }
+};
+
+const completeApplyLanguage=async(lang)=>{
+  if(!['fr','de','es','pt','en'].includes(lang)) lang='fr';
+  window.currentLanguage=lang;
+  window.FINVERO_LANGUAGE=lang;
+  try{localStorage.setItem('eh_language',lang);document.cookie='eh_language='+encodeURIComponent(lang)+'; Max-Age=31536000; Path=/; SameSite=Lax';}catch(_){ }
+  document.documentElement.lang=lang;
+  window.FINVERO_LOCALE={fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-PT',en:'en-GB'}[lang];
+  const select=document.getElementById('lang-btn'); if(select) select.value=lang;
+  if(window.renderCountryOptions) { try{window.renderCountryOptions();}catch(_){} }
+  if(!document.body) return;
+  if(typeof rememberSources==='function') rememberSources(document.body);
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  const jobs=[]; let node;
+  while(node=walker.nextNode()){
+    if(!node.parentElement || ['SCRIPT','STYLE','NOSCRIPT'].includes(node.parentElement.tagName)) continue;
+    const source=sourceText.get(node) ?? node.nodeValue;
+    const local=localTranslate(source);
+    node.nodeValue=local;
+    if(lang!=='fr' && local===source && source.trim()){
+      const currentNode=node; const sourceValue=source;
+      jobs.push(autoTranslate(sourceValue,lang).then(v=>{
+        if(window.currentLanguage===lang && sourceText.get(currentNode)===sourceValue && v!==sourceValue) currentNode.nodeValue=v;
+      }));
+    }
+  }
+  document.body.querySelectorAll('input[placeholder],textarea[placeholder],button[title],button[aria-label],[aria-label]').forEach(el=>{
+    const attrs=sourceAttributes.get(el); if(!attrs) return;
+    ['placeholder','title','aria-label'].forEach(a=>{
+      if(!Object.prototype.hasOwnProperty.call(attrs,a)) return;
+      const source=attrs[a]; const local=localTranslate(source); el.setAttribute(a,local);
+      if(lang!=='fr' && local===source && source.trim()) autoTranslate(source,lang).then(v=>{if(window.currentLanguage===lang) el.setAttribute(a,v);});
+    });
+  });
+  document.body.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.dataset.i18n; const local=localTranslate(key); if(local!==key) el.textContent=local;
+  });
+  await Promise.all(jobs);
+};
+
+window.applyLanguage=completeApplyLanguage;
+window.FINVERO_SET_LANGUAGE=completeApplyLanguage;
+window.FINVERO_TRANSLATE=localTranslate;
+const select=document.getElementById('lang-btn');
+if(select){ select.onchange=e=>completeApplyLanguage(e.target.value); }
+
+let autoObserverLock=false;
+const autoObserver=new MutationObserver(mutations=>{
+  if(autoObserverLock) return;
+  let added=false;
+  for(const m of mutations) if(m.addedNodes?.length) { added=true; break; }
+  if(added){ autoObserverLock=true; completeApplyLanguage(window.currentLanguage||'fr').finally(()=>{autoObserverLock=false;}); }
+});
+if(document.body) autoObserver.observe(document.body,{childList:true,subtree:true});
+
+let initialLanguage='fr';
+try {
+  const saved=localStorage.getItem('eh_language') || '';
+  const raw=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();
+  const browser=raw.startsWith('de')?'de':raw.startsWith('es')?'es':raw.startsWith('pt')?'pt':raw.startsWith('en')?'en':'fr';
+  initialLanguage=['fr','de','es','pt','en'].includes(saved) ? saved : browser;
+} catch(_) {}
+completeApplyLanguage(initialLanguage);
+})();
+</script>
 
 </body>
 </html>
