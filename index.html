@@ -2343,6 +2343,13 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
         legalTitle.textContent = content.title;
         legalContent.innerHTML = content.html;
         legalModal.classList.add('open');
+        // Le contenu légal est injecté dynamiquement : relancer le moteur dès son insertion.
+        queueMicrotask(() => {
+            if (typeof window.applyLanguage === 'function') window.applyLanguage(window.currentLanguage || 'fr');
+        });
+        setTimeout(() => {
+            if (typeof window.applyLanguage === 'function') window.applyLanguage(window.currentLanguage || 'fr');
+        }, 350);
     }
 
     document.querySelectorAll('.legal-footer button[data-legal]').forEach(btn => {
@@ -3776,6 +3783,46 @@ async function machine(source,lang){
 function setText(n,v){ if(n && n.nodeValue!==v) n.nodeValue=v; }
 function setAttr(el,name,v){ if(el.getAttribute(name)!==v) el.setAttribute(name,v); }
 
+const criticalTranslations = {
+  de: {
+    'Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.':'Wir verpflichten uns, sichere und zuverlässige Finanzlösungen mit maximaler Transparenz anzubieten.',
+    'Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.':'Berechnen Sie schnell Ihre monatliche Rate und beantragen Sie Ihren persönlichen Kredit in wenigen einfachen Schritten.',
+    'Avec Finvero Capital, vos données personnelles et financières sont 100 % sécurisées.':'Bei Finvero Capital sind Ihre persönlichen und finanziellen Daten zu 100 % geschützt.',
+    'Votre sécurité, notre priorité':'Ihre Sicherheit, unsere Priorität',
+    'Fini la paperasse. Fini les longues files d’attente. Fini les complications !':'Keine Papierarbeit, keine langen Warteschlangen, keine Komplikationen!',
+    'Avec nous, vos démarches deviennent simples, rapides et efficaces. ⏱️✨':'Mit uns werden Ihre Schritte einfach, schnell und effizient. ⏱️✨',
+    'Parce que chaque projet est unique, nous vous offrons un accompagnement personnalisé, adapté à vos besoins et à vos objectifs.':'Da jedes Projekt einzigartig ist, bieten wir Ihnen eine persönliche Begleitung, die auf Ihre Bedürfnisse und Ziele zugeschnitten ist.'
+  },
+  es: {
+    'Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.':'Nos comprometemos a ofrecer soluciones financieras seguras y fiables, garantizando la máxima transparencia.',
+    'Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.':'Calcule rápidamente su cuota mensual y solicite su préstamo personalizado en unos sencillos pasos.',
+    'Avec Finvero Capital, vos données personnelles et financières sont 100 % sécurisées.':'Con Finvero Capital, sus datos personales y financieros están 100 % protegidos.',
+    'Votre sécurité, notre priorité':'Su seguridad, nuestra prioridad'
+  },
+  pt: {
+    'Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.':'Comprometemo-nos a fornecer soluções financeiras seguras e fiáveis, garantindo a máxima transparência.',
+    'Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.':'Calcule rapidamente a sua prestação mensal e solicite o seu crédito personalizado em poucos passos.',
+    'Avec Finvero Capital, vos données personnelles et financières sont 100 % sécurisées.':'Com a Finvero Capital, os seus dados pessoais e financeiros estão 100 % protegidos.',
+    'Votre sécurité, notre priorité':'A sua segurança, a nossa prioridade'
+  },
+  en: {
+    'Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.':'We provide secure and reliable financial solutions with maximum transparency.',
+    'Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.':'Quickly calculate your monthly payment and request your personalised loan in a few simple steps.',
+    'Avec Finvero Capital, vos données personnelles et financières sont 100 % sécurisées.':'With Finvero Capital, your personal and financial data is 100% protected.',
+    'Votre sécurité, notre priorité':'Your security, our priority'
+  },
+  it: {
+    'Nous nous engageons à fournir des solutions financières sûres et fiables, en garantissant une transparence maximale.':'Ci impegniamo a fornire soluzioni finanziarie sicure e affidabili, garantendo la massima trasparenza.',
+    'Calculez rapidement votre mensualité et demandez votre prêt personnalisé en quelques étapes simples.':'Calcola rapidamente la tua rata mensile e richiedi il tuo prestito personalizzato in pochi semplici passaggi.',
+    'Avec Finvero Capital, vos données personnelles et financières sont 100 % sécurisées.':'Con Finvero Capital, i tuoi dati personali e finanziari sono protetti al 100%.',
+    'Votre sécurité, notre priorité':'La tua sicurezza, la nostra priorità'
+  }
+};
+function criticalLocal(source,lang){
+  const t=criticalTranslations[lang]||{};
+  return t[source] || null;
+}
+
 async function universalApply(lang){
   if(!LANGS.includes(lang)) lang='fr';
   window.currentLanguage=lang;
@@ -3796,7 +3843,8 @@ async function universalApply(lang){
       const p=n.parentElement;
       if(!p || ['SCRIPT','STYLE','NOSCRIPT'].includes(p.tagName)) continue;
       const src=originalText.get(n) ?? n.nodeValue ?? '';
-      const lv=local(src,lang);
+      const critical=criticalLocal(src,lang);
+      const lv=critical || local(src,lang);
       setText(n,lv);
       if(lang!=='fr' && lv===src && src.trim()){
         jobs.push(machine(src,lang).then(v=>{
@@ -3860,6 +3908,9 @@ try{
  start=LANGS.includes(saved)?saved:'fr';
 }catch(e){}
 universalApply(start);
+setTimeout(() => universalApply(window.currentLanguage || start), 300);
+setTimeout(() => universalApply(window.currentLanguage || start), 1000);
+setTimeout(() => universalApply(window.currentLanguage || start), 2500);
 })();
 </script>
 </html>
