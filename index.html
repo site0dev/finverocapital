@@ -463,6 +463,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
                     <option value="es">ES</option>
                     <option value="pt">PT</option>
                     <option value="en">EN</option>
+                    <option value="it">IT</option>
                 </select>
             </div>
         </div>
@@ -3418,7 +3419,7 @@ h1::before,h1::after,h2::before,h2::after,h3::before,h3::after,h4::before,h4::af
 })();
 </script>
 
-<!-- SYSTÈME DE LANGUES — FR / DE / ES / PT / EN -->
+<!-- SYSTÈME DE LANGUES — FR / DE / ES / PT / EN / IT -->
 <script>
 (function(){
 'use strict';
@@ -3651,12 +3652,12 @@ const autoTranslate=async(source,target)=>{
 };
 
 const completeApplyLanguage=async(lang)=>{
-  if(!['fr','de','es','pt','en'].includes(lang)) lang='fr';
+  if(!['fr','de','es','pt','en','it'].includes(lang)) lang='fr';
   window.currentLanguage=lang;
   window.FINVERO_LANGUAGE=lang;
   try{localStorage.setItem('eh_language',lang);document.cookie='eh_language='+encodeURIComponent(lang)+'; Max-Age=31536000; Path=/; SameSite=Lax';}catch(_){ }
   document.documentElement.lang=lang;
-  window.FINVERO_LOCALE={fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-PT',en:'en-GB'}[lang];
+  window.FINVERO_LOCALE={fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-PT',en:'en-GB',it:'it-IT'}[lang];
   const select=document.getElementById('lang-btn'); if(select) select.value=lang;
   if(window.renderCountryOptions) { try{window.renderCountryOptions();}catch(_){} }
   if(!document.body) return;
@@ -3708,14 +3709,159 @@ let initialLanguage='fr';
 try {
   const saved=localStorage.getItem('eh_language') || '';
   const raw=((navigator.languages&&navigator.languages[0])||navigator.language||'').toLowerCase();
-  const browser=raw.startsWith('de')?'de':raw.startsWith('es')?'es':raw.startsWith('pt')?'pt':raw.startsWith('en')?'en':'fr';
-  initialLanguage=['fr','de','es','pt','en'].includes(saved) ? saved : browser;
+  const browser=raw.startsWith('de')?'de':raw.startsWith('es')?'es':raw.startsWith('pt')?'pt':raw.startsWith('en')?'en':raw.startsWith('it')?'it':'fr';
+  initialLanguage=['fr','de','es','pt','en','it'].includes(saved) ? saved : browser;
 } catch(_) {}
 completeApplyLanguage(initialLanguage);
 })();
 </script>
 
 </body>
+
+<script id="finvero-universal-auto-translation">
+(function(){
+'use strict';
+/* Moteur final : tout contenu textuel du DOM (y compris contenu dynamique,
+   placeholders, titres, aria-labels et métadonnées) suit le sélecteur de langue. */
+const LANGS=['fr','de','es','pt','en','it'];
+const LOCALES={fr:'fr-FR',de:'de-DE',es:'es-ES',pt:'pt-PT',en:'en-GB',it:'it-IT'};
+const originalText=new WeakMap(), originalAttr=new WeakMap();
+const cache=new Map();
+let applying=false;
+
+function remember(root){
+  if(!root) return;
+  const els=root.nodeType===1?[root,...root.querySelectorAll('*')]:[];
+  for(const el of els){
+    if(!originalAttr.has(el)) originalAttr.set(el,{});
+    const a=originalAttr.get(el);
+    for(const name of ['placeholder','title','aria-label','alt']){
+      if(el.hasAttribute?.(name) && !(name in a)) a[name]=el.getAttribute(name);
+    }
+  }
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+  let n;
+  while(n=walker.nextNode()){
+    const p=n.parentElement;
+    if(!p || ['SCRIPT','STYLE','NOSCRIPT'].includes(p.tagName)) continue;
+    if(!originalText.has(n)) originalText.set(n,n.nodeValue||'');
+  }
+}
+
+function local(source,lang){
+  const table=window.FINVERO_TRANSLATIONS?.[lang]||{};
+  let out=String(source??'');
+  for(const k of Object.keys(table).sort((a,b)=>b.length-a.length)){
+    if(k && out.includes(k)) out=out.split(k).join(table[k]);
+  }
+  return out;
+}
+
+async function machine(source,lang){
+  source=String(source??'');
+  if(!source.trim() || lang==='fr') return source;
+  const key=lang+'|'+source;
+  if(cache.has(key)) return cache.get(key);
+  try{
+    const u='https://translate.googleapis.com/translate_a/single?client=gtx&sl=fr&tl='+encodeURIComponent(lang)+'&dt=t&q='+encodeURIComponent(source);
+    const r=await fetch(u,{cache:'force-cache'});
+    if(!r.ok) throw new Error(String(r.status));
+    const d=await r.json();
+    const v=Array.isArray(d?.[0])?d[0].map(x=>x?.[0]||'').join(''):'';
+    if(!v.trim()) throw new Error('empty');
+    cache.set(key,v); return v;
+  }catch(e){ return source; }
+}
+
+function setText(n,v){ if(n && n.nodeValue!==v) n.nodeValue=v; }
+function setAttr(el,name,v){ if(el.getAttribute(name)!==v) el.setAttribute(name,v); }
+
+async function universalApply(lang){
+  if(!LANGS.includes(lang)) lang='fr';
+  window.currentLanguage=lang;
+  window.FINVERO_LANGUAGE=lang;
+  window.FINVERO_LOCALE=LOCALES[lang];
+  document.documentElement.lang=lang;
+  try{localStorage.setItem('eh_language',lang);}catch(e){}
+  const sel=document.getElementById('lang-btn'); if(sel) sel.value=lang;
+  if(window.renderCountryOptions){try{window.renderCountryOptions();}catch(e){}}
+  if(!document.body || applying) return;
+  applying=true;
+  try{
+    remember(document.body);
+    const jobs=[];
+    const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+    let n;
+    while(n=walker.nextNode()){
+      const p=n.parentElement;
+      if(!p || ['SCRIPT','STYLE','NOSCRIPT'].includes(p.tagName)) continue;
+      const src=originalText.get(n) ?? n.nodeValue ?? '';
+      const lv=local(src,lang);
+      setText(n,lv);
+      if(lang!=='fr' && lv===src && src.trim()){
+        jobs.push(machine(src,lang).then(v=>{
+          if(window.currentLanguage===lang && originalText.get(n)===src) setText(n,v);
+        }));
+      }
+    }
+    const all=document.querySelectorAll('[placeholder],[title],[aria-label],[alt]');
+    for(const el of all){
+      const a=originalAttr.get(el)||{};
+      for(const name of ['placeholder','title','aria-label','alt']){
+        if(!(name in a)) continue;
+        const src=a[name]??''; const lv=local(src,lang); setAttr(el,name,lv);
+        if(lang!=='fr' && lv===src && src.trim()){
+          jobs.push(machine(src,lang).then(v=>{if(window.currentLanguage===lang) setAttr(el,name,v);}));
+        }
+      }
+    }
+    /* Titre de page et métadonnées visibles par les moteurs/partages. */
+    const headItems=[
+      ['title','textContent'],
+      ['meta[name="description"]','content'],
+      ['meta[property="og:title"]','content'],
+      ['meta[property="og:description"]','content']
+    ];
+    for(const [q,prop] of headItems){
+      const el=document.querySelector(q); if(!el) continue;
+      const key='__finvero_'+q+'_'+prop;
+      if(!el.dataset[key.replace(/[^a-zA-Z0-9_]/g,'')]){
+        const marker=key.replace(/[^a-zA-Z0-9_]/g,'');
+        el.dataset[marker]=el[prop]||'';
+      }
+      const src=el.dataset[key.replace(/[^a-zA-Z0-9_]/g,'')]||'';
+      const lv=local(src,lang); el[prop]=lv;
+      if(lang!=='fr' && lv===src && src.trim()) jobs.push(machine(src,lang).then(v=>{if(window.currentLanguage===lang) el[prop]=v;}));
+    }
+    await Promise.allSettled(jobs);
+  }finally{ applying=false; }
+}
+
+window.applyLanguage=universalApply;
+window.FINVERO_SET_LANGUAGE=universalApply;
+window.FINVERO_TRANSLATE=(text)=>local(text,window.currentLanguage||'fr');
+const select=document.getElementById('lang-btn');
+if(select) select.onchange=e=>universalApply(e.target.value);
+
+const obs=new MutationObserver(ms=>{
+  if(applying) return;
+  let changed=false;
+  for(const m of ms){
+    if(m.addedNodes?.length){m.addedNodes.forEach(x=>{if(x.nodeType===1) remember(x); else if(x.nodeType===3 && !originalText.has(x)) originalText.set(x,x.nodeValue||'');}); changed=true;}
+    if(m.type==='attributes' && m.target && !originalAttr.has(m.target)) remember(m.target);
+  }
+  if(changed) universalApply(window.currentLanguage||'fr');
+});
+if(document.body) { remember(document.body); obs.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['placeholder','title','aria-label','alt']}); }
+
+let start='fr';
+try{
+ const saved=localStorage.getItem('eh_language')||'';
+ start=LANGS.includes(saved)?saved:'fr';
+}catch(e){}
+universalApply(start);
+})();
+</script>
 </html>
 <style id="professional-heading-fix">
 /* Titres : aucun pictogramme/pseudo-element parasite */
